@@ -1,0 +1,64 @@
+@import './reset-base.scss';
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.42856;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--clr__text);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+button,
+input,
+textarea {
+  color: inherit;
+  padding: 0;
+}
+
+input,
+select {
+  background-color: var(--clr__input-bg);
+
+  @include transition(border-color);
+
+  &:disabled {
+    background-color: var(--clr__input-bg-disabled);
+  }
+
+  &:focus {
+    border-color: var(--clr__action);
+  }
+}
+
+pre {
+  white-space: pre-line;
+  font-family: inherit;
+  margin: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+*:not(input):focus:focus-visible {
+  outline: 2px solid var(--clr__green);
+  outline-offset: 2px;
+}

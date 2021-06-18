@@ -1,0 +1,121 @@
+// FONTS
+
+.fs-cut {
+  @include ellipsis;
+}
+.fs-12 {
+  font-size: 1.2rem;
+}
+.fs-14 {
+  font-size: 1.4rem;
+}
+.fs-32 {
+  font-size: 3.2rem;
+}
+.fs-40 {
+  font-size: 4rem;
+}
+.fs-wb {
+  font-weight: bold;
+}
+.fs-ac {
+  text-align: center;
+}
+.fs-c-muted {
+  color: var(--clr__text-muted);
+}
+
+// MARGINS
+
+.mg-t4 {
+  margin-block-start: 0.4rem;
+}
+.mg-t8 {
+  margin-block-start: 0.8rem;
+}
+.mg-t16 {
+  margin-block-start: 1.6rem;
+}
+.mg-t32 {
+  margin-block-start: 3.2rem;
+}
+.mg-r8 {
+  margin-inline-end: 0.8rem;
+}
+.mg-b4 {
+  margin-block-end: 0.4rem;
+}
+.mg-b8 {
+  margin-block-end: 0.8rem;
+}
+.mg-b16 {
+  margin-block-end: 1.6rem;
+}
+.mg-b32 {
+  margin-block-end: 3.2rem;
+}
+.mg-b48 {
+  margin-block-end: 4.8rem;
+}
+.mg-l8 {
+  margin-inline-start: 0.8rem;
+}
+.mg-l16 {
+  margin-inline-start: 1.6rem;
+}
+.mg-l24 {
+  margin-inline-start: 2.4rem;
+}
+.mg-l32 {
+  margin-inline-start: 3.2rem;
+}
+
+// WIDTHS
+
+.w-full {
+  width: 100%;
+}
+
+// FLEX
+
+.fx-cont {
+  @include flex-container;
+}
+.fx-end {
+  @include flex-pos(center, flex-end);
+}
+.fx-start {
+  @include flex-pos(center, flex-start);
+}
+.fx-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.fx-sae {
+  // self align end
+  margin-inline-start: auto;
+}
+.fx-sfw {
+  // self full width
+  flex: 1;
+}
+
+// DISPLAY
+
+.dp-ib {
+  display: inline-block;
+}
+
+// MEDIA
+
+.only-sm {
+  @include respond-above(sm) {
+    display: none;
+  }
+}
+.only-sm-above {
+  @include respond-to(sm) {
+    display: none;
+  }
+}

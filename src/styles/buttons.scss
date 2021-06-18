@@ -1,0 +1,47 @@
+.app-btn {
+  display: inline-block;
+  font-size: 2rem;
+  background: var(--clr__action);
+  color: var(--clr__text-on-action);
+  border: 1px solid transparent; // to sync position with the 2nd variant
+  border-radius: 0.4rem;
+  padding: 0.8rem 1.6rem;
+
+  @include transition(background);
+
+  &:disabled {
+    background: var(--clr__action-disabled);
+  }
+}
+
+.app-btn-2nd {
+  display: inline-block;
+  font-size: 2rem;
+  color: var(--clr__action);
+  border: 1px solid currentColor;
+  border-radius: 0.4rem;
+  padding: 0.8rem 1.6rem;
+
+  @include transition(border-color);
+
+  &:disabled {
+    color: var(--clr__action-disabled);
+  }
+}
+
+.app-ico-btn {
+  display: inline-block;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+
+  @include transition(background-color);
+
+  &:hover {
+    background-color: var(--clr__action-extra-muted);
+  }
+
+  & > img {
+    margin: auto;
+  }
+}
