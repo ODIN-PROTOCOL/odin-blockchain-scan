@@ -1,0 +1,48 @@
+.app-table {
+  display: block;
+}
+
+.app-table__head,
+.app-table__row {
+  display: grid;
+  grid: auto / auto-flow minmax(0, 1fr);
+  gap: 0.8rem;
+}
+
+.app-table__head {
+  font-size: 1.4rem;
+  padding-bottom: 0.8rem;
+}
+
+.app-table__row {
+  padding: 1.6rem 0 1.2rem;
+  // border-bottom: 1px solid var(--clr__table-border);
+  border-bottom: 1px solid var(--clr__input-border);
+}
+
+.app-table__row-btn {
+  display: block;
+  cursor: pointer;
+  text-align: start;
+  width: 100%;
+
+  @include transition(background-color);
+
+  &:hover {
+    background-color: var(--clr__table-row-hover);
+  }
+}
+
+.app-table__cell {
+  display: flex;
+  min-width: 0;
+}
+
+.app-table__cell-txt {
+  @include ellipsis(inline-block);
+}
+
+.app-table__empty-stub {
+  // TODO: list loading stubs
+  text-align: center;
+}

@@ -1,0 +1,86 @@
+@mixin flex-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+@mixin flex-pos($alignItems: center, $justCont: center) {
+  display: flex;
+  align-items: $alignItems;
+  justify-content: $justCont;
+  flex: 1;
+}
+
+@mixin ellipsis($display: null, $max-width: null) {
+  @if ($display) {
+    #{display}: $display;
+  }
+  @if ($max-width) {
+    #{max-width}: $max-width;
+  }
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin transition($props...) {
+  $dur: 0.2s;
+  $val: '';
+  $len: length($props);
+  @for $i from 1 through $len {
+    $val: $val + nth($props, $i) + ' ' + $dur;
+    @if ($i < $len) {
+      $val: $val + ', ';
+    }
+  }
+  transition: unquote($val);
+}
+
+@mixin absolute-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// MEDIA
+
+$mediaBreakpoints: (
+  xs: 480px,
+  sm: 600px,
+  tablet: 820px,
+  md: 1024px,
+  xm: 1200px,
+  lg: 1440px,
+  xl: 1920px,
+) !default;
+
+@mixin respond-to($media) {
+  $breakpoint: map-get($mediaBreakpoints, $media);
+
+  @if ($breakpoint) {
+    @media (max-width: ($breakpoint - 1)) {
+      @content;
+    }
+  } @else {
+    @media (max-width: ($media - 1)) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-above($media) {
+  $breakpoint: map-get($mediaBreakpoints, $media);
+
+  @if ($breakpoint) {
+    @media (min-width: ($breakpoint)) {
+      @content;
+    }
+  } @else {
+    @media (min-width: ($media)) {
+      @content;
+    }
+  }
+}
