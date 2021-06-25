@@ -1,5 +1,6 @@
 <template>
-  <a :title="title || text" :href="link">
+  <!-- :title="title || text" -->
+  <a :href="link">
     {{ text }}
   </a>
 </template>
@@ -27,7 +28,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 a {
-  color: #007bff;
+  color: var(--clr__action);
   font-size: 16px;
 
   &:hover {

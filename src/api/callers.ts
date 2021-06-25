@@ -17,6 +17,7 @@ import {
   MsgDelegate,
   MsgUndelegate,
 } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx'
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
 const makeCallers = () => {
   const broadcaster = api.makeBroadcastCaller.bind(api)
@@ -121,20 +122,8 @@ const makeCallers = () => {
       })
     },
 
-    getAllBlocks: (req: { min_height: number; max_height: number }) => {
-      return sendPost(
-        `${API_CONFIG.rpc}/blockchain?minHeight=${req.min_height}&maxHeight=${req.max_height}`,
-        {
-          minHeight: req.min_height,
-          maxHeight: req.max_height,
-        }
-      )
-    },
-
-    getBlockInfo: (req: { hash: string }) => {
-      return sendPost(`${API_CONFIG.rpc}/block_by_hash?hash=0x${req.hash}`, {
-        denom: req.hash,
-      })
+    getClient: () => {
+      return Tendermint34Client.connect(API_CONFIG.rpc)
     },
   }
 }

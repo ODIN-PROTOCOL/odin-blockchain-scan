@@ -55,6 +55,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+
+  @media screen and (max-width: 600px) {
+    padding: 0 1.6rem;
+  }
 }
 
 .app-filter {
@@ -91,7 +95,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #007bff;
+  background: var(--clr__action);
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 

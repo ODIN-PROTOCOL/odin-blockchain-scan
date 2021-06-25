@@ -20,6 +20,9 @@
       <router-link class="nav__link" :to="{ name: 'Blocks' }">
         Blocks
       </router-link>
+      <router-link class="nav__link" :to="{ name: 'Transactions' }">
+        Transactions
+      </router-link>
     </div>
   </div>
 </template>

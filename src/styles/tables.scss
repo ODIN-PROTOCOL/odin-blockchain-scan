@@ -16,7 +16,8 @@
 
 .app-table__row {
   padding: 1.6rem 0 1.2rem;
-  border-bottom: 1px solid var(--clr__table-border);
+  // border-bottom: 1px solid var(--clr__table-border);
+  border-bottom: 1px solid var(--clr__input-border);
 }
 
 .app-table__row-btn {

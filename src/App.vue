@@ -14,42 +14,45 @@
       <SearchBar />
     </template>
     <router-view />
+    <Footer />
   </template>
-  <div class="dialogs-container" ref="dialogsContainerRef"></div>
+  <!-- <div class="dialogs-container" ref="dialogsContainerRef"></div> -->
   <!-- <notifications width="100%" /> -->
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue'
-import { dialogs } from '@/helpers/dialogs'
+// import { dialogs } from '@/helpers/dialogs'
 import { useAuthorization } from '@/composables/useAuthorization'
 import Nav from '@/components/Nav.vue'
 import UserWidget from '@/components/UserWidget.vue'
 import SearchBar from '@/components/SearchBar.vue'
+import Footer from '@/components/Footer.vue'
 
 export default defineComponent({
-  components: { Nav, UserWidget, SearchBar },
+  components: { Nav, UserWidget, SearchBar, Footer },
   setup() {
     const _readyStates = ref({
-      dialogs: false,
+      dialogs: true,
     })
     const isAppReady = computed(() => {
       return Object.values(_readyStates.value).every((v) => v === true)
     })
 
     // Dialogs
-    const dialogsContainerRef = ref<HTMLElement>()
+    // const dialogsContainerRef = ref<HTMLElement>()
     onMounted(() => {
-      if (dialogsContainerRef.value instanceof HTMLElement) {
-        dialogs.init(dialogsContainerRef.value)
-        _readyStates.value.dialogs = true
-      }
+      // if (dialogsContainerRef.value instanceof HTMLElement) {
+      //   dialogs.init(dialogsContainerRef.value)
+      //   _readyStates.value.dialogs = true
+      // }
     })
 
     return {
       isAppReady,
-      dialogsContainerRef,
-      isLoggedIn: useAuthorization().isLoggedIn,
+      // dialogsContainerRef,
+      isLoggedIn: true,
+      // isLoggedIn: useAuthorization().isLoggedIn,
     }
   },
 })
@@ -70,9 +73,15 @@ export default defineComponent({
 #app {
   width: 100%;
   @include flex-container;
+  justify-content: space-between;
 }
 
 * {
   font-family: 'SF Display';
+}
+
+.logo {
+  width: 90px;
+  height: 34px;
 }
 </style>
