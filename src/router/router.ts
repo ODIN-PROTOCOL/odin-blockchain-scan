@@ -88,6 +88,18 @@ const routes: Array<RouteRecordRaw> = [
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/TransactionsItem.vue'),
   },
+  {
+    path: '/pending_transactions/:height?',
+    name: 'PendingTransactions',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/PendingTransactions.vue'),
+  },
+  {
+    path: '/pending_transactions/:height?/:trans',
+    name: 'PendingTransactionsItem',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/TransactionsItem.vue'),
+  },
 ]
 
 const router = createRouter({

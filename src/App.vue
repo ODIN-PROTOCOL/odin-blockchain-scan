@@ -1,19 +1,23 @@
 <template>
   <template v-if="isAppReady">
-    <template v-if="isLoggedIn">
-      <header class="view-header fx-row">
-        <img
-          class="logo"
-          src="~@/assets/brand/odin-logo-black.png"
-          alt="Logo"
-          width="120"
-        />
-        <Nav class="mg-l16 mg-r8" />
-        <UserWidget class="fx-sae" />
-      </header>
-      <SearchBar />
-    </template>
-    <router-view />
+    <section class="main-section">
+      <template v-if="isLoggedIn">
+        <header class="">
+          <div class="view-header fx-row">
+            <img
+              class="logo"
+              src="~@/assets/brand/odin-logo-black.png"
+              alt="Logo"
+              width="120"
+            />
+            <Nav class="mg-l16 mg-r8" />
+            <UserWidget class="fx-sae" />
+          </div>
+          <SearchBar />
+        </header>
+      </template>
+      <router-view />
+    </section>
     <Footer />
   </template>
   <!-- <div class="dialogs-container" ref="dialogsContainerRef"></div> -->
@@ -83,5 +87,11 @@ export default defineComponent({
 .logo {
   width: 90px;
   height: 34px;
+}
+
+.main-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 </style>
