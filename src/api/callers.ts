@@ -7,7 +7,7 @@ import { MsgExchange } from '@provider/codec/coinswap/tx'
 import { MsgDeposit, MsgVote } from '@provider/codec/cosmos/gov/v1beta1/tx'
 import { api } from './api'
 import { wallet } from './wallet'
-import { mapResponse, sendPost } from './callersHelpers'
+import { mapResponse, sendPost, sendGet } from './callersHelpers'
 import { decodeRequestResults } from '@/helpers/requestResultDecoders'
 import { decodeProposals } from '@/helpers/proposalDecoders'
 import { decodeValidators } from '@/helpers/validatorDecoders'
@@ -112,10 +112,6 @@ const makeCallers = () => {
     getDelegations: querier((qc) => qc.staking.unverified.delegatorDelegations),
 
     faucetRequest: (req: { denom: string }) => {
-      console.log({
-        address: wallet.account.address,
-        denom: req.denom,
-      })
       return sendPost(`${API_CONFIG.faucet}/request`, {
         address: wallet.account.address,
         denom: req.denom,
@@ -124,6 +120,10 @@ const makeCallers = () => {
 
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
+    },
+
+    getPendingTransactions: (limit: number) => {
+      return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },
   }
 }

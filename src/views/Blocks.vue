@@ -220,7 +220,6 @@ export default defineComponent({
   border-top: 1px solid var(--clr__table-border);
 }
 
-
 .app-table__row {
   padding: 3.2rem 0 2rem;
 
@@ -287,10 +286,6 @@ export default defineComponent({
 
 .currency {
   text-transform: uppercase;
-}
-
-.app-table {
-  border-top: 1px solid var(--clr__table-border);
 }
 
 .app-table__head {

@@ -184,7 +184,6 @@ export default {
       const response = await callers.getClient()
 
       response.block(+route.params.id).then((res) => {
-
         blockInfo.value = res
         blockHash.value = getHash(blockInfo.value.blockId.hash)
         blockParentHash.value = getHash(

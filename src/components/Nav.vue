@@ -23,6 +23,9 @@
       <router-link class="nav__link" :to="{ name: 'Transactions' }">
         Transactions
       </router-link>
+      <router-link class="nav__link" :to="{ name: 'PendingTransactions' }">
+        Pending Transactions
+      </router-link>
     </div>
   </div>
 </template>
@@ -51,8 +54,9 @@ export default defineComponent({})
   margin-inline-start: 1.2rem;
 
   &.router-link-exact-active {
-    font-weight: bold;
-    border-bottom: 2px solid var(--clr__action);
+    // font-weight: bold;
+    // border-bottom: 2px solid var(--clr__action);
+    color: var(--clr__action);
   }
 }
 </style>

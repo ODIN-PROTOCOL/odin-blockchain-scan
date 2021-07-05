@@ -2,10 +2,10 @@
   <div class="blocks-container">
     <div class="data-sources view-main">
       <div class="mg-b16 mg-t32">
-        <h2 class="view-title">Transactions</h2>
+        <h2 class="view-title">Pending Transactions</h2>
       </div>
       <div class="mg-b16 mg-t16">
-        <p>{{ totalTransactions }} transactions found</p>
+        <p>{{ totalTransactions }} pending transactions found</p>
       </div>
       <div class="app-table">
         <div class="data-sources__table-head app-table__head">
@@ -43,7 +43,7 @@
             <div class="app-table__cell">
               <span class="app-table__header">Transaction hash</span>
               <router-link
-                :to="`/transactions/${item.height}/${toHexFunc(
+                :to="`/pending_transactions/${item.height}/${toHexFunc(
                   item.hash
                 ).toUpperCase()}`"
               >
@@ -118,6 +118,7 @@ import TitledLink from '@/components/TitledLink.vue'
 import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
+// import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { useRoute } from 'vue-router'
 import { toHex } from '@cosmjs/encoding'
 
@@ -134,6 +135,78 @@ export default defineComponent({
     const toHexFunc = toHex
     let lastHeight = 0
 
+    const testPendingTrans = {
+      jsonrpc: '2.0',
+      id: 823647832518,
+      result: {
+        txs: [
+          {
+            hash:
+              'B8FABEE9430640B84DC12421CC1A78D5BD4EC50CAF2B891744355E82BFD093EE',
+            height: '906',
+            index: 0,
+            tx_result: {
+              code: 0,
+              data: 'ChIKEGNyZWF0ZV92YWxpZGF0b3I=',
+              log:
+                '[{"events":[{"type":"create_validator","attributes":[{"key":"validator","value":"odinvaloper1pl07tk6hcpp2an3rug75as4dfgd743qp2juycu"},{"key":"amount","value":"10000000"}]},{"type":"message","attributes":[{"key":"action","value":"create_validator"},{"key":"module","value":"staking"},{"key":"sender","value":"odin1pl07tk6hcpp2an3rug75as4dfgd743qp80g63g"}]}]}]',
+              info: '',
+              gas_wanted: '2000000',
+              gas_used: '138334',
+              events: [
+                {
+                  type: 'message',
+                  attributes: [
+                    {
+                      key: 'YWN0aW9u',
+                      value: 'Y3JlYXRlX3ZhbGlkYXRvcg==',
+                      index: true,
+                    },
+                  ],
+                },
+                {
+                  type: 'create_validator',
+                  attributes: [
+                    {
+                      key: 'dmFsaWRhdG9y',
+                      value:
+                        'b2RpbnZhbG9wZXIxcGwwN3RrNmhjcHAyYW4zcnVnNzVhczRkZmdkNzQzcXAyanV5Y3U=',
+                      index: true,
+                    },
+                    {
+                      key: 'YW1vdW50',
+                      value: 'MTAwMDAwMDA=',
+                      index: true,
+                    },
+                  ],
+                },
+                {
+                  type: 'message',
+                  attributes: [
+                    {
+                      key: 'bW9kdWxl',
+                      value: 'c3Rha2luZw==',
+                      index: true,
+                    },
+                    {
+                      key: 'c2VuZGVy',
+                      value:
+                        'b2RpbjFwbDA3dGs2aGNwcDJhbjNydWc3NWFzNGRmZ2Q3NDNxcDgwZzYzZw==',
+                      index: true,
+                    },
+                  ],
+                },
+              ],
+              codespace: '',
+            },
+            tx:
+              'CrwCCrkCCiovY29zbW9zLnN0YWtpbmcudjFiZXRhMS5Nc2dDcmVhdGVWYWxpZGF0b3ISigIKDwoNdmFsaWRhdG9yLWVzdBI8ChIxMDAwMDAwMDAwMDAwMDAwMDASEjIwMDAwMDAwMDAwMDAwMDAwMBoSMTAwMDAwMDAwMDAwMDAwMDAwGgExIitvZGluMXBsMDd0azZoY3BwMmFuM3J1Zzc1YXM0ZGZnZDc0M3FwODBnNjNnKjJvZGludmFsb3BlcjFwbDA3dGs2aGNwcDJhbjNydWc3NWFzNGRmZ2Q3NDNxcDJqdXljdTJDCh0vY29zbW9zLmNyeXB0by5lZDI1NTE5LlB1YktleRIiCiBhWjlPOUIrljkL7uWc4oyUdkqgZ8usQqGalyLfE2zkcDoQCgRsb2tpEggxMDAwMDAwMBJhCk4KRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiECtkC6EtOcGb4zbWG/i43FMsyF5K4o8xNeatrYaAtCDQQSBAoCCAESDwoJCgRsb2tpEgEwEICJehpAeabu6NUvFhCFLaRenVTaw8aZC9GuZqN00SLLxmfebBEbf5l23BvXDupX3FefoOSSxD3JPURolWXyHAcMzN6Z/g==',
+          },
+        ],
+      },
+      total_count: '22',
+    }
+
     const getTransactions = async () => {
       const client = await callers.getClient()
 
@@ -147,16 +220,29 @@ export default defineComponent({
         lastHeight = +route.params.height
       }
 
-      await client
-        .txSearch({ query: `tx.height >= ${lastHeight - 10}` })
-        .then((res) => {
-          totalTransactions.value = res.totalCount
-          transactions.value = res.txs
-          totalPages.value = Math.ceil(
-            transactions.value.length / transactionsPerPage
-          )
-        })
-        .then(() => filterTransactions(page.value))
+      totalTransactions.value = 1
+      transactions.value = testPendingTrans.result.txs
+      totalPages.value = 1
+      filterTransactions(page.value)
+
+      // TODO: should be request to
+      // await fetch('http://localhost:26657/unconfirmed_txs?limit=500'
+
+      await callers
+        .getPendingTransactions(500)
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+
+      // await client
+      //   .txSearch({ query: `tx.height >= ${lastHeight - 10}` })
+      //   .then((res) => {
+      //     totalTransactions.value = res.totalCount
+      //     transactions.value = res.txs
+      //     totalPages.value = Math.ceil(
+      //       transactions.value.length / transactionsPerPage
+      //     )
+      //   })
+      //   .then(() => filterTransactions(page.value))
     }
 
     const filterTransactions = async (newPage: number) => {
