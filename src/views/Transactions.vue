@@ -156,7 +156,7 @@ export default defineComponent({
             transactions.value.length / transactionsPerPage
           )
         })
-        .then(() => filterTransactions(page.value))
+        .then(() => filterTransactions(page.value))      
     }
 
     const filterTransactions = async (newPage: number) => {

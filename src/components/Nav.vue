@@ -26,6 +26,12 @@
       <router-link class="nav__link" :to="{ name: 'PendingTransactions' }">
         Pending Transactions
       </router-link>
+      <router-link class="nav__link" :to="{ name: 'Validators' }">
+        Validators
+      </router-link>
+      <router-link class="nav__link" :to="{ name: 'Tokemonics' }">
+        Tokemonics
+      </router-link>
     </div>
   </div>
 </template>

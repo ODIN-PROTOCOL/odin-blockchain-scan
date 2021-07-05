@@ -11,7 +11,7 @@
               width="120"
             />
             <Nav class="mg-l16 mg-r8" />
-            <UserWidget class="fx-sae" />
+            <!-- <UserWidget class="fx-sae" /> -->
           </div>
           <SearchBar />
         </header>
@@ -29,12 +29,12 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 // import { dialogs } from '@/helpers/dialogs'
 import { useAuthorization } from '@/composables/useAuthorization'
 import Nav from '@/components/Nav.vue'
-import UserWidget from '@/components/UserWidget.vue'
+// import UserWidget from '@/components/UserWidget.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import Footer from '@/components/Footer.vue'
 
 export default defineComponent({
-  components: { Nav, UserWidget, SearchBar, Footer },
+  components: { Nav, SearchBar, Footer },
   setup() {
     const _readyStates = ref({
       dialogs: true,
