@@ -288,10 +288,6 @@ export default defineComponent({
   text-transform: uppercase;
 }
 
-// .app-table {
-//   border-top: 1px solid var(--clr__table-border);
-// }
-
 .app-table__head {
   @media screen and (max-width: 992px) {
     display: none;

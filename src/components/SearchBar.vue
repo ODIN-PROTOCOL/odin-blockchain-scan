@@ -1,5 +1,5 @@
 <template>
-  <div class="container mg-b32">
+  <div class="container mg-b24">
     <div class="search__row">
       <select
         class="app-form__field-input app-filter"
