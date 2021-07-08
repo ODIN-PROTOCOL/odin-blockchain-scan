@@ -1,6 +1,5 @@
 <template>
-  <!-- <span :title="title || text"> -->
-  <span>
+  <span :title="title || text">
     {{ text }}
   </span>
 </template>

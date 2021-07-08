@@ -53,7 +53,7 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Transactions</span>
-              <TitledSpan class="app-table__cell-txt" :text="item.num_txs" />
+              <span class="app-table__cell-txt">{{item.num_txs}}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Validator</span>
@@ -70,10 +70,11 @@
             <div class="app-table__cell">
               <span class="app-table__header">Reward</span>
               <div>
-                <TitledSpan
+                <span
                   class="app-table__cell-txt"
-                  :text="item.block_size"
-                />
+                >
+                  {{item.block_size}}
+                </span>
                 <span class="currency">{{ item.header.chainId }}</span>
               </div>
             </div>
@@ -104,14 +105,13 @@
 <script lang="ts">
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
-import TitledSpan from '@/components/TitledSpan.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
 export default defineComponent({
-  components: { TitledSpan, TitledLink, VPagination },
+  components: { TitledLink, VPagination },
   setup() {
     const blocks = ref()
     const filteredBlocks = ref()
@@ -130,10 +130,6 @@ export default defineComponent({
           totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
         })
         .then(() => filterBlocks(page.value))
-
-      response.blockResults(911).then((res) => console.log(res))
-
-      response.block(911).then((res) => console.log(res))
     }
 
     const filterBlocks = async (newPage: number) => {

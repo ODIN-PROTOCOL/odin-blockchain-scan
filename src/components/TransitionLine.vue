@@ -13,7 +13,7 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Type</span>
-      <TitledSpan class="app-table__cell-txt" :text="transStatus" />
+      <span class="app-table__cell-txt">{{transStatus}}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Block</span>
@@ -23,8 +23,8 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Date and time</span>
-      <TitledSpan class="app-table__cell-txt" :text="convertToTime(transTime)" />&nbsp;
-      <TitledSpan class="app-table__cell-txt" :text="convertToDate(transTime)" />
+      <span class="app-table__cell-txt">{{convertToTime(transTime)}}&nbsp;</span>
+      <span class="app-table__cell-txt">{{convertToDate(transTime)}}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Sender</span>
@@ -36,18 +36,17 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Amount</span>
-      <TitledSpan class="app-table__cell-txt" :text="transAmount ? transAmount : ''" />
+      <span class="app-table__cell-txt">{{transAmount ? transAmount : ''}}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Transaction Fee</span>
-      <TitledSpan class="app-table__cell-txt" :text="transFeeList[0]?.amount" />&nbsp;
-      <TitledSpan class="app-table__cell-txt" :text="transFeeList[0]?.denom.toUpperCase()" />
+      <span class="app-table__cell-txt">{{transFeeList[0]?.amount}}&nbsp;</span>
+      <span class="app-table__cell-txt">{{transFeeList[0]?.denom.toUpperCase()}}</span>
     </div>
   </div>
 </template>
 <script>
 import { ref, onMounted, defineComponent, toRef, watch } from 'vue'
-import TitledSpan from '@/components/TitledSpan.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { toHex } from '@cosmjs/encoding'
 import { callers } from '@/api/callers'
@@ -55,7 +54,7 @@ import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
 
 export default defineComponent({
-  components: { TitledSpan, TitledLink },
+  components: { TitledLink },
   props: {
       transition: {
           type: Object,

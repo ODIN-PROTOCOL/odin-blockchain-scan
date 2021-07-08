@@ -160,7 +160,7 @@
                 <div class="copy-button__wrapper">
                   <button
                     class="copy-button"
-                    @click.prevent="copyValue('0x' + transHash)"
+                    @click.prevent="copyValue('0x' + message.value.fromAddress.toUpperCase())"
                   >
                     <img src="~@/assets/icons/copy.svg" alt="info" />
                   </button>
@@ -181,7 +181,7 @@
                 <div class="copy-button__wrapper">
                   <button
                     class="copy-button"
-                    @click.prevent="copyValue('0x' + transHash)"
+                    @click.prevent="copyValue('0x' + message.value.toAddress.toUpperCase())"
                   >
                     <img src="~@/assets/icons/copy.svg" alt="info" />
                   </button>
@@ -215,6 +215,7 @@ import { callers } from '@/api/callers'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
 import { toHex } from '@cosmjs/encoding'
+import { API_CONFIG } from '../api/api-config'
 
 export default {
   // eslint-disable-next-line
@@ -259,7 +260,7 @@ export default {
       transTotal.value = await getTotalTx(decodedTx)
       
       await fetch(
-        `http://localhost:26657/tx?hash=0x${transHash.value}&prove=true`
+        `${API_CONFIG.rpc}/tx?hash=0x${transHash.value}&prove=true`
       )
         .then((res) => res.json())
         .then((data) => {
