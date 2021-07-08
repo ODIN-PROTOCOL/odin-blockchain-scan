@@ -158,7 +158,7 @@ export default defineComponent({
           ? someTime.getFullYear()
           : '0' + someTime.getFullYear()
 
-      return `${day}:${month}:${year}`
+      return `${day}/${month}/${year}`
     }
 
     onMounted(() => {
