@@ -131,14 +131,8 @@ export default defineComponent({
       if(!time) return ''
       const someTime = new Date(time)
 
-      const minutes =
-        someTime.getMinutes() > 9
-          ? someTime.getMinutes()
-          : '0' + someTime.getMinutes()
-      const hours =
-        someTime.getHours() > 9
-          ? someTime.getHours()
-          : '0' + someTime.getHours()
+      const minutes = String(someTime.getMinutes()).padStart(2, '0')
+      const hours = String(someTime.getHours()).padStart(2, '0')
 
       return `${hours}:${minutes}`
     }
