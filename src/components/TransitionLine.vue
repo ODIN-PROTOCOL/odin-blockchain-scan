@@ -105,7 +105,7 @@ export default defineComponent({
           transTime.value = res.blockMetas[0].header.time
         })
 
-      transHash.value = toHex(txs.txs[0].hash).toUpperCase() ? toHex(txs.txs[0].hash).toUpperCase() :  toHexFunc(transitionT.value.hash).toUpperCase()
+      transHash.value = toHex(txs.txs[0].hash || transitionT.value.hash).toUpperCase()
       transFeeList.value = decodedTx.authInfo.fee.amount
       transSender.value = toHex(decodedTx.authInfo.signerInfos[0].publicKey.value).toUpperCase()
     }
