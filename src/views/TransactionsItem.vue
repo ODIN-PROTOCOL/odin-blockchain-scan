@@ -26,8 +26,9 @@
               Time
             </div>
           </div>
-          <div class="info-value text-blue">
-            <span>{{}}</span>
+          <div class="info-value">
+            <span>{{ convertToTime(transTime) }}</span>
+            <span>&nbsp;{{ convertToDate(transTime) }}</span>
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -42,7 +43,12 @@
             </div>
           </div>
           <div class="info-value text-blue">
-            <div class="status success">success</div>
+            <div
+              class="status"
+              :class="transStatus === 0 ? 'success' : 'failed'"
+            >
+              {{ transStatus === 0 ? 'Success' : 'Failed' }}
+            </div>
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -75,7 +81,7 @@
             </div>
           </div>
           <div class="info-value">
-            <span>{{ transInfo.block?.header.time }}</span>
+            <span class="text-blue">0x{{ transSender }}</span>
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -90,7 +96,7 @@
             </div>
           </div>
           <div class="info-value">
-            <span>{{}}/{{}}</span>
+            <span>{{ transUsed }}/{{ transWanted }}</span>
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -134,14 +140,13 @@
             </div>
           </div>
           <div class="info-value">
-            <span>{{}}</span>
+            <span>{{transTotal}}</span>
           </div>
         </div>
         <div class="transactions-messages mg-t32">
           <h2 class="block-title mg-b16">Messages</h2>
-          <div class="transactions-messages__contianer">
-            <h3>Send</h3>
-            <!-- v-for="(message,index) in transMessagesList" :key="index" -->
+          <div class="transactions-messages__container" v-for="(message,index) in transMessagesList" :key="index">
+            <h3>{{message.typeUrl === '/cosmos.bank.v1beta1.MsgSend' ? 'Send' : ''}}</h3>
             <div class="data-sources__table-row app-table__row">
               <div class="info-key">
                 <div class="info-key__inner">
@@ -151,7 +156,7 @@
                 </div>
               </div>
               <div class="info-value">
-                <span>{{}}</span>
+                <span class="text-blue">0x{{message.value.fromAddress.toUpperCase()}}</span>
                 <div class="copy-button__wrapper">
                   <button
                     class="copy-button"
@@ -172,7 +177,7 @@
                 </div>
               </div>
               <div class="info-value">
-                <span>{{}}</span>
+                <span class="text-blue">0x{{message.value.toAddress.toUpperCase()}}</span>
                 <div class="copy-button__wrapper">
                   <button
                     class="copy-button"
@@ -193,7 +198,7 @@
                 </div>
               </div>
               <div class="info-value">
-                <span>{{}}</span>
+                <span>{{transTotal}}</span>
               </div>
             </div>
           </div>
@@ -208,6 +213,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { callers } from '@/api/callers'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
+import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
 import { toHex } from '@cosmjs/encoding'
 
 export default {
@@ -219,49 +225,111 @@ export default {
     }
     const route = useRoute()
 
+    const toHexFunc = toHex
     const transInfo = ref([])
     const transBlock = ref()
-
     const transHash = ref()
     const transStatus = ref()
     const transMemo = ref()
+    const transUsed = ref()
     const transWanted = ref()
-
+    const transSender = ref()
+    const transTime = ref()
+    const transTotal = ref()
     const transFeeList = ref([])
     const transMessagesList = ref([])
 
-    const getTransactions = async () => {
+    const getTransaction = async () => {
       const client = await callers.getClient()
 
       const txs = await client.txSearch({
         query: `tx.height = ${route.params.height}`,
       })
 
-      transHash.value = toHex(txs.txs[0].hash).toUpperCase()
+      const decodedTx = Tx.decode(txs.txs[0].tx)      
 
+      transHash.value = toHexFunc(txs.txs[0].hash).toUpperCase()
       transBlock.value = txs.txs[0].height
       transStatus.value = txs.txs[0].result.code
-
-      const decodedTx = Tx.decode(txs.txs[0].tx)
-
       transFeeList.value = decodedTx.authInfo.fee.amount
       transMemo.value = decodedTx.body.memo
-      transWanted.value = decodedTx.authInfo.fee.gasLimit.low
-
-      getMessages()
-    }
-
-    const getMessages = async () => {
-      const client = await callers.getClient()
+      transSender.value = toHexFunc(
+        decodedTx.authInfo.signerInfos[0].publicKey.value
+      ).toUpperCase()
+      transTotal.value = await getTotalTx(decodedTx)
+      
+      await fetch(
+        `http://localhost:26657/tx?hash=0x${transHash.value}&prove=true`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          transUsed.value = data.result.tx_result.gas_used
+          transWanted.value = data.result.tx_result.gas_wanted
+        })
 
       await client
-        .txSearch({
-          query: `message.action='send' AND tx.height <= ${route.params.height}`,
-        })
+        .blockchain(+route.params.height, +route.params.height)
         .then((res) => {
-          transMessagesList.value = res.txs
-          console.log(transMessagesList.value)
+          transTime.value = res.blockMetas[0].header.time
         })
+
+      transMessagesList.value = await getMessages(decodedTx)
+    }
+
+    const getMessages = async (decodedTx) => {
+      const filteredDecodedMsgs = decodedTx.body.messages.filter(item => item.typeUrl === "/cosmos.bank.v1beta1.MsgSend")
+      const tempDecodedMsgs = filteredDecodedMsgs.map(item => {
+          return {...item, value: MsgSend.decode(item.value)}
+        })
+
+      return tempDecodedMsgs
+    }
+
+    const getTotalTx = async (decodedTx) => {
+      let totalTx = 0      
+      const tempDecodedMsgs = decodedTx.body.messages.filter(item => item.typeUrl === "/cosmos.bank.v1beta1.MsgSend")
+
+      tempDecodedMsgs.forEach(m => {
+        const msgValue = MsgSend.decode(m.value)
+        if(!msgValue) return
+        totalTx += +msgValue.amount[0].amount
+      })
+
+      return totalTx
+    }
+
+    const convertToTime = (time) => {
+      if (!time) return ''
+      const someTime = new Date(time)
+
+      const minutes =
+        someTime.getMinutes() > 9
+          ? someTime.getMinutes()
+          : '0' + someTime.getMinutes()
+      const hours =
+        someTime.getHours() > 9
+          ? someTime.getHours()
+          : '0' + someTime.getHours()
+
+      return `${hours}:${minutes}`
+    }
+
+    const convertToDate = (time) => {
+      if (!time) return ''
+      const someTime = new Date(time)
+
+      const day =
+        someTime.getDay() > 9 ? someTime.getDay() : '0' + someTime.getDay()
+      const month =
+        1 + someTime.getMonth() > 9
+          ? 1 + someTime.getMonth()
+          : '0' + (1 + someTime.getMonth())
+      const year =
+        someTime.getFullYear() > 9
+          ? someTime.getFullYear()
+          : '0' + someTime.getFullYear()
+
+      return `${day}:${month}:${year}`
     }
 
     const copyValue = (text) => {
@@ -269,7 +337,7 @@ export default {
     }
 
     onMounted(() => {
-      getTransactions()
+      getTransaction()
     })
 
     return {
@@ -281,9 +349,16 @@ export default {
       transFeeList,
       transMemo,
       transWanted,
+      transUsed,
       transMessagesList,
+      transSender,
+      transTime,
+      transTotal,
+      convertToTime,
+      convertToDate,
       back,
       copyValue,
+      toHexFunc,
     }
   },
 }
@@ -502,7 +577,7 @@ a {
 }
 
 .transactions-messages {
-  &__contianer {
+  &__container {
     border: 1px solid var(--clr__action);
     border-radius: 8px;
     padding: 3.2rem 2.4rem;
@@ -526,6 +601,10 @@ a {
 
   &.success {
     background: #00d097;
+  }
+
+  &.failed {
+    background: #f65160;
   }
 }
 

@@ -130,6 +130,10 @@ export default defineComponent({
           totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
         })
         .then(() => filterBlocks(page.value))
+
+      response.blockResults(911).then((res) => console.log(res))
+
+      response.block(911).then((res) => console.log(res))
     }
 
     const filterBlocks = async (newPage: number) => {
