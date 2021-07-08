@@ -147,17 +147,9 @@ export default defineComponent({
       if(!time) return ''
       const someTime = new Date(time)
 
-      const day =
-        someTime.getDay() > 9 ? someTime.getDay() : '0' + someTime.getDay()
-      const month =
-        1 + someTime.getMonth() > 9
-          ? 1 + someTime.getMonth()
-          : '0' + (1 + someTime.getMonth())
-      const year =
-        someTime.getFullYear() > 9
-          ? someTime.getFullYear()
-          : '0' + someTime.getFullYear()
-
+      const day = String(someTime.getDay()).padStart(2, '0')
+      const month = String(someTime.getMonth() + 1).padStart(2, '0')
+      const year = String(someTime.getFullYear()).padStart(2, '0')
       return `${day}/${month}/${year}`
     }
 
