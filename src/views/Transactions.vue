@@ -175,6 +175,7 @@ export default defineComponent({
 
 .app-table__cell-txt {
   max-width: 150px;
+  padding-right: 10px;
 }
 
 .view-title {

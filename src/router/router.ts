@@ -89,16 +89,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/TransactionsItem.vue'),
   },
   {
-    path: '/pending_transactions/:height?',
+    path: '/pending_transactions',
     name: 'PendingTransactions',
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/PendingTransactions.vue'),
   },
   {
-    path: '/pending_transactions/:height?/:trans',
-    name: 'PendingTransactionsItem',
+    path: '/validators/:height?/',
+    name: 'Validators',
     // beforeEnter: authorizedOnlyGuard,
-    component: () => import('../views/TransactionsItem.vue'),
+    component: () => import('../views/Validators.vue'),
   },
 ]
 
