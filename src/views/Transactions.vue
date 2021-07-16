@@ -156,7 +156,7 @@ export default defineComponent({
             transactions.value.length / transactionsPerPage
           )
         })
-        .then(() => filterTransactions(page.value))
+        .then(() => filterTransactions(page.value))      
     }
 
     const filterTransactions = async (newPage: number) => {
@@ -237,10 +237,6 @@ export default defineComponent({
     font-size: 28px;
   }
 }
-
-// .app-table {
-//   border-top: 1px solid var(--clr__table-border);
-// }
 
 .app-table__head {
   @media screen and (max-width: 992px) {

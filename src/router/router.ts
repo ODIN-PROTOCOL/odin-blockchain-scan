@@ -130,6 +130,18 @@ const routes: Array<RouteRecordRaw> = [
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/TopAccountsItem.vue'),
   },
+  {
+    path: '/validators',
+    name: 'Validators',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/Validators.vue'),
+  },
+  {
+    path: '/tokemonics',
+    name: 'Tokemonics',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/Tokemonics.vue'),
+  },
 ]
 
 const router = createRouter({
