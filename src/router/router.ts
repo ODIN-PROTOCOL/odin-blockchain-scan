@@ -112,6 +112,18 @@ const routes: Array<RouteRecordRaw> = [
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/DelegatorItem.vue'),
   },
+  {
+    path: '/top_accounts/',
+    name: 'TopAccounts',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/TopAccounts.vue'),
+  },
+  {
+    path: '/top_accounts/:hash/',
+    name: 'TopAccountsItem',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/TopAccountsItem.vue'),
+  },
 ]
 
 const router = createRouter({

@@ -29,6 +29,9 @@
       <router-link class="nav__link" :to="{ name: 'Validators' }">
         Validators
       </router-link>
+      <router-link class="nav__link" :to="{ name: 'TopAccounts' }">
+        Top Accounts
+      </router-link>
     </div>
   </div>
 </template>
