@@ -15,19 +15,19 @@
             @click="changeTab(false)"
             :class="!showValidators ? 'active' : ''"
           >
-            Delegates
+            Delegators
           </h2>
         </div>
         <div class="mg-b16 mg-t16" v-if="showValidators">
-          <p>{{ blocks?.length }} validators found</p>
+          <p>{{ validators?.length }} validators found</p>
         </div>
         <div class="mg-b16 mg-t16" v-if="!showValidators">
-          <p>{{ blocks?.length }} delegates found</p>
+          <p>{{ delegators?.length }} delegators found</p>
         </div>
       </div>
 
       <div class="app-table" v-if="showValidators">
-        <div class="data-sources__table-head app-table__head">
+        <div class="data-sources__table-head app-table__head validators-head">
           <div class="app-table__cell" data-tooltip="">
             <span class="app-table__cell-txt"> Validator </span>
           </div>
@@ -48,59 +48,50 @@
           <div
             v-for="item in filteredValidators"
             :key="item.id"
-            class="data-sources__table-row app-table__row"
+            class="data-sources__table-row app-table__row validators-row"
           >
             <div class="app-table__cell">
               <span class="app-table__header">Validator</span>
-              <router-link :to="`/validators/${item.header}`">
+              <router-link :to="`/validators/${item.operatorAddress}`">
                 <TitledLink
                   class="app-table__cell-txt"
-                  :text="item.operatorAddress"
+                  :text="item.operatorAddress.toUpperCase()"
                 />
               </router-link>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Balance</span>
-              <!-- <div>
-                <div class="info-value"> -->
-              <!-- {{ convertToTime(item.header.time) }} -->
-              <!-- </div>
-                <div class="info-value"> -->
-              <!-- {{ convertToDate(item.header.time) }} -->
-              <!-- </div>
-              </div> -->
-              <TitledSpan class="app-table__cell-txt" :text="item.tokens" />
+              <span class="app-table__cell-txt">{{ 'test' }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Stake</span>
-              <TitledSpan class="app-table__cell-txt" :text="item.num_txs" />
+              <span class="app-table__cell-txt">{{ item.tokens }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Delegation share</span>
-              <!-- <TitledLink
-                class="app-table__cell-txt"
-                :text="
-                  '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
-                "
-              />
-              <div class="tooltip">
-                {{ '0x' + toHexFunc(item.header.validatorsHash).toUpperCase() }}
-              </div> -->
-              <TitledSpan
-                class="app-table__cell-txt"
-                :text="item.delegatorShares"
-              />
+              <span class="app-table__cell-txt">{{
+                item.delegatorShares
+              }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Amount of created blocks</span>
               <div>
-                <TitledSpan
-                  class="app-table__cell-txt"
-                  :text="item.block_size"
-                />
-                <span class="currency">{{ item.header }}</span>
+                <span class="app-table__cell-txt">{{}}</span>
+                <span class="currency">{{}}</span>
               </div>
             </div>
+          </div>
+          <div class="pagination-wrapper mg-t32">
+            <v-pagination
+              v-model="pageValidator"
+              :pages="totalValidatorPages"
+              :range-size="1"
+              active-color="#007bff"
+              @update:modelValue="updateValidatorHandler"
+              :hideFirstButton="true"
+              :hideLastButton="true"
+            >
+            </v-pagination>
           </div>
         </template>
         <template v-else>
@@ -110,7 +101,7 @@
         </template>
       </div>
       <div class="app-table" v-if="!showValidators">
-        <div class="data-sources__table-head app-table__head">
+        <div class="data-sources__table-head app-table__head delegators-head">
           <div class="app-table__cell" data-tooltip="">
             <span class="app-table__cell-txt"> Delegate </span>
           </div>
@@ -121,59 +112,62 @@
             <span class="app-table__cell-txt"> Stake </span>
           </div>
         </div>
-        <template v-if="filteredBlocks?.length">
+        <template v-if="filteredDelegators?.length">
           <div
-            v-for="item in filteredBlocks"
+            v-for="item in filteredDelegators"
             :key="item.id"
-            class="data-sources__table-row app-table__row"
+            class="data-sources__table-row app-table__row delegators-row"
           >
             <div class="app-table__cell">
-              <span class="app-table__header">Block</span>
-              <router-link :to="`/blocks/${item.header.height}`">
+              <span class="app-table__header">Delegate</span>
+              <span
+                class="delegate-status"
+                :class="
+                  item.delegation.validatorAddress ? 'validate' : 'delegate'
+                "
+              >
+                {{ item.delegation.validatorAddress ? 'V' : 'D' }}
+              </span>
+              <router-link
+                :to="`/delegators/${item.delegation.delegatorAddress}`"
+              >
                 <TitledLink
                   class="app-table__cell-txt"
-                  :text="item.header.height"
+                  :text="
+                    item.delegation.validatorAddress
+                      ? item.delegation.validatorAddress
+                      : item.delegation.delegatorAddress
+                  "
                 />
               </router-link>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__header">Date and time</span>
+              <span class="app-table__header">Balance</span>
+              <span>{{ 'test' }}</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__header">Stake</span>
               <div>
-                <div class="info-value">
-                  {{ convertToTime(item.header.time) }}
-                </div>
-                <div class="info-value">
-                  {{ convertToDate(item.header.time) }}
-                </div>
+                <span class="app-table__cell-txt">{{
+                  item.balance.amount
+                }}</span>
+                <span class="app-table__cell-txt currency">{{
+                  item.balance.denom
+                }}</span>
               </div>
             </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Transactions</span>
-              <TitledSpan class="app-table__cell-txt" :text="item.num_txs" />
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Validator</span>
-              <!-- <TitledLink
-                class="app-table__cell-txt"
-                :text="
-                  '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
-                "
-              />
-              <div class="tooltip">
-                {{ '0x' + toHexFunc(item.header.validatorsHash).toUpperCase() }}
-              </div> -->
-              <!-- <TitledSpan class="app-table__cell-txt" :text="item.delegatorShares" /> -->
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Reward</span>
-              <div>
-                <TitledSpan
-                  class="app-table__cell-txt"
-                  :text="item.block_size"
-                />
-                <span class="currency">{{ item.header.chainId }}</span>
-              </div>
-            </div>
+          </div>
+          <div class="pagination-wrapper mg-t32">
+            <v-pagination
+              v-model="pageDelegator"
+              :pages="totalDelegatorPages"
+              :range-size="1"
+              active-color="#007bff"
+              @update:modelValue="updateDelegatorHandler"
+              :hideFirstButton="true"
+              :hideLastButton="true"
+            >
+            </v-pagination>
           </div>
         </template>
         <template v-else>
@@ -182,18 +176,6 @@
           </div>
         </template>
       </div>
-      <div class="pagination-wrapper mg-t32">
-        <v-pagination
-          v-model="page"
-          :pages="totalPages"
-          :range-size="1"
-          active-color="#007bff"
-          @update:modelValue="updateHandler"
-          :hideFirstButton="true"
-          :hideLastButton="true"
-        >
-        </v-pagination>
-      </div>
     </div>
   </div>
 </template>
@@ -201,127 +183,124 @@
 <script lang="ts">
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
-import TitledSpan from '@/components/TitledSpan.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
+import { Bech32, fromBase64 } from '@cosmjs/encoding'
 
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
 
 export default defineComponent({
-  components: { TitledSpan, TitledLink, VPagination },
+  components: { TitledLink, VPagination },
   setup() {
     const validators = ref()
+    const delegators = ref()
     const filteredValidators = ref()
-    const validatorsPerPage = 5
-    const page = ref(1)
-    const totalPages = ref()
+    const filteredDelegators = ref()
+    const itemsPerPage = 5
+    const pageValidator = ref(1)
+    const pageDelegator = ref()
+    const totalValidatorPages = ref()
+    const totalDelegatorPages = ref()
     const toHexFunc = toHex
     const showValidators = ref(true)
 
     const getValidators = async () => {
-      // const client = await callers.getClient()
       const response = await callers.getValidators('BOND_STATUS_BONDED')
-      console.log(response)
 
       if (response && response.pagination) {
-        
         validators.value = response.validators
 
-        totalPages.value = Math.ceil(
-          validators.value.length / validatorsPerPage
+        totalValidatorPages.value = Math.ceil(
+          validators.value.length / itemsPerPage
         )
 
-        filterValidators(page.value)
+        await filterValidators(pageValidator.value).then(
+          async () => await getDelegators()
+        )
       }
-      
-      const response_2 = await callers.getDelegations(
-        // 'odinvaloper1plgvd70drhnd3tzm3a27pzkde7luh9hy6x7q7a'
-        'odin1kcnegzq5lr7nta9r2cvv77nps9v8rkk8mdpxnh'
-      )
+    }
 
-
-      // console.log(validators.value)
-      // console.log(totalPages.value)
-
-
-
-      // client
-      //   .blockchain(100, 500)
-      //   .then((res) => {
-      //     validators.value = [...res.blockMetas]
-      //     totalPages.value = Math.ceil(validators.value.length / blocksPerPage)
-      //   })
-      //   .then(() => filterValidators(page.value))
+    const getDelegators = async () => {
+      validators.value.forEach(async (item: any) => {
+        await callers.getDelegations(item.operatorAddress).then((res) => {
+          if (res.delegationResponses.length > 0) {
+            if (Array.isArray(delegators.value)) {
+              delegators.value = [...res.delegationResponses].concat(
+                delegators.value
+              )
+            } else {
+              delegators.value = [...res.delegationResponses]
+            }
+          }
+        })
+      })
     }
 
     const filterValidators = async (newPage: number) => {
       let tempArr = validators.value
 
       if (newPage === 1) {
-        filteredValidators.value = tempArr.slice(0, newPage * validatorsPerPage)
+        filteredValidators.value = tempArr.slice(0, newPage * itemsPerPage)
       } else {
         filteredValidators.value = tempArr.slice(
-          (newPage - 1) * validatorsPerPage,
-          (newPage - 1) * validatorsPerPage + validatorsPerPage
+          (newPage - 1) * itemsPerPage,
+          (newPage - 1) * itemsPerPage + itemsPerPage
         )
       }
-      page.value = newPage
+      pageValidator.value = newPage
+    }
+
+    const filterDelegators = async (num?: number) => {
+      const page = num || 1
+      let tempArr = delegators.value ? delegators.value : []
+
+      totalDelegatorPages.value = Math.ceil(
+        delegators.value.length / itemsPerPage
+      )
+
+      if (page === 1) {
+        filteredDelegators.value = tempArr.slice(0, page * itemsPerPage)
+      } else {
+        filteredDelegators.value = tempArr.slice(
+          (page - 1) * itemsPerPage,
+          (page - 1) * itemsPerPage + itemsPerPage
+        )
+      }
+
+      pageDelegator.value = page
     }
 
     const changeTab = (state: boolean) => (showValidators.value = state)
 
-    const updateHandler = (num: number) => {
+    const updateValidatorHandler = (num: number) => {
       filterValidators(num)
     }
 
-    // const convertToTime = (time: string) => {
-    //   const someTime = new Date(time)
+    const updateDelegatorHandler = (num: number) => {
+      filterDelegators(num)
+    }
 
-    //   const minutes =
-    //     someTime.getMinutes() > 9
-    //       ? someTime.getMinutes()
-    //       : '0' + someTime.getMinutes()
-    //   const hours =
-    //     someTime.getHours() > 9
-    //       ? someTime.getHours()
-    //       : '0' + someTime.getHours()
-
-    //   return `${hours}:${minutes}`
-    // }
-
-    // const convertToDate = (time: string) => {
-    //   const someTime = new Date(time)
-
-    //   const day =
-    //     someTime.getDay() > 9 ? someTime.getDay() : '0' + someTime.getDay()
-    //   const month =
-    //     1 + someTime.getMonth() > 9
-    //       ? 1 + someTime.getMonth()
-    //       : '0' + (1 + someTime.getMonth())
-    //   const year =
-    //     someTime.getFullYear() > 9
-    //       ? someTime.getFullYear()
-    //       : '0' + someTime.getFullYear()
-
-    //   return `${day}:${month}:${year}`
-    // }
+    watch(delegators, () => filterDelegators())
 
     onMounted(() => {
       getValidators()
+      pageDelegator.value = 1
     })
 
     return {
       validators,
-      page,
-      totalPages,
+      delegators,
+      pageValidator,
+      pageDelegator,
+      totalValidatorPages,
+      totalDelegatorPages,
       filteredValidators,
+      filteredDelegators,
       showValidators,
-      filterValidators,
-      updateHandler,
-      // convertToTime,
-      // convertToDate,
+      updateValidatorHandler,
+      updateDelegatorHandler,
       toHexFunc,
       changeTab,
     }
@@ -333,14 +312,25 @@ export default defineComponent({
 * {
   font-family: 'SF Display';
 }
-.data-sources__table-head,
-.data-sources__table-row {
+.validators-head,
+.validators-row {
   grid:
     auto /
     repeat(5, minmax(4rem, 1fr));
 
   @media screen and (max-width: 992px) {
     grid: repeat(5, minmax(4rem, 1fr)) / auto;
+  }
+}
+
+.delegators-head,
+.delegators-row {
+  grid:
+    auto /
+    repeat(3, minmax(4rem, 1fr));
+
+  @media screen and (max-width: 992px) {
+    grid: repeat(3, minmax(4rem, 1fr)) / auto;
   }
 }
 
@@ -430,6 +420,10 @@ export default defineComponent({
     display: inline-block;
     width: 200px;
   }
+
+  @media screen and (max-width: 600px) {
+    width: 170px;
+  }
 }
 
 .validators-nav {
@@ -437,7 +431,6 @@ export default defineComponent({
 
   h2 {
     width: 137px;
-    // border: 1px solid #000;
     color: var(--clr__text);
     border-bottom: 2px solid rgba(0, 123, 255, 0.16);
     font-size: 2rem;
@@ -451,6 +444,27 @@ export default defineComponent({
       border-bottom: 2px solid var(--clr__action);
       font-weight: 600;
     }
+  }
+}
+.delegate-status {
+  min-width: 26px;
+  min-height: 24px;
+  width: 26px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  color: #fff;
+  border-radius: 4px;
+  margin-right: 11px;
+
+  &.delegate {
+    background: #00c4d0;
+  }
+
+  &.validate {
+    background: #00d097;
   }
 }
 </style>
