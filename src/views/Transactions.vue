@@ -35,59 +35,11 @@
           </div>
         </div>
         <template v-if="filteredTransactions?.length">
-          <div
+          <TransitionLine
             v-for="(item, index) in filteredTransactions"
             :key="index"
-            class="data-sources__table-row app-table__row"
-          >
-            <div class="app-table__cell">
-              <span class="app-table__header">Transaction hash</span>
-              <router-link
-                :to="`/transactions/${item.height}/${toHexFunc(
-                  item.hash
-                ).toUpperCase()}`"
-              >
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="'Ox' + toHexFunc(item.hash).toUpperCase()"
-                />
-              </router-link>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Type</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Block</span>
-              <router-link :to="`/blocks/${item.height}`">
-                <TitledLink class="app-table__cell-txt" :text="item.height" />
-              </router-link>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Date and time</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Sender</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Receiver</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Amount</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Transaction Fee</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-          </div>
+            :transition="item"
+          />
         </template>
         <template v-else>
           <div class="app-table__row">
@@ -113,16 +65,14 @@
 
 <script lang="ts">
 import { callers } from '@/api/callers'
-import TitledSpan from '@/components/TitledSpan.vue'
-import TitledLink from '@/components/TitledLink.vue'
+import TransitionLine from '@/components/TransitionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { useRoute } from 'vue-router'
-import { toHex } from '@cosmjs/encoding'
 
 export default defineComponent({
-  components: { TitledSpan, TitledLink, VPagination },
+  components: { VPagination, TransitionLine },
   setup() {
     const transactions = ref()
     const filteredTransactions = ref()
@@ -131,7 +81,6 @@ export default defineComponent({
     const totalPages = ref()
     const route = useRoute()
     const totalTransactions = ref()
-    const toHexFunc = toHex
     let lastHeight = 0
 
     const getTransactions = async () => {
@@ -156,7 +105,7 @@ export default defineComponent({
             transactions.value.length / transactionsPerPage
           )
         })
-        .then(() => filterTransactions(page.value))
+        .then(() => filterTransactions(page.value))      
     }
 
     const filterTransactions = async (newPage: number) => {
@@ -192,7 +141,6 @@ export default defineComponent({
       filteredTransactions,
       filterTransactions,
       updateHandler,
-      toHexFunc,
     }
   },
 })
@@ -227,6 +175,7 @@ export default defineComponent({
 
 .app-table__cell-txt {
   max-width: 150px;
+  padding-right: 10px;
 }
 
 .view-title {
@@ -237,10 +186,6 @@ export default defineComponent({
     font-size: 28px;
   }
 }
-
-// .app-table {
-//   border-top: 1px solid var(--clr__table-border);
-// }
 
 .app-table__head {
   @media screen and (max-width: 992px) {

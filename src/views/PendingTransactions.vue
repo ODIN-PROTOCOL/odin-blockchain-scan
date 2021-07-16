@@ -16,10 +16,10 @@
             <span class="app-table__cell-txt"> Type </span>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Block </span>
+            <span class="app-table__cell-txt"> Gas Limit </span>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Date and time </span>
+            <span class="app-table__cell-txt"> Gas Price </span>
           </div>
           <div class="app-table__cell">
             <span class="app-table__cell-txt"> Sender </span>
@@ -35,59 +35,11 @@
           </div>
         </div>
         <template v-if="filteredTransactions?.length">
-          <div
+          <PendingTransactionLine 
             v-for="(item, index) in filteredTransactions"
             :key="index"
-            class="data-sources__table-row app-table__row"
-          >
-            <div class="app-table__cell">
-              <span class="app-table__header">Transaction hash</span>
-              <router-link
-                :to="`/pending_transactions/${item.height}/${toHexFunc(
-                  item.hash
-                ).toUpperCase()}`"
-              >
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="'Ox' + toHexFunc(item.hash).toUpperCase()"
-                />
-              </router-link>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Type</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Block</span>
-              <router-link :to="`/blocks/${item.height}`">
-                <TitledLink class="app-table__cell-txt" :text="item.height" />
-              </router-link>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Date and time</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Sender</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Receiver</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Amount</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Transaction Fee</span>
-              <TitledSpan class="app-table__cell-txt" :text="'test'" />
-              <!-- {{ item.header.chain_id }} -->
-            </div>
-          </div>
+            :transition="item"
+          />
         </template>
         <template v-else>
           <div class="app-table__row">
@@ -111,19 +63,19 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { callers } from '@/api/callers'
-import TitledSpan from '@/components/TitledSpan.vue'
-import TitledLink from '@/components/TitledLink.vue'
+import PendingTransactionLine from '@/components/PendingTransactionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
-// import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
+import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { useRoute } from 'vue-router'
 import { toHex } from '@cosmjs/encoding'
+import { fromBase64 } from '@cosmjs/encoding'
 
 export default defineComponent({
-  components: { TitledSpan, TitledLink, VPagination },
+  components: { PendingTransactionLine, VPagination },
   setup() {
     const transactions = ref()
     const filteredTransactions = ref()
@@ -135,77 +87,60 @@ export default defineComponent({
     const toHexFunc = toHex
     let lastHeight = 0
 
-    const testPendingTrans = {
-      jsonrpc: '2.0',
-      id: 823647832518,
-      result: {
-        txs: [
-          {
-            hash:
-              'B8FABEE9430640B84DC12421CC1A78D5BD4EC50CAF2B891744355E82BFD093EE',
-            height: '906',
-            index: 0,
-            tx_result: {
-              code: 0,
-              data: 'ChIKEGNyZWF0ZV92YWxpZGF0b3I=',
-              log:
-                '[{"events":[{"type":"create_validator","attributes":[{"key":"validator","value":"odinvaloper1pl07tk6hcpp2an3rug75as4dfgd743qp2juycu"},{"key":"amount","value":"10000000"}]},{"type":"message","attributes":[{"key":"action","value":"create_validator"},{"key":"module","value":"staking"},{"key":"sender","value":"odin1pl07tk6hcpp2an3rug75as4dfgd743qp80g63g"}]}]}]',
-              info: '',
-              gas_wanted: '2000000',
-              gas_used: '138334',
-              events: [
-                {
-                  type: 'message',
-                  attributes: [
-                    {
-                      key: 'YWN0aW9u',
-                      value: 'Y3JlYXRlX3ZhbGlkYXRvcg==',
-                      index: true,
-                    },
-                  ],
-                },
-                {
-                  type: 'create_validator',
-                  attributes: [
-                    {
-                      key: 'dmFsaWRhdG9y',
-                      value:
-                        'b2RpbnZhbG9wZXIxcGwwN3RrNmhjcHAyYW4zcnVnNzVhczRkZmdkNzQzcXAyanV5Y3U=',
-                      index: true,
-                    },
-                    {
-                      key: 'YW1vdW50',
-                      value: 'MTAwMDAwMDA=',
-                      index: true,
-                    },
-                  ],
-                },
-                {
-                  type: 'message',
-                  attributes: [
-                    {
-                      key: 'bW9kdWxl',
-                      value: 'c3Rha2luZw==',
-                      index: true,
-                    },
-                    {
-                      key: 'c2VuZGVy',
-                      value:
-                        'b2RpbjFwbDA3dGs2aGNwcDJhbjNydWc3NWFzNGRmZ2Q3NDNxcDgwZzYzZw==',
-                      index: true,
-                    },
-                  ],
-                },
-              ],
-              codespace: '',
-            },
-            tx:
-              'CrwCCrkCCiovY29zbW9zLnN0YWtpbmcudjFiZXRhMS5Nc2dDcmVhdGVWYWxpZGF0b3ISigIKDwoNdmFsaWRhdG9yLWVzdBI8ChIxMDAwMDAwMDAwMDAwMDAwMDASEjIwMDAwMDAwMDAwMDAwMDAwMBoSMTAwMDAwMDAwMDAwMDAwMDAwGgExIitvZGluMXBsMDd0azZoY3BwMmFuM3J1Zzc1YXM0ZGZnZDc0M3FwODBnNjNnKjJvZGludmFsb3BlcjFwbDA3dGs2aGNwcDJhbjNydWc3NWFzNGRmZ2Q3NDNxcDJqdXljdTJDCh0vY29zbW9zLmNyeXB0by5lZDI1NTE5LlB1YktleRIiCiBhWjlPOUIrljkL7uWc4oyUdkqgZ8usQqGalyLfE2zkcDoQCgRsb2tpEggxMDAwMDAwMBJhCk4KRgofL2Nvc21vcy5jcnlwdG8uc2VjcDI1NmsxLlB1YktleRIjCiECtkC6EtOcGb4zbWG/i43FMsyF5K4o8xNeatrYaAtCDQQSBAoCCAESDwoJCgRsb2tpEgEwEICJehpAeabu6NUvFhCFLaRenVTaw8aZC9GuZqN00SLLxmfebBEbf5l23BvXDupX3FefoOSSxD3JPURolWXyHAcMzN6Z/g==',
-          },
-        ],
-      },
-      total_count: '22',
-    }
+    const testPendingString = '"CpIBCo8BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm8KK29kaW4xbm5mZWd1cTMweDZud3hqaGF5cHh5bXgzbnVseXNwc3VqYTRhMngSK29kaW4xd3dwaHYzZ3IzMm5xZzZ3eTJlOGpnOWZ0NDVobXVhZ3NnNXpsYTkaEwoEbG9raRILMTAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAjJ9fZD9gps8fxP7cq+reyazHJn+Y6vdIU/zdObkb/i7EgQKAggBGAcSBBDAmgwaQGjtzoxsI2BbXOaRe6u7krV79u7qmOftaUWpzp+DBBLmegePGRT0UNKcamksVlmob8y/th4cGJhmuFn8kJkfNeE="'
+    // const testPendingTrans = [
+          // {
+          //   authInfo: {
+          //     fee: {
+          //       amount: [],
+          //       gasLimit: {
+          //         high: 0,
+          //         low: 200000,
+          //         unsigned: true,
+          //       },
+          //       granter: "",
+          //       payer: ""
+          //     },
+          //     signerInfos: [
+          //       {
+          //         modeInfo: {
+          //           mode: 1
+          //         },
+          //         publicKey: {
+          //           typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+          //           value: []
+          //         },
+          //         sequence : {
+          //           high: 0,
+          //           low: 7,
+          //           unsigned: true,
+          //         }
+          //       }
+          //     ]
+          //   },
+          //   body : {
+          //     extensionOptions: [],
+          //     memo: '',
+          //     messages: [
+          //       {
+          //         typeUrl: "/cosmos.bank.v1beta1.MsgSend"
+          //       }
+          //     ],
+          //     nonCriticalExtensionOptions: [],
+          //     timeoutHeight: {
+          //       high: 0,
+          //       low: 0,
+          //       unsigned: true,
+          //     }
+          //   },
+          //   signatures: [
+          //     {
+
+          //     }
+          //   ]
+              
+        // ]
+      
 
     const getTransactions = async () => {
       const client = await callers.getClient()
@@ -220,32 +155,29 @@ export default defineComponent({
         lastHeight = +route.params.height
       }
 
-      totalTransactions.value = 1
-      transactions.value = testPendingTrans.result.txs
-      totalPages.value = 1
-      filterTransactions(page.value)
-
-      // TODO: should be request to
-      // await fetch('http://localhost:26657/unconfirmed_txs?limit=500'
-
       await callers
-        .getPendingTransactions(500)
+        .getPendingTransactions(10000000)
         .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+          const codedStrings = data.result.txs
+          const tempStrings = []
 
-      // await client
-      //   .txSearch({ query: `tx.height >= ${lastHeight - 10}` })
-      //   .then((res) => {
-      //     totalTransactions.value = res.totalCount
-      //     transactions.value = res.txs
-      //     totalPages.value = Math.ceil(
-      //       transactions.value.length / transactionsPerPage
-      //     )
-      //   })
-      //   .then(() => filterTransactions(page.value))
+          codedStrings.forEach((str) => {
+              const decodedTx = Tx.decode(fromBase64(str))
+              tempStrings.push(decodedTx)
+          });
+
+          transactions.value = [...tempStrings]
+          totalTransactions.value = tempStrings.length
+
+          totalPages.value = Math.ceil(
+            tempStrings.length / transactionsPerPage
+          )
+        })
+        .then(() => filterTransactions(page.value))
     }
 
-    const filterTransactions = async (newPage: number) => {
+    const filterTransactions = async (newPage) => {
       let tempArr = transactions.value
 
       if (newPage === 1) {
@@ -262,7 +194,7 @@ export default defineComponent({
       page.value = newPage
     }
 
-    const updateHandler = (num: number) => {
+    const updateHandler = (num) => {
       filterTransactions(num)
     }
 
@@ -313,6 +245,7 @@ export default defineComponent({
 
 .app-table__cell-txt {
   max-width: 150px;
+  padding-right: 10px;
 }
 
 .view-title {
@@ -323,10 +256,6 @@ export default defineComponent({
     font-size: 28px;
   }
 }
-
-// .app-table {
-//   border-top: 1px solid var(--clr__table-border);
-// }
 
 .app-table__head {
   @media screen and (max-width: 992px) {
