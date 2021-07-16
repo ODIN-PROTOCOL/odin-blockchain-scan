@@ -107,6 +107,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/ValidatorItem.vue'),
   },
   {
+    path: '/tokemonics',
+    name: 'Tokemonics',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/Tokemonics.vue'),
+  },
+  {
     path: '/delegators/:hash/',
     name: 'DelegatorItem',
     // beforeEnter: authorizedOnlyGuard,
