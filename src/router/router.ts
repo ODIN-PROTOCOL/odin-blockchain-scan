@@ -95,22 +95,28 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/PendingTransactions.vue'),
   },
   {
-    path: '/validators/:height?/',
-    name: 'Validators',
-    // beforeEnter: authorizedOnlyGuard,
-    component: () => import('../views/Validators.vue'),
-  },
-  {
     path: '/validators',
     name: 'Validators',
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/Validators.vue'),
   },
   {
+    path: '/validators/:hash/',
+    name: 'ValidatorItem',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/ValidatorItem.vue'),
+  },
+  {
     path: '/tokemonics',
     name: 'Tokemonics',
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/Tokemonics.vue'),
+  },
+  {
+    path: '/delegators/:hash/',
+    name: 'DelegatorItem',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/DelegatorItem.vue'),
   },
 ]
 

@@ -109,7 +109,7 @@ const makeCallers = () => {
       '/cosmos.staking.v1beta1.MsgUndelegate',
       MsgUndelegate
     ),
-    getDelegations: querier((qc) => qc.staking.unverified.delegatorDelegations),
+    getDelegations: querier((qc) => qc.staking.unverified.validatorDelegations),
 
     faucetRequest: (req: { denom: string }) => {
       return sendPost(`${API_CONFIG.faucet}/request`, {
