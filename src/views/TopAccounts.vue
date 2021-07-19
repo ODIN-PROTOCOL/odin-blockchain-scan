@@ -17,10 +17,6 @@
           >
             <option value="geo">Geo balance</option>
             <option value="odin">ODIN balance</option>
-            <option value="odin">ODIN balance</option>
-            <option value="odin">ODIN balance</option>
-            <option value="odin">ODIN balance</option>
-            <option value="odin">ODIN balance</option>
           </select>
         </div>
       </div>
@@ -101,56 +97,51 @@ export default defineComponent({
         rank: 5,
         address:
           'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        geoBalance: 50000,
+        geoBalance: 14000,
         geoTokenPercentage: 100000,
-        odinBalance: 214245,
-        odinTokenPercentage: 21,
-        transactionCount: 451,
+        odinBalance: 24000,
+        odinTokenPercentage: 14,
+        transactionCount: 304,
       },
       {
         rank: 1,
-        address:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        geoBalance: 50000,
-        geoTokenPercentage: 100000,
-        odinBalance: 214245,
-        odinTokenPercentage: 21,
+        address: '129UMPWEQXFYWQ0F2ZDPGJCFNKHZCU8JYFU5NES',
+        geoBalance: 28000,
+        geoTokenPercentage: 40000,
+        odinBalance: 3200,
+        odinTokenPercentage: 17,
         transactionCount: 451,
       },
       {
         rank: 8,
-        address:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        geoBalance: 50000,
-        geoTokenPercentage: 100000,
-        odinBalance: 214245,
-        odinTokenPercentage: 21,
-        transactionCount: 451,
+        address: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
+        geoBalance: 12300,
+        geoTokenPercentage: 23000,
+        odinBalance: 170000,
+        odinTokenPercentage: 33,
+        transactionCount: 384,
       },
       {
         rank: 2,
-        address:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        geoBalance: 50000,
-        geoTokenPercentage: 100000,
-        odinBalance: 214245,
-        odinTokenPercentage: 21,
-        transactionCount: 451,
+        address: '1HKM2QU5V3HLZZFZNDUT09WJZ3LNK028EDV7QKG',
+        geoBalance: 92300,
+        geoTokenPercentage: 5000,
+        odinBalance: 17560,
+        odinTokenPercentage: 7,
+        transactionCount: 248,
       },
       {
         rank: 1,
-        address:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        address: '17RPRJGTJ0KRFW3WYL9CREUEEJ6CA9DC4A65N80',
         geoBalance: 57000,
         geoTokenPercentage: 108000,
-        odinBalance: 288245,
+        odinBalance: 288260,
         odinTokenPercentage: 22,
-        transactionCount: 451,
+        transactionCount: 178,
       },
       {
         rank: 2,
-        address:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        address: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
         geoBalance: 8000,
         geoTokenPercentage: 106000,
         odinBalance: 2177245,
@@ -204,7 +195,21 @@ export default defineComponent({
     }
 
     const sortAccounts = () => {
-      console.log(sortingValue.value)
+      filteredAccounts.value = []
+      let tempAcc = []
+
+      if (sortingValue.value === 'geo') {
+        tempAcc = accounts.value.sort(
+          (a: any, b: any) => b.geoBalance - a.geoBalance
+        )
+      } else if (sortingValue.value === 'odin') {
+        tempAcc = accounts.value.sort(
+          (a: any, b: any) => b.odinBalance - a.odinBalance
+        )
+      }
+
+      accounts.value = tempAcc
+      filterAccounts(1)
     }
 
     onMounted(() => {

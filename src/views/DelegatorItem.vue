@@ -137,6 +137,35 @@ export default {
     const delegatorBalance = ref()
     const delegatorStake = ref()
 
+    const tempData = ref()
+
+    tempData.value = [
+      {
+        type: 'Send',
+        hash:
+          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        block: 3235,
+        time: '16:03',
+        date: '24.07.2021',
+        sender: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
+        receiver: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
+        amount: 214245,
+        fee: 0.278884,
+      },
+      {
+        type: 'Send',
+        hash:
+          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        block: 3238,
+        time: '09:44',
+        date: '25.07.2021',
+        sender: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
+        receiver: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
+        amount: 10000,
+        fee: 0.35888,
+      },
+    ]
+
     const getValidator = async () => {
       // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
 
@@ -239,6 +268,7 @@ export default {
       copyValue,
       convertDate,
       blocks,
+      tempData,
     }
   },
 }
@@ -520,6 +550,23 @@ export default {
   .amount {
     font-weight: 600;
     font-size: 16px;
+  }
+
+  &-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    margin-bottom: 24px;
+    align-items: center;
+    font-size: 16px;
+
+    span + span {
+      margin-left: 10px;
+      display: inline-block;
+    }
+
+    .amount {
+      font-weight: 600;
+    }
   }
 }
 </style>

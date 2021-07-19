@@ -85,35 +85,38 @@
             <span class="app-table__cell-txt"> Reward </span>
           </div>
         </div>
-        <template v-if="blocks?.length">
+        <template v-if="tempData?.length">
           <div
-            v-for="item in blocks"
+            v-for="item in tempData"
             :key="item.id"
             class="data-sources__table-row app-table__row validators-row"
           >
             <div class="app-table__cell">
               <span class="app-table__header">Block</span>
-              <router-link :to="`/blocks/block height`">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="'block height'"
-                />
+              <router-link :to="`/blocks/${item.block}`">
+                <TitledLink class="app-table__cell-txt" :text="item.block" />
               </router-link>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Date and time</span>
               <div>
                 <div class="info-value">
-                  {{ convertToTime(item.time) }}
+                  <!-- {{ convertToTime(item.time) }} -->
+                  {{ item.time }}
                 </div>
                 <div class="info-value">
-                  {{ convertToDate(item.time) }}
+                  <!-- {{ convertToDate(item.time) }} -->
+                  {{ item.date }}
                 </div>
               </div>
             </div>
             <div class="app-table__cell">
+              <span class="app-table__header">Transactions</span>
+              <span class="app-table__cell-txt">{{ item.transaction }}</span>
+            </div>
+            <div class="app-table__cell">
               <span class="app-table__header">Reward</span>
-              <span class="app-table__cell-txt">{{ 'reward' }}</span>
+              <span class="app-table__cell-txt">{{ item.reward }}</span>
             </div>
           </div>
         </template>
@@ -161,6 +164,31 @@ export default {
 
     // const validatorHash = ref()
     // validatorHash.value = +route.params.hash
+    const tempData = ref()
+
+    tempData.value = [
+      {
+        transaction: 40,
+        block: 3235,
+        time: '16:03',
+        date: '24.07.2021',
+        reward: 15000,
+      },
+      {
+        transaction: 11,
+        block: 3238,
+        time: '11:32',
+        date: '25.07.2021',
+        reward: 2000,
+      },
+      {
+        transaction: 80,
+        block: 3238,
+        time: '21:08',
+        date: '25.07.2021',
+        reward: 9000,
+      },
+    ]
 
     const validatorRamPercent = ref()
     const validatorNetPercent = ref()
@@ -283,6 +311,7 @@ export default {
       validatorRamSize,
       validatorNetSize,
       validatorCpuSize,
+      tempData,
     }
   },
 }

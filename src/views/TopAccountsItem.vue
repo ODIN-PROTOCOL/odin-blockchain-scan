@@ -60,10 +60,10 @@
             <span class="app-table__cell-txt"> Transaction fee </span>
           </div>
         </div>
-        <template v-if="blocks?.length">
+        <template v-if="tempData?.length">
           <div
-            v-for="item in blocks"
-            :key="item.id"
+            v-for="(item, index) in tempData"
+            :key="index"
             class="data-sources__table-row app-table__row validators-row"
           >
             <div class="app-table__cell">
@@ -71,44 +71,58 @@
               <router-link :to="`/blocks/block height`">
                 <TitledLink
                   class="app-table__cell-txt"
-                  :text="'block height'"
+                  :text="`0x${item.hash}`"
                 />
               </router-link>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Type</span>
-              <span class="app-table__cell-txt">{{ 'Type' }}</span>
+              <span class="app-table__cell-txt">{{ item.type }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Block</span>
-              <span class="app-table__cell-txt">{{ 'Block' }}</span>
+              <span class="app-table__cell-txt">{{ item.block }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Date and time</span>
               <div>
                 <div class="info-value">
-                  {{ convertToTime(item.time) }}
+                  <!-- {{ convertToTime(item.time) }} -->
+                  {{ item.time }}
                 </div>
                 <div class="info-value">
-                  {{ convertToDate(item.time) }}
+                  <!-- {{ convertToDate(item.time) }} -->
+                  {{ item.date }}
                 </div>
               </div>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Sender</span>
-              <span class="app-table__cell-txt">{{ 'Sender' }}</span>
+              <!-- <span class="app-table__cell-txt">{{ '0x' + item.sender }}</span> -->
+              <router-link :to="`/transcactions/${item.sender}`">
+                <TitledLink
+                  class="app-table__cell-txt"
+                  :text="`0x${item.sender}`"
+                />
+              </router-link>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Reciever</span>
-              <span class="app-table__cell-txt">{{ 'Reciever' }}</span>
+              <!-- <span class="app-table__cell-txt">{{ '0x' + item.receiver }}</span> -->
+              <router-link :to="`/transcactions/${item.receiver}`">
+                <TitledLink
+                  class="app-table__cell-txt"
+                  :text="`0x${item.receiver}`"
+                />
+              </router-link>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Amount</span>
-              <span class="app-table__cell-txt">{{ 'Amount' }}</span>
+              <span class="app-table__cell-txt">{{ item.amount }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Transaction fee</span>
-              <span class="app-table__cell-txt">{{ 'Transaction fee' }}</span>
+              <span class="app-table__cell-txt">{{ item.fee }}</span>
             </div>
           </div>
         </template>
@@ -124,10 +138,10 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { callers } from '@/api/callers'
+// import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
 import TitledLink from '@/components/TitledLink.vue'
-import { Bech32 } from '@cosmjs/encoding'
+// import { Bech32 } from '@cosmjs/encoding'
 
 import {
   QueryClient,
@@ -156,20 +170,47 @@ export default {
     const delegatorBalance = ref()
     const delegatorStake = ref()
 
+    const tempData = ref()
+
+    tempData.value = [
+      {
+        type: 'Send',
+        hash:
+          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        block: 3235,
+        time: '16:03',
+        date: '24.07.2021',
+        sender: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
+        receiver: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
+        amount: 214245,
+        fee: 0.278884,
+      },
+      {
+        type: 'Send',
+        hash:
+          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        block: 3238,
+        time: '09:44',
+        date: '25.07.2021',
+        sender: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
+        receiver: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
+        amount: 10000,
+        fee: 0.35888,
+      },
+    ]
+
     const getValidator = async () => {
+      // TODO use client instead of mock
       // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
-
-      const client = QueryClient.withExtensions(
-        await Tendermint34Client.connect(API_CONFIG.rpc),
-        setupAuthExtension,
-        setupBankExtension,
-        setupDistributionExtension,
-        setupStakingExtension,
-        setupIbcExtension
-      )
-
-      console.log(client.staking.unverified.validator(route.params.hash))
-
+      // const client = QueryClient.withExtensions(
+      //   await Tendermint34Client.connect(API_CONFIG.rpc),
+      //   setupAuthExtension,
+      //   setupBankExtension,
+      //   setupDistributionExtension,
+      //   setupStakingExtension,
+      //   setupIbcExtension
+      // )
+      // console.log(client.staking.unverified.validator(route.params.hash))
       // response.validator(+route.params.id).then((res) => {
       //   validatorInfo.value = res
       //   validatorHash.value = getHash(validatorInfo.value.validatorId.hash)
@@ -258,6 +299,7 @@ export default {
       copyValue,
       convertDate,
       blocks,
+      tempData,
     }
   },
 }
@@ -540,5 +582,28 @@ export default {
     font-weight: 600;
     font-size: 16px;
   }
+
+  &-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    margin-bottom: 24px;
+    align-items: center;
+    font-size: 16px;
+
+    span + span {
+      margin-left: 10px;
+      display: inline-block;
+    }
+
+    .amount {
+      font-weight: 600;
+    }
+  }
+}
+
+.app-table__cell-txt {
+  max-width: 100px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>
