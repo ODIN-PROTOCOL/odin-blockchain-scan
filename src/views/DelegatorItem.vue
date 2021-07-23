@@ -6,7 +6,7 @@
           <img src="~@/assets/icons/back-arrow.svg" alt="info" />
           <span>Delegators</span>
         </button>
-        <h1 class="block-name">Delegator</h1>
+        <h1 class="block-name">Delegate</h1>
         <div class="hash-wrapper">
           <span class="block-id">{{ route.params.hash }}</span>
           <div class="copy-button__wrapper">
@@ -16,7 +16,7 @@
             >
               <img src="~@/assets/icons/copy.svg" alt="info" />
             </button>
-            <div class="tooltip">Copy From Delegator Hash to clipboard.</div>
+            <div class="tooltip">Copy From Delegate Hash to clipboard.</div>
           </div>
         </div>
       </div>
@@ -536,26 +536,29 @@ export default {
   }
 }
 
-.stats-wrapper {
-  border: 1px solid var(--clr__action);
-  border-radius: 8px;
-  padding: 3.2rem 2.4rem;
-
-  .title {
-    font-size: 16px;
-    width: 100px;
+.stats{
+  &-wrapper{
+    border: 1px solid var(--clr__action);
+    border-radius: 8px;
+    padding: 3.2rem 2.4rem;
     display: inline-block;
-  }
 
-  .amount {
-    font-weight: 600;
-    font-size: 16px;
-  }
+    .title {
+      font-size: 16px;
+      width: 100px;
+      display: inline-block;
+    }
 
+    .amount {
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+  
   &-row {
     display: grid;
     grid-template-columns: 100px 1fr;
-    margin-bottom: 24px;
+    // margin-bottom: 24px;
     align-items: center;
     font-size: 16px;
 
@@ -566,6 +569,10 @@ export default {
 
     .amount {
       font-weight: 600;
+    }
+
+    & + .stats-row {
+      margin-top: 24px;
     }
   }
 }
