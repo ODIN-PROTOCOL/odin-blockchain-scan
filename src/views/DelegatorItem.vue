@@ -6,7 +6,7 @@
           <img src="~@/assets/icons/back-arrow.svg" alt="info" />
           <span>Delegators</span>
         </button>
-        <h1 class="block-name">Delegator</h1>
+        <h1 class="block-name">Delegate</h1>
         <div class="hash-wrapper">
           <span class="block-id">{{ route.params.hash }}</span>
           <div class="copy-button__wrapper">
@@ -506,20 +506,45 @@ export default {
   }
 }
 
-.stats-wrapper {
-  border: 1px solid var(--clr__action);
-  border-radius: 8px;
-  padding: 3.2rem 2.4rem;
-
-  .title {
-    font-size: 16px;
-    width: 100px;
+.stats{
+  &-wrapper{
+    border: 1px solid var(--clr__action);
+    border-radius: 8px;
+    padding: 3.2rem 2.4rem;
     display: inline-block;
+
+    .title {
+      font-size: 16px;
+      width: 100px;
+      display: inline-block;
+    }
+
+    .amount {
+      font-weight: 600;
+      font-size: 16px;
+    }
   }
 
-  .amount {
-    font-weight: 600;
+  &-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    // margin-bottom: 24px;
+    align-items: center;
     font-size: 16px;
+
+    span + span {
+      margin-left: 10px;
+      display: inline-block;
+      
+    }
+
+    .amount {
+      font-weight: 600;
+    }
+
+    & + .stats-row {
+      margin-top: 24px;
+    }
   }
 }
 </style>
