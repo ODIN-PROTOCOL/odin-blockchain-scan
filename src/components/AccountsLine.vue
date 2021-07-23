@@ -2,30 +2,32 @@
   <div class="data-sources__table-row app-table__row">
     <div class="app-table__cell">
       <span class="app-table__header">Rank</span>
-      <span>{{ accountInfo.rank }}</span>
+      <span>{{ rank }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Address</span>
       <router-link :to="`/top_accounts/${accountInfo.address}`">
-        <TitledLink class="app-table__cell-txt" :text="accountInfo.address" />
+        <TitledLink class="app-table__cell-txt" :text="`0x${accountInfo.address}`" />
       </router-link>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">GEO balance</span>
-      <span>{{ accountInfo.geoBalance }}</span>
+      <span>{{ accountGeoBalance }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">GEO token percentage</span>
-      <span>{{ accountInfo.geoTokenPercentage }}</span>
+      <span v-if="accountOdinPercentage">{{ accountOdinPercentage }}%</span>
+      <span></span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">ODIN balance</span>
-      <span>{{ accountInfo.odinBalance }}</span>
+      <span>{{ accountOdinBalance }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">ODIN token percentage</span>
       <div>
-        <span>{{ accountInfo.odinTokenPercentage }}</span>
+        <span v-if="accountGeoPercentage">{{ accountGeoPercentage }}%</span>
+        <span></span>
       </div>
     </div>
     <div class="app-table__cell">
@@ -49,34 +51,50 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    odin: {
+      type: Number,
+      required: false,
+    },
+    geo: {
+      type: Number,
+      required: false,
+    },
+    rank: {
+      type: Number,
+      required: false,
+    },
   },
   setup(props) {
     const toHexFunc = toHex
     const accountRank = ref()
     const accountHash = ref()
     const accountGeoBalance = ref()
-    const accountGeoTokenPercentage = ref()
+    const accountGeoPercentage = ref()
     const accountOdinBalance = ref()
     const accountOdinPercentage = ref()
     const accountTransactionCount = ref()
 
     const accountInfo = toRef(props, 'account')
-    console.log(accountInfo)
 
-    const getAccountLineInfo = async () => {
+
+    const getAccountLineInfo = () => {
       // reset old value
       accountRank.value = ''
       accountHash.value = []
       accountGeoBalance.value = ''
-      accountGeoTokenPercentage.value = ''
+      accountGeoPercentage.value = ''
       accountOdinBalance.value = ''
       accountOdinPercentage.value = ''
       accountTransactionCount.value = ''
+
+      accountOdinPercentage.value = Number.parseFloat((+props.account.odinBalance / props.odin).toFixed(8))
+      accountOdinBalance.value = +props.account.odinBalance
+          
+      accountGeoPercentage.value = Number.parseFloat(( +props.account.geoBalance / props.geo).toFixed(8))
+      accountGeoBalance.value = +props.account.geoBalance
     }
 
     onMounted(() => {
-      console.log('props')
-      console.log(props)
       getAccountLineInfo()
     })
 
@@ -87,7 +105,7 @@ export default defineComponent({
       accountRank,
       accountHash,
       accountGeoBalance,
-      accountGeoTokenPercentage,
+      accountGeoPercentage,
       accountOdinBalance,
       accountOdinPercentage,
       accountTransactionCount,

@@ -13,7 +13,7 @@
       <input
         type="search"
         class="filter-search"
-        placeholder="searching by account address , thx hash, block"
+        placeholder="Searching by account address , thx hash, block"
         v-model="searchedText"
       />
       <button @click.prevent="searchText" class="search-btn">
@@ -28,7 +28,7 @@ export default {
   // eslint-disable-next-line
   setup() {
     const filters = ref([])
-    filters.value = ['All filters', 'Blocks', 'Tx hash']
+    filters.value = ['All Filters', 'Blocks', 'Tx hash']
 
     const activeFilter = ref('')
     activeFilter.value = filters.value[0]

@@ -15,7 +15,7 @@
             v-model="sortingValue"
             @change="sortAccounts"
           >
-            <option value="geo">Geo balance</option>
+            <option value="geo" >Geo balance</option>
             <option value="odin">ODIN balance</option>
           </select>
         </div>
@@ -49,6 +49,9 @@
             v-for="(item, index) in filteredAccounts"
             :key="index"
             :account="item"
+            :geo="totalGeo"
+            :odin="totalOdin"
+            :rank="((+page - 1) * +itemsPerPage) + ( index + 1 )"
           />
         </template>
         <template v-else>
@@ -81,6 +84,12 @@ import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
+import { QueryClient, setupBankExtension }  from '@cosmjs/stargate'
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
+import { API_CONFIG } from '../api/api-config'
+import {Pagination, setupTelemetryExtension } from '@/helpers/telemetryExtension'
+// import {setupTelemetryExtension} from '@/helpers/telemetryExtension'
+
 export default defineComponent({
   components: { VPagination, AccountsLine },
   setup() {
@@ -91,88 +100,72 @@ export default defineComponent({
     const totalPages = ref()
     const toHexFunc = toHex
     const sortingValue = ref()
+    const totalOdin = ref(0)
+    const totalGeo = ref(0)
 
-    const tempData = [
-      {
-        rank: 5,
-        address:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        geoBalance: 14000,
-        geoTokenPercentage: 100000,
-        odinBalance: 24000,
-        odinTokenPercentage: 14,
-        transactionCount: 304,
-      },
-      {
-        rank: 1,
-        address: '129UMPWEQXFYWQ0F2ZDPGJCFNKHZCU8JYFU5NES',
-        geoBalance: 28000,
-        geoTokenPercentage: 40000,
-        odinBalance: 3200,
-        odinTokenPercentage: 17,
-        transactionCount: 451,
-      },
-      {
-        rank: 8,
-        address: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
-        geoBalance: 12300,
-        geoTokenPercentage: 23000,
-        odinBalance: 170000,
-        odinTokenPercentage: 33,
-        transactionCount: 384,
-      },
-      {
-        rank: 2,
-        address: '1HKM2QU5V3HLZZFZNDUT09WJZ3LNK028EDV7QKG',
-        geoBalance: 92300,
-        geoTokenPercentage: 5000,
-        odinBalance: 17560,
-        odinTokenPercentage: 7,
-        transactionCount: 248,
-      },
-      {
-        rank: 1,
-        address: '17RPRJGTJ0KRFW3WYL9CREUEEJ6CA9DC4A65N80',
-        geoBalance: 57000,
-        geoTokenPercentage: 108000,
-        odinBalance: 288260,
-        odinTokenPercentage: 22,
-        transactionCount: 178,
-      },
-      {
-        rank: 2,
-        address: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
-        geoBalance: 8000,
-        geoTokenPercentage: 106000,
-        odinBalance: 2177245,
-        odinTokenPercentage: 6,
-        transactionCount: 451,
-      },
-      {
-        rank: 3,
-        address:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        geoBalance: 50000,
-        geoTokenPercentage: 6800,
-        odinBalance: 7245,
-        odinTokenPercentage: 11,
-        transactionCount: 470,
-      },
-    ]
 
     const getAccounts = async () => {
-      const response = await callers.getClient()
 
-      // response
-      //   .blockchain(100, 500)
-      //   .then((res) => {
-      //     accounts.value = [...res.blockMetas]
-      //     totalPages.value = Math.ceil(accounts.value.length / itemsPerPage)
-      //   })
-      //   .then(() => filterAccounts(page.value))
-      accounts.value = tempData
+      const client = QueryClient.withExtensions(
+        await Tendermint34Client.connect(API_CONFIG.rpc),
+        setupTelemetryExtension,
+        setupBankExtension
+      );
+
+      const pagination = new Pagination(0, 100, true);
+      
+      const totalCurrency = await client['bank'].unverified.totalSupply()
+
+      totalCurrency.forEach(el => {
+        if (el.denom === 'loki'){
+          totalOdin.value = +el.amount
+        } else if (el.denom === 'minigeo') {
+          totalGeo.value = +el.amount
+        }
+      });
+      
+      
+      const balances =  await client['telemetry'].unverified.topBalances('odin', pagination);
+
+      const tempBalances:{ address: string, geoBalance: number, odinBalance: number  }[] = []
+      balances.balances.forEach(el => {
+        const tempBalanceItem = {
+          address: '',
+          geoBalance: 0,
+          odinBalance: 0
+        }
+        tempBalanceItem.address = el.address
+
+        if(el.coins.length) {
+          el.coins.forEach(curr => {
+            if (curr.denom === 'loki'){
+              tempBalanceItem.odinBalance = +curr.amount
+            } else if (curr.denom === 'minigeo') {
+              tempBalanceItem.geoBalance = +curr.amount
+            }
+          });
+        }
+
+        tempBalances.push(tempBalanceItem)
+        
+      
+      });
+
+      accounts.value = tempBalances
       totalPages.value = Math.ceil(accounts.value.length / itemsPerPage)
-      await filterAccounts(page.value)
+
+      sortingValue.value = 'geo'
+      try {
+        await sortAccounts()
+      } catch (err) {
+        console.log(err)
+      }
+
+      try {
+        await filterAccounts(page.value)
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     const filterAccounts = async (newPage: number) => {
@@ -194,7 +187,7 @@ export default defineComponent({
       filterAccounts(num)
     }
 
-    const sortAccounts = () => {
+    const sortAccounts = async () => {
       filteredAccounts.value = []
       let tempAcc = []
 
@@ -225,6 +218,9 @@ export default defineComponent({
       toHexFunc,
       sortAccounts,
       sortingValue,
+      totalGeo,
+      totalOdin,
+      itemsPerPage
     }
   },
 })

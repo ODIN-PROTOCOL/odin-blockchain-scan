@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-      <h1 class="mg-b32">Staking transactions</h1>
+      <h1 class="mg-b32">Transactions</h1>
       <div class="app-table">
         <div class="data-sources__table-head app-table__head validators-head">
           <div class="app-table__cell" data-tooltip="">
@@ -567,26 +567,30 @@ export default {
   }
 }
 
-.stats-wrapper {
-  border: 1px solid var(--clr__action);
-  border-radius: 8px;
-  padding: 3.2rem 2.4rem;
-
-  .title {
-    font-size: 16px;
-    width: 100px;
+.stats{
+  &-wrapper {
+    border: 1px solid var(--clr__action);
+    border-radius: 8px;
+    padding: 3.2rem 2.4rem;
     display: inline-block;
-  }
 
-  .amount {
-    font-weight: 600;
-    font-size: 16px;
+    .title {
+      font-size: 16px;
+      width: 100px;
+      display: inline-block;
+      // margin-bottom: 24px;
+    }
+
+    .amount {
+      font-weight: 600;
+      font-size: 16px;
+    }
   }
 
   &-row {
     display: grid;
     grid-template-columns: 100px 1fr;
-    margin-bottom: 24px;
+    // margin-bottom: 24px;
     align-items: center;
     font-size: 16px;
 
@@ -597,6 +601,10 @@ export default {
 
     .amount {
       font-weight: 600;
+    }
+    
+    & + .stats-row {
+      margin-top: 24px;
     }
   }
 }
