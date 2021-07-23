@@ -53,7 +53,7 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Transactions</span>
-              <span class="app-table__cell-txt">{{item.num_txs}}</span>
+              <span class="app-table__cell-txt">{{ item.num_txs }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Validator</span>
@@ -70,10 +70,8 @@
             <div class="app-table__cell">
               <span class="app-table__header">Reward</span>
               <div>
-                <span
-                  class="app-table__cell-txt"
-                >
-                  {{item.block_size}}
+                <span class="app-table__cell-txt">
+                  {{ item.block_size }}
                 </span>
                 <span class="currency">{{ item.header.chainId }}</span>
               </div>

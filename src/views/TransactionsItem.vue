@@ -140,13 +140,21 @@
             </div>
           </div>
           <div class="info-value">
-            <span>{{transTotal}}</span>
+            <span>{{ transTotal }}</span>
           </div>
         </div>
         <div class="transactions-messages mg-t32">
           <h2 class="block-title mg-b16">Messages</h2>
-          <div class="transactions-messages__container" v-for="(message,index) in transMessagesList" :key="index">
-            <h3>{{message.typeUrl === '/cosmos.bank.v1beta1.MsgSend' ? 'Send' : ''}}</h3>
+          <div
+            class="transactions-messages__container"
+            v-for="(message, index) in transMessagesList"
+            :key="index"
+          >
+            <h3>
+              {{
+                message.typeUrl === '/cosmos.bank.v1beta1.MsgSend' ? 'Send' : ''
+              }}
+            </h3>
             <div class="data-sources__table-row app-table__row">
               <div class="info-key">
                 <div class="info-key__inner">
@@ -156,11 +164,15 @@
                 </div>
               </div>
               <div class="info-value">
-                <span class="text-blue">0x{{message.value.fromAddress.toUpperCase()}}</span>
+                <span class="text-blue"
+                  >0x{{ message.value.fromAddress.toUpperCase() }}</span
+                >
                 <div class="copy-button__wrapper">
                   <button
                     class="copy-button"
-                    @click.prevent="copyValue('0x' + message.value.fromAddress.toUpperCase())"
+                    @click.prevent="
+                      copyValue('0x' + message.value.fromAddress.toUpperCase())
+                    "
                   >
                     <img src="~@/assets/icons/copy.svg" alt="info" />
                   </button>
@@ -177,11 +189,15 @@
                 </div>
               </div>
               <div class="info-value">
-                <span class="text-blue">0x{{message.value.toAddress.toUpperCase()}}</span>
+                <span class="text-blue"
+                  >0x{{ message.value.toAddress.toUpperCase() }}</span
+                >
                 <div class="copy-button__wrapper">
                   <button
                     class="copy-button"
-                    @click.prevent="copyValue('0x' + message.value.toAddress.toUpperCase())"
+                    @click.prevent="
+                      copyValue('0x' + message.value.toAddress.toUpperCase())
+                    "
                   >
                     <img src="~@/assets/icons/copy.svg" alt="info" />
                   </button>
@@ -198,7 +214,7 @@
                 </div>
               </div>
               <div class="info-value">
-                <span>{{transTotal}}</span>
+                <span>{{ transTotal }}</span>
               </div>
             </div>
           </div>
@@ -247,7 +263,7 @@ export default {
         query: `tx.height = ${route.params.height}`,
       })
 
-      const decodedTx = Tx.decode(txs.txs[0].tx)      
+      const decodedTx = Tx.decode(txs.txs[0].tx)
 
       transHash.value = toHexFunc(txs.txs[0].hash).toUpperCase()
       transBlock.value = txs.txs[0].height
@@ -258,10 +274,8 @@ export default {
         decodedTx.authInfo.signerInfos[0].publicKey.value
       ).toUpperCase()
       transTotal.value = await getTotalTx(decodedTx)
-      
-      await fetch(
-        `${API_CONFIG.rpc}/tx?hash=0x${transHash.value}&prove=true`
-      )
+
+      await fetch(`${API_CONFIG.rpc}/tx?hash=0x${transHash.value}&prove=true`)
         .then((res) => res.json())
         .then((data) => {
           transUsed.value = data.result.tx_result.gas_used
@@ -278,21 +292,25 @@ export default {
     }
 
     const getMessages = async (decodedTx) => {
-      const filteredDecodedMsgs = decodedTx.body.messages.filter(item => item.typeUrl === "/cosmos.bank.v1beta1.MsgSend")
-      const tempDecodedMsgs = filteredDecodedMsgs.map(item => {
-          return {...item, value: MsgSend.decode(item.value)}
-        })
+      const filteredDecodedMsgs = decodedTx.body.messages.filter(
+        (item) => item.typeUrl === '/cosmos.bank.v1beta1.MsgSend'
+      )
+      const tempDecodedMsgs = filteredDecodedMsgs.map((item) => {
+        return { ...item, value: MsgSend.decode(item.value) }
+      })
 
       return tempDecodedMsgs
     }
 
     const getTotalTx = async (decodedTx) => {
-      let totalTx = 0      
-      const tempDecodedMsgs = decodedTx.body.messages.filter(item => item.typeUrl === "/cosmos.bank.v1beta1.MsgSend")
+      let totalTx = 0
+      const tempDecodedMsgs = decodedTx.body.messages.filter(
+        (item) => item.typeUrl === '/cosmos.bank.v1beta1.MsgSend'
+      )
 
-      tempDecodedMsgs.forEach(m => {
+      tempDecodedMsgs.forEach((m) => {
         const msgValue = MsgSend.decode(m.value)
-        if(!msgValue) return
+        if (!msgValue) return
         totalTx += +msgValue.amount[0].amount
       })
 

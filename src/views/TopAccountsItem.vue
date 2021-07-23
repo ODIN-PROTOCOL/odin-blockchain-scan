@@ -567,7 +567,7 @@ export default {
   }
 }
 
-.stats{
+.stats {
   &-wrapper {
     border: 1px solid var(--clr__action);
     border-radius: 8px;
@@ -602,7 +602,7 @@ export default {
     .amount {
       font-weight: 600;
     }
-    
+
     & + .stats-row {
       margin-top: 24px;
     }

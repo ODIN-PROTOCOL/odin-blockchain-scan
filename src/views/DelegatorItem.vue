@@ -536,8 +536,8 @@ export default {
   }
 }
 
-.stats{
-  &-wrapper{
+.stats {
+  &-wrapper {
     border: 1px solid var(--clr__action);
     border-radius: 8px;
     padding: 3.2rem 2.4rem;
@@ -554,7 +554,7 @@ export default {
       font-size: 16px;
     }
   }
-  
+
   &-row {
     display: grid;
     grid-template-columns: 100px 1fr;

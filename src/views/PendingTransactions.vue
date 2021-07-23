@@ -35,7 +35,7 @@
           </div>
         </div>
         <template v-if="filteredTransactions?.length">
-          <PendingTransactionLine 
+          <PendingTransactionLine
             v-for="(item, index) in filteredTransactions"
             :key="index"
             :transition="item"
@@ -87,60 +87,60 @@ export default defineComponent({
     const toHexFunc = toHex
     let lastHeight = 0
 
-    const testPendingString = '"CpIBCo8BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm8KK29kaW4xbm5mZWd1cTMweDZud3hqaGF5cHh5bXgzbnVseXNwc3VqYTRhMngSK29kaW4xd3dwaHYzZ3IzMm5xZzZ3eTJlOGpnOWZ0NDVobXVhZ3NnNXpsYTkaEwoEbG9raRILMTAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAjJ9fZD9gps8fxP7cq+reyazHJn+Y6vdIU/zdObkb/i7EgQKAggBGAcSBBDAmgwaQGjtzoxsI2BbXOaRe6u7krV79u7qmOftaUWpzp+DBBLmegePGRT0UNKcamksVlmob8y/th4cGJhmuFn8kJkfNeE="'
+    const testPendingString =
+      '"CpIBCo8BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm8KK29kaW4xbm5mZWd1cTMweDZud3hqaGF5cHh5bXgzbnVseXNwc3VqYTRhMngSK29kaW4xd3dwaHYzZ3IzMm5xZzZ3eTJlOGpnOWZ0NDVobXVhZ3NnNXpsYTkaEwoEbG9raRILMTAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAjJ9fZD9gps8fxP7cq+reyazHJn+Y6vdIU/zdObkb/i7EgQKAggBGAcSBBDAmgwaQGjtzoxsI2BbXOaRe6u7krV79u7qmOftaUWpzp+DBBLmegePGRT0UNKcamksVlmob8y/th4cGJhmuFn8kJkfNeE="'
     // const testPendingTrans = [
-          // {
-          //   authInfo: {
-          //     fee: {
-          //       amount: [],
-          //       gasLimit: {
-          //         high: 0,
-          //         low: 200000,
-          //         unsigned: true,
-          //       },
-          //       granter: "",
-          //       payer: ""
-          //     },
-          //     signerInfos: [
-          //       {
-          //         modeInfo: {
-          //           mode: 1
-          //         },
-          //         publicKey: {
-          //           typeUrl: '/cosmos.crypto.secp256k1.PubKey',
-          //           value: []
-          //         },
-          //         sequence : {
-          //           high: 0,
-          //           low: 7,
-          //           unsigned: true,
-          //         }
-          //       }
-          //     ]
-          //   },
-          //   body : {
-          //     extensionOptions: [],
-          //     memo: '',
-          //     messages: [
-          //       {
-          //         typeUrl: "/cosmos.bank.v1beta1.MsgSend"
-          //       }
-          //     ],
-          //     nonCriticalExtensionOptions: [],
-          //     timeoutHeight: {
-          //       high: 0,
-          //       low: 0,
-          //       unsigned: true,
-          //     }
-          //   },
-          //   signatures: [
-          //     {
+    // {
+    //   authInfo: {
+    //     fee: {
+    //       amount: [],
+    //       gasLimit: {
+    //         high: 0,
+    //         low: 200000,
+    //         unsigned: true,
+    //       },
+    //       granter: "",
+    //       payer: ""
+    //     },
+    //     signerInfos: [
+    //       {
+    //         modeInfo: {
+    //           mode: 1
+    //         },
+    //         publicKey: {
+    //           typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+    //           value: []
+    //         },
+    //         sequence : {
+    //           high: 0,
+    //           low: 7,
+    //           unsigned: true,
+    //         }
+    //       }
+    //     ]
+    //   },
+    //   body : {
+    //     extensionOptions: [],
+    //     memo: '',
+    //     messages: [
+    //       {
+    //         typeUrl: "/cosmos.bank.v1beta1.MsgSend"
+    //       }
+    //     ],
+    //     nonCriticalExtensionOptions: [],
+    //     timeoutHeight: {
+    //       high: 0,
+    //       low: 0,
+    //       unsigned: true,
+    //     }
+    //   },
+    //   signatures: [
+    //     {
 
-          //     }
-          //   ]
-              
-        // ]
-      
+    //     }
+    //   ]
+
+    // ]
 
     const getTransactions = async () => {
       const client = await callers.getClient()
@@ -163,16 +163,14 @@ export default defineComponent({
           const tempStrings = []
 
           codedStrings.forEach((str) => {
-              const decodedTx = Tx.decode(fromBase64(str))
-              tempStrings.push(decodedTx)
-          });
+            const decodedTx = Tx.decode(fromBase64(str))
+            tempStrings.push(decodedTx)
+          })
 
           transactions.value = [...tempStrings]
           totalTransactions.value = tempStrings.length
 
-          totalPages.value = Math.ceil(
-            tempStrings.length / transactionsPerPage
-          )
+          totalPages.value = Math.ceil(tempStrings.length / transactionsPerPage)
         })
         .then(() => filterTransactions(page.value))
     }

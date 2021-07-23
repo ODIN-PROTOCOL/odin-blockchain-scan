@@ -15,7 +15,7 @@
             v-model="sortingValue"
             @change="sortAccounts"
           >
-            <option value="geo" >Geo balance</option>
+            <option value="geo">Geo balance</option>
             <option value="odin">ODIN balance</option>
           </select>
         </div>
@@ -51,7 +51,7 @@
             :account="item"
             :geo="totalGeo"
             :odin="totalOdin"
-            :rank="((+page - 1) * +itemsPerPage) + ( index + 1 )"
+            :rank="(+page - 1) * +itemsPerPage + (index + 1)"
           />
         </template>
         <template v-else>
@@ -84,10 +84,13 @@ import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
-import { QueryClient, setupBankExtension }  from '@cosmjs/stargate'
+import { QueryClient, setupBankExtension } from '@cosmjs/stargate'
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 import { API_CONFIG } from '../api/api-config'
-import {Pagination, setupTelemetryExtension } from '@/helpers/telemetryExtension'
+import {
+  Pagination,
+  setupTelemetryExtension,
+} from '@/helpers/telemetryExtension'
 // import {setupTelemetryExtension} from '@/helpers/telemetryExtension'
 
 export default defineComponent({
@@ -103,53 +106,55 @@ export default defineComponent({
     const totalOdin = ref(0)
     const totalGeo = ref(0)
 
-
     const getAccounts = async () => {
-
       const client = QueryClient.withExtensions(
         await Tendermint34Client.connect(API_CONFIG.rpc),
         setupTelemetryExtension,
         setupBankExtension
-      );
+      )
 
-      const pagination = new Pagination(0, 100, true);
-      
+      const pagination = new Pagination(0, 100, true)
+
       const totalCurrency = await client['bank'].unverified.totalSupply()
 
-      totalCurrency.forEach(el => {
-        if (el.denom === 'loki'){
+      totalCurrency.forEach((el) => {
+        if (el.denom === 'loki') {
           totalOdin.value = +el.amount
         } else if (el.denom === 'minigeo') {
           totalGeo.value = +el.amount
         }
-      });
-      
-      
-      const balances =  await client['telemetry'].unverified.topBalances('odin', pagination);
+      })
 
-      const tempBalances:{ address: string, geoBalance: number, odinBalance: number  }[] = []
-      balances.balances.forEach(el => {
+      const balances = await client['telemetry'].unverified.topBalances(
+        'odin',
+        pagination
+      )
+
+      const tempBalances: {
+        address: string
+        geoBalance: number
+        odinBalance: number
+      }[] = []
+      balances.balances.forEach((el) => {
         const tempBalanceItem = {
           address: '',
           geoBalance: 0,
-          odinBalance: 0
+          odinBalance: 0,
         }
         tempBalanceItem.address = el.address
 
-        if(el.coins.length) {
-          el.coins.forEach(curr => {
-            if (curr.denom === 'loki'){
+        if (el.coins.length) {
+          el.coins.forEach((curr) => {
+            if (curr.denom === 'loki') {
               tempBalanceItem.odinBalance = +curr.amount
             } else if (curr.denom === 'minigeo') {
               tempBalanceItem.geoBalance = +curr.amount
             }
-          });
+          })
         }
 
         tempBalances.push(tempBalanceItem)
-        
-      
-      });
+      })
 
       accounts.value = tempBalances
       totalPages.value = Math.ceil(accounts.value.length / itemsPerPage)
@@ -220,7 +225,7 @@ export default defineComponent({
       sortingValue,
       totalGeo,
       totalOdin,
-      itemsPerPage
+      itemsPerPage,
     }
   },
 })

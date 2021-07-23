@@ -7,7 +7,10 @@
     <div class="app-table__cell">
       <span class="app-table__header">Address</span>
       <router-link :to="`/top_accounts/${accountInfo.address}`">
-        <TitledLink class="app-table__cell-txt" :text="`0x${accountInfo.address}`" />
+        <TitledLink
+          class="app-table__cell-txt"
+          :text="`0x${accountInfo.address}`"
+        />
       </router-link>
     </div>
     <div class="app-table__cell">
@@ -76,7 +79,6 @@ export default defineComponent({
 
     const accountInfo = toRef(props, 'account')
 
-
     const getAccountLineInfo = () => {
       // reset old value
       accountRank.value = ''
@@ -87,10 +89,14 @@ export default defineComponent({
       accountOdinPercentage.value = ''
       accountTransactionCount.value = ''
 
-      accountOdinPercentage.value = Number.parseFloat((+props.account.odinBalance / props.odin).toFixed(8))
+      accountOdinPercentage.value = Number.parseFloat(
+        (+props.account.odinBalance / props.odin).toFixed(8)
+      )
       accountOdinBalance.value = +props.account.odinBalance
-          
-      accountGeoPercentage.value = Number.parseFloat(( +props.account.geoBalance / props.geo).toFixed(8))
+
+      accountGeoPercentage.value = Number.parseFloat(
+        (+props.account.geoBalance / props.geo).toFixed(8)
+      )
       accountGeoBalance.value = +props.account.geoBalance
     }
 
