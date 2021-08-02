@@ -193,6 +193,7 @@ export default defineComponent({
     display: none;
     background: #fff;
     position: absolute;
+    left: 0;
     top: calc(100% + 0.1rem);
     width: 100%;
     z-index: 9999;

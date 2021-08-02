@@ -1,5 +1,5 @@
 <template>
-  <div class="container mg-b24">
+  <div class="search">
     <div class="search__row">
       <VuePicker
         class="app-form__field-input app-filter"
@@ -64,18 +64,26 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.search__row {
-  margin: 0 auto;
-  padding: 0 3.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+.search {
+  margin: 0 10.3rem 2.5rem 10.3rem;
+  &__row {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 
-  @media screen and (max-width: 600px) {
-    padding: 0 1.6rem;
+    @media screen and (max-width: 600px) {
+      padding: 0 1.6rem;
+    }
+  }
+  @media (max-width: 768px) {
+    margin: 0;
+    padding: 0 1rem 2.5rem 1rem;
+    &__row {
+      padding: 0;
+    }
   }
 }
-
 .app-filter {
   display: flex;
   max-width: 12.6rem;
@@ -111,6 +119,7 @@ export default {
   width: 48px;
   height: 48px;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   background: var(--clr__action);

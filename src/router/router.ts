@@ -65,6 +65,12 @@ const routes: Array<RouteRecordRaw> = [
   //     import(/* webpackChunkName: "validators" */ '../views/Validators.vue'),
   // },
   {
+    path: '/',
+    name: 'Home',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/Home.vue'),
+  },
+  {
     path: '/blocks',
     name: 'Blocks',
     // beforeEnter: authorizedOnlyGuard,

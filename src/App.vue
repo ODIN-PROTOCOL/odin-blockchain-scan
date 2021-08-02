@@ -2,14 +2,16 @@
   <template v-if="isAppReady">
     <section class="main-section">
       <template v-if="isLoggedIn">
-        <header class="view-header fx-row">
+        <header class="view-header">
           <div class="header-wrapper">
-            <img
-              class="logo"
-              src="~@/assets/brand/odin-logo-black.png"
-              alt="Logo"
-              width="120"
-            />
+            <router-link to="/">
+              <img
+                class="logo"
+                src="~@/assets/brand/odin-logo-black.png"
+                alt="Logo"
+                width="120"
+              />
+            </router-link>
             <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
             <BurgerMenu
               class="burger-menu"
@@ -18,9 +20,8 @@
             />
             <!-- <UserWidget class="fx-sae" /> -->
           </div>
+          <SearchBar />
         </header>
-
-        <SearchBar />
       </template>
       <router-view />
     </section>
