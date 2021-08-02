@@ -109,6 +109,7 @@ import TitledLink from '@/components/TitledLink.vue'
 import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
+import { convertToTime, convertToDate } from '@/helpers/dates'
 
 export default defineComponent({
   components: { TitledLink, VPagination },
@@ -150,38 +151,6 @@ export default defineComponent({
       filterBlocks(num)
     }
 
-    const convertToTime = (time: string) => {
-      const someTime = new Date(time)
-
-      const minutes =
-        someTime.getMinutes() > 9
-          ? someTime.getMinutes()
-          : '0' + someTime.getMinutes()
-      const hours =
-        someTime.getHours() > 9
-          ? someTime.getHours()
-          : '0' + someTime.getHours()
-
-      return `${hours}:${minutes}`
-    }
-
-    const convertToDate = (time: string) => {
-      const someTime = new Date(time)
-
-      const day =
-        someTime.getDay() > 9 ? someTime.getDay() : '0' + someTime.getDay()
-      const month =
-        1 + someTime.getMonth() > 9
-          ? 1 + someTime.getMonth()
-          : '0' + (1 + someTime.getMonth())
-      const year =
-        someTime.getFullYear() > 9
-          ? someTime.getFullYear()
-          : '0' + someTime.getFullYear()
-
-      return `${day}:${month}:${year}`
-    }
-
     onMounted(() => {
       getBLocks()
     })
@@ -203,7 +172,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .data-sources__table-head,
 .data-sources__table-row {
