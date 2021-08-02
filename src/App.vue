@@ -25,6 +25,7 @@
 </template>
 
 <script lang="ts">
+import '@invisiburu/vue-picker/dist/vue-picker.min.css'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 // import { dialogs } from '@/helpers/dialogs'
 import { useAuthorization } from '@/composables/useAuthorization'
@@ -73,6 +74,7 @@ export default defineComponent({
 @import '~@/styles/vue-notification.scss';
 @import '~@/styles/shortcuts.scss';
 @import '~@/styles/fonts.scss';
+@import '~@/styles/custom.scss';
 
 #app {
   width: 100%;
@@ -81,7 +83,7 @@ export default defineComponent({
 }
 
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 
 .logo {
