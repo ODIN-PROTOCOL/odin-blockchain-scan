@@ -2,19 +2,25 @@
   <template v-if="isAppReady">
     <section class="main-section">
       <template v-if="isLoggedIn">
-        <header class="">
-          <div class="view-header fx-row">
+        <header class="view-header fx-row">
+          <div class="header-wrapper">
             <img
               class="logo"
               src="~@/assets/brand/odin-logo-black.png"
               alt="Logo"
               width="120"
             />
-            <Nav class="mg-l16 mg-r8" />
+            <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
+            <BurgerMenu
+              class="burger-menu"
+              :isOpen="isOpen"
+              @click="burgerMenuHandler($event)"
+            />
             <!-- <UserWidget class="fx-sae" /> -->
           </div>
-          <SearchBar />
         </header>
+
+        <SearchBar />
       </template>
       <router-view />
     </section>
@@ -30,12 +36,13 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 // import { dialogs } from '@/helpers/dialogs'
 import { useAuthorization } from '@/composables/useAuthorization'
 import Nav from '@/components/Nav.vue'
+import BurgerMenu from '@/components/BurgerMenu.vue'
 // import UserWidget from '@/components/UserWidget.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import Footer from '@/components/Footer.vue'
 
 export default defineComponent({
-  components: { Nav, SearchBar, Footer },
+  components: { Nav, SearchBar, Footer, BurgerMenu },
   setup() {
     const _readyStates = ref({
       dialogs: true,
@@ -53,11 +60,23 @@ export default defineComponent({
       // }
     })
 
+    // Burger Menu
+    const isOpen = ref(false)
+    const burgerMenuHandler = (event: Event | MouseEvent) => {
+      event.preventDefault()
+      isOpen.value = isOpen.value !== true
+    }
+    const changeRoute = () => {
+      if (isOpen.value === true) isOpen.value = false
+    }
     return {
       isAppReady,
       // dialogsContainerRef,
       isLoggedIn: true,
       // isLoggedIn: useAuthorization().isLoggedIn,
+      isOpen,
+      burgerMenuHandler,
+      changeRoute,
     }
   },
 })
@@ -95,5 +114,19 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+.burger-menu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header-wrapper {
+    gap: 0.4rem;
+  }
+  .burger-menu {
+    display: flex;
+    flex-shrink: 0;
+  }
 }
 </style>
