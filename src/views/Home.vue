@@ -7,7 +7,7 @@
           <LatestList :header="latestBlocksHeader">
             <template v-if="latestBlocks">
               <LatestListItem
-                v-for="item in latestBlocks.slice(0, 5)"
+                v-for="item in latestBlocks"
                 :key="item.blockId.hash"
                 :item="item"
               />
@@ -41,7 +41,7 @@ export default defineComponent({
       const { lastHeight, blockMetas } = await response.blockchain(100, 500)
       console.log('lastHeight', lastHeight)
       console.log('blockMetas', blockMetas)
-      latestBlocks.value = [...blockMetas]
+      latestBlocks.value = [...blockMetas].slice(0, 5)
     }
 
     let latestBlocksHeader = {
