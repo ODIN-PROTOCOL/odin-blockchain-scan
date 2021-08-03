@@ -37,7 +37,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .latest-list-item {
   display: grid;
   grid: auto/ repeat(3, minmax(9.3rem, 1fr));
@@ -111,5 +111,20 @@ export default defineComponent({
     font-weight: 600;
     color: var(--clr__text);
   }
+
+  @media (max-width: 768px) {
+    grid: auto/ repeat(2, 1fr);
+    align-items: flex-start;
+    &__left {
+      grid-template-columns: 1fr;
+    }
+    &__label {
+      display: none;
+    }
+    &__right {
+      justify-content: left;
+    }
+  }
+
 }
 </style>

@@ -22,9 +22,9 @@
               <TitledLink
                 :link="`/transactions/${item.header.height}`"
                 class="app-table__cell-txt"
-                :text="
+                :text="`${cropText(
                   '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
-                "
+                )}`"
               />
             </template>
             <!-- TODO: transactions count -->
@@ -52,7 +52,7 @@
             <TitledLink
               :link="String(i)"
               class="app-table__cell-txt"
-              :text="'0x8b5a0393b5b...'"
+              :text="`${cropText('0x8b5a0393b5b')}`"
             />
           </template>
           <template #time> 24 secs ago </template>
@@ -61,7 +61,7 @@
             <TitledLink
               :link="String(i)"
               class="app-table__cell-txt"
-              :text="'0x8b5a0393b5b...'"
+              :text="`${cropText('0x8b5a0393b5b')}`"
             />
           </template>
           <template #to>
@@ -69,7 +69,7 @@
             <TitledLink
               :link="String(i)"
               class="app-table__cell-txt"
-              :text="'0x8b5a0393b5b...'"
+              :text="`${cropText('0x8b5a0393b5b')}`"
             />
           </template>
           <template #currency> 454,565 ODIN </template>
@@ -83,7 +83,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
-import { diffDays } from '@/helpers/formatters'
+import { diffDays, cropText } from '@/helpers/formatters'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
@@ -134,6 +134,7 @@ export default defineComponent({
       latestBlocks,
       latestTransactionsHeader,
       diffDays,
+      cropText,
       toHexFunc,
       toDay,
       getDay,
@@ -149,6 +150,9 @@ export default defineComponent({
     align-items: flex-start;
     gap: 2.4rem;
     grid-template-columns: 1fr 1fr;
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
   }
 }
 </style>

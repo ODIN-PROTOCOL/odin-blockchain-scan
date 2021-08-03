@@ -63,5 +63,8 @@ export default defineComponent({
     flex-direction: column;
     gap: 2.4rem;
   }
+
+  @media (max-width: 768px) {
+  }
 }
 </style>

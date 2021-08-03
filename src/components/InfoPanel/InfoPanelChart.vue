@@ -1,6 +1,6 @@
 <template>
   <div class="info-panel__chart">
-    <div class="info-panel__chart-title">Transactions history statistics</div>
+    <div class="info-panel__title">Transactions history statistics</div>
     <vue3-chart-js ref="chartRef" v-bind="{ ...Chart }" />
   </div>
 </template>
@@ -21,28 +21,18 @@ export default defineComponent({
   components: {
     Vue3ChartJs,
   },
-  setup() {
+  props: {
+    chartData: {
+      type: Object,
+      required: true,
+    },
+  },
+  setup(props) {
     const chartRef = ref<HTMLElement>()
-    // TODO: Get read data for chart
     const Chart = {
       id: 'line',
       type: 'line',
-      data: {
-        labels: ['May 18', 'May 25', 'Jun 1'],
-        datasets: [
-          {
-            label: false,
-            backgroundColor: '#007bff',
-            borderColor: '#007bff',
-            borderWidth: 2,
-            borderJoinStyle: 'round',
-            borderCapStyle: 'round',
-            tension: 0.5,
-            borderSkipped: false,
-            data: [1080, 1220, 1540],
-          },
-        ],
-      },
+      data: props.chartData,
       options: {
         scales: {
           x: {
@@ -55,6 +45,8 @@ export default defineComponent({
               color: '#212529',
               font: {
                 size: 14,
+                family: 'SF Display',
+                lineHeight: 2,
               },
             },
           },
@@ -68,6 +60,8 @@ export default defineComponent({
               padding: 20,
               font: {
                 size: 14,
+                family: 'SF Display',
+                lineHeight: 2,
               },
             },
           },
@@ -115,10 +109,4 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
-.info-panel__chart {
-  &-title {
-    margin-bottom: 1.53rem;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

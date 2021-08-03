@@ -25,6 +25,10 @@ export function cropAddress(value?: string): string {
   if (!value) return ''
   return `${value.slice(0, 4)}…${value.slice(-4)}`
 }
+export function cropText(value?: string): string {
+  if (!value) return ''
+  return `${value.slice(0, 11)}…`
+}
 
 export function abbreviateNumber(value: NumLike): string {
   const suffixes = ['', 'k', 'm', 'b', 't', 'q', 'Q', 's', 'S', 'o', 'n', 'd']
