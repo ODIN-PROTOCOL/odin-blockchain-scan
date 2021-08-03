@@ -15,14 +15,14 @@
             @click="changeTab(false)"
             :class="!showValidators ? 'active' : ''"
           >
-            Delegators
+            Delegates
           </h2>
         </div>
         <div class="mg-b16 mg-t16" v-if="showValidators">
           <p>{{ validators?.length }} validators found</p>
         </div>
         <div class="mg-b16 mg-t16" v-if="!showValidators">
-          <p>{{ delegators?.length }} delegators found</p>
+          <p>{{ delegators?.length }} delegates found</p>
         </div>
       </div>
 
