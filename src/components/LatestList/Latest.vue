@@ -113,12 +113,14 @@ export default defineComponent({
     }
 
     let latestBlocksHeader = {
-      name: 'Blocks',
-      to: 'Blocks',
+      title: 'Latest Blocks',
+      link: 'View all Blocks',
+      linkDataText: 'Blocks',
     }
     let latestTransactionsHeader = {
-      name: 'Transactions',
-      to: 'Transactions',
+      title: 'Latest Transactions',
+      link: 'View all Transactions',
+      linkDataText: 'Transactions',
     }
 
     const toHexFunc = toHex

@@ -1,10 +1,13 @@
 <template>
   <div class="latest-list">
     <div class="latest-list__header">
-      <div class="latest-list__header-title">Latest {{ header.name }}</div>
+      <div class="latest-list__header-title">{{ header.title }}</div>
       <div class="latest-list__header-link">
-        <router-link :data-text="header.name" :to="{ name: header.to }">
-          <span>View all {{ header.name }}</span>
+        <router-link
+          :data-text="header.linkDataText"
+          :to="{ name: header.linkDataText }"
+        >
+          <span>{{ header.link }}</span>
         </router-link>
       </div>
     </div>

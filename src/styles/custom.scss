@@ -25,7 +25,7 @@
     .vue-picker__opener-ico {
       transform: rotate(180deg);
       &:after {
-        border: 0.1rem solid #007bff;
+        border: 0.1rem solid var(--clr__action);
         border-width: 0 2px 2px 0;
       }
     }

@@ -25,12 +25,4 @@ export default defineComponent({
     margin: 0 10.3rem;
   }
 }
-.info-panel {
-  //  TODO: temp this
-  padding: 3.2rem 2.4rem;
-  border-radius: 0.8rem;
-  border: 0.1rem solid #007bff;
-  width: 100%;
-  margin-bottom: 3.2rem;
-}
 </style>

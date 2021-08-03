@@ -42,7 +42,7 @@ export default defineComponent({
   display: grid;
   grid: auto/ repeat(3, minmax(9.3rem, 1fr));
   padding-bottom: 2.4rem;
-  border-bottom: 0.1px solid #ced4da;
+  border-bottom: 0.1px solid var(--clr__input-border);
   gap: 2.4rem;
   align-items: center;
   &:last-child {
@@ -71,7 +71,7 @@ export default defineComponent({
     align-items: center;
     gap: 0.5rem;
     font-size: 1.4rem;
-    color: #6c757d;
+    color: var(--clr__text-muted);
   }
   &__label {
     display: flex;
@@ -79,7 +79,7 @@ export default defineComponent({
     align-items: center;
     width: 4.2rem;
     height: 4.2rem;
-    background: #ced4da;
+    background: var(--clr__input-border);
     border-radius: 4px;
     font-size: 2rem;
     line-height: 2.3rem;
@@ -101,7 +101,7 @@ export default defineComponent({
     width: 100%;
   }
   &__transactions {
-    color: #6c757d;
+    color: var(--clr__text-muted);
   }
   &__right {
     display: flex;
@@ -109,7 +109,7 @@ export default defineComponent({
     align-items: center;
     font-size: 1.4rem;
     font-weight: 600;
-    color: #212529;
+    color: var(--clr__text);
   }
 }
 </style>

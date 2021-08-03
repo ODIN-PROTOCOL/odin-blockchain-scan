@@ -32,15 +32,8 @@
   </div>
 </template>
 <script lang="ts">
-import { ref } from 'vue'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { VuePicker, VuePickerOption } from '@invisiburu/vue-picker'
-export default {
-  components: {
-    VuePicker,
-    VuePickerOption,
-  },
+import { defineComponent, ref } from 'vue'
+export default defineComponent({
   setup() {
     const filters = ref(['All filters', 'Blocks', 'Tx hash'])
 
@@ -60,7 +53,7 @@ export default {
       searchText,
     }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
 .search {
@@ -95,22 +88,22 @@ export default {
   &__dropdown-inner {
     .vue-picker-option_cur,
     .vue-picker-option:hover {
-      color: #007bff;
+      color: var(--clr__action);
       background: rgba(204, 228, 255, 0.4);
     }
   }
 }
 
 .filter-search {
-  height: 48px;
-  padding: 12px 15px;
+  height: 4.8rem;
+  padding: 1.2rem 1.5rem;
   width: 100%;
-  max-width: 426px;
-  border: 1px solid #ced4da;
+  max-width: 42.6rem;
+  border: 0.1rem solid var(--clr__input-border);
   border-left: none;
   border-right: none;
   &::placeholder {
-    color: #6c757d;
+    color: var(--clr__text-muted);
   }
 }
 
@@ -122,12 +115,12 @@ export default {
   align-items: center;
   justify-content: center;
   background: var(--clr__action);
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border-top-right-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
 
   img {
-    width: 18px;
-    height: 18px;
+    width: 1.8rem;
+    height: 1.8rem;
     display: block;
   }
 }
