@@ -14,7 +14,7 @@
             </template>
             <template #time>
               <div class="info-value">
-                {{ diffDays(dayToDay, new Date(item.header.time)) }}
+                {{ diffDays(toDay, getDay(item.header.time)) }}
               </div>
             </template>
             <template #validator>
@@ -93,7 +93,9 @@ export default defineComponent({
   name: 'Latest',
   components: { LatestList, LatestListItem, TitledLink },
   setup() {
-    let dayToDay = ref<Date>(new Date())
+    const toDay = ref<Date>(new Date())
+    const getDay = (time: string): Date => new Date(time)
+
     let latestBlocks = ref({})
     onMounted(
       async (): Promise<void> => {
@@ -133,7 +135,8 @@ export default defineComponent({
       latestTransactionsHeader,
       diffDays,
       toHexFunc,
-      dayToDay
+      toDay,
+      getDay,
     }
   },
 })

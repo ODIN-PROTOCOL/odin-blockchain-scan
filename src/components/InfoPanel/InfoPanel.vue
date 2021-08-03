@@ -2,15 +2,17 @@
   <div class="info-panel">
     <div class="info-panel__prices">prices</div>
     <div class="info-panel__transactions">transactions</div>
-    <div class="info-panel__chart">chart</div>
+    <Chart />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Chart from '@/components/InfoPanel/InfoPanelChart.vue'
 
 export default defineComponent({
   name: 'InfoPanel',
+  components: { Chart },
 })
 </script>
 
