@@ -4,7 +4,6 @@
       <LatestList :header="latestBlocksHeader">
         <template v-if="latestBlocks">
           <LatestListItem v-for="item in latestBlocks" :key="item.blockId.hash">
-            <!-- TODO: what is Bk  -->
             <template #label> Bk </template>
             <template #name>
               <TitledLink
@@ -15,10 +14,7 @@
             </template>
             <template #time>
               <div class="info-value">
-                {{ convertToTime(item.header.time) }}
-              </div>
-              <div class="info-value">
-                {{ convertToDate(item.header.time) }}
+                {{ diffDays(dayToDay, new Date(item.header.time)) }}
               </div>
             </template>
             <template #validator>
@@ -31,16 +27,16 @@
                 "
               />
             </template>
+            <!-- TODO: transactions count -->
             <template #transactions>
-              <!-- TODO: transactions count -->
               <span>548 transactions</span>
             </template>
+            <!-- TODO: what is block_size  -->
+            <!-- TODO: currency-->
             <template #currency>
-              <!-- TODO: what is block_size  -->
               <span>
                 {{ item.block_size }}
               </span>
-              <!-- TODO: currency-->
               <span class="currency">
                 454,565 {{ item.header.chainId.toUpperCase() }}
               </span>
@@ -49,8 +45,8 @@
         </template>
       </LatestList>
       <LatestList :header="latestTransactionsHeader">
+        <!-- TODO: Real data  -->
         <LatestListItem v-for="(i, index) in [1, 2, 3, 4, 5]" :key="index">
-          <!-- TODO: what is Tx  -->
           <template #label> Tx </template>
           <template #name>
             <TitledLink
@@ -87,7 +83,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
-import { convertToDate, convertToTime } from '@/helpers/dates'
+import { diffDays } from '@/helpers/formatters'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
@@ -97,6 +93,7 @@ export default defineComponent({
   name: 'Latest',
   components: { LatestList, LatestListItem, TitledLink },
   setup() {
+    let dayToDay = ref<Date>(new Date())
     let latestBlocks = ref({})
     onMounted(
       async (): Promise<void> => {
@@ -105,10 +102,16 @@ export default defineComponent({
     )
 
     const getLatestBlocks = async (): Promise<void> => {
-      const response = await callers.getClient()
-      const { lastHeight, blockMetas } = await response.blockchain(100, 500)
+      const {
+        lastHeight,
+        blockMetas,
+      } = await callers
+        .getClient()
+        .then((client) => client.blockchain(100, 500))
+
       console.log('lastHeight', lastHeight)
       console.log('blockMetas', blockMetas)
+
       latestBlocks.value = [...blockMetas].slice(0, 5)
     }
 
@@ -128,9 +131,9 @@ export default defineComponent({
       latestBlocksHeader,
       latestBlocks,
       latestTransactionsHeader,
-      convertToTime,
-      convertToDate,
+      diffDays,
       toHexFunc,
+      dayToDay
     }
   },
 })
