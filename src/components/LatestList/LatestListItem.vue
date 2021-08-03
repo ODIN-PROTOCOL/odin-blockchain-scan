@@ -1,72 +1,40 @@
 <template>
   <div class="latest-list-item">
     <div class="latest-list-item__left">
-      <!-- TODO: what is Bk  -->
-      <div class="latest-list-item__label">Bk</div>
+      <div class="latest-list-item__label">
+        <slot name="label" />
+      </div>
       <div class="latest-list-item__name">
-        <router-link :to="`/blocks/${item.header.height}`">
-          {{ item.header.height }}
-        </router-link>
+        <slot name="name" />
       </div>
       <div class="latest-list-item__time">
-        <div class="info-value">
-          {{ convertToTime(item.header.time) }}
-        </div>
-        <div class="info-value">
-          {{ convertToDate(item.header.time) }}
-        </div>
+        <slot name="time" />
       </div>
     </div>
     <div class="latest-list-item__center">
       <div class="latest-list-item__validator">
-        Validator:
-        <TitledLink
-          :link="`/transactions/${item.header.height}`"
-          class="app-table__cell-txt"
-          :text="'0x' + toHexFunc(item.header.validatorsHash).toUpperCase()"
-        />
+        <slot name="validator" />
+        <slot name="from" />
       </div>
       <div class="latest-list-item__transactions">
-        <!-- TODO: transactions count -->
-        548 transactions
+        <slot name="transactions" />
+      </div>
+      <div class="latest-list-item__to">
+        <slot name="to" />
       </div>
     </div>
     <div class="latest-list-item__right">
       <!-- TODO: what is block_size  -->
-      <span>
-        {{ item.block_size }}
-      </span>
-      <!-- TODO: currency-->
-      <span class="currency">
-        454,565 {{ item.header.chainId.toUpperCase() }}
-      </span>
+      <slot name="currency" />
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import { convertToTime, convertToDate } from '@/helpers/dates'
-import { toHex } from '@cosmjs/encoding'
-import TitledLink from '@/components/TitledLink.vue'
 
 export default defineComponent({
-  components: { TitledLink },
   name: 'LatestListItem',
-  props: {
-    item: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup() {
-    const toHexFunc = toHex
-    return {
-      convertToTime,
-      convertToDate,
-      toHexFunc,
-    }
-  },
 })
 </script>
 
@@ -126,9 +94,11 @@ export default defineComponent({
     align-items: flex-start;
     gap: 0.8rem;
   }
-  &__validator {
+  &__validator,
+  &__to {
     display: flex;
-    gap: 0.4rem;
+    align-items: center;
+    gap: 0.8rem;
     width: 100%;
   }
   &__transactions {

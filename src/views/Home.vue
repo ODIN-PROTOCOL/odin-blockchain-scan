@@ -9,11 +9,84 @@
               <LatestListItem
                 v-for="item in latestBlocks"
                 :key="item.blockId.hash"
-                :item="item"
-              />
+              >
+                <!-- TODO: what is Bk  -->
+                <template #label> Bk </template>
+                <template #name>
+                  <TitledLink
+                    :link="`/blocks/${item.header.height}`"
+                    class="app-table__cell-txt"
+                    :text="item.header.height"
+                  />
+                </template>
+                <template #time>
+                  <div class="info-value">
+                    {{ convertToTime(item.header.time) }}
+                  </div>
+                  <div class="info-value">
+                    {{ convertToDate(item.header.time) }}
+                  </div>
+                </template>
+                <template #validator>
+                  <span>Validator:</span>
+                  <TitledLink
+                    :link="`/transactions/${item.header.height}`"
+                    class="app-table__cell-txt"
+                    :text="
+                      '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
+                    "
+                  />
+                </template>
+                <template #transactions>
+                  <!-- TODO: transactions count -->
+                  <span>548 transactions</span>
+                </template>
+                <template #currency>
+                  <span>
+                    {{ item.block_size }}
+                  </span>
+                  <!-- TODO: currency-->
+                  <span class="currency">
+                    454,565 {{ item.header.chainId.toUpperCase() }}
+                  </span>
+                </template>
+              </LatestListItem>
             </template>
           </LatestList>
-          <LatestList :header="{}" />
+          <LatestList :header="latestTransactionsHeader">
+            <LatestListItem
+              v-for="(i, index) in [1,2,3,4,5]"
+              :key="index"
+            >
+              <!-- TODO: what is Tx  -->
+              <template #label> Tx </template>
+              <template #name>
+                <TitledLink
+                  :link="String(i)"
+                  class="app-table__cell-txt"
+                  :text="'0x8b5a0393b5b...'"
+                />
+              </template>
+              <template #time> 24 secs ago </template>
+              <template #from>
+                <span>From:</span>
+                <TitledLink
+                  :link="String(i)"
+                  class="app-table__cell-txt"
+                  :text="'0x8b5a0393b5b...'"
+                />
+              </template>
+              <template #to>
+                <span> To: </span>
+                <TitledLink
+                  :link="String(i)"
+                  class="app-table__cell-txt"
+                  :text="'0x8b5a0393b5b...'"
+                />
+              </template>
+              <template #currency> 454,565 ODIN </template>
+            </LatestListItem>
+          </LatestList>
         </div>
       </div>
     </div>
@@ -25,9 +98,12 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { callers } from '@/api/callers'
 import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
+import { convertToTime, convertToDate } from '@/helpers/dates'
+import TitledLink from '@/components/TitledLink.vue'
+import { toHex } from '@cosmjs/encoding'
 
 export default defineComponent({
-  components: { LatestList, LatestListItem },
+  components: { LatestList, LatestListItem, TitledLink },
   setup() {
     let latestBlocks = ref({})
     onMounted(
@@ -48,8 +124,20 @@ export default defineComponent({
       name: 'Blocks',
       to: 'Blocks',
     }
+    let latestTransactionsHeader = {
+      name: 'Transactions',
+      to: 'Transactions',
+    }
 
-    return { latestBlocksHeader, latestBlocks }
+    const toHexFunc = toHex
+    return {
+      latestBlocksHeader,
+      latestBlocks,
+      latestTransactionsHeader,
+      convertToTime,
+      convertToDate,
+      toHexFunc,
+    }
   },
 })
 </script>

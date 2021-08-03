@@ -29,7 +29,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .latest-list {
-  padding: 3.2rem 2.4rem;
+  padding: 3.2rem 2.4rem 5.6rem 2.4rem;
   border-radius: 0.8rem;
   border: 0.1rem solid var(--clr__action);
   width: 100%;
