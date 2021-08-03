@@ -34,6 +34,7 @@ export default defineComponent({
       type: 'line',
       data: props.chartData,
       options: {
+        maintainAspectRatio: false,
         scales: {
           x: {
             grid: {

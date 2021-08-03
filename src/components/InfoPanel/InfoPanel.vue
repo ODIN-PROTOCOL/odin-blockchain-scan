@@ -87,6 +87,9 @@ export default defineComponent({
       margin-bottom: 3.2rem;
     }
   }
+  &__chart {
+    height: 26.9rem
+  }
   @media (max-width: 768px) {
     grid: auto / repeat(2, 1fr);
     gap: 2.4rem;
