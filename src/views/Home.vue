@@ -7,7 +7,7 @@
           <LatestList :header="latestBlocksHeader">
             <template v-if="latestBlocks">
               <LatestListItem
-                v-for="item in latestBlocks"
+                v-for="item in latestBlocks.slice(0, 5)"
                 :key="item.blockId.hash"
                 :item="item"
               />
@@ -30,17 +30,17 @@ export default defineComponent({
   components: { LatestList, LatestListItem },
   setup() {
     let latestBlocks = ref({})
-    onMounted(async (): void => {
-      await getLatestBlocks()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getLatestBlocks()
+      }
+    )
 
-    const getLatestBlocks = async (): void => {
+    const getLatestBlocks = async (): Promise<void> => {
       const response = await callers.getClient()
       const { lastHeight, blockMetas } = await response.blockchain(100, 500)
-      console.group('getLatestBlocks')
-      console.log('%c Home.vue', 'color: white; background-color: #2274A5')
-      console.table('res:', { lastHeight, blockMetas })
-      console.groupEnd()
+      console.log('lastHeight', lastHeight)
+      console.log('blockMetas', blockMetas)
       latestBlocks.value = [...blockMetas]
     }
 

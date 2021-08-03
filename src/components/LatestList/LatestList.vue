@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'LatestList',
   props: {
@@ -23,10 +23,6 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-  },
-  setup() {
-    let data = ref()
-    return {}
   },
 })
 </script>

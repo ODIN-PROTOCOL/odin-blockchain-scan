@@ -72,7 +72,7 @@ export default defineComponent({
   color: inherit;
   font-weight: 400;
   line-height: 2.4rem;
-  font-size: 16px;
+  font-size: 1.6rem;
   cursor: pointer;
   &-wrapper {
     display: flex;
@@ -127,7 +127,7 @@ export default defineComponent({
   color: inherit;
   font-weight: 400;
   line-height: 2.4rem;
-  font-size: 16px;
+  font-size: 1.6rem;
   cursor: pointer;
 
   &:hover {
