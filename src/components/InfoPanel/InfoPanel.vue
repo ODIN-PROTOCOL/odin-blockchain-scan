@@ -66,7 +66,7 @@ export default defineComponent({
 <style lang="scss">
 .info-panel {
   display: grid;
-  grid: auto/ repeat(3, 1fr);
+  grid: auto/ repeat(2, 1fr) 2fr;
   padding: 3.2rem 2.4rem;
   border-radius: 0.8rem;
   border: 0.1rem solid var(--clr__action);
