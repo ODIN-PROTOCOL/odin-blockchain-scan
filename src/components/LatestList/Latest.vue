@@ -83,25 +83,28 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import LatestList from '@/components/LatestList/LatestList'
-import LatestListItem from '@/components/LatestList/LatestListItem'
-import TitledLink from '@/components/TitledLink'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
 import { convertToDate, convertToTime } from '@/helpers/dates'
+
+import LatestList from '@/components/LatestList/LatestList.vue'
+import LatestListItem from '@/components/LatestList/LatestListItem.vue'
+import TitledLink from '@/components/TitledLink.vue'
 
 export default defineComponent({
   name: 'Latest',
   components: { LatestList, LatestListItem, TitledLink },
   setup() {
     let latestBlocks = ref({})
-    onMounted(async () => {
-      await getLatestBlocks()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getLatestBlocks()
+      }
+    )
 
-    const getLatestBlocks = async () => {
+    const getLatestBlocks = async (): Promise<void> => {
       const response = await callers.getClient()
       const { lastHeight, blockMetas } = await response.blockchain(100, 500)
       console.log('lastHeight', lastHeight)

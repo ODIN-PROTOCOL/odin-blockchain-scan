@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="home__wrapper">
-      <div class="info-panel">info-panel</div>
+      <InfoPanel />
       <Latest />
     </div>
   </div>
@@ -10,9 +10,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Latest from '@/components/LatestList/Latest.vue'
+import InfoPanel from '@/components/InfoPanel/InfoPanel.vue'
 
 export default defineComponent({
-  components: { Latest },
+  name: 'Home Page',
+  components: { Latest, InfoPanel },
 })
 </script>
 

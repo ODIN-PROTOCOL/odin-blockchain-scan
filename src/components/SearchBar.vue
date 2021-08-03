@@ -31,7 +31,7 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { ref } from 'vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -42,15 +42,14 @@ export default {
     VuePickerOption,
   },
   setup() {
-    const filters = ref([])
-    filters.value = ['All filters', 'Blocks', 'Tx hash']
+    const filters = ref(['All filters', 'Blocks', 'Tx hash'])
 
     const activeFilter = ref('')
     activeFilter.value = filters.value[0]
 
     const searchedText = ref('')
 
-    const searchText = () => {
+    const searchText = (): void => {
       console.log(searchedText.value)
     }
 

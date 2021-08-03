@@ -32,8 +32,8 @@
   </div>
 </template>
 
-<script>
-import ArrowIcon from '@/components/icons/ArrowIcon'
+<script lang="ts">
+import ArrowIcon from '@/components/icons/ArrowIcon.vue'
 import { useRoute } from 'vue-router'
 import { defineComponent, ref, watch } from 'vue'
 import { useDropdown } from '@/composables/useDropdown'
