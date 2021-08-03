@@ -24,7 +24,6 @@
       </div>
     </div>
     <div class="latest-list-item__right">
-      <!-- TODO: what is block_size  -->
       <slot name="currency" />
     </div>
   </div>
