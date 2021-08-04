@@ -1,104 +1,68 @@
 <template>
-  <div class="nav" :class="{ 'nav-mob': isOpen }">
-    <div class="nav__wrap-cont">
-      <!-- TODO: temp. hidden all but validators -->
-      <!-- <router-link class="nav__link" :to="{ name: 'DataSources' }">
-        Data Sources
-      </router-link> -->
-      <!--<router-link class="nav__link" :to="{ name: 'OracleScripts' }">
-        Oracle Scripts
-      </router-link>
-      <router-link class="nav__link" :to="{ name: 'Requests' }">
-        Requests
-      </router-link>
-      <router-link class="nav__link" :to="{ name: 'Voting' }">
-        Voting
-      </router-link> -->
-      <!-- <router-link class="nav__link" :to="{ name: 'Validators' }">
-        Validators
-      </router-link> -->
-
-      <LinksDropdown :list="BlockchainList" />
-      <LinksDropdown :list="TokemonicList" />
-      <LinksDropdown :list="ResourceList" />
-    </div>
+  <div
+    @click.stop="dropdown.show()"
+    class="nav__dropdown"
+    :class="{ 'nav__dropdown-wrapper--open': dropdown.isShown.value }"
+  >
+    <span class="nav__dropdown-wrapper">
+      <span class="nav__dropdown-wrapper-name">{{ list.name }}</span>
+      <ArrowIcon
+        :className="
+          dropdown.isShown.value ? 'nav__dropdown-wrapper-arrow--open' : ''
+        "
+      />
+    </span>
+    <transition name="fade">
+      <div
+        class="nav__dropdown-modal"
+        ref="dropdownEl"
+        v-show="dropdown.isShown.value"
+      >
+        <router-link
+          class="nav__dropdown-link"
+          v-for="link in list.links"
+          :key="link.to"
+          :data-text="link.text"
+          :to="{ name: link.to }"
+        >
+          <span>{{ link.text }}</span>
+        </router-link>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import LinksDropdown from '@/components/LinksDropdown.vue'
+import ArrowIcon from '@/components/icons/ArrowIcon.vue'
+import { useRoute } from 'vue-router'
+import { defineComponent, ref, watch } from 'vue'
+import { useDropdown } from '@/composables/useDropdown'
 
 export default defineComponent({
-  components: {
-    LinksDropdown,
-  },
+  name: 'linksDropdown',
+  components: { ArrowIcon },
+  emits: ['changeRoute'],
   props: {
     isOpen: { type: Boolean, default: false },
+    list: { type: Object, required: true },
   },
+  setup(props, { emit }) {
+    const route = useRoute()
+    watch(
+      () => route.path,
+      () => {
+        emit('changeRoute')
+      }
+    )
 
-  setup() {
-    const BlockchainList = {
-      name: 'Blockchain',
-      links: [
-        {
-          to: 'Transactions',
-          text: 'Transactions',
-        },
-        {
-          to: 'PendingTransactions',
-          text: 'Pending Transactions',
-        },
-        {
-          to: 'Blocks',
-          text: 'Blocks',
-        },
-        {
-          to: 'Validators',
-          text: 'Validators',
-        },
-      ],
-    }
-    const TokemonicList = {
-      name: 'Tokemonics',
-      links: [
-        {
-          to: 'Tokemonics',
-          text: 'Tokemonics overview',
-        },
-        {
-          to: 'odin',
-          text: 'ODIN',
-        },
-        {
-          to: 'geo',
-          text: 'GEO',
-        },
-      ],
-    }
-    const ResourceList = {
-      name: 'Resources',
-      links: [
-        {
-          to: 'charts',
-          text: 'Charts & Stats',
-        },
-      ],
-    }
-    return { BlockchainList, TokemonicList, ResourceList }
+    const dropdownEl = ref()
+    const dropdown = useDropdown(dropdownEl)
+    return { dropdown, dropdownEl }
   },
 })
 </script>
 
 <style scoped lang="scss">
-.nav__wrap-cont {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  align-items: center;
-  gap: 2.4rem;
-}
-
 .nav__dropdown {
   position: relative;
   display: grid;
@@ -193,7 +157,6 @@ export default defineComponent({
     display: none;
     background: #fff;
     position: absolute;
-    left: 0;
     top: calc(100% + 0.1rem);
     width: 100%;
     z-index: 9999;

@@ -1,15 +1,24 @@
 <template>
-  <div class="container mg-b24">
+  <div class="search">
     <div class="search__row">
-      <select
+      <VuePicker
         class="app-form__field-input app-filter"
         name="filter"
         v-model="activeFilter"
       >
-        <option v-for="(filter, index) in filters" :key="index" :value="filter">
-          {{ filter }}
-        </option>
-      </select>
+        <template #dropdownInner>
+          <div class="app-filter__dropdown-inner">
+            <VuePickerOption
+              v-for="(filter, index) in filters"
+              :key="index"
+              :value="filter"
+              :text="filter"
+            >
+              {{ filter }}
+            </VuePickerOption>
+          </div>
+        </template>
+      </VuePicker>
       <input
         type="search"
         class="filter-search"
@@ -22,20 +31,18 @@
     </div>
   </div>
 </template>
-<script>
-import { ref } from 'vue'
-export default {
-  // eslint-disable-next-line
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
+export default defineComponent({
   setup() {
-    const filters = ref([])
-    filters.value = ['All filters', 'Blocks', 'Tx hash']
+    const filters = ref(['All filters', 'Blocks', 'Tx hash'])
 
     const activeFilter = ref('')
     activeFilter.value = filters.value[0]
 
     const searchedText = ref('')
 
-    const searchText = () => {
+    const searchText = (): void => {
       console.log(searchedText.value)
     }
 
@@ -46,46 +53,57 @@ export default {
       searchText,
     }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
-.search__row {
-  margin: 0 auto;
-  padding: 0 3.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+.search {
+  margin: 0 10.3rem 2.5rem 10.3rem;
+  &__row {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 
-  @media screen and (max-width: 600px) {
-    padding: 0 1.6rem;
+    @media screen and (max-width: 600px) {
+      padding: 0 1.6rem;
+    }
+  }
+  @media (max-width: 768px) {
+    margin: 0;
+    padding: 0 1rem 2.5rem 1rem;
+    &__row {
+      padding: 0;
+    }
   }
 }
-
 .app-filter {
-  max-width: 126px;
-  height: 48px;
-  border-top-left-radius: 8px !important;
-  border-bottom-left-radius: 8px !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-
+  display: flex;
+  max-width: 12.6rem;
+  height: 4.8rem;
+  border-radius: 0.8rem 0 0 0.8rem;
+  position: relative;
   &:focus {
-    border: 1px solid var(--clr__input-border);
+    border: 0.1rem solid var(--clr__input-border);
+  }
+  &__dropdown-inner {
+    .vue-picker-option_cur,
+    .vue-picker-option:hover {
+      color: var(--clr__action);
+      background: rgba(204, 228, 255, 0.4);
+    }
   }
 }
 
 .filter-search {
-  height: 48px;
-
-  padding: 12px 15px;
+  height: 4.8rem;
+  padding: 1.2rem 1.5rem;
   width: 100%;
-  max-width: 426px;
-  border: 1px solid #ced4da;
+  max-width: 42.6rem;
+  border: 0.1rem solid var(--clr__input-border);
   border-left: none;
   border-right: none;
-
   &::placeholder {
-    color: #6c757d;
+    color: var(--clr__text-muted);
   }
 }
 
@@ -93,15 +111,16 @@ export default {
   width: 48px;
   height: 48px;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   background: var(--clr__action);
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border-top-right-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
 
   img {
-    width: 18px;
-    height: 18px;
+    width: 1.8rem;
+    height: 1.8rem;
     display: block;
   }
 }

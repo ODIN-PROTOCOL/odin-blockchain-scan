@@ -105,7 +105,7 @@ export default defineComponent({
             transactions.value.length / transactionsPerPage
           )
         })
-        .then(() => filterTransactions(page.value))      
+        .then(() => filterTransactions(page.value))
     }
 
     const filterTransactions = async (newPage: number) => {
@@ -148,7 +148,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .data-sources__table-head,
 .data-sources__table-row {
@@ -180,10 +180,10 @@ export default defineComponent({
 
 .view-title {
   font-weight: 400;
-  font-size: 32px;
+  font-size: 3.2rem;
 
   @media screen and (max-width: 600px) {
-    font-size: 28px;
+    font-size: 2.8rem;
   }
 }
 
@@ -198,7 +198,7 @@ export default defineComponent({
 
   @media screen and (max-width: 992px) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 }
 </style>
@@ -209,11 +209,11 @@ export default defineComponent({
 
   li {
     background: #fff;
-    border: 1px solid var(--clr__action);
-    border-radius: 4px;
-    margin: 0 4px;
-    min-width: 26px;
-    height: 36px;
+    border: 0.1rem solid var(--clr__action);
+    border-radius: 0.4rem;
+    margin: 0 0.4rem;
+    min-width: 2.6rem;
+    height: 3.6rem;
   }
 
   button {
@@ -221,7 +221,7 @@ export default defineComponent({
     width: 100%;
     border: none;
     margin: 0;
-    padding: 10px;
+    padding: 1rem;
   }
 
   .Page {
