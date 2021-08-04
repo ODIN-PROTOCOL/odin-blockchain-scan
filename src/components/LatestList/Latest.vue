@@ -2,8 +2,8 @@
   <div class="latest">
     <div class="latest__wrapper">
       <LatestList :header="latestBlocksHeader">
-        <template v-if="latestBlocks">
-          <LatestListItem v-for="item in latestBlocks" :key="item.blockId.hash">
+        <template v-if="LatestBlocks">
+          <LatestListItem v-for="item in LatestBlocks" :key="item.blockId.hash">
             <template #label> Bk </template>
             <template #name>
               <TitledLink
@@ -96,25 +96,30 @@ export default defineComponent({
     const toDay = ref<Date>(new Date())
     const getDay = (time: string): Date => new Date(time)
 
-    let latestBlocks = ref({})
     onMounted(
       async (): Promise<void> => {
         await getLatestBlocks()
+        await getLatestTransactions()
       }
     )
 
+    let LatestBlocks = ref({})
+    let LatestTransactions = ref({})
+    let LastHeight = ref()
+    let TotalCount = ref()
+
     const getLatestBlocks = async (): Promise<void> => {
-      const {
-        lastHeight,
-        blockMetas,
-      } = await callers
-        .getClient()
-        .then((client) => client.blockchain(100, 500))
+      const { blockMetas, lastHeight } = await callers.getBlockchain(100, 500)
+      LatestBlocks.value = [...blockMetas].slice(0, 5)
+      LastHeight.value = lastHeight
+    }
 
-      console.log('lastHeight', lastHeight)
-      console.log('blockMetas', blockMetas)
-
-      latestBlocks.value = [...blockMetas].slice(0, 5)
+    const getLatestTransactions = async (): Promise<void> => {
+      const { totalCount, txs } = await callers.getTxSearch({
+        query: `tx.height >= ${LastHeight.value - 10}`,
+      })
+      LatestTransactions.value = [...txs].slice(0, 5)
+      TotalCount.value = totalCount
     }
 
     let latestBlocksHeader = {
@@ -131,7 +136,7 @@ export default defineComponent({
     const toHexFunc = toHex
     return {
       latestBlocksHeader,
-      latestBlocks,
+      LatestBlocks,
       latestTransactionsHeader,
       diffDays,
       cropText,
