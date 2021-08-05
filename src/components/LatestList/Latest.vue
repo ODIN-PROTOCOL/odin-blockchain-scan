@@ -98,7 +98,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
 import { diffDays, cropText } from '@/helpers/formatters'
-import { makeTransactionListFormatted } from '@/helpers/makeTransackionFormatedList'
+import { makeTransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
