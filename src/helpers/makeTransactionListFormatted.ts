@@ -2,9 +2,7 @@ import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { toHex } from '@cosmjs/encoding'
 import { callers } from '@/api/callers'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
-
 // TODO: need refactor!
-
 let transStatus = ''
 let transReceiver = ''
 const getTotalTx = async (decodedTx: any) => {
@@ -22,8 +20,10 @@ const getTotalTx = async (decodedTx: any) => {
   return totalTx
 }
 
-export async function makeTransactionListFormatted(arr: any): Promise<Array<any>> {
-  const tempArr: Array<unknown> = []
+export async function makeTransactionListFormatted(
+  arr: any
+): Promise<Array<any>> {
+  const tempArr: Array<any> = []
 
   for (const el of arr) {
     const decodedTx = Tx.decode(el.tx)
