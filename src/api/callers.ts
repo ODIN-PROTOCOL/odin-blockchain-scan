@@ -122,8 +122,8 @@ const makeCallers = () => {
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
-    getBlockchain: tmQuerier((tc) => tc.blockchain),
-    getTxSearch: tmQuerier((tc) => tc.txSearch),
+    getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
+    getTxSearch: tmQuerier((tc) => tc.txSearch.bind(tc)),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },

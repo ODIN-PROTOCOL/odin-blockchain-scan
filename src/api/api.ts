@@ -88,7 +88,7 @@ class Api {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   makeTendermintCaller<T extends (...args: any) => any>(
-    make: (qc: Tendermint34Client) => T
+    make: (tc: Tendermint34Client) => T
   ): T {
     return make(this._tendermint)
   }
