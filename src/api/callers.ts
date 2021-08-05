@@ -18,11 +18,11 @@ import {
   MsgUndelegate,
 } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx'
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
-import * as requests from "@cosmjs/tendermint-rpc/build/tendermint34/requests";
 
 const makeCallers = () => {
   const broadcaster = api.makeBroadcastCaller.bind(api)
   const querier = api.makeQueryCaller.bind(api)
+  const tmQuerier = api.makeTendermintCaller.bind(api)
 
   return {
     createDataSource: broadcaster<MsgCreateDataSource>(
@@ -122,16 +122,8 @@ const makeCallers = () => {
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
-    getBlockchain: async (minHeight?: number, maxHeight?: number) => {
-      return Tendermint34Client.connect(API_CONFIG.rpc).then((client) =>
-        client.blockchain(minHeight, maxHeight)
-      )
-    },
-    getTxSearch: async (params: requests.TxSearchParams) => {
-      return Tendermint34Client.connect(API_CONFIG.rpc).then((client) =>
-        client.txSearch(params)
-      )
-    },
+    getBlockchain: tmQuerier((tc) => tc.blockchain),
+    getTxSearch: tmQuerier((tc) => tc.txSearch),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },
