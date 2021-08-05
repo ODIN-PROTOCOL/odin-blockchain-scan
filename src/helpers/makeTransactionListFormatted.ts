@@ -48,7 +48,6 @@ export async function makeTransactionListFormatted(
     const ttx:
       | { transReceiver: string; totalTx: number }
       | undefined = getTotalTx(decodedTx)
-    console.log(ttx)
     tempArr.push({
       transHeight: el.height,
       transSender: toHex(
