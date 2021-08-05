@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent, onMounted} from 'vue'
 
 export default defineComponent({
   props: {
@@ -23,6 +23,11 @@ export default defineComponent({
       required: false,
     },
   },
+  setup(props) {
+    onMounted(() => {
+      console.log('props',props.text)
+    })
+  }
 })
 </script>
 

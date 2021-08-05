@@ -3,7 +3,7 @@
     <div class="latest__wrapper">
       <LatestList :header="latestBlocksHeader">
         <template v-if="LatestBlocks">
-          <LatestListItem v-for="item in LatestBlocks" :key="item.blockId.hash">
+          <LatestListItem v-for="(item, index) in LatestBlocks" :key="index">
             <template #label> Bk </template>
             <template #name>
               <TitledLink
@@ -44,37 +44,51 @@
           </LatestListItem>
         </template>
       </LatestList>
-      <LatestList :header="latestTransactionsHeader">
-        <!-- TODO: Real data  -->
-        <LatestListItem v-for="(i, index) in [1, 2, 3, 4, 5]" :key="index">
-          <template #label> Tx </template>
-          <template #name>
-            <TitledLink
-              :link="String(i)"
-              class="app-table__cell-txt"
-              :text="`${cropText('0x8b5a0393b5b')}`"
-            />
-          </template>
-          <template #time> 24 secs ago </template>
-          <template #from>
-            <span>From:</span>
-            <TitledLink
-              :link="String(i)"
-              class="app-table__cell-txt"
-              :text="`${cropText('0x8b5a0393b5b')}`"
-            />
-          </template>
-          <template #to>
-            <span> To: </span>
-            <TitledLink
-              :link="String(i)"
-              class="app-table__cell-txt"
-              :text="`${cropText('0x8b5a0393b5b')}`"
-            />
-          </template>
-          <template #currency> 454,565 ODIN </template>
-        </LatestListItem>
-      </LatestList>
+      <template v-if="LatestTransactions">
+        <LatestList :header="latestTransactionsHeader">
+          <LatestListItem
+            v-for="(item, index) in LatestTransactions"
+            :key="index"
+          >
+            <template #label> Tx </template>
+            <template #name>
+              <TitledLink
+                class="app-table__cell-txt"
+                :link="`/blocks/${item.transHeight}`"
+                :text="
+                  item.transHeight ? cropText(item.transHeight) : 'No info'
+                "
+              />
+            </template>
+            <template #time>
+              {{ diffDays(toDay, getDay(item.transTime)) }}
+            </template>
+            <template #from>
+              <span>From:</span>
+              <TitledLink
+                class="app-table__cell-txt"
+                :text="
+                  item.transSender
+                    ? cropText(`0x${item.transSender}`)
+                    : 'No info'
+                "
+              />
+            </template>
+            <template #to>
+              <span> To: </span>
+              <TitledLink
+                class="app-table__cell-txt"
+                :text="
+                  item.transReceiver
+                    ? cropText(`0x${item.transReceiver}`)
+                    : 'No info'
+                "
+              />
+            </template>
+            <template #currency> {{ item.transAmount }} ODIN </template>
+          </LatestListItem>
+        </LatestList>
+      </template>
     </div>
   </div>
 </template>
@@ -84,6 +98,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
 import { diffDays, cropText } from '@/helpers/formatters'
+import { makeTransactionListFormatted } from '@/helpers/makeTransackionFormatedList'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
@@ -92,12 +107,13 @@ import TitledLink from '@/components/TitledLink.vue'
 export default defineComponent({
   name: 'Latest',
   components: { LatestList, LatestListItem, TitledLink },
-  setup() {
+  setup: function () {
     const toDay = ref<Date>(new Date())
     const getDay = (time: string): Date => new Date(time)
 
     onMounted(
       async (): Promise<void> => {
+        // TODO: Promise.allSettled? Promise.all? And how to handle the error if it was caught?
         await getLatestBlocks()
         await getLatestTransactions()
       }
@@ -116,9 +132,13 @@ export default defineComponent({
 
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount, txs } = await callers.getTxSearch({
-        query: `tx.height >= ${LastHeight.value - 10}`,
+        // query: `tx.height >= ${LastHeight.value - 10}`,
+        // TODO: return LastHeight.value from getLatestBlocks()
+        query: `tx.height >= ${500 - 10}`,
       })
-      LatestTransactions.value = [...txs].slice(0, 5)
+      LatestTransactions.value = await makeTransactionListFormatted(
+        [...txs].slice(0, 5)
+      )
       TotalCount.value = totalCount
     }
 
@@ -137,6 +157,7 @@ export default defineComponent({
     return {
       latestBlocksHeader,
       LatestBlocks,
+      LatestTransactions,
       latestTransactionsHeader,
       diffDays,
       cropText,

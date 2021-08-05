@@ -41,17 +41,16 @@ import { useDropdown } from '@/composables/useDropdown'
 export default defineComponent({
   name: 'linksDropdown',
   components: { ArrowIcon },
-  emits: ['changeRoute'],
   props: {
     isOpen: { type: Boolean, default: false },
     list: { type: Object, required: true },
   },
-  setup(props, { emit }) {
+  setup() {
     const route = useRoute()
     watch(
       () => route.path,
       () => {
-        emit('changeRoute')
+        dropdown.hide()
       }
     )
 
