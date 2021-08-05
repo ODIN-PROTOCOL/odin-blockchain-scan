@@ -3,7 +3,7 @@
     <div class="latest__wrapper">
       <LatestList :header="latestBlocksHeader">
         <template v-if="LatestBlocks">
-          <LatestListItem v-for="(item, index) in LatestBlocks" :key="index">
+          <LatestListItem v-for="item in LatestBlocks" :key="item.blockId.hash">
             <template #label> Bk </template>
             <template #name>
               <TitledLink
@@ -47,8 +47,8 @@
       <template v-if="LatestTransactions">
         <LatestList :header="latestTransactionsHeader">
           <LatestListItem
-            v-for="(item, index) in LatestTransactions"
-            :key="index"
+            v-for="item in LatestTransactions"
+            :key="item.transHash"
           >
             <template #label> Tx </template>
             <template #name>
