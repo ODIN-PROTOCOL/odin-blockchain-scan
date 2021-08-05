@@ -2,8 +2,8 @@
   <div class="latest">
     <div class="latest__wrapper">
       <LatestList :header="latestBlocksHeader">
-        <template v-if="LatestBlocks">
-          <LatestListItem v-for="item in LatestBlocks" :key="item.blockId.hash">
+        <template v-if="latestBlocks">
+          <LatestListItem v-for="item in latestBlocks" :key="item.blockId.hash">
             <template #label> Bk </template>
             <template #name>
               <TitledLink
@@ -44,10 +44,10 @@
           </LatestListItem>
         </template>
       </LatestList>
-      <template v-if="LatestTransactions">
+      <template v-if="latestTransactions">
         <LatestList :header="latestTransactionsHeader">
           <LatestListItem
-            v-for="item in LatestTransactions"
+            v-for="item in latestTransactions"
             :key="item.transHash"
           >
             <template #label> Tx </template>
@@ -55,9 +55,7 @@
               <TitledLink
                 class="app-table__cell-txt"
                 :link="`/blocks/${item.transHeight}`"
-                :text="
-                  item.transHeight ? cropText(item.transHeight) : 'No info'
-                "
+                :text="item.transHash ? cropText(item.transHash) : 'No info'"
               />
             </template>
             <template #time>
@@ -119,27 +117,27 @@ export default defineComponent({
       }
     )
 
-    let LatestBlocks = ref({})
-    let LatestTransactions = ref({})
-    let LastHeight = ref()
-    let TotalCount = ref()
+    let latestBlocks = ref({})
+    let latestTransactions = ref({})
+    let lastHeight = ref()
+    let totalCount = ref()
 
     const getLatestBlocks = async (): Promise<void> => {
-      const { blockMetas, lastHeight } = await callers.getBlockchain(100, 500)
-      LatestBlocks.value = [...blockMetas].slice(0, 5)
-      LastHeight.value = lastHeight
+      const { blockMetas, lastHeight: reqLastHeight } = await callers.getBlockchain(100, 500)
+      latestBlocks.value = [...blockMetas].slice(0, 5)
+      lastHeight.value = reqLastHeight
     }
 
     const getLatestTransactions = async (): Promise<void> => {
-      const { totalCount, txs } = await callers.getTxSearch({
+      const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
         // query: `tx.height >= ${LastHeight.value - 10}`,
         // TODO: return LastHeight.value from getLatestBlocks()
         query: `tx.height >= ${500 - 10}`,
       })
-      LatestTransactions.value = await makeTransactionListFormatted(
+      latestTransactions.value = await makeTransactionListFormatted(
         [...txs].slice(0, 5)
       )
-      TotalCount.value = totalCount
+      totalCount.value = reqTotalCount
     }
 
     let latestBlocksHeader = {
@@ -156,8 +154,8 @@ export default defineComponent({
     const toHexFunc = toHex
     return {
       latestBlocksHeader,
-      LatestBlocks,
-      LatestTransactions,
+      latestBlocks,
+      latestTransactions,
       latestTransactionsHeader,
       diffDays,
       cropText,
