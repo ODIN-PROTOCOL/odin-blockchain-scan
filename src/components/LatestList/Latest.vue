@@ -55,7 +55,9 @@
               <TitledLink
                 class="app-table__cell-txt"
                 :link="`/blocks/${item.transHeight}`"
-                :text="item.transHash ? cropText(item.transHash) : 'No info'"
+                :text="
+                  item.transHash ? cropText(`0x${item.transSender}`) : 'No info'
+                "
               />
             </template>
             <template #time>
@@ -114,6 +116,7 @@ export default defineComponent({
         // TODO: Promise.allSettled? Promise.all? And how to handle the error if it was caught?
         await getLatestBlocks()
         await getLatestTransactions()
+        await getLatestTelemetry()
       }
     )
 
@@ -122,8 +125,16 @@ export default defineComponent({
     let lastHeight = ref()
     let totalCount = ref()
 
+    const getLatestTelemetry = async (): Promise<void> => {
+      // const res = await callers.getTelemetry()
+      // console.log(res)
+    }
+
     const getLatestBlocks = async (): Promise<void> => {
-      const { blockMetas, lastHeight: reqLastHeight } = await callers.getBlockchain(100, 500)
+      const {
+        blockMetas,
+        lastHeight: reqLastHeight,
+      } = await callers.getBlockchain(100, 500)
       latestBlocks.value = [...blockMetas].slice(0, 5)
       lastHeight.value = reqLastHeight
     }
