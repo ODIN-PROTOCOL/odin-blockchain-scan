@@ -31,6 +31,10 @@ export function cropText(value?: string): string {
   return value
 }
 
+export function getDay(time: string): Date {
+  return new Date(time)
+}
+
 export function abbreviateNumber(value: NumLike): string {
   const suffixes = ['', 'k', 'm', 'b', 't', 'q', 'Q', 's', 'S', 'o', 'n', 'd']
 

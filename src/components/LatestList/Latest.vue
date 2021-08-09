@@ -2,60 +2,54 @@
   <div class="latest">
     <div class="latest__wrapper">
       <LatestList :header="latestBlocksHeader">
-        <div
-            v-if="latestBlocks.length"
-        >
+        <div v-if="latestBlocks.length">
           <LatestListItem v-for="item in latestBlocks" :key="item.blockId.hash">
-          <template #label> Bk </template>
-          <template #name>
-            <TitledLink
-              :link="`/blocks/${item.header.height}`"
-              class="app-table__cell-txt"
-              :text="item.header.height"
-            />
-          </template>
-          <template #time>
-            <div class="info-value">
-              {{ diffDays(toDay, getDay(item.header.time)) }}
-            </div>
-          </template>
-          <template #validator>
-            <span>Validator:</span>
-            <TitledLink
-              :link="`/transactions/${item.header.height}`"
-              class="app-table__cell-txt"
-              :text="`${cropText(
-                '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
-              )}`"
-            />
-          </template>
-          <!-- TODO: transactions count -->
-          <template #transactions>
-            <span>548 transactions</span>
-          </template>
-          <!-- TODO: what is block_size  -->
-          <!-- TODO: currency-->
-          <template #currency>
-            <span>
-              {{ item.block_size }}
-            </span>
-            <span class="currency">
-              454,565 {{ item.header.chainId.toUpperCase() }}
-            </span>
-          </template>
-        </LatestListItem>
+            <template #label> Bk </template>
+            <template #name>
+              <TitledLink
+                :link="`/blocks/${item.header.height}`"
+                class="app-table__cell-txt"
+                :text="item.header.height"
+              />
+            </template>
+            <template #time>
+              <div class="info-value">
+                {{ diffDays(toDay, getDay(item.header.time)) }}
+              </div>
+            </template>
+            <template #validator>
+              <span>Validator:</span>
+              <TitledLink
+                :link="`/transactions/${item.header.height}`"
+                class="app-table__cell-txt"
+                :text="`${cropText(
+                  '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
+                )}`"
+              />
+            </template>
+            <!-- TODO: transactions count -->
+            <template #transactions>
+              <span>548 transactions</span>
+            </template>
+            <!-- TODO: what is block_size  -->
+            <!-- TODO: currency-->
+            <template #currency>
+              <span>
+                {{ item.block_size }}
+              </span>
+              <span class="currency">
+                454,565 {{ item.header.chainId.toUpperCase() }}
+              </span>
+            </template>
+          </LatestListItem>
         </div>
         <div class="latest-list-item" v-else>
-            <span class="latest-list-item__empty">
-              no item
-            </span>
+          <span class="latest-list-item__empty"> no item </span>
         </div>
       </LatestList>
       <template v-if="latestTransactions">
         <LatestList :header="latestTransactionsHeader">
-          <div
-            v-if="latestTransactions.length"
-          >
+          <div v-if="latestTransactions.length">
             <LatestListItem
               v-for="item in latestTransactions"
               :key="item.transHash"
@@ -66,7 +60,9 @@
                   class="app-table__cell-txt"
                   :link="`/blocks/${item.transHeight}`"
                   :text="
-                    item.transHash ? cropText(`0x${item.transSender}`) : 'No info'
+                    item.transHash
+                      ? cropText(`0x${item.transSender}`)
+                      : 'No info'
                   "
                 />
               </template>
@@ -99,9 +95,7 @@
             </LatestListItem>
           </div>
           <div class="latest-list-item" v-else>
-            <span class="latest-list-item__empty">
-              no item
-            </span>
+            <span class="latest-list-item__empty"> no item </span>
           </div>
         </LatestList>
       </template>
@@ -113,7 +107,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
-import { diffDays, cropText } from '@/helpers/formatters'
+import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import { makeTransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
@@ -125,7 +119,6 @@ export default defineComponent({
   components: { LatestList, LatestListItem, TitledLink },
   setup: function () {
     const toDay = ref<Date>(new Date())
-    const getDay = (time: string): Date => new Date(time)
 
     onMounted(
       async (): Promise<void> => {
@@ -133,6 +126,7 @@ export default defineComponent({
         await getLatestBlocks()
         await getLatestTransactions()
         await getLatestTelemetry()
+        // await getAbciInfo()
       }
     )
 
@@ -143,9 +137,12 @@ export default defineComponent({
 
     const getLatestTelemetry = async (): Promise<void> => {
       // TODO: Error: Query failed with (18): failed to get tx volume: failed to get the blocks by date: failed to find the blocks: page should be within [1, 9] range, given 10: invalid request
-      let temp = new Date
-      temp.setDate(temp.getDate() - 1)
-      const res = await callers.getTelemetry({startDate: temp, endDate: new Date()})
+      let temp = new Date()
+      temp.setDate(temp.getDate() - 2)
+      const res = await callers.getTelemetry({
+        startDate: temp,
+        endDate: new Date(),
+      })
       console.log(res)
     }
 
@@ -157,6 +154,10 @@ export default defineComponent({
       latestBlocks.value = [...blockMetas].slice(0, 5)
       console.log('latestBlocks', latestBlocks.value)
       lastHeight.value = reqLastHeight
+    }
+    const getAbciInfo = async (): Promise<void> => {
+      const res = await callers.getAbciInfo()
+      console.log('getAbciInfo', res)
     }
 
     const getLatestTransactions = async (): Promise<void> => {
@@ -210,7 +211,7 @@ export default defineComponent({
       justify-content: center;
       align-items: center;
       font-size: 3.2rem;
-      font-weight: 600 ;
+      font-weight: 600;
       text-transform: uppercase;
     }
   }

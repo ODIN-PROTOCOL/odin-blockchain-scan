@@ -26,7 +26,7 @@
             <div class="copy-button__wrapper">
               <button
                 class="copy-button"
-                @click.prevent="copyValue(route.params.id)"
+                @click.prevent="copyValue(String(route.params.id))"
               >
                 <img src="~@/assets/icons/copy.svg" alt="info" />
               </button>
@@ -94,7 +94,7 @@
             </div>
           </div>
           <div class="info-value">
-            <span>{{ convertDate(blockInfo.block?.header.time) }}</span>
+            <span>{{ convertDate(blockInfo?.block?.header.time) }}</span>
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -111,138 +111,99 @@
             <span>{{ blockSize?.value }}</span>
           </div>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                Validator who successfully included the block onto the
-                blockchain.
-              </span>
-              Block creator:
-            </div>
-          </div>
-          <div class="info-value">
-            <span>{{}}</span>
-          </div>
-        </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                For each block, the validator is rewarded with a finite amount
-                of ODIN tokens on top of the fees paid for all transactions in
-                the block.
-              </span>
-              Block reward:
-            </div>
-          </div>
-          <div class="info-value">
-            <span>{{}}</span>
-          </div>
-        </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                The block size is actually determined by the block's gas limit.
-              </span>
-              Block size:
-            </div>
-          </div>
-          <div class="info-value">
-            <span>{{}}</span>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </template>
-<script>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+<script lang="ts">
+import { ref, onMounted, defineComponent } from 'vue'
+import {
+  RouteLocationNormalizedLoaded,
+  Router,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
+import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 
-export default {
-  // eslint-disable-next-line
+export default defineComponent({
   setup() {
-    const router = useRouter()
-    const back = () => {
+    const router: Router = useRouter()
+    const back = (): void => {
       router.back()
     }
-    const route = useRoute()
+    const route: RouteLocationNormalizedLoaded = useRoute()
 
-    const blockInfo = ref([])
+    const blockInfo = ref<BlockResponse>()
+    // TODO: Why "blockSize" is needed ?
     const blockSize = ref()
-    const blockHash = ref()
-    const blockParentHash = ref()
+    const blockHash = ref<string>()
+    const blockParentHash = ref<string>()
 
-    const getBlock = async () => {
-      const response = await callers.getClient()
-
-      response.block(+route.params.id).then((res) => {
-        blockInfo.value = res
-        blockHash.value = getHash(blockInfo.value.blockId.hash)
-        blockParentHash.value = getHash(
-          blockInfo.value.block.header.lastBlockId.hash
-        )
-      })
+    const getBlock = async (): Promise<void> => {
+      blockInfo.value = await callers.getBlock(+route.params.id)
+      blockHash.value = getHash(blockInfo.value.blockId.hash)
+      blockParentHash.value = getHash(
+        blockInfo.value.block.header.lastBlockId.hash
+      )
     }
 
-    const convertDate = (time) => {
-      const nowTime = new Date()
+    const convertDate = (time: string): string => {
+      const nowTime: Date = new Date()
+      const newTime: Date = new Date(time)
 
-      const newTime = new Date(time)
-
-      const diff = (nowTime.getTime() - newTime.getTime()) / 1000
-      let diffMinutes = ''
-      let diffSeconds = ''
+      const diff: string | number =
+        (nowTime.getTime() - newTime.getTime()) / 1000
+      let diffMinutes: string
+      let diffSeconds: string
       let totalDiff = ''
       if (diff < 900) {
         if (diff / 60 > 0) {
           diffMinutes =
-            parseInt(diff / 60) > 9
-              ? parseInt(diff / 60) + ':'
-              : '0' + parseInt(diff / 60) + ':'
+            parseInt(`${diff / 60}`) > 9
+              ? parseInt(`${diff / 60}`) + ':'
+              : '0' + parseInt(`${diff / 60}`) + ':'
           diffSeconds =
-            parseInt(diff) - diffMinutes * 60 > 9
-              ? parseInt(diff)
-              : '0' + parseInt(diff)
+            parseInt(`${diff}`) - Number(diffMinutes) * 60 > 9
+              ? String(parseInt(`${diff}`))
+              : '0' + parseInt(`${diff}`)
         } else {
           diffMinutes = ''
           diffSeconds =
-            parseInt(diff) > 9 ? parseInt(diff) : '0' + parseInt(diff)
+            parseInt(`${diff}`) > 9
+              ? String(parseInt(`${diff}`))
+              : '0' + parseInt(`${diff}`)
         }
 
         totalDiff = `${diffMinutes}${diffSeconds} ago`
       }
 
-      const timezone =
-        newTime.getTimezoneOffset() / 60 != 0
-          ? newTime.getTimezoneOffset() / 60 + ':00'
+      const timezone: string =
+        newTime.getTimezoneOffset() / 60 !== 0
+          ? `${newTime.getTimezoneOffset() / 60}:00`
           : ''
 
-      const seconds =
+      const seconds: string =
         newTime.getSeconds() > 9
-          ? newTime.getSeconds()
+          ? String(newTime.getSeconds())
           : '0' + newTime.getSeconds()
-      const minutes =
+      const minutes: string =
         newTime.getMinutes() > 9
-          ? newTime.getMinutes()
+          ? String(newTime.getMinutes())
           : '0' + newTime.getMinutes()
-      const hours =
-        newTime.getHours() > 9 ? newTime.getHours() : '0' + newTime.getHours()
-      const day =
-        newTime.getDay() > 9 ? newTime.getDay() : '0' + newTime.getDay()
-      const month =
+      const hours: string =
+        newTime.getHours() > 9
+          ? String(newTime.getHours())
+          : '0' + newTime.getHours()
+      const day: string =
+        newTime.getDay() > 9 ? String(newTime.getDay()) : '0' + newTime.getDay()
+      const month: string =
         1 + newTime.getMonth() > 9
-          ? 1 + newTime.getMonth()
+          ? `${1 + newTime.getMonth()}`
           : '0' + (1 + newTime.getMonth())
-      const year = newTime.getFullYear()
-      const midday = hours > 12 ? 'PM' : 'AM'
+      const year: string | number = newTime.getFullYear()
+      const midday: string = Number(hours) > 12 ? 'PM' : 'AM'
 
       if (totalDiff) {
         return `${totalDiff} (${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC)`
@@ -251,17 +212,19 @@ export default {
       }
     }
 
-    const copyValue = (text) => {
+    const copyValue = (text: string): void => {
       window.navigator.clipboard.writeText(text)
     }
 
-    const getHash = (str) => {
+    const getHash = (str: Uint8Array): string => {
       return toHex(str).toUpperCase()
     }
 
-    onMounted(() => {
-      getBlock()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getBlock()
+      }
+    )
 
     return {
       blockInfo,
@@ -274,11 +237,11 @@ export default {
       blockParentHash,
     }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .block {
   &-item {
@@ -291,7 +254,7 @@ export default {
       font-weight: 400;
 
       & > * {
-        margin-right: 20px;
+        margin-right: 2rem;
       }
     }
 
@@ -302,10 +265,10 @@ export default {
 
   &-name {
     font-weight: 400;
-    font-size: 32px;
+    font-size: 3.2rem;
 
     @media screen and (max-width: 600px) {
-      font-size: 28px;
+      font-size: 2.8rem;
     }
   }
 
@@ -313,10 +276,10 @@ export default {
     display: flex;
     padding-bottom: 1.6rem;
     padding-top: 1.6rem;
-    border-bottom: 1px solid #cce4ff;
+    border-bottom: 0.1rem solid #cce4ff;
 
     &__title {
-      max-width: 209px;
+      max-width: 20.9rem;
       width: 100%;
       display: flex;
       align-items: center;
@@ -324,15 +287,15 @@ export default {
 
       img {
         display: block;
-        margin-right: 9px;
+        margin-right: 0.9rem;
       }
     }
   }
 
   &-id {
     text-overflow: ellipsis;
-    max-width: 200px;
-    font-size: 24px;
+    max-width: 20rem;
+    font-size: 2.4rem;
     font-weight: 400;
   }
 
@@ -341,17 +304,17 @@ export default {
 
     .app-table__row {
       display: grid;
-      grid-template-columns: 207px 1fr;
+      grid-template-columns: 20.7rem 1fr;
       padding: 1.6rem 0 1.6rem;
 
       @media screen and (max-width: 600px) {
-        grid-template-columns: 150px 1fr;
+        grid-template-columns: 15rem 1fr;
       }
     }
   }
 
   &-back {
-    min-width: 16px;
+    min-width: 1.6rem;
   }
 }
 
@@ -362,7 +325,7 @@ export default {
 
     @media screen and (max-width: 992px) {
       span {
-        max-width: 250px;
+        max-width: 25rem;
         text-overflow: ellipsis;
         overflow: hidden;
       }
@@ -370,7 +333,7 @@ export default {
 
     @media screen and (max-width: 500px) {
       span {
-        max-width: 150px;
+        max-width: 15rem;
         text-overflow: ellipsis;
         overflow: hidden;
       }
@@ -379,12 +342,12 @@ export default {
 
   &-key {
     display: flex;
-    width: 207px;
+    width: 20.7rem;
     align-items: center;
 
     img {
       display: block;
-      margin-right: 9px;
+      margin-right: 0.9rem;
       cursor: pointer;
     }
 
@@ -394,7 +357,7 @@ export default {
     }
 
     @media screen and (max-width: 600px) {
-      width: 150px;
+      width: 15rem;
 
       img {
         display: none;
@@ -409,9 +372,9 @@ export default {
 
 .copy-button {
   display: block;
-  margin-left: 10px;
-  width: 13px;
-  height: 15px;
+  margin-left: 1rem;
+  width: 1.3rem;
+  height: 1.5rem;
 
   &__wrapper {
     position: relative;
@@ -419,13 +382,13 @@ export default {
     @media screen and (max-width: 1800px) {
       .tooltip {
         left: auto;
-        right: -10px;
-        bottom: 25px;
+        right: -1rem;
+        bottom: 2.5rem;
 
         &:before {
-          right: 9px;
+          right: 0.9rem;
           left: auto;
-          top: 50px;
+          top: 5rem;
         }
       }
     }
@@ -440,25 +403,25 @@ export default {
 .tooltip {
   opacity: 0;
   position: absolute;
-  left: -29px;
-  bottom: 25px;
+  left: -2.9rem;
+  bottom: 2.5rem;
   transition: all 0.15s ease;
-  border-radius: 10px;
+  border-radius: 1rem;
   white-space: nowrap;
   background: var(--clr__tooltip-new);
-  padding: 12px 24px;
+  padding: 1.2rem 2.4rem;
   color: #fff;
   pointer-events: none;
   z-index: 1;
 
   &:before {
     content: '';
-    border-top: 10px solid var(--clr__tooltip-new);
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
+    border-top: 1rem solid var(--clr__tooltip-new);
+    border-right: 1rem solid transparent;
+    border-left: 1rem solid transparent;
     position: absolute;
-    left: 35px;
-    top: 51px;
+    left: 3.5rem;
+    top: 5.1rem;
     transform: translateY(-50%);
   }
 
@@ -470,9 +433,9 @@ export default {
     &:before {
       left: 90%;
       top: 108%;
-      border-top: 10px solid var(--clr__tooltip-new);
-      border-right: 10px solid transparent;
-      border-left: 10px solid transparent;
+      border-top: 1rem solid var(--clr__tooltip-new);
+      border-right: 1rem solid transparent;
+      border-left: 1rem solid transparent;
       border-bottom: none;
     }
   }
@@ -484,7 +447,7 @@ export default {
 
 .info-key__inner .tooltip {
   &:before {
-    left: 27px;
+    left: 2.7rem;
   }
 }
 </style>
