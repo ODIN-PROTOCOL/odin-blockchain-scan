@@ -132,7 +132,7 @@ export default defineComponent({
         // TODO: Promise.allSettled? Promise.all? And how to handle the error if it was caught?
         await getLatestBlocks()
         await getLatestTransactions()
-        // await getLatestTelemetry()
+        await getLatestTelemetry()
       }
     )
 
@@ -142,11 +142,11 @@ export default defineComponent({
     let totalCount = ref()
 
     const getLatestTelemetry = async (): Promise<void> => {
-      // TODO:  Error: Query failed with (18): failed to get average tx fee per day: failed to get the blocks by date: failed to find the blocks: page should be within [1, 8] range, given 9: invalid request
-      // let temp = new Date
-      // temp.setDate(temp.getDate() - 1)
-      // const res = await callers.getTelemetry({startDate: temp, endDate: new Date()})
-      // console.log(res)
+      // TODO: Error: Query failed with (18): failed to get tx volume: failed to get the blocks by date: failed to find the blocks: page should be within [1, 9] range, given 10: invalid request
+      let temp = new Date
+      temp.setDate(temp.getDate() - 1)
+      const res = await callers.getTelemetry({startDate: temp, endDate: new Date()})
+      console.log(res)
     }
 
     const getLatestBlocks = async (): Promise<void> => {
