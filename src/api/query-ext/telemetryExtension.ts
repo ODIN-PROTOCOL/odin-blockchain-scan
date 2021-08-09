@@ -18,9 +18,10 @@ import {
   QueryTxVolumeRequest,
   QueryTxVolumeResponse,
   QueryValidatorBlocksRequest,
+  QueryValidatorBlocksResponse,
 } from '@provider/codec/telemetry/query'
 
-class Pagination {
+export class Pagination {
   offset: Long
   limit: Long
   desc: string
@@ -65,12 +66,12 @@ export interface TelemetryExt {
       }: QueryTopValidatorsRequest) => Promise<QueryTopValidatorsResponse>
       validatorBlocks: ({
         ...args
-      }: QueryValidatorBlocksRequest) => Promise<QueryTopValidatorsResponse>
+      }: QueryValidatorBlocksRequest) => Promise<QueryValidatorBlocksResponse>
     }
   }
 }
 
-function setupTelemetryExtension(base: QueryClient): TelemetryExt {
+export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
   const rpc = createRpc(base)
   const queryService = new QueryClientImpl(rpc)
   return {
@@ -80,9 +81,9 @@ function setupTelemetryExtension(base: QueryClient): TelemetryExt {
           return await queryService.TopBalances({
             denom: args.denom,
             pagination: {
-              key: args.pagination.key,
-              limit: args.pagination.limit,
-              offset: args.pagination.offset,
+              key: args?.pagination?.key,
+              limit: args?.pagination?.limit,
+              offset: args?.pagination?.offset,
             },
             desc: args.desc,
           })
@@ -91,10 +92,12 @@ function setupTelemetryExtension(base: QueryClient): TelemetryExt {
           return await queryService.ExtendedValidators({
             status: args.status,
             pagination: {
-              key: args.pagination,
-              limit: args.pagination.limit,
-              offset: args.pagination.offset,
-              countTotal: args.pagination.countTotal,
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              key: args?.pagination,
+              limit: args?.pagination?.limit,
+              offset: args?.pagination?.offset,
+              countTotal: args?.pagination?.countTotal,
             },
           })
         },
@@ -127,10 +130,10 @@ function setupTelemetryExtension(base: QueryClient): TelemetryExt {
             startDate: args.startDate,
             endDate: args.endDate,
             pagination: {
-              key: args.pagination.key,
-              limit: args.pagination.limit,
-              offset: args.pagination.offset,
-              countTotal: args.pagination.countTotal,
+              key: args?.pagination?.key,
+              limit: args?.pagination?.limit,
+              offset: args?.pagination?.offset,
+              countTotal: args?.pagination?.countTotal,
             },
           })
         },
@@ -138,9 +141,9 @@ function setupTelemetryExtension(base: QueryClient): TelemetryExt {
           return await queryService.ValidatorBlocks({
             validatorAddress: args.validatorAddress,
             pagination: {
-              key: args.pagination.key,
-              limit: args.pagination.limit,
-              offset: args.pagination.offset,
+              key: args?.pagination?.key,
+              limit: args?.pagination?.limit,
+              offset: args?.pagination?.offset,
             },
             desc: args.desc,
           })
@@ -150,7 +153,7 @@ function setupTelemetryExtension(base: QueryClient): TelemetryExt {
   }
 }
 
-module.exports = {
-  setupTelemetryExtension,
-  Pagination,
-}
+// module.exports = {
+//   setupTelemetryExtension,
+//   Pagination,
+// }

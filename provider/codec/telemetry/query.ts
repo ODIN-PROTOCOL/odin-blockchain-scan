@@ -93,7 +93,7 @@ export interface QueryTopValidatorsRequest {
   startDate?: Date
   endDate?: Date
   pagination?: PageRequest
-  desc: boolean
+  desc?: boolean
 }
 
 /** QueryTopValidatorsResponse is response type for the Query/TopValidators RPC method. */

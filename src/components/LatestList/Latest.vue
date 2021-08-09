@@ -2,91 +2,107 @@
   <div class="latest">
     <div class="latest__wrapper">
       <LatestList :header="latestBlocksHeader">
-        <template v-if="latestBlocks">
+        <div
+            v-if="latestBlocks.length"
+        >
           <LatestListItem v-for="item in latestBlocks" :key="item.blockId.hash">
-            <template #label> Bk </template>
-            <template #name>
-              <TitledLink
-                :link="`/blocks/${item.header.height}`"
-                class="app-table__cell-txt"
-                :text="item.header.height"
-              />
-            </template>
-            <template #time>
-              <div class="info-value">
-                {{ diffDays(toDay, getDay(item.header.time)) }}
-              </div>
-            </template>
-            <template #validator>
-              <span>Validator:</span>
-              <TitledLink
-                :link="`/transactions/${item.header.height}`"
-                class="app-table__cell-txt"
-                :text="`${cropText(
-                  '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
-                )}`"
-              />
-            </template>
-            <!-- TODO: transactions count -->
-            <template #transactions>
-              <span>548 transactions</span>
-            </template>
-            <!-- TODO: what is block_size  -->
-            <!-- TODO: currency-->
-            <template #currency>
-              <span>
-                {{ item.block_size }}
-              </span>
-              <span class="currency">
-                454,565 {{ item.header.chainId.toUpperCase() }}
-              </span>
-            </template>
-          </LatestListItem>
-        </template>
+          <template #label> Bk </template>
+          <template #name>
+            <TitledLink
+              :link="`/blocks/${item.header.height}`"
+              class="app-table__cell-txt"
+              :text="item.header.height"
+            />
+          </template>
+          <template #time>
+            <div class="info-value">
+              {{ diffDays(toDay, getDay(item.header.time)) }}
+            </div>
+          </template>
+          <template #validator>
+            <span>Validator:</span>
+            <TitledLink
+              :link="`/transactions/${item.header.height}`"
+              class="app-table__cell-txt"
+              :text="`${cropText(
+                '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
+              )}`"
+            />
+          </template>
+          <!-- TODO: transactions count -->
+          <template #transactions>
+            <span>548 transactions</span>
+          </template>
+          <!-- TODO: what is block_size  -->
+          <!-- TODO: currency-->
+          <template #currency>
+            <span>
+              {{ item.block_size }}
+            </span>
+            <span class="currency">
+              454,565 {{ item.header.chainId.toUpperCase() }}
+            </span>
+          </template>
+        </LatestListItem>
+        </div>
+        <div class="latest-list-item" v-else>
+            <span class="latest-list-item__empty">
+              no item
+            </span>
+        </div>
       </LatestList>
       <template v-if="latestTransactions">
         <LatestList :header="latestTransactionsHeader">
-          <LatestListItem
-            v-for="item in latestTransactions"
-            :key="item.transHash"
+          <div
+            v-if="latestTransactions.length"
           >
-            <template #label> Tx </template>
-            <template #name>
-              <TitledLink
-                class="app-table__cell-txt"
-                :link="`/blocks/${item.transHeight}`"
-                :text="
-                  item.transHash ? cropText(`0x${item.transSender}`) : 'No info'
-                "
-              />
-            </template>
-            <template #time>
-              {{ diffDays(toDay, getDay(item.transTime)) }}
-            </template>
-            <template #from>
-              <span>From:</span>
-              <TitledLink
-                class="app-table__cell-txt"
-                :text="
-                  item.transSender
-                    ? cropText(`0x${item.transSender}`)
-                    : 'No info'
-                "
-              />
-            </template>
-            <template #to>
-              <span> To: </span>
-              <TitledLink
-                class="app-table__cell-txt"
-                :text="
-                  item.transReceiver
-                    ? cropText(`0x${item.transReceiver}`)
-                    : 'No info'
-                "
-              />
-            </template>
-            <template #currency> {{ item.transAmount }} ODIN </template>
-          </LatestListItem>
+            <LatestListItem
+              v-for="item in latestTransactions"
+              :key="item.transHash"
+            >
+              <template #label> Tx </template>
+              <template #name>
+                <TitledLink
+                  class="app-table__cell-txt"
+                  :link="`/blocks/${item.transHeight}`"
+                  :text="
+                    item.transHash ? cropText(`0x${item.transSender}`) : 'No info'
+                  "
+                />
+              </template>
+              <template #time>
+                {{ diffDays(toDay, getDay(item.transTime)) }}
+              </template>
+              <template #from>
+                <span>From:</span>
+                <TitledLink
+                  class="app-table__cell-txt"
+                  :text="
+                    item.transSender
+                      ? cropText(`0x${item.transSender}`)
+                      : 'No info'
+                  "
+                />
+              </template>
+              <template #to>
+                <span> To: </span>
+                <TitledLink
+                  class="app-table__cell-txt"
+                  :text="
+                    item.transReceiver
+                      ? cropText(`0x${item.transReceiver}`)
+                      : 'No info'
+                  "
+                />
+              </template>
+              <template #currency> {{ item.transAmount }} ODIN </template>
+            </LatestListItem>
+          </div>
+          <div class="latest-list-item" v-else>
+            <span class="latest-list-item__empty">
+              no item
+            </span>
+          </div>
         </LatestList>
       </template>
     </div>
@@ -116,7 +132,7 @@ export default defineComponent({
         // TODO: Promise.allSettled? Promise.all? And how to handle the error if it was caught?
         await getLatestBlocks()
         await getLatestTransactions()
-        await getLatestTelemetry()
+        // await getLatestTelemetry()
       }
     )
 
@@ -126,7 +142,10 @@ export default defineComponent({
     let totalCount = ref()
 
     const getLatestTelemetry = async (): Promise<void> => {
-      // const res = await callers.getTelemetry()
+      // TODO:  Error: Query failed with (18): failed to get average tx fee per day: failed to get the blocks by date: failed to find the blocks: page should be within [1, 8] range, given 9: invalid request
+      // let temp = new Date
+      // temp.setDate(temp.getDate() - 1)
+      // const res = await callers.getTelemetry({startDate: temp, endDate: new Date()})
       // console.log(res)
     }
 
@@ -136,18 +155,20 @@ export default defineComponent({
         lastHeight: reqLastHeight,
       } = await callers.getBlockchain(100, 500)
       latestBlocks.value = [...blockMetas].slice(0, 5)
+      console.log('latestBlocks', latestBlocks.value)
       lastHeight.value = reqLastHeight
     }
 
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
-        // query: `tx.height >= ${LastHeight.value - 10}`,
+        // query: `tx.height >= ${lastHeight.value - 10}`,
         // TODO: return LastHeight.value from getLatestBlocks()
         query: `tx.height >= ${500 - 10}`,
       })
       latestTransactions.value = await makeTransactionListFormatted(
         [...txs].slice(0, 5)
       )
+      console.log('latestTransactions', latestTransactions.value)
       totalCount.value = reqTotalCount
     }
 
@@ -180,6 +201,19 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .latest {
+  &-list-item {
+    &__empty {
+      grid-column-start: 2;
+      grid-column-end: 3;
+      color: var(--clr__input-border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3.2rem;
+      font-weight: 600 ;
+      text-transform: uppercase;
+    }
+  }
   &__wrapper {
     display: grid;
     align-items: flex-start;
