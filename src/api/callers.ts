@@ -22,6 +22,7 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 const makeCallers = () => {
   const broadcaster = api.makeBroadcastCaller.bind(api)
   const querier = api.makeQueryCaller.bind(api)
+  const tmQuerier = api.makeTendermintCaller.bind(api)
 
   return {
     createDataSource: broadcaster<MsgCreateDataSource>(
@@ -121,7 +122,14 @@ const makeCallers = () => {
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
-
+    getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
+    getBlock: tmQuerier((tc) => tc.block.bind(tc)),
+    getTxSearch: tmQuerier((tc) => tc.txSearch.bind(tc)),
+    getAbciInfo: tmQuerier((tc) => tc.abciInfo.bind(tc)),
+    getStatus: tmQuerier((tc) => tc.status.bind(tc)),
+    getGenesis: tmQuerier((tc) => tc.genesis.bind(tc)),
+    getHealth: tmQuerier((tc) => tc.health.bind(tc)),
+    getTelemetry: querier((qc) => qc.telemetry.unverified.txVolume),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },

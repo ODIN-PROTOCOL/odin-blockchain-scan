@@ -27,7 +27,12 @@ export function cropAddress(value?: string): string {
 }
 export function cropText(value?: string): string {
   if (!value) return ''
-  return `${value.slice(0, 11)}…`
+  if (value.length > 11) return `${value.slice(0, 11)}…`
+  return value
+}
+
+export function getDay(time: string): Date {
+  return new Date(time)
 }
 
 export function abbreviateNumber(value: NumLike): string {

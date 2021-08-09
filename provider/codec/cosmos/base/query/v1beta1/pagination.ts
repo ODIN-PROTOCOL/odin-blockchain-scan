@@ -19,25 +19,25 @@ export interface PageRequest {
    * querying the next page most efficiently. Only one of offset or key
    * should be set.
    */
-  key: Uint8Array;
+  key?: Uint8Array;
   /**
    * offset is a numeric offset that can be used when key is unavailable.
    * It is less efficient than using key. Only one of offset or key should
    * be set.
    */
-  offset: Long;
+  offset?: Long;
   /**
    * limit is the total number of results to be returned in the result page.
    * If left empty it will default to a value to be set by each app.
    */
-  limit: Long;
+  limit?: Long;
   /**
    * count_total is set to true  to indicate that the result set should include
    * a count of the total number of items available for pagination in UIs.
    * count_total is only respected when offset is used. It is ignored when key
    * is set.
    */
-  countTotal: boolean;
+  countTotal?: boolean;
 }
 
 /**
@@ -73,13 +73,21 @@ export const PageRequest = {
     message: PageRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     if (message.key.length !== 0) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       writer.uint32(10).bytes(message.key);
     }
-    if (!message.offset.isZero()) {
+    if (!message?.offset?.isZero()) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       writer.uint32(16).uint64(message.offset);
     }
-    if (!message.limit.isZero()) {
+    if (!message?.limit?.isZero()) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       writer.uint32(24).uint64(message.limit);
     }
     if (message.countTotal === true) {

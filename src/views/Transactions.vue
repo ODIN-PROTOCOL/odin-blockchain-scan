@@ -81,20 +81,20 @@ export default defineComponent({
     const totalPages = ref()
     const route = useRoute()
     const totalTransactions = ref()
-    let lastHeight = 0
+    let lastHeight = 500
 
     const getTransactions = async () => {
       const client = await callers.getClient()
 
-      if (!route.params.height) {
-        await client.abciInfo().then((res) => {
-          if (res && res.lastBlockHeight) {
-            lastHeight = +res.lastBlockHeight
-          }
-        })
-      } else {
-        lastHeight = +route.params.height
-      }
+      // if (!route.params.height) {
+      //   await client.abciInfo().then((res) => {
+      //     if (res && res.lastBlockHeight) {
+      //       lastHeight = +res.lastBlockHeight
+      //     }
+      //   })
+      // } else {
+      //   lastHeight = +route.params.height
+      // }
 
       await client
         .txSearch({ query: `tx.height >= ${lastHeight - 10}` })

@@ -53,7 +53,7 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Transactions</span>
-              <span class="app-table__cell-txt">{{item.num_txs}}</span>
+              <span class="app-table__cell-txt">{{ item.num_txs }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Validator</span>
@@ -70,10 +70,8 @@
             <div class="app-table__cell">
               <span class="app-table__header">Reward</span>
               <div>
-                <span
-                  class="app-table__cell-txt"
-                >
-                  {{item.block_size}}
+                <span class="app-table__cell-txt">
+                  {{ item.block_size }}
                 </span>
                 <span class="currency">{{ item.header.chainId }}</span>
               </div>
@@ -122,15 +120,10 @@ export default defineComponent({
     const toHexFunc = toHex
 
     const getBLocks = async () => {
-      const response = await callers.getClient()
-
-      response
-        .blockchain(100, 500)
-        .then((res) => {
-          blocks.value = [...res.blockMetas]
-          totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
-        })
-        .then(() => filterBlocks(page.value))
+      const { blockMetas } = await callers.getBlockchain(100, 500)
+      blocks.value = [...blockMetas]
+      totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
+      await filterBlocks(page.value)
     }
 
     const filterBlocks = async (newPage: number) => {
@@ -151,8 +144,8 @@ export default defineComponent({
       filterBlocks(num)
     }
 
-    onMounted(() => {
-      getBLocks()
+    onMounted(async () => {
+      await getBLocks()
     })
 
     return {
