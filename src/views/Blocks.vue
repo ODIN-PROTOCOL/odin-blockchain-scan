@@ -21,9 +21,6 @@
           <div class="app-table__cell">
             <span class="app-table__cell-txt"> Validator </span>
           </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Reward </span>
-          </div>
         </div>
         <template v-if="filteredBlocks?.length">
           <div
@@ -67,15 +64,6 @@
                 {{ '0x' + toHexFunc(item.header.validatorsHash).toUpperCase() }}
               </div>
             </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Reward</span>
-              <div>
-                <span class="app-table__cell-txt">
-                  {{ item.block_size }}
-                </span>
-                <span class="currency">{{ item.header.chainId }}</span>
-              </div>
-            </div>
           </div>
         </template>
         <template v-else>
@@ -108,6 +96,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { convertToTime, convertToDate } from '@/helpers/dates'
+// import { BlockchainResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 
 export default defineComponent({
   components: { TitledLink, VPagination },
@@ -115,11 +104,11 @@ export default defineComponent({
     const blocks = ref()
     const filteredBlocks = ref()
     const blocksPerPage = 5
-    const page = ref(1)
+    const page = ref<number>(1)
     const totalPages = ref()
     const toHexFunc = toHex
 
-    const getBLocks = async () => {
+    const getBLocks = async (): Promise<void> => {
       const { blockMetas } = await callers.getBlockchain(100, 500)
       blocks.value = [...blockMetas]
       totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
@@ -140,13 +129,15 @@ export default defineComponent({
       page.value = newPage
     }
 
-    const updateHandler = (num: number) => {
+    const updateHandler = (num: number): void => {
       filterBlocks(num)
     }
 
-    onMounted(async () => {
-      await getBLocks()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getBLocks()
+      }
+    )
 
     return {
       blocks,
@@ -171,15 +162,15 @@ export default defineComponent({
 .data-sources__table-row {
   grid:
     auto /
-    repeat(5, minmax(4rem, 1fr));
+    repeat(4, minmax(4rem, 1fr));
 
   @media screen and (max-width: 992px) {
-    grid: repeat(5, minmax(4rem, 1fr)) / auto;
+    grid: repeat(4, minmax(4rem, 1fr)) / auto;
   }
 }
 
 .blocks-container {
-  border-top: 1px solid var(--clr__table-border);
+  border-top: 0.1rem solid var(--clr__table-border);
 }
 
 .app-table__row {
@@ -195,19 +186,19 @@ export default defineComponent({
 }
 
 .app-table__cell-txt {
-  max-width: 200px;
+  max-width: 20rem;
 
   @media screen and (max-width: 600px) {
-    max-width: 150px;
+    max-width: 15rem;
   }
 }
 
 .view-title {
   font-weight: 400;
-  font-size: 32px;
+  font-size: 3.2rem;
 
   @media screen and (max-width: 600px) {
-    font-size: 28px;
+    font-size: 2.8rem;
   }
 }
 
@@ -225,18 +216,18 @@ export default defineComponent({
   border-radius: 10px;
   white-space: nowrap;
   background: var(--clr__tooltip-new);
-  padding: 12px 24px;
+  padding: 1.2rem 2.4rem;
   color: #fff;
   z-index: 1;
   pointer-events: none;
 
   &:before {
     content: '';
-    border-top: 10px solid var(--clr__tooltip-new);
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
+    border-top: 1rem solid var(--clr__tooltip-new);
+    border-right: 1rem solid transparent;
+    border-left: 1rem solid transparent;
     position: absolute;
-    left: 20px;
+    left: 2rem;
     top: 100%;
     transform: translateY(-50%);
   }
@@ -261,7 +252,7 @@ export default defineComponent({
 
   @media screen and (max-width: 992px) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 }
 </style>
@@ -272,11 +263,11 @@ export default defineComponent({
 
   li {
     background: #fff;
-    border: 1px solid var(--clr__action);
-    border-radius: 4px;
-    margin: 0 4px;
-    min-width: 26px;
-    height: 36px;
+    border: 0.1rem solid var(--clr__action);
+    border-radius: 0.4rem;
+    margin: 0 0.4rem;
+    min-width: 2.6rem;
+    height: 3.6rem;
   }
 
   button {
@@ -284,7 +275,7 @@ export default defineComponent({
     width: 100%;
     border: none;
     margin: 0;
-    padding: 10px;
+    padding: 1rem;
   }
 
   .Page {

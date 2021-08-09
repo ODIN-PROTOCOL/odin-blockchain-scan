@@ -97,7 +97,10 @@
             <span>{{ convertDate(blockInfo?.block?.header.time) }}</span>
           </div>
         </div>
-        <div class="data-sources__table-row app-table__row">
+        <div
+          class="data-sources__table-row app-table__row"
+          v-if="blockSize?.value"
+        >
           <div class="info-key">
             <div class="info-key__inner">
               <img src="~@/assets/icons/info.svg" alt="info" />

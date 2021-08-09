@@ -67,12 +67,8 @@ export default defineComponent({
           text: 'Tokemonics overview',
         },
         {
-          to: 'odin',
-          text: 'ODIN',
-        },
-        {
-          to: 'geo',
-          text: 'GEO',
+          to: 'odin&geo',
+          text: 'Odin & Geo',
         },
       ],
     }

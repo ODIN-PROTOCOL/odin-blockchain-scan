@@ -22,7 +22,7 @@
       <input
         type="search"
         class="filter-search"
-        placeholder="searching by account address , thx hash, block"
+        placeholder="searching by account address , block"
         v-model="searchedText"
       />
       <button @click.prevent="searchText" class="search-btn">
@@ -35,12 +35,16 @@
 import { defineComponent, ref } from 'vue'
 export default defineComponent({
   setup() {
-    const filters = ref(['All filters', 'Blocks', 'Tx hash'])
+    const filters = ref<Array<string>>([
+      'All filters',
+      'Blocks',
+      'Account Address',
+    ])
 
-    const activeFilter = ref('')
+    const activeFilter = ref<string>('')
     activeFilter.value = filters.value[0]
 
-    const searchedText = ref('')
+    const searchedText = ref<string>('')
 
     const searchText = (): void => {
       console.log(searchedText.value)

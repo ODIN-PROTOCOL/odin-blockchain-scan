@@ -47,7 +47,10 @@
           </div>
         </template>
       </div>
-      <div class="pagination-wrapper mg-t32">
+      <div
+        v-if="filteredTransactions?.length"
+        class="pagination-wrapper mg-t32"
+      >
         <v-pagination
           v-model="page"
           :pages="totalPages"

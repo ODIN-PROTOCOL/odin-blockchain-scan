@@ -2,7 +2,7 @@
   <div class="latest">
     <div class="latest__wrapper">
       <LatestList :header="latestBlocksHeader">
-        <div v-if="latestBlocks.length">
+        <template v-if="latestBlocks.length">
           <LatestListItem v-for="item in latestBlocks" :key="item.blockId.hash">
             <template #label> Bk </template>
             <template #name>
@@ -32,17 +32,8 @@
               <span>548 transactions</span>
             </template>
             <!-- TODO: what is block_size  -->
-            <!-- TODO: currency-->
-            <template #currency>
-              <span>
-                {{ item.block_size }}
-              </span>
-              <span class="currency">
-                454,565 {{ item.header.chainId.toUpperCase() }}
-              </span>
-            </template>
           </LatestListItem>
-        </div>
+        </template>
         <div class="latest-list-item" v-else>
           <span class="latest-list-item__empty"> no item </span>
         </div>
@@ -91,7 +82,6 @@
                   "
                 />
               </template>
-              <template #currency> {{ item.transAmount }} ODIN </template>
             </LatestListItem>
           </div>
           <div class="latest-list-item" v-else>
@@ -204,8 +194,8 @@ export default defineComponent({
 .latest {
   &-list-item {
     &__empty {
-      grid-column-start: 2;
-      grid-column-end: 3;
+      grid-column-start: 1;
+      grid-column-end: -1;
       color: var(--clr__input-border);
       display: flex;
       justify-content: center;

@@ -120,14 +120,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   // TODO: create view for this pages
   {
-    path: '/odin',
-    name: 'odin',
-    // beforeEnter: authorizedOnlyGuard,
-    component: () => import('../views/Tokemonics.vue'),
-  },
-  {
-    path: '/geo',
-    name: 'geo',
+    path: '/odin&geo',
+    name: 'odin&geo',
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/Tokemonics.vue'),
   },
