@@ -106,7 +106,7 @@ export default defineComponent({
     const blocksPerPage = 5
     const page = ref<number>(1)
     const totalPages = ref()
-    const toHexFunc = toHex
+    const toHexFunc: (data: Uint8Array) => string = toHex
 
     const getBLocks = async (): Promise<void> => {
       const { blockMetas } = await callers.getBlockchain(100, 500)
@@ -115,7 +115,7 @@ export default defineComponent({
       await filterBlocks(page.value)
     }
 
-    const filterBlocks = async (newPage: number) => {
+    const filterBlocks = (newPage: number): number => {
       let tempArr = blocks.value
 
       if (newPage === 1) {

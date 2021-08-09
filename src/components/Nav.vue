@@ -29,6 +29,11 @@
 import { defineComponent } from 'vue'
 import LinksDropdown from '@/components/LinksDropdown.vue'
 
+type LinkList = {
+  name: string
+  links: Array<string>
+}
+
 export default defineComponent({
   components: {
     LinksDropdown,
@@ -38,7 +43,7 @@ export default defineComponent({
   },
 
   setup() {
-    const BlockchainList = {
+    const BlockchainList: LinkList = {
       name: 'Blockchain',
       links: [
         {
@@ -59,7 +64,7 @@ export default defineComponent({
         },
       ],
     }
-    const TokemonicList = {
+    const TokemonicList: LinkList = {
       name: 'Tokemonics',
       links: [
         {
@@ -72,7 +77,7 @@ export default defineComponent({
         },
       ],
     }
-    const ResourceList = {
+    const ResourceList: LinkList = {
       name: 'Resources',
       links: [
         {
