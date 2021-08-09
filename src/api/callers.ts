@@ -124,7 +124,7 @@ const makeCallers = () => {
     },
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
     getTxSearch: tmQuerier((tc) => tc.txSearch.bind(tc)),
-    getTelemetry: querier((qc) => qc.telemetry.unverified.txVolume.bind(qc)),
+    getTelemetry: querier((qc) => qc.telemetry.unverified.txVolume),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },

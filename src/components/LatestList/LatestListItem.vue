@@ -125,6 +125,5 @@ export default defineComponent({
       justify-content: left;
     }
   }
-
 }
 </style>
