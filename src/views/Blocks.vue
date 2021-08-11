@@ -96,26 +96,26 @@ import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { convertToTime, convertToDate } from '@/helpers/dates'
-// import { BlockchainResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 
 export default defineComponent({
+  name: 'Blocks',
   components: { TitledLink, VPagination },
   setup() {
     const blocks = ref()
     const filteredBlocks = ref()
     const blocksPerPage = 5
     const page = ref<number>(1)
-    const totalPages = ref()
+    const totalPages = ref<number>()
     const toHexFunc: (data: Uint8Array) => string = toHex
 
     const getBLocks = async (): Promise<void> => {
       const { blockMetas } = await callers.getBlockchain(100, 500)
       blocks.value = [...blockMetas]
       totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
-      await filterBlocks(page.value)
+      filterBlocks(page.value)
     }
 
-    const filterBlocks = (newPage: number): number => {
+    const filterBlocks = (newPage: number): void => {
       let tempArr = blocks.value
 
       if (newPage === 1) {

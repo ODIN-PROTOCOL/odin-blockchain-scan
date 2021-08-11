@@ -13,7 +13,7 @@ import Latest from '@/components/LatestList/Latest.vue'
 import InfoPanel from '@/components/InfoPanel/InfoPanel.vue'
 
 export default defineComponent({
-  name: 'Home Page',
+  name: 'Home',
   components: { Latest, InfoPanel },
 })
 </script>

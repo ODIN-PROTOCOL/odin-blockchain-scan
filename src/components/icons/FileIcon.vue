@@ -18,7 +18,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ArrowIcon',
+  name: 'FileIcon',
   props: {
     className: { type: String },
     width: { type: Number, default: 48 },

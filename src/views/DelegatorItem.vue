@@ -102,13 +102,17 @@
     </div>
   </div>
 </template>
-<script>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { callers } from '@/api/callers'
-import { toHex } from '@cosmjs/encoding'
+<script lang="ts">
+import { ref, onMounted, defineComponent } from 'vue'
+import {
+  RouteLocationNormalizedLoaded,
+  Router,
+  useRoute,
+  useRouter,
+} from 'vue-router'
+// import { callers } from '@/api/callers'
 import TitledLink from '@/components/TitledLink.vue'
-import { Bech32 } from '@cosmjs/encoding'
+// import { Bech32 } from '@cosmjs/encoding'
 
 import {
   QueryClient,
@@ -121,23 +125,24 @@ import {
 
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
-import { API_CONFIG } from '../api/api-config.ts'
+import { API_CONFIG } from '@/api/api-config'
 
-export default {
+import { convertDate, copyValue } from '@/helpers/helpers'
+
+export default defineComponent({
   components: { TitledLink },
-  // eslint-disable-next-line
   setup() {
-    const router = useRouter()
-    const back = () => {
+    const router: Router = useRouter()
+    const back = (): void => {
       router.back()
     }
-    const route = useRoute()
+    const route: RouteLocationNormalizedLoaded = useRoute()
 
     const blocks = ref()
     const delegatorBalance = ref()
     const delegatorStake = ref()
 
-    const getValidator = async () => {
+    const getValidator = async (): void => {
       // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
 
       const client = QueryClient.withExtensions(
@@ -160,75 +165,8 @@ export default {
       // })
     }
 
-    const convertDate = (time) => {
-      const nowTime = new Date()
-
-      const newTime = new Date(time)
-
-      const diff = (nowTime.getTime() - newTime.getTime()) / 1000
-      let diffMinutes = ''
-      let diffSeconds = ''
-      let totalDiff = ''
-      if (diff < 900) {
-        if (diff / 60 > 0) {
-          diffMinutes =
-            parseInt(diff / 60) > 9
-              ? parseInt(diff / 60) + ':'
-              : '0' + parseInt(diff / 60) + ':'
-          diffSeconds =
-            parseInt(diff) - diffMinutes * 60 > 9
-              ? parseInt(diff)
-              : '0' + parseInt(diff)
-        } else {
-          diffMinutes = ''
-          diffSeconds =
-            parseInt(diff) > 9 ? parseInt(diff) : '0' + parseInt(diff)
-        }
-
-        totalDiff = `${diffMinutes}${diffSeconds} ago`
-      }
-
-      const timezone =
-        newTime.getTimezoneOffset() / 60 != 0
-          ? newTime.getTimezoneOffset() / 60 + ':00'
-          : ''
-
-      const seconds =
-        newTime.getSeconds() > 9
-          ? newTime.getSeconds()
-          : '0' + newTime.getSeconds()
-      const minutes =
-        newTime.getMinutes() > 9
-          ? newTime.getMinutes()
-          : '0' + newTime.getMinutes()
-      const hours =
-        newTime.getHours() > 9 ? newTime.getHours() : '0' + newTime.getHours()
-      const day =
-        newTime.getDay() > 9 ? newTime.getDay() : '0' + newTime.getDay()
-      const month =
-        1 + newTime.getMonth() > 9
-          ? 1 + newTime.getMonth()
-          : '0' + (1 + newTime.getMonth())
-      const year = newTime.getFullYear()
-      const midday = hours > 12 ? 'PM' : 'AM'
-
-      if (totalDiff) {
-        return `${totalDiff} (${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC)`
-      } else {
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC`
-      }
-    }
-
-    const copyValue = (text) => {
-      window.navigator.clipboard.writeText(text)
-    }
-
-    const getHash = (str) => {
-      return toHex(str).toUpperCase()
-    }
-
-    onMounted(() => {
-      getValidator()
+    onMounted(async () => {
+      await getValidator()
     })
 
     return {
@@ -241,11 +179,11 @@ export default {
       blocks,
     }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .block {
   &-item {
@@ -259,7 +197,7 @@ export default {
       margin-bottom: 3.2rem;
 
       & > * {
-        margin-right: 20px;
+        margin-right: 2rem;
       }
 
       @media screen and (max-width: 600px) {
@@ -506,8 +444,8 @@ export default {
   }
 }
 
-.stats{
-  &-wrapper{
+.stats {
+  &-wrapper {
     border: 1px solid var(--clr__action);
     border-radius: 8px;
     padding: 3.2rem 2.4rem;
@@ -535,7 +473,6 @@ export default {
     span + span {
       margin-left: 10px;
       display: inline-block;
-      
     }
 
     .amount {

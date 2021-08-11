@@ -28,13 +28,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import LinksDropdown from '@/components/LinksDropdown.vue'
-
-type LinkList = {
-  name: string
-  links: Array<string>
-}
+import { LinkList } from '@/helpers/Types'
 
 export default defineComponent({
+  name: 'Nav',
   components: {
     LinksDropdown,
   },

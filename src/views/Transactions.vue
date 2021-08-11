@@ -75,6 +75,7 @@ import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
+  name: 'Transactions',
   components: { VPagination, TransitionLine },
   setup() {
     const transactions = ref()

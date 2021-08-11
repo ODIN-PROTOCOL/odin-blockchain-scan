@@ -187,9 +187,8 @@ import TitledLink from '@/components/TitledLink.vue'
 import { defineComponent, ref, onMounted, watch } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
-import { Bech32, fromBase64 } from '@cosmjs/encoding'
-
-import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
+// import { Bech32, fromBase64 } from '@cosmjs/encoding'
+// import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
 
 export default defineComponent({
   components: { TitledLink, VPagination },

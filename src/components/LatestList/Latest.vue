@@ -122,8 +122,8 @@ export default defineComponent({
 
     let latestBlocks = ref({})
     let latestTransactions = ref({})
-    let lastHeight = ref()
-    let totalCount = ref()
+    let lastHeight = ref<number>()
+    let totalCount = ref<number>()
 
     const getLatestTelemetry = async (): Promise<void> => {
       // TODO: Error: Query failed with (18): failed to get tx volume: failed to get the blocks by date: failed to find the blocks: page should be within [1, 9] range, given 10: invalid request
@@ -145,11 +145,10 @@ export default defineComponent({
       console.log('latestBlocks', latestBlocks.value)
       lastHeight.value = reqLastHeight
     }
-    const getAbciInfo = async (): Promise<void> => {
-      const res = await callers.getAbciInfo()
-      console.log('getAbciInfo', res)
-    }
-
+    // const getAbciInfo = async (): Promise<void> => {
+    //   const res = await callers.getAbciInfo()
+    //   console.log('getAbciInfo', res)
+    // }
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
         // query: `tx.height >= ${lastHeight.value - 10}`,
