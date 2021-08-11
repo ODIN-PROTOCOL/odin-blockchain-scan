@@ -142,9 +142,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
 
 .app-table__cell-txt {
   max-width: 150px;

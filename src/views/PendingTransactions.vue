@@ -160,9 +160,9 @@ export default defineComponent({
         .then((res) => res.json())
         .then((data) => {
           const codedStrings = data.result.txs
-          const tempStrings = []
+          const tempStrings: Tx[] = []
 
-          codedStrings.forEach((str) => {
+          codedStrings.forEach((str: string): void => {
             const decodedTx = Tx.decode(fromBase64(str))
             tempStrings.push(decodedTx)
           })
@@ -175,7 +175,7 @@ export default defineComponent({
         .then((): void => filterTransactions(page.value))
     }
 
-    const filterTransactions = async (newPage): void => {
+    const filterTransactions = (newPage: number): void => {
       let tempArr = transactions.value
 
       if (newPage === 1) {
@@ -192,7 +192,7 @@ export default defineComponent({
       page.value = newPage
     }
 
-    const updateHandler = (num): void => {
+    const updateHandler = (num: number): void => {
       filterTransactions(num)
     }
 

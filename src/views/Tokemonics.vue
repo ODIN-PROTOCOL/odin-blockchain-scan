@@ -133,9 +133,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
 
 h1 {
   font-weight: 400;

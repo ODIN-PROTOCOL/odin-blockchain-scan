@@ -2,7 +2,7 @@
   <div class="container">
     <div class="block-item">
       <div class="block-item__title">
-        <button class="block-back" @click.prevent="back">
+        <button class="block-back" @click.prevent="routerBack(router)">
           <img src="~@/assets/icons/back-arrow.svg" alt="info" />
         </button>
         <h1 class="block-name">Transaction</h1>
@@ -232,6 +232,8 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
+import { routerBack } from '@/router'
+
 import { callers } from '@/api/callers'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
@@ -240,47 +242,55 @@ import { API_CONFIG } from '@/api/api-config'
 
 import { convertToTime, convertToDate } from '@/helpers/dates'
 import { copyValue } from '@/helpers/helpers'
+import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
+import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc/build/dates'
 
 export default defineComponent({
   name: 'TransactionsItem',
   setup() {
     const router: Router = useRouter()
-    const back = (): void => {
-      router.back()
-    }
     const route: RouteLocationNormalizedLoaded = useRoute()
 
-    const toHexFunc = toHex
-    const transInfo = ref([])
-    const transBlock = ref()
-    const transHash = ref()
-    const transStatus = ref()
-    const transMemo = ref()
-    const transUsed = ref()
-    const transWanted = ref()
-    const transSender = ref()
-    const transTime = ref()
-    const transTotal = ref()
-    const transFeeList = ref([])
-    const transMessagesList = ref([])
+    const transInfo = ref()
+    const transBlock = ref<number>()
+    const transHash = ref<string>()
+    const transStatus = ref<number>()
+    const transMemo = ref<string | undefined>()
+    const transUsed = ref<number>()
+    const transWanted = ref<number>()
+    const transSender = ref<string>()
+    const transTime = ref<ReadonlyDateWithNanoseconds>()
+    const transTotal = ref<number>()
+    const transFeeList = ref<Array<Coin> | undefined>()
+    const transMessagesList = ref<void | Array<
+      { value: MsgSend; typeUrl: string } | undefined
+    >>()
 
-    const getTransaction = async (): void => {
-      const client = await callers.getClient()
-
-      const txs = await client.txSearch({
+    const getTransaction = async (): Promise<void> => {
+      const { txs } = await callers.getTxSearch({
         query: `tx.height = ${route.params.height}`,
       })
 
-      const decodedTx = Tx.decode(txs.txs[0].tx)
+      const { blockMetas } = await callers.getBlockchain(
+        Number(route.params.height),
+        Number(route.params.height)
+      )
+      transTime.value = blockMetas[0].header.time
 
-      transHash.value = toHexFunc(txs.txs[0].hash).toUpperCase()
-      transBlock.value = txs.txs[0].height
-      transStatus.value = txs.txs[0].result.code
-      transFeeList.value = decodedTx.authInfo.fee.amount
-      transMemo.value = decodedTx.body.memo
-      transSender.value = toHexFunc(
-        decodedTx.authInfo.signerInfos[0].publicKey.value
-      ).toUpperCase()
+      const decodedTx: Tx = Tx.decode(txs[0].tx)
+
+      transHash.value = toHex(txs[0].hash).toUpperCase()
+      transBlock.value = txs[0].height
+      transStatus.value = txs[0].result.code
+      transFeeList.value = decodedTx?.authInfo?.fee?.amount
+      transMemo.value = decodedTx?.body?.memo
+
+      if (decodedTx?.authInfo?.signerInfos[0]?.publicKey?.value) {
+        transSender.value = toHex(
+          decodedTx?.authInfo?.signerInfos[0]?.publicKey?.value
+        ).toUpperCase()
+      }
+
       transTotal.value = await getTotalTx(decodedTx)
 
       await fetch(`${API_CONFIG.rpc}/tx?hash=0x${transHash.value}&prove=true`)
@@ -290,33 +300,28 @@ export default defineComponent({
           transWanted.value = data.result.tx_result.gas_wanted
         })
 
-      await client
-        .blockchain(+route.params.height, +route.params.height)
-        .then((res) => {
-          transTime.value = res.blockMetas[0].header.time
-        })
-
       transMessagesList.value = await getMessages(decodedTx)
     }
 
-    const getMessages = async (decodedTx) => {
-      const filteredDecodedMsgs = decodedTx.body.messages.filter(
+    const getMessages = async (
+      decodedTx: Tx
+    ): Promise<void | Array<{ value: MsgSend; typeUrl: string }>> => {
+      const filteredDecodedMessages = decodedTx?.body?.messages.filter(
         (item) => item.typeUrl === '/cosmos.bank.v1beta1.MsgSend'
       )
-      const tempDecodedMsgs = filteredDecodedMsgs.map((item) => {
+      if (!filteredDecodedMessages) return
+
+      return filteredDecodedMessages.map((item) => {
         return { ...item, value: MsgSend.decode(item.value) }
       })
-
-      return tempDecodedMsgs
     }
 
-    const getTotalTx = async (decodedTx) => {
+    const getTotalTx = async (decodedTx: Tx): Promise<number> => {
       let totalTx = 0
-      const tempDecodedMsgs = decodedTx.body.messages.filter(
+      const tempDecodedMessages = decodedTx?.body?.messages.filter(
         (item) => item.typeUrl === '/cosmos.bank.v1beta1.MsgSend'
       )
-
-      tempDecodedMsgs.forEach((m) => {
+      tempDecodedMessages?.forEach((m) => {
         const msgValue = MsgSend.decode(m.value)
         if (!msgValue) return
         totalTx += +msgValue.amount[0].amount
@@ -325,13 +330,16 @@ export default defineComponent({
       return totalTx
     }
 
-    onMounted(async (): void => {
-      await getTransaction()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getTransaction()
+      }
+    )
 
     return {
       transInfo,
       route,
+      router,
       transStatus,
       transHash,
       transBlock,
@@ -345,18 +353,13 @@ export default defineComponent({
       transTotal,
       convertToTime,
       convertToDate,
-      back,
+      routerBack,
       copyValue,
-      toHexFunc,
     }
   },
 })
 </script>
 <style lang="scss" scoped>
-* {
-  font-family: 'SF Display';
-}
-
 h2,
 h3 {
   font-weight: 400;
@@ -401,7 +404,7 @@ a {
     padding-bottom: 1.6rem;
     padding-top: 1.6rem;
     // border-bottom: 1px solid #cce4ff;
-    border-bottom: 1px solid $clr-input-border;
+    border-bottom: 1px solid var(--clr-input-border);
 
     &__title {
       max-width: 209px;
@@ -555,7 +558,7 @@ a {
   }
 
   @media screen and (max-width: 992px) {
-    maw-width: 90vw;
+    max-width: 90vw;
     min-width: 50vw;
     white-space: break-spaces;
   }

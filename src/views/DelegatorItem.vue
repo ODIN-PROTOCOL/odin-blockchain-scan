@@ -2,7 +2,7 @@
   <div class="container">
     <div class="block-item">
       <div class="block-item__title">
-        <button class="block-back" @click.prevent="back">
+        <button class="block-back" @click.prevent="routerBack(router)">
           <img src="~@/assets/icons/back-arrow.svg" alt="info" />
           <span>Delegators</span>
         </button>
@@ -110,6 +110,8 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
+import { routerBack } from '@/router'
+
 // import { callers } from '@/api/callers'
 import TitledLink from '@/components/TitledLink.vue'
 // import { Bech32 } from '@cosmjs/encoding'
@@ -133,16 +135,13 @@ export default defineComponent({
   components: { TitledLink },
   setup() {
     const router: Router = useRouter()
-    const back = (): void => {
-      router.back()
-    }
     const route: RouteLocationNormalizedLoaded = useRoute()
 
     const blocks = ref()
     const delegatorBalance = ref()
     const delegatorStake = ref()
 
-    const getValidator = async (): void => {
+    const getValidator = async (): Promise<void> => {
       // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
 
       const client = QueryClient.withExtensions(
@@ -154,7 +153,9 @@ export default defineComponent({
         setupIbcExtension
       )
 
-      console.log(client.staking.unverified.validator(route.params.hash))
+      console.log(
+        client.staking.unverified.validator(String(route.params.hash))
+      )
 
       // response.validator(+route.params.id).then((res) => {
       //   validatorInfo.value = res
@@ -170,10 +171,11 @@ export default defineComponent({
     })
 
     return {
+      router,
       route,
       delegatorBalance,
       delegatorStake,
-      back,
+      routerBack,
       copyValue,
       convertDate,
       blocks,

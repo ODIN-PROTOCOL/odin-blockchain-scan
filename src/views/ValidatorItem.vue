@@ -178,7 +178,7 @@ export default defineComponent({
     const validatorCpuSize = ref()
     const validatorSize = ref()
 
-    const getValidator = async (): void => {
+    const getValidator = async (): Promise<void> => {
       // const response = await callers.getClient()
       // console.log(response)
 
@@ -195,7 +195,9 @@ export default defineComponent({
         setupIbcExtension
       )
 
-      console.log(client.staking.unverified.validator(route.params.hash))
+      console.log(
+        client.staking.unverified.validator(String(route.params.hash))
+      )
 
       // response.validator(+route.params.id).then((res) => {
       //   validatorInfo.value = res
@@ -206,9 +208,11 @@ export default defineComponent({
       // })
     }
 
-    onMounted(async (): void => {
-      await getValidator()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getValidator()
+      }
+    )
 
     return {
       route,
@@ -231,9 +235,6 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-* {
-  font-family: 'SF Display';
-}
 .block {
   &-item {
     padding: 2.6rem 3.3rem;
@@ -499,8 +500,6 @@ export default defineComponent({
   }
 
   &-item {
-    // Kappa :fire: :fire: :fire: sorry
-    display: flex;
     margin-bottom: 24px;
     display: grid;
     grid-template-columns: 50px 500px 1fr;

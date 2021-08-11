@@ -308,9 +308,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
+
 .validators-head,
 .validators-row {
   grid:
