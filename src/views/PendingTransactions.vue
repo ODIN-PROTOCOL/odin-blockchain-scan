@@ -35,7 +35,7 @@
           </div>
         </div>
         <template v-if="filteredTransactions?.length">
-          <PendingTransactionLine 
+          <PendingTransactionLine
             v-for="(item, index) in filteredTransactions"
             :key="index"
             :transition="item"
@@ -63,7 +63,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { callers } from '@/api/callers'
 import PendingTransactionLine from '@/components/PendingTransactionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
@@ -75,6 +75,7 @@ import { toHex } from '@cosmjs/encoding'
 import { fromBase64 } from '@cosmjs/encoding'
 
 export default defineComponent({
+  name: 'PendingTransactions',
   components: { PendingTransactionLine, VPagination },
   setup() {
     const transactions = ref()
@@ -87,60 +88,59 @@ export default defineComponent({
     const toHexFunc = toHex
     let lastHeight = 0
 
-    const testPendingString = '"CpIBCo8BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm8KK29kaW4xbm5mZWd1cTMweDZud3hqaGF5cHh5bXgzbnVseXNwc3VqYTRhMngSK29kaW4xd3dwaHYzZ3IzMm5xZzZ3eTJlOGpnOWZ0NDVobXVhZ3NnNXpsYTkaEwoEbG9raRILMTAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAjJ9fZD9gps8fxP7cq+reyazHJn+Y6vdIU/zdObkb/i7EgQKAggBGAcSBBDAmgwaQGjtzoxsI2BbXOaRe6u7krV79u7qmOftaUWpzp+DBBLmegePGRT0UNKcamksVlmob8y/th4cGJhmuFn8kJkfNeE="'
+    // const testPendingString = '"CpIBCo8BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm8KK29kaW4xbm5mZWd1cTMweDZud3hqaGF5cHh5bXgzbnVseXNwc3VqYTRhMngSK29kaW4xd3dwaHYzZ3IzMm5xZzZ3eTJlOGpnOWZ0NDVobXVhZ3NnNXpsYTkaEwoEbG9raRILMTAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAjJ9fZD9gps8fxP7cq+reyazHJn+Y6vdIU/zdObkb/i7EgQKAggBGAcSBBDAmgwaQGjtzoxsI2BbXOaRe6u7krV79u7qmOftaUWpzp+DBBLmegePGRT0UNKcamksVlmob8y/th4cGJhmuFn8kJkfNeE="'
     // const testPendingTrans = [
-          // {
-          //   authInfo: {
-          //     fee: {
-          //       amount: [],
-          //       gasLimit: {
-          //         high: 0,
-          //         low: 200000,
-          //         unsigned: true,
-          //       },
-          //       granter: "",
-          //       payer: ""
-          //     },
-          //     signerInfos: [
-          //       {
-          //         modeInfo: {
-          //           mode: 1
-          //         },
-          //         publicKey: {
-          //           typeUrl: '/cosmos.crypto.secp256k1.PubKey',
-          //           value: []
-          //         },
-          //         sequence : {
-          //           high: 0,
-          //           low: 7,
-          //           unsigned: true,
-          //         }
-          //       }
-          //     ]
-          //   },
-          //   body : {
-          //     extensionOptions: [],
-          //     memo: '',
-          //     messages: [
-          //       {
-          //         typeUrl: "/cosmos.bank.v1beta1.MsgSend"
-          //       }
-          //     ],
-          //     nonCriticalExtensionOptions: [],
-          //     timeoutHeight: {
-          //       high: 0,
-          //       low: 0,
-          //       unsigned: true,
-          //     }
-          //   },
-          //   signatures: [
-          //     {
+    // {
+    //   authInfo: {
+    //     fee: {
+    //       amount: [],
+    //       gasLimit: {
+    //         high: 0,
+    //         low: 200000,
+    //         unsigned: true,
+    //       },
+    //       granter: "",
+    //       payer: ""
+    //     },
+    //     signerInfos: [
+    //       {
+    //         modeInfo: {
+    //           mode: 1
+    //         },
+    //         publicKey: {
+    //           typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+    //           value: []
+    //         },
+    //         sequence : {
+    //           high: 0,
+    //           low: 7,
+    //           unsigned: true,
+    //         }
+    //       }
+    //     ]
+    //   },
+    //   body : {
+    //     extensionOptions: [],
+    //     memo: '',
+    //     messages: [
+    //       {
+    //         typeUrl: "/cosmos.bank.v1beta1.MsgSend"
+    //       }
+    //     ],
+    //     nonCriticalExtensionOptions: [],
+    //     timeoutHeight: {
+    //       high: 0,
+    //       low: 0,
+    //       unsigned: true,
+    //     }
+    //   },
+    //   signatures: [
+    //     {
 
-          //     }
-          //   ]
-              
-        // ]
-      
+    //     }
+    //   ]
+
+    // ]
 
     const getTransactions = async () => {
       const client = await callers.getClient()
@@ -160,24 +160,22 @@ export default defineComponent({
         .then((res) => res.json())
         .then((data) => {
           const codedStrings = data.result.txs
-          const tempStrings = []
+          const tempStrings: Tx[] = []
 
-          codedStrings.forEach((str) => {
-              const decodedTx = Tx.decode(fromBase64(str))
-              tempStrings.push(decodedTx)
-          });
+          codedStrings.forEach((str: string): void => {
+            const decodedTx = Tx.decode(fromBase64(str))
+            tempStrings.push(decodedTx)
+          })
 
           transactions.value = [...tempStrings]
           totalTransactions.value = tempStrings.length
 
-          totalPages.value = Math.ceil(
-            tempStrings.length / transactionsPerPage
-          )
+          totalPages.value = Math.ceil(tempStrings.length / transactionsPerPage)
         })
-        .then(() => filterTransactions(page.value))
+        .then((): void => filterTransactions(page.value))
     }
 
-    const filterTransactions = async (newPage) => {
+    const filterTransactions = (newPage: number): void => {
       let tempArr = transactions.value
 
       if (newPage === 1) {
@@ -194,7 +192,7 @@ export default defineComponent({
       page.value = newPage
     }
 
-    const updateHandler = (num) => {
+    const updateHandler = (num: number): void => {
       filterTransactions(num)
     }
 
@@ -218,7 +216,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .data-sources__table-head,
 .data-sources__table-row {

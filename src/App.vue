@@ -35,14 +35,15 @@
 import '@invisiburu/vue-picker/dist/vue-picker.min.css'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 // import { dialogs } from '@/helpers/dialogs'
-import { useAuthorization } from '@/composables/useAuthorization'
+// import { useAuthorization } from '@/composables/useAuthorization'
+// import UserWidget from '@/components/UserWidget.vue'
 import Nav from '@/components/Nav.vue'
 import BurgerMenu from '@/components/BurgerMenu.vue'
-// import UserWidget from '@/components/UserWidget.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import Footer from '@/components/Footer.vue'
 
 export default defineComponent({
+  name: 'App',
   components: { Nav, SearchBar, Footer, BurgerMenu },
   setup() {
     const _readyStates = ref({
@@ -62,19 +63,19 @@ export default defineComponent({
     })
 
     // Burger Menu
-    const isOpen = ref(false)
+    const isOpen = ref<boolean>(false)
     const burgerMenuHandler = (event: Event | MouseEvent) => {
       event.preventDefault()
       isOpen.value = isOpen.value !== true
     }
-    const changeRoute = () => {
+    const changeRoute = (): void => {
       if (isOpen.value === true) isOpen.value = false
     }
     return {
       isAppReady,
       // dialogsContainerRef,
-      isLoggedIn: true,
       // isLoggedIn: useAuthorization().isLoggedIn,
+      isLoggedIn: true,
       isOpen,
       burgerMenuHandler,
       changeRoute,

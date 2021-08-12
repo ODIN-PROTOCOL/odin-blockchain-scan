@@ -2,46 +2,55 @@
   <div class="data-sources__table-row app-table__row">
     <div class="app-table__cell">
       <span class="app-table__header">Transaction hash</span>
-      <router-link
-        :to="`/transactions/${transHeight}/${transHash}`"
-      >
-        <TitledLink
-            class="app-table__cell-txt"
-            :text="'Ox' + transHash"
-        />
+      <router-link :to="`/transactions/${transHeight}/${transHash}`">
+        <TitledLink class="app-table__cell-txt" :text="'Ox' + transHash" />
       </router-link>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Type</span>
-      <span class="app-table__cell-txt">{{transType}}</span>
+      <span class="app-table__cell-txt">{{ transType }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Block</span>
-      <router-link :to="`/blocks/${transitionT.height}`"> 
+      <router-link :to="`/blocks/${transitionT.height}`">
         <TitledLink class="app-table__cell-txt" :text="transitionT.height" />
       </router-link>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Date and time</span>
-      <span class="app-table__cell-txt">{{convertToTime(transTime)}}&nbsp;</span>
-      <span class="app-table__cell-txt">{{convertToDate(transTime)}}</span>
+      <span class="app-table__cell-txt"
+        >{{ convertToTime(transTime) }}&nbsp;</span
+      >
+      <span class="app-table__cell-txt">{{ convertToDate(transTime) }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Sender</span>
-      <TitledLink class="app-table__cell-txt" :text="transSender ? `0x${transSender}` : ''" />
+      <TitledLink
+        class="app-table__cell-txt"
+        :text="transSender ? `0x${transSender}` : ''"
+      />
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Receiver</span>
-      <TitledLink class="app-table__cell-txt" :text="transReceiver ? `0x${transReceiver}` : ''" />
+      <TitledLink
+        class="app-table__cell-txt"
+        :text="transReceiver ? `0x${transReceiver}` : ''"
+      />
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Amount</span>
-      <span class="app-table__cell-txt">{{transAmount ? transAmount : ''}}</span>
+      <span class="app-table__cell-txt">{{
+        transAmount ? transAmount : ''
+      }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Transaction Fee</span>
-      <span class="app-table__cell-txt">{{transFeeList[0]?.amount}}&nbsp;</span>
-      <span class="app-table__cell-txt">{{transFeeList[0]?.denom.toUpperCase()}}</span>
+      <span class="app-table__cell-txt"
+        >{{ transFeeList[0]?.amount }}&nbsp;</span
+      >
+      <span class="app-table__cell-txt">{{
+        transFeeList[0]?.denom.toUpperCase()
+      }}</span>
     </div>
   </div>
 </template>
@@ -54,12 +63,13 @@ import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
 
 export default defineComponent({
+  name: 'TransactionLine',
   components: { TitledLink },
   props: {
-      transition: {
-          type: Object,
-          required: true
-      }
+    transition: {
+      type: Object,
+      required: true,
+    },
   },
   setup(props) {
     const toHexFunc = toHex
@@ -93,33 +103,38 @@ export default defineComponent({
       transAmount.value = ''
       transReceiver.value = ''
 
-
       const decodedTx = Tx.decode(txs.txs[0].tx)
-      
 
       transAmount.value = await getTotalTx(decodedTx)
 
-      await client.blockchain(+transitionT.value.height, +transitionT.value.height)
+      await client
+        .blockchain(+transitionT.value.height, +transitionT.value.height)
         .then((res) => {
           transTime.value = res.blockMetas[0].header.time
         })
 
-      transHash.value = toHex(txs.txs[0].hash || transitionT.value.hash).toUpperCase()
+      transHash.value = toHex(
+        txs.txs[0].hash || transitionT.value.hash
+      ).toUpperCase()
       transFeeList.value = decodedTx.authInfo.fee.amount
-      transSender.value = toHex(decodedTx.authInfo.signerInfos[0].publicKey.value).toUpperCase()
+      transSender.value = toHex(
+        decodedTx.authInfo.signerInfos[0].publicKey.value
+      ).toUpperCase()
     }
 
     const getTotalTx = async (decodedTx) => {
       let totalTx = 0
-      
-      const tempDecodedMsgs = decodedTx.body.messages.filter(item => item.typeUrl === "/cosmos.bank.v1beta1.MsgSend")
 
-      tempDecodedMsgs.forEach(m => {
+      const tempDecodedMsgs = decodedTx.body.messages.filter(
+        (item) => item.typeUrl === '/cosmos.bank.v1beta1.MsgSend'
+      )
+
+      tempDecodedMsgs.forEach((m) => {
         const msgValue = MsgSend.decode(m.value)
         transReceiver.value = msgValue.toAddress.toUpperCase()
         transType.value = 'Send'
 
-        if(!msgValue) return
+        if (!msgValue) return
         totalTx += +msgValue.amount[0].amount
       })
 
@@ -127,7 +142,7 @@ export default defineComponent({
     }
 
     const convertToTime = (time) => {
-      if(!time) return ''
+      if (!time) return ''
       const someTime = new Date(time)
 
       const minutes = String(someTime.getMinutes()).padStart(2, '0')
@@ -137,7 +152,7 @@ export default defineComponent({
     }
 
     const convertToDate = (time) => {
-      if(!time) return ''
+      if (!time) return ''
       const someTime = new Date(time)
 
       const day = String(someTime.getDay()).padStart(2, '0')
@@ -147,7 +162,6 @@ export default defineComponent({
     }
 
     onMounted(() => {
-
       getTransitionLineInfo()
     })
 
@@ -166,16 +180,14 @@ export default defineComponent({
       transSender,
       transMessagesList,
       transAmount,
-      transReceiver
+      transReceiver,
     }
   },
 })
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
+
 
 .app-table__cell-txt {
   max-width: 150px;

@@ -24,6 +24,7 @@ import { computed, defineComponent, PropType, ref, toRef } from 'vue'
 import { textToClipboard } from '@/helpers/clipboard'
 
 export default defineComponent({
+  name: 'CopyText',
   props: {
     text: { type: NumLikeTypes as PropType<NumLike>, required: true },
     displayText: { type: NumLikeTypes as PropType<NumLike>, required: false },

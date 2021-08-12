@@ -3,24 +3,24 @@
     <div class="view-main tokemonics">
       <div class="tokemonics-left">
         <div class="mg-b24 mg-t32">
-            <div>
-              <h1>Tokenomics overview</h1>
-              <div class="mg-b16 mg-t32 tokemonics-nav">
+          <div>
+            <h1>Tokenomics overview</h1>
+            <div class="mg-b16 mg-t32 tokemonics-nav">
               <h2
-                  class="view-title"
-                  @click="changeTab(true)"
-                  :class="showTab ? 'active' : ''"
+                class="view-title"
+                @click="changeTab(true)"
+                :class="showTab ? 'active' : ''"
               >
-                  ODIN
+                ODIN
               </h2>
               <h2
-                  class="view-title"
-                  @click="changeTab(false)"
-                  :class="!showTab ? 'active' : ''"
+                class="view-title"
+                @click="changeTab(false)"
+                :class="!showTab ? 'active' : ''"
               >
-                  GEO
+                GEO
               </h2>
-              </div>
+            </div>
           </div>
 
           <div class="tokemonics-content">
@@ -43,11 +43,14 @@
               <div class="tokemonics-content__row">
                 <div class="info-key">Supply power</div>
                 <div class="info-value">
-                  <span>100 million tokens (will be decreased to 80 million within the deflationary taxation program)</span>
+                  <span
+                    >100 million tokens (will be decreased to 80 million within
+                    the deflationary taxation program)</span
+                  >
                 </div>
               </div>
               <div class="tokemonics-content__row">
-                <div class="info-key">Purpose </div>
+                <div class="info-key">Purpose</div>
                 <div class="info-value">
                   <span>Payment from data consumers;</span>
                   <span>System Governance;</span>
@@ -78,31 +81,31 @@
                 </div>
               </div>
               <div class="tokemonics-content__row">
-                <div class="info-key">Purpose </div>
+                <div class="info-key">Purpose</div>
                 <div class="info-value">
                   <span>Payment to data providers </span>
                 </div>
               </div>
             </article>
           </div>
-          
         </div>
-        <button @click="downloadPaper" class="tokemonics-download">Download Tokenomics Paper</button>
+        <button @click="downloadPaper" class="tokemonics-download">
+          Download Tokenomics Paper
+        </button>
       </div>
       <div class="tokemonics-scheme">
-        <img src="~@/assets/tokemonics.jpg" alt="tokemonics scheme">
+        <img src="~@/assets/tokemonics.jpg" alt="tokemonics scheme" />
       </div>
-
-      
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref } from 'vue'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
 export default defineComponent({
+  name: 'Tokemonics',
   setup() {
     const showTab = ref(true)
 
@@ -123,16 +126,13 @@ export default defineComponent({
     return {
       changeTab,
       showTab,
-      downloadPaper
+      downloadPaper,
     }
   },
 })
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
 
 h1 {
   font-weight: 400;
@@ -146,7 +146,6 @@ h2 {
   color: var(--clr__text);
 }
 
-
 .tokemonics {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -155,11 +154,11 @@ h2 {
   @media screen and (max-width: 1100px) {
     grid-template-columns: 1fr;
   }
-  
+
   &-content {
     max-width: 500px;
     padding: 0.8rem 2.4rem;
-    background: #F7F7F7;
+    background: #f7f7f7;
 
     &__row {
       display: grid;
@@ -167,8 +166,8 @@ h2 {
       padding: 2.4rem 0;
     }
 
-    &__row + &__row{
-      border-top: 1px solid  var(--clr__table-border);
+    &__row + &__row {
+      border-top: 1px solid var(--clr__table-border);
     }
 
     @media screen and (max-width: 1100px) {

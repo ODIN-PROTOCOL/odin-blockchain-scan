@@ -10,6 +10,7 @@
 import { defineComponent, ref } from 'vue'
 import InfoPanelChart from '@/components/InfoPanel/InfoPanelChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
+import { Link } from '@/helpers/Types'
 
 export default defineComponent({
   name: 'InfoPanel',
@@ -32,7 +33,7 @@ export default defineComponent({
       ],
     })
     // TODO: Get real transactionData for chart
-    const transactionData = ref([
+    const transactionData = ref<Array<Link>>([
       {
         title: 'Total number of transactions',
         text: '2,521',
@@ -47,7 +48,7 @@ export default defineComponent({
       },
     ])
     // TODO: Get real priceData for chart
-    const priceData = ref([
+    const priceData = ref<Array<Link>>([
       {
         title: 'ODIN price',
         text: '$2,515',
@@ -88,7 +89,7 @@ export default defineComponent({
     }
   }
   &__chart {
-    height: 26.9rem
+    height: 26.9rem;
   }
   @media (max-width: 768px) {
     grid: auto / repeat(2, 1fr);

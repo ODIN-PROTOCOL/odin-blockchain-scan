@@ -12,7 +12,7 @@
           <div class="copy-button__wrapper">
             <button
               class="copy-button"
-              @click.prevent="copyValue(route.params.hash)"
+              @click.prevent="copyValue(String(route.params.hash))"
             >
               <img src="~@/assets/icons/copy.svg" alt="info" />
             </button>
@@ -126,13 +126,19 @@
     </div>
   </div>
 </template>
-<script>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+
+<script lang="ts">
+import { ref, onMounted, defineComponent } from 'vue'
+import {
+  RouteLocationNormalizedLoaded,
+  Router,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 // import { callers } from '@/api/callers'
-import { toHex } from '@cosmjs/encoding'
-import TitledLink from '@/components/TitledLink.vue'
 // import { Bech32 } from '@cosmjs/encoding'
+
+import TitledLink from '@/components/TitledLink.vue'
 
 import {
   QueryClient,
@@ -145,17 +151,19 @@ import {
 
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
-import { API_CONFIG } from '../api/api-config.ts'
+import { API_CONFIG } from '@/api/api-config'
+import { convertDate, copyValue } from '@/helpers/helpers'
+import { convertToTime, convertToDate } from '@/helpers/dates'
 
-export default {
+export default defineComponent({
+  name: 'ValidatorItem',
   components: { TitledLink },
-  // eslint-disable-next-line
   setup() {
-    const router = useRouter()
-    const back = () => {
+    const router: Router = useRouter()
+    const back = (): void => {
       router.back()
     }
-    const route = useRoute()
+    const route: RouteLocationNormalizedLoaded = useRoute()
 
     const blocks = ref()
 
@@ -170,7 +178,7 @@ export default {
     const validatorCpuSize = ref()
     const validatorSize = ref()
 
-    const getValidator = async () => {
+    const getValidator = async (): Promise<void> => {
       // const response = await callers.getClient()
       // console.log(response)
 
@@ -187,7 +195,9 @@ export default {
         setupIbcExtension
       )
 
-      console.log(client.staking.unverified.validator(route.params.hash))
+      console.log(
+        client.staking.unverified.validator(String(route.params.hash))
+      )
 
       // response.validator(+route.params.id).then((res) => {
       //   validatorInfo.value = res
@@ -198,76 +208,11 @@ export default {
       // })
     }
 
-    const convertDate = (time) => {
-      const nowTime = new Date()
-
-      const newTime = new Date(time)
-
-      const diff = (nowTime.getTime() - newTime.getTime()) / 1000
-      let diffMinutes = ''
-      let diffSeconds = ''
-      let totalDiff = ''
-      if (diff < 900) {
-        if (diff / 60 > 0) {
-          diffMinutes =
-            parseInt(diff / 60) > 9
-              ? parseInt(diff / 60) + ':'
-              : '0' + parseInt(diff / 60) + ':'
-          diffSeconds =
-            parseInt(diff) - diffMinutes * 60 > 9
-              ? parseInt(diff)
-              : '0' + parseInt(diff)
-        } else {
-          diffMinutes = ''
-          diffSeconds =
-            parseInt(diff) > 9 ? parseInt(diff) : '0' + parseInt(diff)
-        }
-
-        totalDiff = `${diffMinutes}${diffSeconds} ago`
+    onMounted(
+      async (): Promise<void> => {
+        await getValidator()
       }
-
-      const timezone =
-        newTime.getTimezoneOffset() / 60 != 0
-          ? newTime.getTimezoneOffset() / 60 + ':00'
-          : ''
-
-      const seconds =
-        newTime.getSeconds() > 9
-          ? newTime.getSeconds()
-          : '0' + newTime.getSeconds()
-      const minutes =
-        newTime.getMinutes() > 9
-          ? newTime.getMinutes()
-          : '0' + newTime.getMinutes()
-      const hours =
-        newTime.getHours() > 9 ? newTime.getHours() : '0' + newTime.getHours()
-      const day =
-        newTime.getDay() > 9 ? newTime.getDay() : '0' + newTime.getDay()
-      const month =
-        1 + newTime.getMonth() > 9
-          ? 1 + newTime.getMonth()
-          : '0' + (1 + newTime.getMonth())
-      const year = newTime.getFullYear()
-      const midday = hours > 12 ? 'PM' : 'AM'
-
-      if (totalDiff) {
-        return `${totalDiff} (${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC)`
-      } else {
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC`
-      }
-    }
-
-    const copyValue = (text) => {
-      window.navigator.clipboard.writeText(text)
-    }
-
-    const getHash = (str) => {
-      return toHex(str).toUpperCase()
-    }
-
-    onMounted(() => {
-      getValidator()
-    })
+    )
 
     return {
       route,
@@ -283,14 +228,13 @@ export default {
       validatorRamSize,
       validatorNetSize,
       validatorCpuSize,
+      convertToTime,
+      convertToDate,
     }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
-* {
-  font-family: 'SF Display';
-}
 .block {
   &-item {
     padding: 2.6rem 3.3rem;
@@ -556,7 +500,6 @@ export default {
   }
 
   &-item {
-    display: flex;
     margin-bottom: 24px;
     display: grid;
     grid-template-columns: 50px 500px 1fr;

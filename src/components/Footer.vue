@@ -23,9 +23,10 @@
   </footer>
 </template>
 <script>
-import { ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 
-export default {
+export default defineComponent({
+  name: 'Footer',
   setup() {
     const test = ref()
 
@@ -33,11 +34,11 @@ export default {
       test,
     }
   },
-}
+})
 </script>
 <style scoped lang="scss">
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 footer {
   background: var(--clr__tooltip-new);

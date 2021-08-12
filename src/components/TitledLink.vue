@@ -9,6 +9,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+  name: 'TitledLink',
   props: {
     text: {
       type: [String, Number],
