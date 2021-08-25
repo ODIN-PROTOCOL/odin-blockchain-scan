@@ -3,7 +3,11 @@
     <div class="info-panel" v-if="priceData && transactionData && chartData">
       <InfoPanelCol :key="'priceData'" :infoPanelRows="priceData" />
       <InfoPanelCol :key="'transactionData'" :infoPanelRows="transactionData" />
-      <InfoPanelChart :key="'chartData'" :chartData="chartData" />
+      <InfoPanelChart
+        :key="'chartData'"
+        v-if="chartDataLoad"
+        :chartData="chartData"
+      />
     </div>
   </transition>
 </template>
@@ -13,8 +17,10 @@ import axios from 'axios'
 import { defineComponent, onMounted, ref } from 'vue'
 import InfoPanelChart from '@/components/InfoPanel/InfoPanelChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
-import { Link } from '@/helpers/Types'
+import { ChartDataType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
+import { convertToDayMonth } from '@/helpers/dates'
+import { bigMath } from '@/helpers/bigMath'
 
 // TODO: env
 const api = 'https://api.coingecko.com/api/v3'
@@ -25,9 +31,11 @@ export default defineComponent({
   setup() {
     const priceData = ref<Array<Link> | null>()
     const transactionData = ref<Array<Link> | null>()
-    // TODO: Get real data:{} for chart
-    const chartData = ref({
-      labels: ['May 18', 'May 25', 'Jun 1'],
+
+    const chartDataLoad = ref(false)
+
+    const chartData = ref<ChartDataType>({
+      labels: [],
       datasets: [
         {
           backgroundColor: '#007bff',
@@ -37,18 +45,38 @@ export default defineComponent({
           borderCapStyle: 'round',
           tension: 0.5,
           borderSkipped: false,
-          data: [1080, 1220, 1540],
+          data: [],
         },
       ],
     })
+
     const getLatestTelemetry = async (): Promise<void> => {
-      // TODO: Error: Query failed with (18): failed to get tx volume: failed to get the blocks by date: failed to find the blocks: page should be within [1, 101] range, given 102: invalid request
-      const endDate = new Date()
-      const res = await callers.getTelemetry({
-        startDate: undefined,
-        endDate,
-      })
-      console.log('getLatestTelemetry', res)
+      try {
+        const endDate = new Date()
+        const { txVolumePerDay } = await callers.getTelemetry({
+          startDate: undefined,
+          endDate,
+        })
+        txVolumePerDay
+          .sort(
+            (a, b) =>
+              (a?.date?.getTime() as number) - (b?.date?.getTime() as number)
+          )
+          .map((el) => {
+            chartData.value.labels = [
+              ...chartData.value.labels,
+              convertToDayMonth(el?.date as Date),
+            ]
+            chartData.value.datasets[0].data = [
+              ...chartData.value.datasets[0].data,
+              bigMath.toNum(el.volume),
+            ]
+          })
+        console.log(chartData.value)
+        chartDataLoad.value = true
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     const getCoinInfo = async (): Promise<void> => {
@@ -90,10 +118,10 @@ export default defineComponent({
 
     onMounted(async () => {
       await getCoinInfo()
-      // await getLatestTelemetry()
+      await getLatestTelemetry()
     })
 
-    return { chartData, transactionData, priceData }
+    return { chartData, transactionData, priceData, chartDataLoad }
   },
 })
 </script>

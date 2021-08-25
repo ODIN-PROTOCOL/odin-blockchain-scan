@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { NumLike, toBigNumber } from './casts'
+import {NumLike, toBigNumber, toNum, toStr} from './casts'
 
 export enum ROUNDING {
   DEFAULT = 4,
@@ -86,5 +86,7 @@ export const bigMath = {
   format: bigFormat,
   toPrecise: bigToPrecise,
   fromPrecise: bigFromPrecise,
+  toNum,
+  toStr,
   zero: _bn(0),
 }

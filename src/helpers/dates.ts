@@ -8,7 +8,6 @@ export const isThisYear = dateFns.isThisYear
 
 export const convertToDate = (time: string): string => {
   const someTime = new Date(time)
-
   const day =
     someTime.getDay() > 9 ? someTime.getDay() : '0' + someTime.getDay()
   const month =
@@ -21,6 +20,12 @@ export const convertToDate = (time: string): string => {
       : '0' + someTime.getFullYear()
 
   return `${day}:${month}:${year}`
+}
+
+export const convertToDayMonth = (time: string | Date): string => {
+  return `${new Date(time)
+    .toLocaleString('en-US', { month: 'long' })
+    .slice(0, 3)} ${new Date(time).getDate()}`
 }
 
 export const convertToTime = (time: string): string => {
