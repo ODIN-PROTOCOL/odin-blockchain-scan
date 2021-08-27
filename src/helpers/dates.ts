@@ -23,16 +23,14 @@ export const convertToDate = (time: string): string => {
 }
 
 export const convertToDayMonth = (time: string | Date): string => {
-  return `${new Date(time)
-    .toLocaleString('en-US', { month: 'long' })
-    .slice(0, 3)} ${new Date(time).getDate()}`
+  return `${dateFns.format(new Date(time), 'MMM dd')}`
 }
 
 export const convertToTime = (time: string): string => {
   const someTime = new Date(time)
 
   const minutes =
-    someTime.getMinutes() > 9
+    someTime.getMinutes() > 90
       ? someTime.getMinutes()
       : '0' + someTime.getMinutes()
   const hours =

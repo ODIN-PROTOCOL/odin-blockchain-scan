@@ -9,6 +9,9 @@
         :chartData="chartData"
       />
     </div>
+    <div v-else class="info-panel">
+      <span class="info-panel__empty">Waiting to receive data</span>
+    </div>
   </transition>
 </template>
 
@@ -22,16 +25,13 @@ import { callers } from '@/api/callers'
 import { convertToDayMonth } from '@/helpers/dates'
 import { bigMath } from '@/helpers/bigMath'
 
-// TODO: env
-const api = 'https://api.coingecko.com/api/v3'
-
 export default defineComponent({
   name: 'InfoPanel',
   components: { InfoPanelChart, InfoPanelCol },
   setup() {
     const priceData = ref<Array<Link> | null>()
     const transactionData = ref<Array<Link> | null>()
-
+    const transactionCount = ref<number>()
     const chartDataLoad = ref(false)
 
     const chartData = ref<ChartDataType>({
@@ -57,22 +57,23 @@ export default defineComponent({
           startDate: undefined,
           endDate,
         })
-        txVolumePerDay
-          .sort(
-            (a, b) =>
-              (a?.date?.getTime() as number) - (b?.date?.getTime() as number)
-          )
-          .map((el) => {
-            chartData.value.labels = [
-              ...chartData.value.labels,
-              convertToDayMonth(el?.date as Date),
-            ]
-            chartData.value.datasets[0].data = [
-              ...chartData.value.datasets[0].data,
-              bigMath.toNum(el.volume),
-            ]
-          })
-        console.log(chartData.value)
+        txVolumePerDay.map((el) => {
+          chartData.value.labels = [
+            ...chartData.value.labels,
+            convertToDayMonth(el?.date as Date),
+          ]
+          chartData.value.datasets[0].data = [
+            ...chartData.value.datasets[0].data,
+            bigMath.toNum(el.volume),
+          ]
+        })
+        transactionCount.value = chartData.value.datasets[0].data.reduce(
+          (sum, el): number => {
+            return Number(sum) + Number(el)
+          },
+          0
+        ) as number
+        await getCoinInfo()
         chartDataLoad.value = true
       } catch (error) {
         console.log(error)
@@ -88,7 +89,9 @@ export default defineComponent({
             market_cap: { usd: odinMarketCapUSD },
           },
         },
-      } = await axios.get(`${api}/coins/odin-protocol`)
+      } = await axios.get(
+        `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
+      )
       const {
         data: {
           name: geoDBName,
@@ -97,27 +100,26 @@ export default defineComponent({
             market_cap: { usd: geoDBMarketCapUSD },
           },
         },
-      } = await axios.get(`${api}/coins/geodb`)
+      } = await axios.get(`${process.env.VUE_APP_COINGECKO_API}/coins/geodb`)
 
       transactionData.value = [
         {
           title: 'Total number of transactions',
-          text: `2,521 (temp data)`,
+          text: `${transactionCount.value}`,
         },
         {
           title: 'Market CAP',
-          text: `$ ${odinMarketCapUSD + geoDBMarketCapUSD}`,
+          text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
         },
       ]
 
       priceData.value = [
-        { title: odinName, text: `$ ${odinUSD}` },
-        { title: geoDBName, text: `$ ${geoDBUSD}` },
+        { title: odinName, text: `$${odinUSD}` },
+        { title: geoDBName, text: `$${geoDBUSD}` },
       ]
     }
 
     onMounted(async () => {
-      await getCoinInfo()
       await getLatestTelemetry()
     })
 
@@ -128,6 +130,17 @@ export default defineComponent({
 
 <style lang="scss">
 .info-panel {
+  &__empty {
+    grid-column-start: 1;
+    grid-column-end: -1;
+    color: var(--clr__input-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
   display: grid;
   grid: auto/ repeat(2, 1fr) 2fr;
   padding: 3.2rem 2.4rem;
