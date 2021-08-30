@@ -91,6 +91,7 @@ export default defineComponent({
       flex-direction: column;
       padding: 0;
       width: 50%;
+      gap: 1.8rem;
     }
   }
   &__row {
@@ -101,6 +102,7 @@ export default defineComponent({
       border: none;
       display: flex;
       flex-direction: column;
+      gap: 1.8rem;
       .app-table__cell {
         justify-content: flex-end;
       }
@@ -110,6 +112,9 @@ export default defineComponent({
 
 .block-view {
   margin-bottom: 4.8rem;
+  @media (max-width: 768px) {
+    margin-bottom: 4rem;
+  }
 }
 
 .title {
@@ -141,6 +146,15 @@ export default defineComponent({
         font-weight: 600;
       }
     }
+    @media (max-width: 768px) {
+      font-size: 1.4rem;
+      span {
+        &:last-child {
+          display: flex;
+          justify-content: flex-start;
+        }
+      }
+    }
   }
   @media (max-width: 768px) {
     padding: 3.2rem 2.4rem;
@@ -156,6 +170,10 @@ export default defineComponent({
     line-height: 2.4rem;
     color: var(--clr__text);
     padding-bottom: 1.6rem;
+  }
+  @media (max-width: 768px) {
+    padding-bottom: 2rem;
+    border-bottom: 0.1rem solid var(--clr__text-muted);
   }
 }
 </style>
