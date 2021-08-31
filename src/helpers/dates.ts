@@ -8,7 +8,6 @@ export const isThisYear = dateFns.isThisYear
 
 export const convertToDate = (time: string): string => {
   const someTime = new Date(time)
-
   const day =
     someTime.getDay() > 9 ? someTime.getDay() : '0' + someTime.getDay()
   const month =
@@ -23,11 +22,15 @@ export const convertToDate = (time: string): string => {
   return `${day}:${month}:${year}`
 }
 
+export const convertToDayMonth = (time: string | Date): string => {
+  return `${dateFns.format(new Date(time), 'MMM dd')}`
+}
+
 export const convertToTime = (time: string): string => {
   const someTime = new Date(time)
 
   const minutes =
-    someTime.getMinutes() > 9
+    someTime.getMinutes() > 90
       ? someTime.getMinutes()
       : '0' + someTime.getMinutes()
   const hours =

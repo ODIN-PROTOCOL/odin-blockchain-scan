@@ -37,7 +37,7 @@ h2.view-title {
 }
 
 .container{
-  width: 100%;
+  width: calc(100% - 20.6rem);
   //max-width: 140rem;
   margin: 0 10.3rem 0 10.3rem;
   @media (max-width: 768px) {
