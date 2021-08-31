@@ -47,10 +47,10 @@ export default defineComponent({
           to: 'Transactions',
           text: 'Transactions',
         },
-        {
-          to: 'PendingTransactions',
-          text: 'Pending Transactions',
-        },
+        // {
+        //   to: 'PendingTransactions',
+        //   text: 'Pending Transactions',
+        // },
         {
           to: 'Blocks',
           text: 'Blocks',
