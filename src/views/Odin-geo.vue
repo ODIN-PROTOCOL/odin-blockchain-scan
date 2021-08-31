@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <h1>ODIN&GEO</h1>
+    <button @click="test">asdas</button>
     <BlockView :blockData="OdinBlockData">
       <template #title> ODIN </template>
     </BlockView>
@@ -11,8 +12,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import axios, { AxiosPromise } from 'axios'
+import { defineComponent, ref, onMounted } from 'vue'
 import BlockView from '@/components/Odin-Geo/BlockView.vue'
+import { getAPIDate } from '@/helpers/requests'
 
 export default defineComponent({
   name: 'Odin-geo',
@@ -34,7 +37,19 @@ export default defineComponent({
       },
     })
 
-    return { OdinBlockData }
+    onMounted(async () => {
+      test()
+    })
+
+    const test = async () => {
+      const odinData = await getAPIDate(
+        'https://api.coingecko.com/api/v3/coins/odin-protocol'
+      )
+      const res = await odinData
+      return res
+    }
+
+    return { OdinBlockData, test }
   },
 })
 </script>
