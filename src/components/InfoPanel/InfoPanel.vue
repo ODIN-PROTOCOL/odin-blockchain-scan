@@ -16,14 +16,15 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios'
 import { defineComponent, onMounted, ref } from 'vue'
 import InfoPanelChart from '@/components/InfoPanel/InfoPanelChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
-import { ChartDataType, Link } from '@/helpers/Types'
+import { ChartDataType, CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { convertToDayMonth } from '@/helpers/dates'
 import { bigMath } from '@/helpers/bigMath'
+import { getAPIDate } from '@/helpers/requests'
+import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
 
 export default defineComponent({
   name: 'InfoPanel',
@@ -53,10 +54,11 @@ export default defineComponent({
     const getLatestTelemetry = async (): Promise<void> => {
       try {
         const endDate = new Date()
-        const { txVolumePerDay } = await callers.getTelemetry({
+        const { txVolumePerDay } = (await callers.getTelemetry({
           startDate: undefined,
           endDate,
-        })
+        })) as QueryTxVolumeResponse
+
         txVolumePerDay.map((el) => {
           chartData.value.labels = [
             ...chartData.value.labels,
@@ -89,9 +91,9 @@ export default defineComponent({
             market_cap: { usd: odinMarketCapUSD },
           },
         },
-      } = await axios.get(
+      } = (await getAPIDate(
         `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
-      )
+      )) as CoingeckoCoinsType
       const {
         data: {
           name: geoDBName,
@@ -100,7 +102,9 @@ export default defineComponent({
             market_cap: { usd: geoDBMarketCapUSD },
           },
         },
-      } = await axios.get(`${process.env.VUE_APP_COINGECKO_API}/coins/geodb`)
+      } = (await getAPIDate(
+        `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
+      )) as CoingeckoCoinsType
 
       transactionData.value = [
         {

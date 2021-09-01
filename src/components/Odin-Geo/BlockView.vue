@@ -1,7 +1,7 @@
 <template>
   <div class="block-view">
     <div class="title">
-      <slot name="title" />
+      {{ blockData.info.name }}
     </div>
     <div class="info-box">
       <div class="info-box__total-supply">
@@ -33,28 +33,25 @@
         <div class="data-sources__table-row app-table__row validators-row">
           <div class="app-table__cell">
             <span class="app-table__header">
-              {{ blockData.amount.balances }} ODIN
+              {{ blockData.amount.balances }}
             </span>
           </div>
           <div class="app-table__cell">
             <span class="app-table__header">
-              {{ blockData.amount.community_pool }} ODIN
+              {{ blockData.amount.community_pool }}
             </span>
           </div>
           <div class="app-table__cell">
             <span class="app-table__header">
-              {{ blockData.amount.treasury_pool }} ODIN
+              {{ blockData.amount.treasury_pool }}
             </span>
           </div>
           <div class="app-table__cell">
             <span class="app-table__header">
-              {{ blockData.amount.providers_pool }} ODIN
+              {{ blockData.amount.providers_pool }}
             </span>
           </div>
         </div>
-        <!--          <div class="app-table__row">-->
-        <!--            <p class="app-table__empty-stub">No items yet</p>-->
-        <!--          </div>-->
       </div>
     </div>
   </div>
@@ -69,10 +66,7 @@ export default defineComponent({
     blockData: {
       required: true,
     },
-  },
-  setup() {
-    return {}
-  },
+  }
 })
 </script>
 
@@ -143,6 +137,8 @@ export default defineComponent({
     span {
       width: 50%;
       &:last-child {
+        display: flex;
+        white-space: nowrap;
         font-weight: 600;
       }
     }

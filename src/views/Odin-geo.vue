@@ -1,21 +1,21 @@
 <template>
   <div class="container">
     <h1>ODIN&GEO</h1>
-    <button @click="test">asdas</button>
-    <BlockView :blockData="OdinBlockData">
-      <template #title> ODIN </template>
-    </BlockView>
-    <BlockView :blockData="OdinBlockData">
-      <template #title> GEO </template>
-    </BlockView>
+    <BlockView
+      v-for="coin in CoinBlocksData"
+      :key="coin.name"
+      :blockData="coin"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import axios, { AxiosPromise } from 'axios'
 import { defineComponent, ref, onMounted } from 'vue'
-import BlockView from '@/components/Odin-Geo/BlockView.vue'
 import { getAPIDate } from '@/helpers/requests'
+import { CoinBlocksDataType, CoingeckoCoinsType } from '@/helpers/Types'
+import BlockView from '@/components/Odin-Geo/BlockView.vue'
+import { callers } from '@/api/callers'
+import { QueryTreasuryPoolResponse } from '@provider/codec/mint/query'
 
 export default defineComponent({
   name: 'Odin-geo',
@@ -23,33 +23,54 @@ export default defineComponent({
     BlockView,
   },
   setup() {
-    // TODO: get read data, create type for data
-    const OdinBlockData = ref({
-      info: {
-        supply: '12,523,093',
-        precision: '100',
-      },
-      amount: {
-        balances: '4,684',
-        community_pool: '4,684',
-        treasury_pool: '4,684',
-        providers_pool: '4,684',
-      },
-    })
+    const coins = ['geodb', 'odin-protocol']
 
     onMounted(async () => {
-      test()
+      await fetchData(coins)
     })
 
-    const test = async () => {
-      const odinData = await getAPIDate(
-        'https://api.coingecko.com/api/v3/coins/odin-protocol'
-      )
-      const res = await odinData
-      return res
+    const CoinBlocksData = ref<Array<CoinBlocksDataType>>([])
+
+    const fetchData = async (coins: Array<string>): Promise<void> => {
+      const {
+        treasuryPool,
+      } = (await callers.getTreasuryPool()) as QueryTreasuryPoolResponse
+      console.log('getTreasuryPool', treasuryPool)
+
+      coins.map(async (coin) => {
+        const {
+          data: {
+            name,
+            market_data: { total_supply },
+          },
+        } = (await getAPIDate(
+          `${process.env.VUE_APP_COINGECKO_API}/coins/${coin}`
+        )) as CoingeckoCoinsType
+
+        CoinBlocksData.value = [
+          ...CoinBlocksData.value,
+          {
+            info: {
+              name,
+              supply: total_supply,
+              precision: '100',
+            },
+            amount: {
+              balances: '4,684',
+              community_pool: '4,684',
+              treasury_pool: `${
+                treasuryPool[0].amount
+              } ${treasuryPool[0].denom.toUpperCase()}`,
+              providers_pool: `${
+                treasuryPool[0].amount
+              } ${treasuryPool[0].denom.toUpperCase()}`,
+            },
+          },
+        ]
+      })
     }
 
-    return { OdinBlockData, test }
+    return { CoinBlocksData }
   },
 })
 </script>
