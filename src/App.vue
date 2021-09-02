@@ -23,7 +23,12 @@
           <SearchBar />
         </header>
       </template>
-      <router-view />
+
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :key="Component" :is="Component" />
+        </transition>
+      </router-view>
     </section>
     <Footer />
   </template>

@@ -50,7 +50,7 @@ export default defineComponent({
     display: grid;
     grid-template-columns: 4.2rem auto;
     grid-template-rows: 1fr;
-    gap: 0.8rem;
+    gap: 0 0.8rem;
     align-items: center;
   }
   &__name {

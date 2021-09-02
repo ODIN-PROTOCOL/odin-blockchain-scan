@@ -8,7 +8,7 @@ import { MsgDeposit, MsgVote } from '@provider/codec/cosmos/gov/v1beta1/tx'
 import { api } from './api'
 import { wallet } from './wallet'
 import { mapResponse, sendPost, sendGet } from './callersHelpers'
-import { cacheAnswers } from '@/helpers/requests'
+import { cacheAnswers } from '@/helpers/requests.ts'
 import { decodeRequestResults } from '@/helpers/requestResultDecoders'
 import { decodeProposals } from '@/helpers/proposalDecoders'
 import { decodeValidators } from '@/helpers/validatorDecoders'
@@ -136,7 +136,7 @@ const makeCallers = () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
-    getBlock: tmQuerier((tc) => tc.block.bind(tc)),
+    getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
     getTxSearch: tmQuerier((tc) => tc.txSearch.bind(tc)),
     getAbciInfo: tmQuerier((tc) => tc.abciInfo.bind(tc)),
     getStatus: tmQuerier((tc) => tc.status.bind(tc)),
