@@ -93,7 +93,10 @@ const makeCallers = () => {
     getTreasuryPool: cacheAnswers(
       querier((qc) => qc.mint.unverified.treasuryPool)
     ),
-    getTotalSupply: querier((qc) => qc.bank.unverified.totalSupply),
+    getMintParams: cacheAnswers(querier((qc) => qc.mint.unverified.params)),
+    getTotalSupply: cacheAnswers(
+      querier((qc) => qc.bank.unverified.totalSupply)
+    ),
 
     createValidator: broadcaster<MsgCreateValidator>(
       '/cosmos.staking.v1beta1.MsgCreateValidator',

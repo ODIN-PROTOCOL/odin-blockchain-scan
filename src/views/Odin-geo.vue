@@ -15,7 +15,10 @@ import { getAPIDate } from '@/helpers/requests'
 import { CoinBlocksDataType, CoingeckoCoinsType } from '@/helpers/Types'
 import BlockView from '@/components/Odin-Geo/BlockView.vue'
 import { callers } from '@/api/callers'
-import { QueryTreasuryPoolResponse } from '@provider/codec/mint/query'
+import {
+  QueryParamsResponse,
+  QueryTreasuryPoolResponse,
+} from '@provider/codec/mint/query'
 
 export default defineComponent({
   name: 'Odin-geo',
@@ -35,10 +38,25 @@ export default defineComponent({
       const {
         treasuryPool,
       } = (await callers.getTreasuryPool()) as QueryTreasuryPoolResponse
+
+      const {
+        params: mintParams,
+      } = (await callers.getMintParams()) as QueryParamsResponse
+
+      const {
+        params: CoinswapParams,
+      } = (await callers.getCoinswapParams()) as QueryParamsResponse
+
+      const TotalSupply = await callers.getTotalSupply()
+
+      console.log('TotalSupply', TotalSupply)
       console.log('getTreasuryPool', treasuryPool)
+      console.log('getMintParams', mintParams)
+      console.log('getCoinswapParams', CoinswapParams)
 
       coins.map(async (coin) => {
         const {
+          data,
           data: {
             name,
             market_data: { total_supply },
@@ -46,6 +64,12 @@ export default defineComponent({
         } = (await getAPIDate(
           `${process.env.VUE_APP_COINGECKO_API}/coins/${coin}`
         )) as CoingeckoCoinsType
+
+        console.log(`COINGECKO_API coin ${name}:`, data)
+        console.log(
+          `COINGECKO_API coin ${name} total_supply:`,
+          data.market_data.total_supply
+        )
 
         CoinBlocksData.value = [
           ...CoinBlocksData.value,
