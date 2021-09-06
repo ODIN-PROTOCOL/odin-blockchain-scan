@@ -1,6 +1,6 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div class="info-panel" v-if="priceData && transactionData && chartData">
+    <div class="info-panel" v-if="priceData && transactionData">
       <InfoPanelCol :key="'priceData'" :infoPanelRows="priceData" />
       <InfoPanelCol :key="'transactionData'" :infoPanelRows="transactionData" />
       <InfoPanelChart
@@ -8,6 +8,9 @@
         v-if="chartDataLoad"
         :chartData="chartData"
       />
+      <span class="info-panel__empty-chart" v-else>
+        We are in the process of drawing a chart!
+      </span>
     </div>
     <div v-else class="info-panel">
       <span class="info-panel__empty">Waiting to receive data</span>
@@ -54,10 +57,17 @@ export default defineComponent({
     const getLatestTelemetry = async (): Promise<void> => {
       try {
         const endDate = new Date()
+        const startDate = new Date()
+        startDate.setDate(startDate.getDate() - 2)
+
+        await getCoinInfo()
+
         const { txVolumePerDay } = (await callers.getTelemetry({
-          startDate: undefined,
+          startDate,
           endDate,
         })) as QueryTxVolumeResponse
+
+        console.log('txVolumePerDay', txVolumePerDay)
 
         txVolumePerDay.map((el) => {
           chartData.value.labels = [
@@ -75,7 +85,7 @@ export default defineComponent({
           },
           0
         ) as number
-        await getCoinInfo()
+
         chartDataLoad.value = true
       } catch (error) {
         console.log(error)
@@ -144,6 +154,15 @@ export default defineComponent({
     font-size: 3.2rem;
     font-weight: 600;
     text-transform: uppercase;
+    &-chart {
+      color: var(--clr__input-border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3.4rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
   }
   display: grid;
   grid: auto/ repeat(2, 1fr) 2fr;

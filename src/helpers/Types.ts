@@ -1,3 +1,6 @@
+import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
+
 export type Link = {
   to?: string
   text?: string
@@ -33,6 +36,11 @@ export type CoingeckoCoinsType = {
       total_supply: number | string
     }
   }
+}
+
+export type SearchResultType = {
+  blocks?: Array<BlockResponse>
+  transactions?: Array<TransactionListFormatted>
 }
 
 export type CoinBlocksDataType = {
