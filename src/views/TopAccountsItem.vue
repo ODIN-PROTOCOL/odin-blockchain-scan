@@ -2,7 +2,7 @@
   <div class="container">
     <div class="block-item">
       <div class="block-item__title">
-        <button class="block-back" @click.prevent="back">
+        <button class="block-back" @click.prevent="routerBack">
           <img src="~@/assets/icons/back-arrow.svg" alt="info" />
           <span>Account</span>
         </button>
@@ -35,7 +35,7 @@
       <h1 class="mg-b32">Transactions</h1>
       <div class="app-table">
         <div class="data-sources__table-head app-table__head validators-head">
-          <div class="app-table__cell" data-tooltip="">
+          <div class="app-table__cell">
             <span class="app-table__cell-txt"> Transaction hash </span>
           </div>
           <div class="app-table__cell">
@@ -68,7 +68,7 @@
           >
             <div class="app-table__cell">
               <span class="app-table__header">Transaction hash</span>
-              <router-link :to="`/blocks/block height`">
+              <router-link :to="`/blocks/${item.hash}`">
                 <TitledLink
                   class="app-table__cell-txt"
                   :text="`0x${item.hash}`"
@@ -87,12 +87,12 @@
               <span class="app-table__header">Date and time</span>
               <div>
                 <div class="info-value">
-                  <!-- {{ convertToTime(item.time) }} -->
                   {{ item.time }}
+                  <!--                  {{ convertToTime(item.time) }}-->
                 </div>
                 <div class="info-value">
-                  <!-- {{ convertToDate(item.time) }} -->
-                  {{ item.date }}
+                  {{ item.time }}
+                  <!--                  {{ convertToDate(item.time) }}-->
                 </div>
               </div>
             </div>
@@ -135,11 +135,14 @@
     </div>
   </div>
 </template>
-<script>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+<script lang="ts">
+import { ref, onMounted, defineComponent } from 'vue'
+import { useRoute } from 'vue-router'
+import { routerBack } from '@/router'
 // import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
+import { convertToTime, convertToDate } from '@/helpers/dates'
+
 import TitledLink from '@/components/TitledLink.vue'
 // import { Bech32 } from '@cosmjs/encoding'
 
@@ -156,14 +159,9 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
 import { API_CONFIG } from '../api/api-config.ts'
 
-export default {
+export default defineComponent({
   components: { TitledLink },
-  // eslint-disable-next-line
   setup() {
-    const router = useRouter()
-    const back = () => {
-      router.back()
-    }
     const route = useRoute()
 
     const blocks = ref()
@@ -175,8 +173,7 @@ export default {
     tempData.value = [
       {
         type: 'Send',
-        hash:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        hash: 'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
         block: 3235,
         time: '16:03',
         date: '24.07.2021',
@@ -187,8 +184,7 @@ export default {
       },
       {
         type: 'Send',
-        hash:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
+        hash: 'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
         block: 3238,
         time: '09:44',
         date: '25.07.2021',
@@ -220,65 +216,6 @@ export default {
       // })
     }
 
-    const convertDate = (time) => {
-      const nowTime = new Date()
-
-      const newTime = new Date(time)
-
-      const diff = (nowTime.getTime() - newTime.getTime()) / 1000
-      let diffMinutes = ''
-      let diffSeconds = ''
-      let totalDiff = ''
-      if (diff < 900) {
-        if (diff / 60 > 0) {
-          diffMinutes =
-            parseInt(diff / 60) > 9
-              ? parseInt(diff / 60) + ':'
-              : '0' + parseInt(diff / 60) + ':'
-          diffSeconds =
-            parseInt(diff) - diffMinutes * 60 > 9
-              ? parseInt(diff)
-              : '0' + parseInt(diff)
-        } else {
-          diffMinutes = ''
-          diffSeconds =
-            parseInt(diff) > 9 ? parseInt(diff) : '0' + parseInt(diff)
-        }
-
-        totalDiff = `${diffMinutes}${diffSeconds} ago`
-      }
-
-      const timezone =
-        newTime.getTimezoneOffset() / 60 != 0
-          ? newTime.getTimezoneOffset() / 60 + ':00'
-          : ''
-
-      const seconds =
-        newTime.getSeconds() > 9
-          ? newTime.getSeconds()
-          : '0' + newTime.getSeconds()
-      const minutes =
-        newTime.getMinutes() > 9
-          ? newTime.getMinutes()
-          : '0' + newTime.getMinutes()
-      const hours =
-        newTime.getHours() > 9 ? newTime.getHours() : '0' + newTime.getHours()
-      const day =
-        newTime.getDay() > 9 ? newTime.getDay() : '0' + newTime.getDay()
-      const month =
-        1 + newTime.getMonth() > 9
-          ? 1 + newTime.getMonth()
-          : '0' + (1 + newTime.getMonth())
-      const year = newTime.getFullYear()
-      const midday = hours > 12 ? 'PM' : 'AM'
-
-      if (totalDiff) {
-        return `${totalDiff} (${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC)`
-      } else {
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC`
-      }
-    }
-
     const copyValue = (text) => {
       window.navigator.clipboard.writeText(text)
     }
@@ -295,19 +232,17 @@ export default {
       route,
       delegatorBalance,
       delegatorStake,
-      back,
+      routerBack,
       copyValue,
-      convertDate,
+      convertToDate,
+      convertToTime,
       blocks,
       tempData,
     }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
-* {
-  font-family: 'SF Display';
-}
 .block {
   &-item {
     padding: 2.6rem 3.3rem;
