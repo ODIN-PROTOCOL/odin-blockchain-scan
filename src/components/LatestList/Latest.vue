@@ -121,13 +121,10 @@ export default defineComponent({
   setup: function () {
     const toDay = ref<Date>(new Date())
 
-    onMounted(
-      async (): Promise<void> => {
-        // TODO: Promise.allSettled? Promise.all? And how to handle the error if it was caught?
-        await getLatestBlocks()
-        await getLatestTransactions()
-      }
-    )
+    onMounted(async (): Promise<void> => {
+      await getLatestBlocks()
+      await getLatestTransactions()
+    })
 
     let latestBlocks = ref<Array<BlockMeta> | null>([])
     let latestTransactions = ref<Array<TransactionListFormatted> | null>([])
@@ -135,10 +132,8 @@ export default defineComponent({
     let totalCount = ref<number>()
 
     const getLatestBlocks = async (): Promise<void> => {
-      const {
-        blockMetas,
-        lastHeight: reqLastHeight,
-      } = await callers.getBlockchain(100)
+      const { blockMetas, lastHeight: reqLastHeight } =
+        await callers.getBlockchain(100)
       latestBlocks.value = [...blockMetas].slice(0, 5)
       console.log('latestBlocks', latestBlocks.value)
       lastHeight.value = reqLastHeight
