@@ -41,6 +41,7 @@ import { showExchangeFormDialog } from './modals/ExchangeFormModal.vue'
 import { showFaucetFormDialog } from './modals/FaucetFormModal.vue'
 
 export default defineComponent({
+  name: 'BalanceButton',
   setup() {
     const {
       coins: [lokiCoins],

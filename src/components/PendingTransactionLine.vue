@@ -61,6 +61,7 @@ import { toHex } from '@cosmjs/encoding'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
 
 export default defineComponent({
+  name: 'PendingTransactionLine',
   components: { TitledLink },
   props: {
     transition: {
@@ -141,9 +142,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
 
 .app-table__cell-txt {
   max-width: 150px;

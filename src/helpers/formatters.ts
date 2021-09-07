@@ -8,7 +8,13 @@ import {
   isThisMonth,
   isThisYear,
 } from './dates'
-import { format as _formatDate } from 'date-fns'
+import {
+  format as _formatDate,
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+} from 'date-fns'
 import Long from 'long'
 
 const NBSP = '\u00A0'
@@ -18,6 +24,15 @@ const NBSP = '\u00A0'
 export function cropAddress(value?: string): string {
   if (!value) return ''
   return `${value.slice(0, 4)}…${value.slice(-4)}`
+}
+export function cropText(value?: string): string {
+  if (!value) return ''
+  if (value.length > 11) return `${value.slice(0, 11)}…`
+  return value
+}
+
+export function getDay(time: string): Date {
+  return new Date(time)
 }
 
 export function abbreviateNumber(value: NumLike): string {
@@ -31,6 +46,19 @@ export function abbreviateNumber(value: NumLike): string {
   }
 
   return newValue.toPrecision(3) + suffixes[suffixNum]
+}
+
+export function diffDays(dateLeft: Date, dateRight: Date): string {
+  if (differenceInDays(dateLeft, dateRight) >= 1)
+    return `${differenceInDays(dateLeft, dateRight)} days ago`
+
+  if (differenceInHours(dateLeft, dateRight) >= 1)
+    return `${differenceInHours(dateLeft, dateRight)} hours ago`
+
+  if (differenceInMinutes(dateLeft, dateRight) >= 1)
+    return `${differenceInMinutes(dateLeft, dateRight)} minutes ago`
+
+  return `${differenceInSeconds(dateLeft, dateRight)} secs ago`
 }
 
 export function preciseAsPercents(amount: string): string {

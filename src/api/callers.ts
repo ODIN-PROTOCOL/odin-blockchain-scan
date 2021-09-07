@@ -8,6 +8,7 @@ import { MsgDeposit, MsgVote } from '@provider/codec/cosmos/gov/v1beta1/tx'
 import { api } from './api'
 import { wallet } from './wallet'
 import { mapResponse, sendPost, sendGet } from './callersHelpers'
+import { cacheAnswers } from '@/helpers/requests.ts'
 import { decodeRequestResults } from '@/helpers/requestResultDecoders'
 import { decodeProposals } from '@/helpers/proposalDecoders'
 import { decodeValidators } from '@/helpers/validatorDecoders'
@@ -22,6 +23,7 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 const makeCallers = () => {
   const broadcaster = api.makeBroadcastCaller.bind(api)
   const querier = api.makeQueryCaller.bind(api)
+  const tmQuerier = api.makeTendermintCaller.bind(api)
 
   return {
     createDataSource: broadcaster<MsgCreateDataSource>(
@@ -84,9 +86,17 @@ const makeCallers = () => {
       return sendPost(`${API_CONFIG.exBridge}/bsc/exchange`, req)
     },
     getRate: querier((qc) => qc.coinswap.unverified.rate),
+    getCoinswapParams: cacheAnswers(
+      querier((qc) => qc.coinswap.unverified.params)
+    ),
 
-    getTreasuryPool: querier((qc) => qc.mint.unverified.treasuryPool),
-    getTotalSupply: querier((qc) => qc.bank.unverified.totalSupply),
+    getTreasuryPool: cacheAnswers(
+      querier((qc) => qc.mint.unverified.treasuryPool)
+    ),
+    getMintParams: cacheAnswers(querier((qc) => qc.mint.unverified.params)),
+    getTotalSupply: cacheAnswers(
+      querier((qc) => qc.bank.unverified.totalSupply)
+    ),
 
     createValidator: broadcaster<MsgCreateValidator>(
       '/cosmos.staking.v1beta1.MsgCreateValidator',
@@ -118,10 +128,23 @@ const makeCallers = () => {
       })
     },
 
+    getOracleProvidersPool: cacheAnswers(
+      querier((qc) => qc.oracle.unverified.dataProvidersPool)
+    ),
+
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
-
+    getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
+    getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
+    getTxSearch: tmQuerier((tc) => tc.txSearch.bind(tc)),
+    getAbciInfo: tmQuerier((tc) => tc.abciInfo.bind(tc)),
+    getStatus: tmQuerier((tc) => tc.status.bind(tc)),
+    getGenesis: tmQuerier((tc) => tc.genesis.bind(tc)),
+    getHealth: tmQuerier((tc) => tc.health.bind(tc)),
+    getTelemetry: cacheAnswers(
+      querier((qc) => qc.telemetry.unverified.txVolume)
+    ),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },

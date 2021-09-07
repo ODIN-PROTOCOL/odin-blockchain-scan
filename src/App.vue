@@ -2,21 +2,33 @@
   <template v-if="isAppReady">
     <section class="main-section">
       <template v-if="isLoggedIn">
-        <header class="">
-          <div class="view-header fx-row">
-            <img
-              class="logo"
-              src="~@/assets/brand/odin-logo-black.png"
-              alt="Logo"
-              width="120"
+        <header class="view-header">
+          <div class="header-wrapper">
+            <router-link to="/">
+              <img
+                class="logo"
+                src="~@/assets/brand/odin-logo-black.png"
+                alt="Logo"
+                width="120"
+              />
+            </router-link>
+            <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
+            <BurgerMenu
+              class="burger-menu"
+              :isOpen="isOpen"
+              @click="burgerMenuHandler($event)"
             />
-            <Nav class="mg-l16 mg-r8" />
             <!-- <UserWidget class="fx-sae" /> -->
           </div>
           <SearchBar />
         </header>
       </template>
-      <router-view />
+
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :key="Component" :is="Component" />
+        </transition>
+      </router-view>
     </section>
     <Footer />
   </template>
@@ -25,16 +37,19 @@
 </template>
 
 <script lang="ts">
+import '@invisiburu/vue-picker/dist/vue-picker.min.css'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 // import { dialogs } from '@/helpers/dialogs'
-import { useAuthorization } from '@/composables/useAuthorization'
-import Nav from '@/components/Nav.vue'
+// import { useAuthorization } from '@/composables/useAuthorization'
 // import UserWidget from '@/components/UserWidget.vue'
-import SearchBar from '@/components/SearchBar.vue'
+import Nav from '@/components/Nav.vue'
+import BurgerMenu from '@/components/BurgerMenu.vue'
+import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import Footer from '@/components/Footer.vue'
 
 export default defineComponent({
-  components: { Nav, SearchBar, Footer },
+  name: 'App',
+  components: { Nav, SearchBar, Footer, BurgerMenu },
   setup() {
     const _readyStates = ref({
       dialogs: true,
@@ -52,11 +67,23 @@ export default defineComponent({
       // }
     })
 
+    // Burger Menu
+    const isOpen = ref<boolean>(false)
+    const burgerMenuHandler = (event: Event | MouseEvent) => {
+      event.preventDefault()
+      isOpen.value = isOpen.value !== true
+    }
+    const changeRoute = (): void => {
+      if (isOpen.value === true) isOpen.value = false
+    }
     return {
       isAppReady,
       // dialogsContainerRef,
-      isLoggedIn: true,
       // isLoggedIn: useAuthorization().isLoggedIn,
+      isLoggedIn: true,
+      isOpen,
+      burgerMenuHandler,
+      changeRoute,
     }
   },
 })
@@ -73,6 +100,7 @@ export default defineComponent({
 @import '~@/styles/vue-notification.scss';
 @import '~@/styles/shortcuts.scss';
 @import '~@/styles/fonts.scss';
+@import '~@/styles/custom.scss';
 
 #app {
   width: 100%;
@@ -81,7 +109,7 @@ export default defineComponent({
 }
 
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 
 .logo {
@@ -93,5 +121,19 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+.burger-menu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header-wrapper {
+    gap: 0.4rem;
+  }
+  .burger-menu {
+    display: flex;
+    flex-shrink: 0;
+  }
 }
 </style>

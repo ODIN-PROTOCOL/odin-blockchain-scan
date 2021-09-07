@@ -47,7 +47,10 @@
           </div>
         </template>
       </div>
-      <div class="pagination-wrapper mg-t32">
+      <div
+        v-if="filteredTransactions?.length"
+        class="pagination-wrapper mg-t32"
+      >
         <v-pagination
           v-model="page"
           :pages="totalPages"
@@ -72,6 +75,7 @@ import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
+  name: 'Transactions',
   components: { VPagination, TransitionLine },
   setup() {
     const transactions = ref()
@@ -81,20 +85,22 @@ export default defineComponent({
     const totalPages = ref()
     const route = useRoute()
     const totalTransactions = ref()
-    let lastHeight = 0
+    let lastHeight = 500
 
     const getTransactions = async () => {
       const client = await callers.getClient()
 
-      if (!route.params.height) {
-        await client.abciInfo().then((res) => {
-          if (res && res.lastBlockHeight) {
-            lastHeight = +res.lastBlockHeight
-          }
-        })
-      } else {
-        lastHeight = +route.params.height
-      }
+      // if (!route.params.height) {
+      //   await client.abciInfo().then((res) => {
+      //     if (res && res.lastBlockHeight) {
+      //       lastHeight = +res.lastBlockHeight
+      //     }
+      //   })
+      // } else {
+      //   lastHeight = +route.params.height
+      // }
+
+      // TODO: data
 
       await client
         .txSearch({ query: `tx.height >= ${lastHeight - 10}` })
@@ -148,7 +154,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .data-sources__table-head,
 .data-sources__table-row {
@@ -180,10 +186,10 @@ export default defineComponent({
 
 .view-title {
   font-weight: 400;
-  font-size: 32px;
+  font-size: 3.2rem;
 
   @media screen and (max-width: 600px) {
-    font-size: 28px;
+    font-size: 2.8rem;
   }
 }
 
@@ -198,7 +204,7 @@ export default defineComponent({
 
   @media screen and (max-width: 992px) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 }
 </style>
@@ -209,11 +215,11 @@ export default defineComponent({
 
   li {
     background: #fff;
-    border: 1px solid var(--clr__action);
-    border-radius: 4px;
-    margin: 0 4px;
-    min-width: 26px;
-    height: 36px;
+    border: 0.1rem solid var(--clr__action);
+    border-radius: 0.4rem;
+    margin: 0 0.4rem;
+    min-width: 2.6rem;
+    height: 3.6rem;
   }
 
   button {
@@ -221,7 +227,7 @@ export default defineComponent({
     width: 100%;
     border: none;
     margin: 0;
-    padding: 10px;
+    padding: 1rem;
   }
 
   .Page {

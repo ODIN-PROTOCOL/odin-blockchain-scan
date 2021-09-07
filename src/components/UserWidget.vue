@@ -15,6 +15,7 @@ import BalanceButton from '@/components/BalanceButton.vue'
 import router from '@/router'
 
 export default defineComponent({
+  name: 'UserWidget',
   components: { BalanceButton },
   setup() {
     const auth = useAuthorization()

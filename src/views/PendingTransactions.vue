@@ -63,7 +63,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { callers } from '@/api/callers'
 import PendingTransactionLine from '@/components/PendingTransactionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
@@ -75,6 +75,7 @@ import { toHex } from '@cosmjs/encoding'
 import { fromBase64 } from '@cosmjs/encoding'
 
 export default defineComponent({
+  name: 'PendingTransactions',
   components: { PendingTransactionLine, VPagination },
   setup() {
     const transactions = ref()
@@ -87,8 +88,7 @@ export default defineComponent({
     const toHexFunc = toHex
     let lastHeight = 0
 
-    const testPendingString =
-      '"CpIBCo8BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm8KK29kaW4xbm5mZWd1cTMweDZud3hqaGF5cHh5bXgzbnVseXNwc3VqYTRhMngSK29kaW4xd3dwaHYzZ3IzMm5xZzZ3eTJlOGpnOWZ0NDVobXVhZ3NnNXpsYTkaEwoEbG9raRILMTAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAjJ9fZD9gps8fxP7cq+reyazHJn+Y6vdIU/zdObkb/i7EgQKAggBGAcSBBDAmgwaQGjtzoxsI2BbXOaRe6u7krV79u7qmOftaUWpzp+DBBLmegePGRT0UNKcamksVlmob8y/th4cGJhmuFn8kJkfNeE="'
+    // const testPendingString = '"CpIBCo8BChwvY29zbW9zLmJhbmsudjFiZXRhMS5Nc2dTZW5kEm8KK29kaW4xbm5mZWd1cTMweDZud3hqaGF5cHh5bXgzbnVseXNwc3VqYTRhMngSK29kaW4xd3dwaHYzZ3IzMm5xZzZ3eTJlOGpnOWZ0NDVobXVhZ3NnNXpsYTkaEwoEbG9raRILMTAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAjJ9fZD9gps8fxP7cq+reyazHJn+Y6vdIU/zdObkb/i7EgQKAggBGAcSBBDAmgwaQGjtzoxsI2BbXOaRe6u7krV79u7qmOftaUWpzp+DBBLmegePGRT0UNKcamksVlmob8y/th4cGJhmuFn8kJkfNeE="'
     // const testPendingTrans = [
     // {
     //   authInfo: {
@@ -160,9 +160,9 @@ export default defineComponent({
         .then((res) => res.json())
         .then((data) => {
           const codedStrings = data.result.txs
-          const tempStrings = []
+          const tempStrings: Tx[] = []
 
-          codedStrings.forEach((str) => {
+          codedStrings.forEach((str: string): void => {
             const decodedTx = Tx.decode(fromBase64(str))
             tempStrings.push(decodedTx)
           })
@@ -172,10 +172,10 @@ export default defineComponent({
 
           totalPages.value = Math.ceil(tempStrings.length / transactionsPerPage)
         })
-        .then(() => filterTransactions(page.value))
+        .then((): void => filterTransactions(page.value))
     }
 
-    const filterTransactions = async (newPage) => {
+    const filterTransactions = (newPage: number): void => {
       let tempArr = transactions.value
 
       if (newPage === 1) {
@@ -192,7 +192,7 @@ export default defineComponent({
       page.value = newPage
     }
 
-    const updateHandler = (num) => {
+    const updateHandler = (num: number): void => {
       filterTransactions(num)
     }
 
@@ -216,7 +216,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .data-sources__table-head,
 .data-sources__table-row {

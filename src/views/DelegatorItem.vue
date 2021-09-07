@@ -2,7 +2,7 @@
   <div class="container">
     <div class="block-item">
       <div class="block-item__title">
-        <button class="block-back" @click.prevent="back">
+        <button class="block-back" @click.prevent="routerBack(router)">
           <img src="~@/assets/icons/back-arrow.svg" alt="info" />
           <span>Delegators</span>
         </button>
@@ -16,7 +16,7 @@
             >
               <img src="~@/assets/icons/copy.svg" alt="info" />
             </button>
-            <div class="tooltip">Copy From Delegate Hash to clipboard.</div>
+            <div class="tooltip">Copy From Delegator Hash to clipboard.</div>
           </div>
         </div>
       </div>
@@ -102,13 +102,19 @@
     </div>
   </div>
 </template>
-<script>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { callers } from '@/api/callers'
-import { toHex } from '@cosmjs/encoding'
+<script lang="ts">
+import { ref, onMounted, defineComponent } from 'vue'
+import {
+  RouteLocationNormalizedLoaded,
+  Router,
+  useRoute,
+  useRouter,
+} from 'vue-router'
+import { routerBack } from '@/router'
+
+// import { callers } from '@/api/callers'
 import TitledLink from '@/components/TitledLink.vue'
-import { Bech32 } from '@cosmjs/encoding'
+// import { Bech32 } from '@cosmjs/encoding'
 
 import {
   QueryClient,
@@ -121,52 +127,21 @@ import {
 
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
-import { API_CONFIG } from '../api/api-config.ts'
+import { API_CONFIG } from '@/api/api-config'
 
-export default {
+import { convertDate, copyValue } from '@/helpers/helpers'
+
+export default defineComponent({
   components: { TitledLink },
-  // eslint-disable-next-line
   setup() {
-    const router = useRouter()
-    const back = () => {
-      router.back()
-    }
-    const route = useRoute()
+    const router: Router = useRouter()
+    const route: RouteLocationNormalizedLoaded = useRoute()
 
     const blocks = ref()
     const delegatorBalance = ref()
     const delegatorStake = ref()
 
-    const tempData = ref()
-
-    tempData.value = [
-      {
-        type: 'Send',
-        hash:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        block: 3235,
-        time: '16:03',
-        date: '24.07.2021',
-        sender: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
-        receiver: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
-        amount: 214245,
-        fee: 0.278884,
-      },
-      {
-        type: 'Send',
-        hash:
-          'C1AFFF89AA00D5DA957EE91A62C50B099CD50C566AEA35A4E6D57D5BDE9BF419',
-        block: 3238,
-        time: '09:44',
-        date: '25.07.2021',
-        sender: '17GEERDWMLXPWXLAHMT02VJ4WY89WFSTJ8PACF5',
-        receiver: '1NNFEGUQ30X6NWXJHAYPXYMX3NULYSPSULQPRRJ',
-        amount: 10000,
-        fee: 0.35888,
-      },
-    ]
-
-    const getValidator = async () => {
+    const getValidator = async (): Promise<void> => {
       // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
 
       const client = QueryClient.withExtensions(
@@ -178,7 +153,9 @@ export default {
         setupIbcExtension
       )
 
-      console.log(client.staking.unverified.validator(route.params.hash))
+      console.log(
+        client.staking.unverified.validator(String(route.params.hash))
+      )
 
       // response.validator(+route.params.id).then((res) => {
       //   validatorInfo.value = res
@@ -189,93 +166,26 @@ export default {
       // })
     }
 
-    const convertDate = (time) => {
-      const nowTime = new Date()
-
-      const newTime = new Date(time)
-
-      const diff = (nowTime.getTime() - newTime.getTime()) / 1000
-      let diffMinutes = ''
-      let diffSeconds = ''
-      let totalDiff = ''
-      if (diff < 900) {
-        if (diff / 60 > 0) {
-          diffMinutes =
-            parseInt(diff / 60) > 9
-              ? parseInt(diff / 60) + ':'
-              : '0' + parseInt(diff / 60) + ':'
-          diffSeconds =
-            parseInt(diff) - diffMinutes * 60 > 9
-              ? parseInt(diff)
-              : '0' + parseInt(diff)
-        } else {
-          diffMinutes = ''
-          diffSeconds =
-            parseInt(diff) > 9 ? parseInt(diff) : '0' + parseInt(diff)
-        }
-
-        totalDiff = `${diffMinutes}${diffSeconds} ago`
-      }
-
-      const timezone =
-        newTime.getTimezoneOffset() / 60 != 0
-          ? newTime.getTimezoneOffset() / 60 + ':00'
-          : ''
-
-      const seconds =
-        newTime.getSeconds() > 9
-          ? newTime.getSeconds()
-          : '0' + newTime.getSeconds()
-      const minutes =
-        newTime.getMinutes() > 9
-          ? newTime.getMinutes()
-          : '0' + newTime.getMinutes()
-      const hours =
-        newTime.getHours() > 9 ? newTime.getHours() : '0' + newTime.getHours()
-      const day =
-        newTime.getDay() > 9 ? newTime.getDay() : '0' + newTime.getDay()
-      const month =
-        1 + newTime.getMonth() > 9
-          ? 1 + newTime.getMonth()
-          : '0' + (1 + newTime.getMonth())
-      const year = newTime.getFullYear()
-      const midday = hours > 12 ? 'PM' : 'AM'
-
-      if (totalDiff) {
-        return `${totalDiff} (${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC)`
-      } else {
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${midday} ${timezone} UTC`
-      }
-    }
-
-    const copyValue = (text) => {
-      window.navigator.clipboard.writeText(text)
-    }
-
-    const getHash = (str) => {
-      return toHex(str).toUpperCase()
-    }
-
-    onMounted(() => {
-      getValidator()
+    onMounted(async () => {
+      await getValidator()
     })
 
     return {
+      router,
       route,
       delegatorBalance,
       delegatorStake,
-      back,
+      routerBack,
       copyValue,
       convertDate,
       blocks,
-      tempData,
     }
   },
-}
+})
 </script>
 <style lang="scss" scoped>
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .block {
   &-item {
@@ -289,7 +199,7 @@ export default {
       margin-bottom: 3.2rem;
 
       & > * {
-        margin-right: 20px;
+        margin-right: 2rem;
       }
 
       @media screen and (max-width: 600px) {

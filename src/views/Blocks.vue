@@ -21,9 +21,6 @@
           <div class="app-table__cell">
             <span class="app-table__cell-txt"> Validator </span>
           </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Reward </span>
-          </div>
         </div>
         <template v-if="filteredBlocks?.length">
           <div
@@ -67,15 +64,6 @@
                 {{ '0x' + toHexFunc(item.header.validatorsHash).toUpperCase() }}
               </div>
             </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Reward</span>
-              <div>
-                <span class="app-table__cell-txt">
-                  {{ item.block_size }}
-                </span>
-                <span class="currency">{{ item.header.chainId }}</span>
-              </div>
-            </div>
           </div>
         </template>
         <template v-else>
@@ -107,30 +95,27 @@ import TitledLink from '@/components/TitledLink.vue'
 import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
+import { convertToTime, convertToDate } from '@/helpers/dates'
 
 export default defineComponent({
+  name: 'Blocks',
   components: { TitledLink, VPagination },
   setup() {
     const blocks = ref()
     const filteredBlocks = ref()
     const blocksPerPage = 5
-    const page = ref(1)
-    const totalPages = ref()
-    const toHexFunc = toHex
+    const page = ref<number>(1)
+    const totalPages = ref<number>()
+    const toHexFunc: (data: Uint8Array) => string = toHex
 
-    const getBLocks = async () => {
-      const response = await callers.getClient()
-
-      response
-        .blockchain(100, 500)
-        .then((res) => {
-          blocks.value = [...res.blockMetas]
-          totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
-        })
-        .then(() => filterBlocks(page.value))
+    const getBLocks = async (): Promise<void> => {
+      const { blockMetas } = await callers.getBlockchain(100, 500)
+      blocks.value = [...blockMetas]
+      totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
+      filterBlocks(page.value)
     }
 
-    const filterBlocks = async (newPage: number) => {
+    const filterBlocks = (newPage: number): void => {
       let tempArr = blocks.value
 
       if (newPage === 1) {
@@ -144,45 +129,15 @@ export default defineComponent({
       page.value = newPage
     }
 
-    const updateHandler = (num: number) => {
+    const updateHandler = (num: number): void => {
       filterBlocks(num)
     }
 
-    const convertToTime = (time: string) => {
-      const someTime = new Date(time)
-
-      const minutes =
-        someTime.getMinutes() > 9
-          ? someTime.getMinutes()
-          : '0' + someTime.getMinutes()
-      const hours =
-        someTime.getHours() > 9
-          ? someTime.getHours()
-          : '0' + someTime.getHours()
-
-      return `${hours}:${minutes}`
-    }
-
-    const convertToDate = (time: string) => {
-      const someTime = new Date(time)
-
-      const day =
-        someTime.getDay() > 9 ? someTime.getDay() : '0' + someTime.getDay()
-      const month =
-        1 + someTime.getMonth() > 9
-          ? 1 + someTime.getMonth()
-          : '0' + (1 + someTime.getMonth())
-      const year =
-        someTime.getFullYear() > 9
-          ? someTime.getFullYear()
-          : '0' + someTime.getFullYear()
-
-      return `${day}:${month}:${year}`
-    }
-
-    onMounted(() => {
-      getBLocks()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getBLocks()
+      }
+    )
 
     return {
       blocks,
@@ -201,21 +156,21 @@ export default defineComponent({
 
 <style scoped lang="scss">
 * {
-  font-family: 'SF Display';
+  font-family: 'SF Display', serif;
 }
 .data-sources__table-head,
 .data-sources__table-row {
   grid:
     auto /
-    repeat(5, minmax(4rem, 1fr));
+    repeat(4, minmax(4rem, 1fr));
 
   @media screen and (max-width: 992px) {
-    grid: repeat(5, minmax(4rem, 1fr)) / auto;
+    grid: repeat(4, minmax(4rem, 1fr)) / auto;
   }
 }
 
 .blocks-container {
-  border-top: 1px solid var(--clr__table-border);
+  border-top: 0.1rem solid var(--clr__table-border);
 }
 
 .app-table__row {
@@ -231,19 +186,19 @@ export default defineComponent({
 }
 
 .app-table__cell-txt {
-  max-width: 200px;
+  max-width: 20rem;
 
   @media screen and (max-width: 600px) {
-    max-width: 150px;
+    max-width: 15rem;
   }
 }
 
 .view-title {
   font-weight: 400;
-  font-size: 32px;
+  font-size: 3.2rem;
 
   @media screen and (max-width: 600px) {
-    font-size: 28px;
+    font-size: 2.8rem;
   }
 }
 
@@ -261,18 +216,18 @@ export default defineComponent({
   border-radius: 10px;
   white-space: nowrap;
   background: var(--clr__tooltip-new);
-  padding: 12px 24px;
+  padding: 1.2rem 2.4rem;
   color: #fff;
   z-index: 1;
   pointer-events: none;
 
   &:before {
     content: '';
-    border-top: 10px solid var(--clr__tooltip-new);
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
+    border-top: 1rem solid var(--clr__tooltip-new);
+    border-right: 1rem solid transparent;
+    border-left: 1rem solid transparent;
     position: absolute;
-    left: 20px;
+    left: 2rem;
     top: 100%;
     transform: translateY(-50%);
   }
@@ -297,7 +252,7 @@ export default defineComponent({
 
   @media screen and (max-width: 992px) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 }
 </style>
@@ -308,11 +263,11 @@ export default defineComponent({
 
   li {
     background: #fff;
-    border: 1px solid var(--clr__action);
-    border-radius: 4px;
-    margin: 0 4px;
-    min-width: 26px;
-    height: 36px;
+    border: 0.1rem solid var(--clr__action);
+    border-radius: 0.4rem;
+    margin: 0 0.4rem;
+    min-width: 2.6rem;
+    height: 3.6rem;
   }
 
   button {
@@ -320,7 +275,7 @@ export default defineComponent({
     width: 100%;
     border: none;
     margin: 0;
-    padding: 10px;
+    padding: 1rem;
   }
 
   .Page {

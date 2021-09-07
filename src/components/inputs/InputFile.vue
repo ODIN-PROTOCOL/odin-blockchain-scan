@@ -12,6 +12,7 @@ import { getEventFile } from '@/helpers/files'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+  name: 'InputFile',
   emits: ['update:modelValue'],
   props: {
     modelValue: { type: [File, String] },

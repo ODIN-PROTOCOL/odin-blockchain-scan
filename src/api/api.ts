@@ -10,6 +10,7 @@ import {
   SigningStargateClient,
   StakingExtension,
 } from '@cosmjs/stargate'
+import { setupTelemetryExtension, TelemetryExt } from './query-ext/telemetryExtension'
 import { EncodeObject, GeneratedType, Registry } from '@cosmjs/proto-signing'
 import { CoinswapExt, setupCoinswapExt } from './query-ext/coinswapExtension'
 import { GovExt, setupGovExt } from './query-ext/govExtension'
@@ -38,15 +39,18 @@ type OdinQueryClient = QueryClient &
   MintExt &
   OracleExt &
   BankExtension &
-  StakingExtension
+  StakingExtension &
+  TelemetryExt
 
 class Api {
   private _query: OdinQueryClient = stub('Query not initialized!')
+  private _tendermint: Tendermint34Client = stub('Tendermint not initialized!')
   private _wallet: OdinWallet = stub('Wallet not initialized!')
   private _stargate: SigningStargateClient = stub('Stargate not initialized!')
   private _stargateRegistry = new Registry()
 
   async init() {
+    await this._initTendermint()
     await this._initQueryClient()
   }
 
@@ -84,15 +88,27 @@ class Api {
     return make(this._query)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  makeTendermintCaller<T extends (...args: any) => any>(
+    make: (tc: Tendermint34Client) => T
+  ): T {
+    return make(this._tendermint)
+  }
+
+  private async _initTendermint(): Promise<void> {
+    this._tendermint = await Tendermint34Client.connect(API_CONFIG.rpc)
+  }
+
   private async _initQueryClient(): Promise<void> {
     this._query = QueryClient.withExtensions(
-      await Tendermint34Client.connect(API_CONFIG.rpc),
+      this._tendermint,
       setupCoinswapExt,
       setupGovExt,
       setupMintExt,
       setupOracleExt,
       setupStakingExtension,
-      setupBankExtension
+      setupBankExtension,
+      setupTelemetryExtension
     )
   }
 

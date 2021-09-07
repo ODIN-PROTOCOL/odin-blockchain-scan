@@ -101,10 +101,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref } from 'vue'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
 export default defineComponent({
+  name: 'Tokemonics',
   setup() {
     const showTab = ref(true)
 
@@ -132,9 +133,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
 
 h1 {
   font-weight: 400;

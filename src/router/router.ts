@@ -66,6 +66,12 @@ const routes: Array<RouteRecordRaw> = [
   // },
   {
     path: '/',
+    name: 'Home',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/Home.vue'),
+  },
+  {
+    path: '/blocks',
     name: 'Blocks',
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/Blocks.vue'),
@@ -109,6 +115,19 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/tokemonics',
     name: 'Tokemonics',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/Tokemonics.vue'),
+  },
+  // TODO: create view for this pages
+  {
+    path: '/odin-geo',
+    name: 'odin&geo',
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/Odin-geo.vue'),
+  },
+  {
+    path: '/charts',
+    name: 'charts',
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/Tokemonics.vue'),
   },
