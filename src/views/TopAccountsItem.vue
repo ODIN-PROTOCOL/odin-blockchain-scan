@@ -2,7 +2,7 @@
   <div class="container">
     <div class="block-item">
       <div class="block-item__title">
-        <button class="block-back" @click.prevent="routerBack">
+        <button class="block-back" @click.prevent="routerBack(router)">
           <img src="~@/assets/icons/back-arrow.svg" alt="info" />
           <span>Account</span>
         </button>
@@ -137,7 +137,12 @@
 </template>
 <script lang="ts">
 import { ref, onMounted, defineComponent } from 'vue'
-import { useRoute } from 'vue-router'
+import {
+  RouteLocationNormalizedLoaded,
+  Router,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { routerBack } from '@/router'
 // import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
@@ -162,7 +167,8 @@ import { API_CONFIG } from '../api/api-config.ts'
 export default defineComponent({
   components: { TitledLink },
   setup() {
-    const route = useRoute()
+    const router: Router = useRouter()
+    const route: RouteLocationNormalizedLoaded = useRoute()
 
     const blocks = ref()
     const delegatorBalance = ref()
@@ -233,6 +239,7 @@ export default defineComponent({
       delegatorBalance,
       delegatorStake,
       routerBack,
+      router,
       copyValue,
       convertToDate,
       convertToTime,
