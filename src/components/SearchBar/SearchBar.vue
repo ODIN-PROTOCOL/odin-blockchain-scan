@@ -26,7 +26,7 @@
           placeholder="searching by account address , block"
           v-model="searchedText"
         />
-        <template v-if="searchResult.length">
+        <template v-if="searchResult">
           <div class="search__drop-dawn">
             <template v-for="result in searchResult">
               <template v-if="result.blocks">
@@ -83,10 +83,10 @@ export default defineComponent({
 
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
-    const searchResult = ref<SearchResultType | Array<any>>([])
+    const searchResult = ref<SearchResultType | null>(null)
 
     watch(activeFilter, () => {
-      searchResult.value = []
+      searchResult.value = null
     })
 
     const getTransactions = async (): Promise<
@@ -106,22 +106,22 @@ export default defineComponent({
       )) as BlockResponse
     }
 
-    const searchBy = async (): Promise<void | Array<SearchResultType>> => {
-      if (searchedText.value === '') return (searchResult.value = [])
+    const searchBy = async (): Promise<SearchResultType | null> => {
+      if (searchedText.value === '') return (searchResult.value = null)
       try {
         if (activeFilter.value === 'Blocks') {
           return (searchResult.value = [
             {
               blocks: [await getBlock()],
             },
-          ])
+          ] as SearchResultType)
         }
         if (activeFilter.value === 'Transaction') {
           return (searchResult.value = [
             {
               transactions: await getTransactions(),
             },
-          ])
+          ] as SearchResultType)
         }
 
         return (searchResult.value = [
@@ -129,16 +129,17 @@ export default defineComponent({
             blocks: [await getBlock()],
             transactions: await getTransactions(),
           },
-        ])
+        ] as SearchResultType)
       } catch {
-        searchResult.value = []
+        searchResult.value = null
       }
+      return null
     }
 
     const router: Router = useRouter()
 
     router.beforeEach(() => {
-      searchResult.value = []
+      searchResult.value = null
     })
 
     return {
