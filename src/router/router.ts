@@ -123,7 +123,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/odin-geo',
     name: 'odin&geo',
     // beforeEnter: authorizedOnlyGuard,
-    component: () => import('../views/Tokemonics.vue'),
+    component: () => import('../views/Odin-geo.vue'),
   },
   {
     path: '/charts',

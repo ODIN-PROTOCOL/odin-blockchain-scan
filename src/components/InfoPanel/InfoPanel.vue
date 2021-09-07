@@ -1,6 +1,6 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div class="info-panel" v-if="priceData && transactionData && chartData">
+    <div class="info-panel" v-if="priceData && transactionData">
       <InfoPanelCol :key="'priceData'" :infoPanelRows="priceData" />
       <InfoPanelCol :key="'transactionData'" :infoPanelRows="transactionData" />
       <InfoPanelChart
@@ -8,6 +8,9 @@
         v-if="chartDataLoad"
         :chartData="chartData"
       />
+      <span class="info-panel__empty-chart" v-else>
+        We are in the process of drawing a chart!
+      </span>
     </div>
     <div v-else class="info-panel">
       <span class="info-panel__empty">Waiting to receive data</span>
@@ -16,14 +19,15 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios'
 import { defineComponent, onMounted, ref } from 'vue'
 import InfoPanelChart from '@/components/InfoPanel/InfoPanelChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
-import { ChartDataType, Link } from '@/helpers/Types'
+import { ChartDataType, CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { convertToDayMonth } from '@/helpers/dates'
 import { bigMath } from '@/helpers/bigMath'
+import { getAPIDate } from '@/helpers/requests'
+import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
 
 export default defineComponent({
   name: 'InfoPanel',
@@ -53,10 +57,18 @@ export default defineComponent({
     const getLatestTelemetry = async (): Promise<void> => {
       try {
         const endDate = new Date()
-        const { txVolumePerDay } = await callers.getTelemetry({
-          startDate: undefined,
+        const startDate = new Date()
+        startDate.setDate(startDate.getDate() - 2)
+
+        await getCoinInfo()
+
+        const { txVolumePerDay } = (await callers.getTelemetry({
+          startDate,
           endDate,
-        })
+        })) as QueryTxVolumeResponse
+
+        console.log('txVolumePerDay', txVolumePerDay)
+
         txVolumePerDay.map((el) => {
           chartData.value.labels = [
             ...chartData.value.labels,
@@ -73,7 +85,7 @@ export default defineComponent({
           },
           0
         ) as number
-        await getCoinInfo()
+
         chartDataLoad.value = true
       } catch (error) {
         console.log(error)
@@ -89,9 +101,9 @@ export default defineComponent({
             market_cap: { usd: odinMarketCapUSD },
           },
         },
-      } = await axios.get(
+      } = (await getAPIDate(
         `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
-      )
+      )) as CoingeckoCoinsType
       const {
         data: {
           name: geoDBName,
@@ -100,7 +112,9 @@ export default defineComponent({
             market_cap: { usd: geoDBMarketCapUSD },
           },
         },
-      } = await axios.get(`${process.env.VUE_APP_COINGECKO_API}/coins/geodb`)
+      } = (await getAPIDate(
+        `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
+      )) as CoingeckoCoinsType
 
       transactionData.value = [
         {
@@ -140,6 +154,15 @@ export default defineComponent({
     font-size: 3.2rem;
     font-weight: 600;
     text-transform: uppercase;
+    &-chart {
+      color: var(--clr__input-border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3.4rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
   }
   display: grid;
   grid: auto/ repeat(2, 1fr) 2fr;

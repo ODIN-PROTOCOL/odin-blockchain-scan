@@ -100,6 +100,8 @@ export default defineComponent({
       //   lastHeight = +route.params.height
       // }
 
+      // TODO: data
+
       await client
         .txSearch({ query: `tx.height >= ${lastHeight - 10}` })
         .then((res) => {

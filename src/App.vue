@@ -23,7 +23,12 @@
           <SearchBar />
         </header>
       </template>
-      <router-view />
+
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :key="Component" :is="Component" />
+        </transition>
+      </router-view>
     </section>
     <Footer />
   </template>
@@ -39,7 +44,7 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 // import UserWidget from '@/components/UserWidget.vue'
 import Nav from '@/components/Nav.vue'
 import BurgerMenu from '@/components/BurgerMenu.vue'
-import SearchBar from '@/components/SearchBar.vue'
+import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import Footer from '@/components/Footer.vue'
 
 export default defineComponent({

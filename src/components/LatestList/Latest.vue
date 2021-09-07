@@ -138,7 +138,7 @@ export default defineComponent({
       const {
         blockMetas,
         lastHeight: reqLastHeight,
-      } = await callers.getBlockchain(100, 500)
+      } = await callers.getBlockchain(100)
       latestBlocks.value = [...blockMetas].slice(0, 5)
       console.log('latestBlocks', latestBlocks.value)
       lastHeight.value = reqLastHeight
@@ -146,7 +146,7 @@ export default defineComponent({
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
         // query: `tx.height >= ${500 - 5}`,
-        query: `tx.height >= ${lastHeight.value - 5}`,
+        query: `tx.height >= ${lastHeight.value - 100000}`,
       })
       latestTransactions.value = await makeTransactionListFormatted(
         [...txs].slice(0, 5)
