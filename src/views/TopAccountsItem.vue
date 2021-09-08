@@ -162,7 +162,7 @@ import {
 
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
-import { API_CONFIG } from '../api/api-config.ts'
+import { API_CONFIG } from '@/api/api-config.ts'
 
 export default defineComponent({
   components: { TitledLink },

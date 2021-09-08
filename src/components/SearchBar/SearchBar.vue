@@ -2,7 +2,7 @@
   <div class="search">
     <div class="search__row">
       <VuePicker
-        class="app-form__field-input app-filter"
+        class="app-form__field-input app-filter app-filter--rounding-left"
         name="filter"
         v-model="activeFilter"
       >
@@ -188,23 +188,6 @@ export default defineComponent({
     padding: 0 1rem 2.5rem 1rem;
     &__row {
       padding: 0;
-    }
-  }
-}
-.app-filter {
-  display: flex;
-  max-width: 16.6rem;
-  height: 4.8rem;
-  border-radius: 0.8rem 0 0 0.8rem;
-  position: relative;
-  &:focus {
-    border: 0.1rem solid var(--clr__input-border);
-  }
-  &__dropdown-inner {
-    .vue-picker-option_cur,
-    .vue-picker-option:hover {
-      color: var(--clr__action);
-      background: rgba(204, 228, 255, 0.4);
     }
   }
 }

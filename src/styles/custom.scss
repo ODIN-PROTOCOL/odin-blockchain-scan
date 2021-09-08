@@ -1,4 +1,28 @@
-
+.app-filter {
+  display: flex;
+  max-width: 16.6rem;
+  height: 4.8rem;
+  position: relative;
+  &:focus {
+    border: 0.1rem solid var(--clr__input-border);
+  }
+  &__dropdown-inner {
+    .vue-picker-option_cur,
+    .vue-picker-option:hover {
+      color: var(--clr__action);
+      background: rgba(204, 228, 255, 0.4);
+    }
+  }
+  &--coin {
+    border: 0.1rem solid transparent;
+    min-width: 13.8rem;
+  }
+  &--rounding {
+    &-left{
+      border-radius: 0.8rem 0 0 0.8rem;
+    }
+  }
+}
 .vue-picker {
   &__opener {
     padding: 0;

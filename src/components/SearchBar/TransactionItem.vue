@@ -60,7 +60,7 @@ export default defineComponent({
   setup() {
     const toDay = ref<Date>(new Date())
 
-    const toHexFunc = toHex
+    const toHexFunc: (data: Uint8Array) => string = toHex
     return { toDay, diffDays, cropText, getDay, toHexFunc }
   },
 })

@@ -161,7 +161,7 @@ export default defineComponent({
       linkDataText: 'Transactions',
     }
 
-    const toHexFunc = toHex
+    const toHexFunc: (data: Uint8Array) => string = toHex
     return {
       latestBlocksHeader,
       latestBlocks,

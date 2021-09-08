@@ -1,77 +1,84 @@
 <template>
-  <div class="blocks-container">
-    <div class="data-sources view-main">
-      <div class="mg-b16 mg-t32">
-        <h2 class="view-title" title="some blocks">Top accounts</h2>
-      </div>
-      <div class="mg-b16 mg-t16 accounts-header__wrapper">
-        <p>{{ accounts?.length }} accounts found</p>
-        <div class="sort-wrapper">
-          <span>Sort By</span>
-          <select
-            name=""
-            id="sort_account"
-            class="sort-select"
-            v-model="sortingValue"
-            @change="sortAccounts"
-          >
-            <option value="geo">Geo balance</option>
-            <option value="odin">ODIN balance</option>
-          </select>
-        </div>
-      </div>
-      <div class="app-table">
-        <div class="data-sources__table-head app-table__head">
-          <div class="app-table__cell" data-tooltip="">
-            <span class="app-table__cell-txt"> Rank </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Address </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> GEO balance </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> GEO token percentage </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> ODIN balance </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> ODIN token percentage </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Transaction count </span>
-          </div>
-        </div>
-        <template v-if="filteredAccounts?.length">
-          <AccountsLine
-            v-for="(item, index) in filteredAccounts"
-            :key="index"
-            :account="item"
-            :geo="totalGeo"
-            :odin="totalOdin"
-            :rank="(+page - 1) * +itemsPerPage + (index + 1)"
-          />
-        </template>
-        <template v-else>
-          <div class="app-table__row">
-            <p class="app-table__empty-stub">No items yet</p>
-          </div>
-        </template>
-      </div>
-      <div class="pagination-wrapper mg-t32">
-        <v-pagination
-          v-model="page"
-          :pages="totalPages"
-          :range-size="1"
-          active-color="#007bff"
-          @update:modelValue="updateHandler"
-          :hideFirstButton="true"
-          :hideLastButton="true"
+  <div class="container">
+    <div class="mg-b16 mg-t32">
+      <h2 class="view-title" title="some blocks">Top accounts</h2>
+    </div>
+    <div class="mg-b16 mg-t16 accounts-header__wrapper">
+      <p>{{ accounts?.length }} accounts found</p>
+      <div class="sort-wrapper">
+        <span>Sort By</span>
+        <VuePicker
+          class="app-form__field-input app-filter app-filter--coin"
+          name="filter"
+          v-on:update:modelValue="sortAccounts"
+          v-model="sortingValue"
         >
-        </v-pagination>
+          <template #dropdownInner>
+            <div class="app-filter__dropdown-inner">
+              <VuePickerOption
+                v-for="({ text, value }) in sortingOptions"
+                :key="text"
+                :value="value"
+                :text="text"
+              >
+                {{ text }}
+              </VuePickerOption>
+            </div>
+          </template>
+        </VuePicker>
       </div>
+    </div>
+    <div class="app-table">
+      <div class="data-sources__table-head app-table__head">
+        <div class="app-table__cell" data-tooltip="">
+          <span class="app-table__cell-txt"> Rank </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Address </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> GEO balance </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> GEO token percentage </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> ODIN balance </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> ODIN token percentage </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Transaction count </span>
+        </div>
+      </div>
+      <template v-if="filteredAccounts?.length">
+        <AccountsLine
+          v-for="(item, index) in filteredAccounts"
+          :key="index"
+          :account="item"
+          :geo="totalGeo"
+          :odin="totalOdin"
+          :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
+        />
+      </template>
+      <template v-else>
+        <div class="app-table__row">
+          <p class="app-table__empty-stub">No items yet</p>
+        </div>
+      </template>
+    </div>
+    <div class="pagination-wrapper mg-t32">
+      <v-pagination
+        v-model="currentPage"
+        :pages="totalPages"
+        :range-size="1"
+        active-color="#007bff"
+        @update:modelValue="filterAccounts"
+        :hideFirstButton="true"
+        :hideLastButton="true"
+      >
+      </v-pagination>
     </div>
   </div>
 </template>
@@ -84,130 +91,109 @@ import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
-import { QueryClient, setupBankExtension } from '@cosmjs/stargate'
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
-import { API_CONFIG } from '../api/api-config'
-import {
-  Pagination,
-  setupTelemetryExtension,
-} from '@/helpers/telemetryExtension'
-// import {setupTelemetryExtension} from '@/helpers/telemetryExtension'
+import { Pagination } from '@/api/query-ext/telemetryExtension.ts'
+import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
+import { QueryTopBalancesResponse } from '@provider/codec/telemetry/query'
+import { TempBalanceType } from '@/helpers/Types'
 
 export default defineComponent({
   components: { VPagination, AccountsLine },
   setup() {
-    const accounts = ref()
-    const filteredAccounts = ref()
-    const itemsPerPage = 5
-    const page = ref(1)
-    const totalPages = ref()
-    const toHexFunc = toHex
-    const sortingValue = ref()
-    const totalOdin = ref(0)
-    const totalGeo = ref(0)
+    const ITEMS_PER_PAGE = 5
+    const pagination: Pagination = new Pagination([], 0, 100, true, true)
 
-    const getAccounts = async () => {
-      const client = QueryClient.withExtensions(
-        await Tendermint34Client.connect(API_CONFIG.rpc),
-        setupTelemetryExtension,
-        setupBankExtension
+    const accounts = ref<Array<TempBalanceType>>()
+    const filteredAccounts = ref<Array<TempBalanceType>>()
+    const currentPage = ref<number>(1)
+    const totalPages = ref<number>()
+    const toHexFunc: (data: Uint8Array) => string = toHex
+    const sortingValue = ref<string>()
+    const totalOdin = ref<number>(0)
+    const totalGeo = ref<number>(0)
+    const totalCurrency = ref<Array<Coin> | null>(null)
+    const balances = ref<QueryTopBalancesResponse | null>(null)
+    const sortingOptions = ref([
+      { text: 'Geo balance', value: 'geo' },
+      { text: 'ODIN balance', value: 'odin' },
+    ])
+    const getAccounts = async (): Promise<void> => {
+      totalCurrency.value = (await callers.getTotalSupply()) as Array<Coin>
+      totalOdin.value = Number(
+        totalCurrency.value.find((el) => el.denom === 'loki')?.amount
+      )
+      totalGeo.value = Number(
+        totalCurrency.value.find((el) => el.denom === 'minigeo')?.amount
       )
 
-      const pagination = new Pagination(0, 100, true)
+      balances.value = (await callers.getTopBalances({
+        denom: 'odin',
+        pagination,
+        desc: true,
+      })) as QueryTopBalancesResponse
 
-      const totalCurrency = await client['bank'].unverified.totalSupply()
-
-      totalCurrency.forEach((el) => {
-        if (el.denom === 'loki') {
-          totalOdin.value = +el.amount
-        } else if (el.denom === 'minigeo') {
-          totalGeo.value = +el.amount
+      const tempBalances: Array<TempBalanceType> = []
+      balances.value.balances.forEach((el) => {
+        const tempBalanceItem: TempBalanceType = {
+          address: el.address,
+          geoBalance: Number(
+            el.coins.find((el) => el.denom === 'loki')?.amount
+              ? el.coins.find((el) => el.denom === 'loki')?.amount
+              : 0
+          ),
+          odinBalance: Number(
+            el.coins.find((el) => el.denom === 'minigeo')?.amount
+              ? el.coins.find((el) => el.denom === 'minigeo')?.amount
+              : 0
+          ),
         }
-      })
-
-      const balances = await client['telemetry'].unverified.topBalances(
-        'odin',
-        pagination
-      )
-
-      const tempBalances: {
-        address: string
-        geoBalance: number
-        odinBalance: number
-      }[] = []
-      balances.balances.forEach((el) => {
-        const tempBalanceItem = {
-          address: '',
-          geoBalance: 0,
-          odinBalance: 0,
-        }
-        tempBalanceItem.address = el.address
-
-        if (el.coins.length) {
-          el.coins.forEach((curr) => {
-            if (curr.denom === 'loki') {
-              tempBalanceItem.odinBalance = +curr.amount
-            } else if (curr.denom === 'minigeo') {
-              tempBalanceItem.geoBalance = +curr.amount
-            }
-          })
-        }
-
         tempBalances.push(tempBalanceItem)
       })
 
       accounts.value = tempBalances
-      totalPages.value = Math.ceil(accounts.value.length / itemsPerPage)
 
+      totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
       sortingValue.value = 'geo'
       try {
         await sortAccounts()
-      } catch (err) {
-        console.log(err)
-      }
-
-      try {
-        await filterAccounts(page.value)
+        await filterAccounts(currentPage.value)
       } catch (err) {
         console.log(err)
       }
     }
 
-    const filterAccounts = async (newPage: number) => {
+    const filterAccounts = async (newPage: number): Promise<void> => {
       let tempArr = accounts.value
 
       if (newPage === 1) {
-        filteredAccounts.value = tempArr.slice(0, newPage * itemsPerPage)
+        filteredAccounts.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
       } else {
-        filteredAccounts.value = tempArr.slice(
-          (newPage - 1) * itemsPerPage,
-          (newPage - 1) * itemsPerPage + itemsPerPage
+        filteredAccounts.value = tempArr?.slice(
+          (newPage - 1) * ITEMS_PER_PAGE,
+          (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
         )
       }
 
-      page.value = newPage
+      currentPage.value = newPage
     }
 
-    const updateHandler = (num: number) => {
-      filterAccounts(num)
-    }
-
-    const sortAccounts = async () => {
+    const sortAccounts = async (): Promise<void> => {
       filteredAccounts.value = []
-      let tempAcc = []
+      let tempAcc: Array<TempBalanceType> = []
 
       if (sortingValue.value === 'geo') {
-        tempAcc = accounts.value.sort(
-          (a: any, b: any) => b.geoBalance - a.geoBalance
-        )
+        tempAcc = accounts.value?.sort(
+          (a: TempBalanceType, b: TempBalanceType) =>
+            b.geoBalance - a.geoBalance
+        ) as Array<TempBalanceType>
       } else if (sortingValue.value === 'odin') {
-        tempAcc = accounts.value.sort(
-          (a: any, b: any) => b.odinBalance - a.odinBalance
-        )
+        tempAcc = accounts.value?.sort(
+          (a: TempBalanceType, b: TempBalanceType) =>
+            b.odinBalance - a.odinBalance
+        ) as Array<TempBalanceType>
       }
 
       accounts.value = tempAcc
-      filterAccounts(1)
+      await filterAccounts(1)
     }
 
     onMounted(() => {
@@ -216,33 +202,28 @@ export default defineComponent({
 
     return {
       accounts,
-      page,
+      currentPage,
       totalPages,
       filteredAccounts,
-      updateHandler,
+      filterAccounts,
       toHexFunc,
       sortAccounts,
       sortingValue,
+      sortingOptions,
       totalGeo,
       totalOdin,
-      itemsPerPage,
+      ITEMS_PER_PAGE,
     }
   },
 })
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
 .data-sources__table-head,
 .data-sources__table-row {
-  grid:
-    auto /
-    repeat(7, minmax(4rem, 1fr));
-
+  grid: auto/50px repeat(6, 1fr);
   @media screen and (max-width: 992px) {
-    grid: repeat(7, minmax(4rem, 1fr)) / auto;
+    grid: 60px repeat(6, minmax(4rem, 1fr)) / auto;
   }
 }
 
@@ -338,7 +319,7 @@ export default defineComponent({
     &__wrapper {
       display: flex;
       justify-content: space-between;
-
+      align-items: center;
       @media screen and (max-width: 600px) {
         flex-direction: column;
 
@@ -373,7 +354,7 @@ export default defineComponent({
 
   &-wrapper {
     display: flex;
-
+    align-items: center;
     span {
       white-space: nowrap;
     }

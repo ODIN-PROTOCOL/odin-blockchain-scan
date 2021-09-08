@@ -22,17 +22,20 @@ import {
 } from '@provider/codec/telemetry/query'
 
 export class Pagination {
+  key?: Uint8Array
   offset: Long
   limit: Long
-  desc: string
+  desc: boolean
   countTotal: boolean
 
   constructor(
+    key: Array<never>,
     offset: number,
     limit: number,
-    desc: string,
+    desc: boolean,
     countTotal: boolean
   ) {
+    this.key = new Uint8Array(key)
     this.offset = new Long(offset)
     this.limit = new Long(limit)
     this.desc = desc

@@ -6,46 +6,47 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Address</span>
-      <router-link :to="`/top_accounts/${accountInfo.address}`">
+      <router-link :to="`/top_accounts/${account.address}`">
         <TitledLink
           class="app-table__cell-txt"
-          :text="`0x${accountInfo.address}`"
+          :text="`0x${account.address}`"
         />
       </router-link>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">GEO balance</span>
-      <span>{{ accountGeoBalance }}</span>
+      <span>{{ account.geoBalance }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">GEO token percentage</span>
       <span v-if="accountOdinPercentage">{{ accountOdinPercentage }}%</span>
-      <span></span>
+      <span v-else>No info</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">ODIN balance</span>
-      <span>{{ accountOdinBalance }}</span>
+      <span>{{ account.odinBalance }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">ODIN token percentage</span>
       <div>
         <span v-if="accountGeoPercentage">{{ accountGeoPercentage }}%</span>
-        <span></span>
+        <span v-else>No info</span>
       </div>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Transaction count</span>
       <div>
-        <span>{{ accountInfo.transactionCount }}</span>
+        <span v-if="account.transactionCount">
+          {{ account.transactionCount }}
+        </span>
+        <span v-else>No info</span>
       </div>
     </div>
   </div>
 </template>
-<script>
-import { ref, onMounted, defineComponent, toRef, watch } from 'vue'
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { toHex } from '@cosmjs/encoding'
-import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
 
 export default defineComponent({
   components: { TitledLink },
@@ -56,11 +57,11 @@ export default defineComponent({
     },
     odin: {
       type: Number,
-      required: false,
+      required: true,
     },
     geo: {
       type: Number,
-      required: false,
+      required: true,
     },
     rank: {
       type: Number,
@@ -68,64 +69,25 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const toHexFunc = toHex
-    const accountRank = ref()
-    const accountHash = ref()
-    const accountGeoBalance = ref()
-    const accountGeoPercentage = ref()
-    const accountOdinBalance = ref()
-    const accountOdinPercentage = ref()
-    const accountTransactionCount = ref()
-
-    const accountInfo = toRef(props, 'account')
-
-    const getAccountLineInfo = () => {
-      // reset old value
-      accountRank.value = ''
-      accountHash.value = []
-      accountGeoBalance.value = ''
-      accountGeoPercentage.value = ''
-      accountOdinBalance.value = ''
-      accountOdinPercentage.value = ''
-      accountTransactionCount.value = ''
-
-      accountOdinPercentage.value = Number.parseFloat(
+    const accountOdinPercentage = computed(() => {
+      return Number.parseFloat(
         (+props.account.odinBalance / props.odin).toFixed(8)
       )
-      accountOdinBalance.value = +props.account.odinBalance
-
-      accountGeoPercentage.value = Number.parseFloat(
+    })
+    const accountGeoPercentage = computed(() => {
+      return Number.parseFloat(
         (+props.account.geoBalance / props.geo).toFixed(8)
       )
-      accountGeoBalance.value = +props.account.geoBalance
-    }
-
-    onMounted(() => {
-      getAccountLineInfo()
     })
-
-    watch(accountInfo, getAccountLineInfo)
-
     return {
-      toHexFunc,
-      accountRank,
-      accountHash,
-      accountGeoBalance,
       accountGeoPercentage,
-      accountOdinBalance,
       accountOdinPercentage,
-      accountTransactionCount,
-      accountInfo,
     }
   },
 })
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display';
-}
-
 .data-sources__table-head,
 .data-sources__table-row {
   grid:

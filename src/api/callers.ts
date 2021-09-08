@@ -145,6 +145,9 @@ const makeCallers = () => {
     getTelemetry: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.txVolume)
     ),
+    getTopBalances: cacheAnswers(
+      querier((qc) => qc.telemetry.unverified.topBalances)
+    ),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },

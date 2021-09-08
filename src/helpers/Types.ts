@@ -56,3 +56,9 @@ export type CoinBlocksDataType = {
     providers_pool: string
   }
 }
+
+export type TempBalanceType = {
+  address: string
+  geoBalance: number
+  odinBalance: number
+}
