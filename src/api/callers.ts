@@ -68,10 +68,17 @@ const makeCallers = () => {
     ),
     proposalVote: broadcaster<MsgVote>('/cosmos.gov.v1beta1.MsgVote', MsgVote),
 
-    getBalances: querier((qc) => () => {
+    getAllBalances: querier((qc) => () => {
       const myAddress = wallet.account.address
       return qc.bank.unverified.allBalances(myAddress)
     }),
+    getBalances: querier((qc) => () => {
+      const myAddress = wallet.account.address
+      return qc.bank.balance(myAddress, 'loki')
+    }),
+    getUnverifiedBalances: querier((qc) => qc.bank.unverified.balance),
+    getUnverifiedTotalSupply: querier((qc) => qc.bank.unverified.totalSupply),
+    getUnverifiedSupplyOff: querier((qc) => qc.bank.unverified.supplyOf),
 
     createExchange: broadcaster<MsgExchange>(
       '/coinswap.MsgExchange',
@@ -94,9 +101,7 @@ const makeCallers = () => {
       querier((qc) => qc.mint.unverified.treasuryPool)
     ),
     getMintParams: cacheAnswers(querier((qc) => qc.mint.unverified.params)),
-    getTotalSupply: cacheAnswers(
-      querier((qc) => qc.bank.unverified.totalSupply)
-    ),
+
 
     createValidator: broadcaster<MsgCreateValidator>(
       '/cosmos.staking.v1beta1.MsgCreateValidator',

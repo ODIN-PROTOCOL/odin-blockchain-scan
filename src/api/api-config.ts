@@ -8,11 +8,11 @@ export const API_CONFIG = {
   // rpc: 'https://node.testnet.odinprotocol.io/a/',
   // faucet: 'https://node.testnet.odinprotocol.io/faucet',
   // exBridge: 'https://node.testnet.odinprotocol.io/bridge/',
-  // exBridgeFee: '10',
+  exBridgeFee: '10',
   // hdDeviation: stringToPath("m/44'/494'/0'/0/0"),
   rpc: 'http://localhost:26657',
   faucet: 'http://localhost:5005',
   exBridge: 'http://localhost:90',
-  exBridgeFee: '10',
+  // exBridgeFee: '10',
   hdDeviation: stringToPath("m/44'/494'/0'/0/0"),
 }

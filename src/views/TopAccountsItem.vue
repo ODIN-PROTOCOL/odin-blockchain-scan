@@ -68,12 +68,13 @@
           >
             <div class="app-table__cell">
               <span class="app-table__header">Transaction hash</span>
-              <router-link :to="`/blocks/${item.hash}`">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="`0x${item.hash}`"
-                />
-              </router-link>
+              <TitledLink
+                class="app-table__cell-txt"
+                :text="`0x${item.hash}`"
+              />
+              <!--              <router-link :to="`/blocks/${item.hash}`">-->
+
+              <!--              </router-link>-->
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Type</span>
@@ -99,22 +100,24 @@
             <div class="app-table__cell">
               <span class="app-table__header">Sender</span>
               <!-- <span class="app-table__cell-txt">{{ '0x' + item.sender }}</span> -->
-              <router-link :to="`/transcactions/${item.sender}`">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="`0x${item.sender}`"
-                />
-              </router-link>
+              <!--              <router-link :to="`/transcactions/${item.sender}`">-->
+
+              <!--              </router-link>-->
+              <TitledLink
+                class="app-table__cell-txt"
+                :text="`0x${item.sender}`"
+              />
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Reciever</span>
               <!-- <span class="app-table__cell-txt">{{ '0x' + item.receiver }}</span> -->
-              <router-link :to="`/transcactions/${item.receiver}`">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="`0x${item.receiver}`"
-                />
-              </router-link>
+              <!--              <router-link :to="`/transcactions/${item.receiver}`">-->
+              <!--                -->
+              <!--              </router-link>-->
+              <TitledLink
+                class="app-table__cell-txt"
+                :text="`0x${item.receiver}`"
+              />
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Amount</span>
@@ -144,25 +147,12 @@ import {
   useRouter,
 } from 'vue-router'
 import { routerBack } from '@/router'
-// import { callers } from '@/api/callers'
-import { toHex } from '@cosmjs/encoding'
+import { callers } from '@/api/callers'
 import { convertToTime, convertToDate } from '@/helpers/dates'
 
 import TitledLink from '@/components/TitledLink.vue'
-// import { Bech32 } from '@cosmjs/encoding'
-
-import {
-  QueryClient,
-  setupAuthExtension,
-  setupBankExtension,
-  setupDistributionExtension,
-  setupStakingExtension,
-  setupIbcExtension,
-} from '@cosmjs/stargate'
-
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
-
-import { API_CONFIG } from '@/api/api-config.ts'
+import { Bech32 } from '@cosmjs/encoding'
+import { wallet } from '@/api/wallet'
 
 export default defineComponent({
   components: { TitledLink },
@@ -173,7 +163,6 @@ export default defineComponent({
     const blocks = ref()
     const delegatorBalance = ref()
     const delegatorStake = ref()
-
     const tempData = ref()
 
     tempData.value = [
@@ -203,16 +192,35 @@ export default defineComponent({
 
     const getValidator = async () => {
       // TODO use client instead of mock
-      // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
-      // const client = QueryClient.withExtensions(
-      //   await Tendermint34Client.connect(API_CONFIG.rpc),
-      //   setupAuthExtension,
-      //   setupBankExtension,
-      //   setupDistributionExtension,
-      //   setupStakingExtension,
-      //   setupIbcExtension
+      const validatorAddress = Bech32.encode(
+        'odin',
+        Bech32.decode(route.params.hash as string).data
+      )
+      console.log('validatorAddress', validatorAddress)
+      // test wallet
+      await wallet.init(
+        'half shoot ecology solve subway half fringe tired balance aware maple toe clip then praise home trip female arm little fork state grunt vanish'
+      )
+      console.log('getAllBalances', await callers.getAllBalances())
+      console.log('getBalances', await callers.getBalances())
+
+      console.log('wallet', wallet)
+      // console.log(
+      //   'faucetRequest',
+      //   await callers.faucetRequest({ denom: 'odin' })
       // )
-      // console.log(client.staking.unverified.validator(route.params.hash))
+      console.log(
+        'getUnverifiedTotalSupply',
+        await callers.getUnverifiedTotalSupply()
+      )
+      console.log(
+        'getUnverifiedSupplyOff',
+        await callers.getUnverifiedSupplyOff('loki')
+      )
+
+      // console.log(await callers.getValidators(validatorAddress))
+
+      // console.log(await client.staking.unverified.validator(validatorAddress))
       // response.validator(+route.params.id).then((res) => {
       //   validatorInfo.value = res
       //   validatorHash.value = getHash(validatorInfo.value.validatorId.hash)
@@ -224,10 +232,6 @@ export default defineComponent({
 
     const copyValue = (text) => {
       window.navigator.clipboard.writeText(text)
-    }
-
-    const getHash = (str) => {
-      return toHex(str).toUpperCase()
     }
 
     onMounted(() => {

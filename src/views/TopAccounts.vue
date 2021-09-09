@@ -4,7 +4,8 @@
       <h2 class="view-title" title="some blocks">Top accounts</h2>
     </div>
     <div class="mg-b16 mg-t16 accounts-header__wrapper">
-      <p>{{ accounts?.length }} accounts found</p>
+      <p v-if="accounts?.length">{{ accounts?.length }} accounts found</p>
+      <p v-else></p>
       <div class="sort-wrapper">
         <span>Sort By</span>
         <VuePicker
@@ -16,7 +17,7 @@
           <template #dropdownInner>
             <div class="app-filter__dropdown-inner">
               <VuePickerOption
-                v-for="({ text, value }) in sortingOptions"
+                v-for="{ text, value } in sortingOptions"
                 :key="text"
                 :value="value"
                 :text="text"
@@ -117,7 +118,7 @@ export default defineComponent({
       { text: 'ODIN balance', value: 'odin' },
     ])
     const getAccounts = async (): Promise<void> => {
-      totalCurrency.value = (await callers.getTotalSupply()) as Array<Coin>
+      totalCurrency.value = (await callers.getUnverifiedTotalSupply()) as Array<Coin>
       totalOdin.value = Number(
         totalCurrency.value.find((el) => el.denom === 'loki')?.amount
       )
@@ -196,9 +197,11 @@ export default defineComponent({
       await filterAccounts(1)
     }
 
-    onMounted(() => {
-      getAccounts()
-    })
+    onMounted(
+      async (): Promise<void> => {
+        await getAccounts()
+      }
+    )
 
     return {
       accounts,

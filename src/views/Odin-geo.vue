@@ -47,7 +47,7 @@ export default defineComponent({
         params: CoinswapParams,
       } = (await callers.getCoinswapParams()) as QueryParamsResponse
 
-      const TotalSupply = await callers.getTotalSupply()
+      const TotalSupply = await callers.getUnverifiedTotalSupply()
 
       console.log('TotalSupply', TotalSupply)
       console.log('getTreasuryPool', treasuryPool)

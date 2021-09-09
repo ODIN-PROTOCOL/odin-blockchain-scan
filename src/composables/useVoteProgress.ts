@@ -11,7 +11,7 @@ let _updateInterval = -1
 
 const _loadPowerConst = async () => {
   const [supply, { treasuryPool }] = await Promise.all([
-    callers.getTotalSupply(),
+    callers.getUnverifiedTotalSupply(),
     callers.getTreasuryPool(),
   ])
 

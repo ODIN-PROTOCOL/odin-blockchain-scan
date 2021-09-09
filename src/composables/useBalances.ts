@@ -24,7 +24,7 @@ function getBalance(
 }
 
 async function loadBalances(): Promise<void> {
-  const balances = await callers.getBalances()
+  const balances = await callers.getAllBalances()
   console.debug('Balances:', balances)
   _balances.value = balances
 }
