@@ -13,23 +13,16 @@
             :text="`0x${result.address}`"
           />
         </div>
-        <div class="search__drop-dawn--item-time">
-        </div>
+        <div class="search__drop-dawn--item-time"></div>
       </div>
       <div class="search__drop-dawn--item-right">
         <div class="search__drop-dawn--item-validator">
           Geo Balance:
-          <TitledLink
-            class="app-table__cell-txt"
-            :text="result.geoBalance"
-          />
+          <TitledLink class="app-table__cell-txt" :text="result.geoBalance" />
         </div>
         <div class="search__drop-dawn--item-validator">
           <span> Odin Balance: </span>
-          <TitledLink
-            class="app-table__cell-txt"
-            :text="result.odinBalance"
-          />
+          <TitledLink class="app-table__cell-txt" :text="result.odinBalance" />
         </div>
       </div>
     </router-link>
@@ -38,7 +31,7 @@
 
 <script lang="ts">
 import { toHex } from '@cosmjs/encoding'
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
 
@@ -46,11 +39,8 @@ export default defineComponent({
   name: 'AccountItem',
   components: { TitledLink },
   props: { result: { type: Object, required: true } },
-  setup(props) {
+  setup() {
     const toDay = ref<Date>(new Date())
-    onMounted(()=> {
-      console.log(props.result)
-    })
     const toHexFunc: (data: Uint8Array) => string = toHex
     return { toDay, diffDays, cropText, getDay, toHexFunc }
   },

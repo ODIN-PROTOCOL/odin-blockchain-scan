@@ -157,7 +157,8 @@ export default defineComponent({
             accounts: await getAccount(),
           },
         ] as SearchResultType)
-      } catch {
+      } catch (e) {
+        console.log(e.message)
         searchResult.value = null
       }
       return null
