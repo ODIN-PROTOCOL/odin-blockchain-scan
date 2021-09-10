@@ -35,6 +35,9 @@ export const convertToTime = (time: string): string => {
       : '0' + someTime.getMinutes()
   const hours =
     someTime.getHours() > 9 ? someTime.getHours() : '0' + someTime.getHours()
-
   return `${hours}:${minutes}`
+}
+
+export const convertToTxTime = (time: string): string => {
+  return `${dateFns.format(new Date(time), 'H:MM:SS MMM dd Y')}`
 }

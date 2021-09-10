@@ -86,7 +86,6 @@
 
 <script lang="ts">
 import { callers } from '@/api/callers'
-import { toHex } from '@cosmjs/encoding'
 import AccountsLine from '@/components/AccountsLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
@@ -94,8 +93,8 @@ import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
 import { Pagination } from '@/api/query-ext/telemetryExtension.ts'
 import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
-import { QueryTopBalancesResponse } from '@provider/codec/telemetry/query'
 import { TempBalanceType } from '@/helpers/Types'
+import { getAccoutsList } from '@/helpers/Accounts'
 
 export default defineComponent({
   components: { VPagination, AccountsLine },
@@ -107,18 +106,17 @@ export default defineComponent({
     const filteredAccounts = ref<Array<TempBalanceType>>()
     const currentPage = ref<number>(1)
     const totalPages = ref<number>()
-    const toHexFunc: (data: Uint8Array) => string = toHex
     const sortingValue = ref<string>()
     const totalOdin = ref<number>(0)
     const totalGeo = ref<number>(0)
     const totalCurrency = ref<Array<Coin> | null>(null)
-    const balances = ref<QueryTopBalancesResponse | null>(null)
     const sortingOptions = ref([
       { text: 'Geo balance', value: 'geo' },
       { text: 'ODIN balance', value: 'odin' },
     ])
     const getAccounts = async (): Promise<void> => {
-      totalCurrency.value = (await callers.getUnverifiedTotalSupply()) as Array<Coin>
+      totalCurrency.value =
+        (await callers.getUnverifiedTotalSupply()) as Array<Coin>
       totalOdin.value = Number(
         totalCurrency.value.find((el) => el.denom === 'loki')?.amount
       )
@@ -126,31 +124,7 @@ export default defineComponent({
         totalCurrency.value.find((el) => el.denom === 'minigeo')?.amount
       )
 
-      balances.value = (await callers.getTopBalances({
-        denom: 'odin',
-        pagination,
-        desc: true,
-      })) as QueryTopBalancesResponse
-
-      const tempBalances: Array<TempBalanceType> = []
-      balances.value.balances.forEach((el) => {
-        const tempBalanceItem: TempBalanceType = {
-          address: el.address,
-          geoBalance: Number(
-            el.coins.find((el) => el.denom === 'loki')?.amount
-              ? el.coins.find((el) => el.denom === 'loki')?.amount
-              : 0
-          ),
-          odinBalance: Number(
-            el.coins.find((el) => el.denom === 'minigeo')?.amount
-              ? el.coins.find((el) => el.denom === 'minigeo')?.amount
-              : 0
-          ),
-        }
-        tempBalances.push(tempBalanceItem)
-      })
-
-      accounts.value = tempBalances
+      accounts.value = await getAccoutsList(pagination)
 
       totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
       sortingValue.value = 'geo'
@@ -197,11 +171,9 @@ export default defineComponent({
       await filterAccounts(1)
     }
 
-    onMounted(
-      async (): Promise<void> => {
-        await getAccounts()
-      }
-    )
+    onMounted(async (): Promise<void> => {
+      await getAccounts()
+    })
 
     return {
       accounts,
@@ -209,7 +181,6 @@ export default defineComponent({
       totalPages,
       filteredAccounts,
       filterAccounts,
-      toHexFunc,
       sortAccounts,
       sortingValue,
       sortingOptions,

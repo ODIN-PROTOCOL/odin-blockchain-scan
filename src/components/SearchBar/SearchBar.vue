@@ -26,6 +26,7 @@
           placeholder="searching by account address , block"
           v-model="searchedText"
         />
+
         <template v-if="searchResult">
           <div class="search__drop-dawn">
             <template v-for="result in searchResult">
@@ -41,6 +42,13 @@
                   v-for="transaction in result.transactions"
                   :result="transaction"
                   :key="transaction.height"
+                />
+              </template>
+              <template v-if="result.accounts">
+                <AccountItem
+                  v-for="accounts in result.accounts"
+                  :result="accounts"
+                  :key="accounts"
                 />
               </template>
             </template>
@@ -64,15 +72,18 @@ import {
 import { Router, useRouter } from 'vue-router'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
-import { SearchResultType } from '@/helpers/Types'
+import AccountItem from '@/components/SearchBar/AccountItem.vue'
+import { SearchResultType, TempBalanceType } from '@/helpers/Types'
 import {
   makeTransactionListFormatted,
   TransactionListFormatted,
 } from '@/helpers/makeTransactionListFormatted'
+import { Pagination } from '@/api/query-ext/telemetryExtension'
+import { getAccoutsList } from '@/helpers/Accounts'
 
 export default defineComponent({
   name: 'SearchBar',
-  components: { BlockResultItem, TransactionItem },
+  components: { BlockResultItem, TransactionItem, AccountItem },
   setup() {
     const filters = ref<Array<string>>([
       'All filters',
@@ -84,6 +95,7 @@ export default defineComponent({
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
     const searchResult = ref<SearchResultType | null>(null)
+    const pagination: Pagination = new Pagination([], 0, 100, true, true)
 
     watch(activeFilter, () => {
       searchResult.value = null
@@ -98,6 +110,13 @@ export default defineComponent({
       return (await makeTransactionListFormatted([
         ...txs,
       ] as Array<TxResponse>)) as Array<TransactionListFormatted>
+    }
+    const getAccount = async (): Promise<Array<TempBalanceType>> => {
+      //TODO: its so baaaad
+      const getTopAcc = await getAccoutsList(pagination)
+      return getTopAcc.filter((a) =>
+        a.address.match(searchedText.value as string)
+      )
     }
 
     const getBlock = async () => {
@@ -124,10 +143,18 @@ export default defineComponent({
           ] as SearchResultType)
         }
 
+        if (activeFilter.value === 'Account Address') {
+          return (searchResult.value = [
+            {
+              accounts: await getAccount(),
+            },
+          ] as SearchResultType)
+        }
         return (searchResult.value = [
           {
             blocks: [await getBlock()],
             transactions: await getTransactions(),
+            accounts: await getAccount(),
           },
         ] as SearchResultType)
       } catch {

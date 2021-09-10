@@ -29,23 +29,21 @@ export default defineComponent({
     const coins = ['geodb', 'odin-protocol']
 
     onMounted(async () => {
+      console.log('"onMounted hook"')
       await fetchData(coins)
     })
 
     const CoinBlocksData = ref<Array<CoinBlocksDataType>>([])
 
     const fetchData = async (coins: Array<string>): Promise<void> => {
-      const {
-        treasuryPool,
-      } = (await callers.getTreasuryPool()) as QueryTreasuryPoolResponse
+      const { treasuryPool } =
+        (await callers.getTreasuryPool()) as QueryTreasuryPoolResponse
 
-      const {
-        params: mintParams,
-      } = (await callers.getMintParams()) as QueryParamsResponse
+      const { params: mintParams } =
+        (await callers.getMintParams()) as QueryParamsResponse
 
-      const {
-        params: CoinswapParams,
-      } = (await callers.getCoinswapParams()) as QueryParamsResponse
+      const { params: CoinswapParams } =
+        (await callers.getCoinswapParams()) as QueryParamsResponse
 
       const TotalSupply = await callers.getUnverifiedTotalSupply()
 
