@@ -4,8 +4,8 @@
       <h2 class="view-title" title="some blocks">Top accounts</h2>
     </div>
     <div class="mg-b16 mg-t16 accounts-header__wrapper">
-      <p v-if="accounts?.length">{{ accounts?.length }} accounts found</p>
-      <p v-else></p>
+      <p>{{ accounts?.length }} accounts found</p>
+      <!--      <p v-else></p>-->
       <div class="sort-wrapper">
         <span>Sort By</span>
         <VuePicker
@@ -106,7 +106,7 @@ export default defineComponent({
     const filteredAccounts = ref<Array<TempBalanceType>>()
     const currentPage = ref<number>(1)
     const totalPages = ref<number>()
-    const sortingValue = ref<string>()
+    const sortingValue = ref<string>('odin')
     const totalOdin = ref<number>(0)
     const totalGeo = ref<number>(0)
     const totalCurrency = ref<Array<Coin> | null>(null)
@@ -333,8 +333,10 @@ export default defineComponent({
       white-space: nowrap;
     }
 
-    @media screen and (max-width: 600px) {
-      flex-direction: column;
+    @media (max-width: 480px) {
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
     }
   }
 }

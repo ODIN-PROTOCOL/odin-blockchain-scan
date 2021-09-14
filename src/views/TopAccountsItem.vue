@@ -193,20 +193,19 @@ export default defineComponent({
 
     // TODO: get normal type tx
     const getType = (tx) => {
-      // return `${tx.body.messages[0].typeUrl
-      //   .match(/\.([^ ]*)/)[1]
-      //   .replace(/([A-Z])/g, ' $1')
-      //   .trim()}`
-      return `${
-        tx.body.messages[0].typeUrl.toLowerCase().indexOf('withdraw') !== -1
-          ? 'Withdraw'
-          : 'Send'
-      }`
+      return `${tx.body.messages[0].typeUrl
+        .match(/\.([^ ]*)/)[1]
+        .replace(/([A-Z])/g, ' $1')
+        .trim()}`
+      // return `${
+      //   tx.body.messages[0].typeUrl.toLowerCase().indexOf('withdraw') !== -1
+      //     ? 'Withdraw'
+      //     : 'Send'
+      // }`
     }
 
     const getValidator = async () => {
       try {
-        // TODO use client instead of mock
         const validatorAddress = Bech32.encode(
           'odin',
           Bech32.decode(route.params.hash as string).data
@@ -220,32 +219,33 @@ export default defineComponent({
         const { txs, totalCount } = await callers.getTxSearch({
           query: `message.sender='${validatorAddress}'`,
         })
-        for (const tx of txs) {
-          prepareTransaction.value = [
-            ...prepareTransaction.value,
-            {
-              type: getType(getDecodeTx(tx.tx)),
-              hash: toHexFunc(tx.hash),
-              block: tx.height,
-              time: await getTime(tx.height),
-              sender: toHexFunc(
+        if (txs.length > 0) {
+          for (const tx of txs) {
+            prepareTransaction.value = [
+              ...prepareTransaction.value,
+              {
+                type: getType(getDecodeTx(tx.tx)),
+                hash: toHexFunc(tx.hash),
+                block: tx.height,
+                time: await getTime(tx.height),
+                sender: toHexFunc(
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  getDecodeTx(tx.tx).authInfo?.signerInfos[0]?.publicKey.value
+                ).toUpperCase(),
+                receiver: getReceiver(tx.tx),
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                getDecodeTx(tx.tx).authInfo?.signerInfos[0]?.publicKey.value
-              ).toUpperCase(),
-              receiver: getReceiver(tx.tx),
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              amount: getAmount(tx.tx),
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              fee: getDecodeTx(tx.tx).authInfo?.fee.amount[0].amount,
-            },
-          ]
+                amount: getAmount(tx.tx),
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                fee: getDecodeTx(tx.tx).authInfo?.fee.amount[0].amount,
+              },
+            ]
+          }
+          console.log('decodedTx', Tx.decode(txs[0].tx))
+          totalTxCount.value = totalCount
         }
-
-        console.log('decodedTx', Tx.decode(txs[0].tx))
-        totalTxCount.value = totalCount
       } catch (e) {
         console.log(e)
       }

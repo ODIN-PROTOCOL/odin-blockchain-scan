@@ -85,17 +85,14 @@ export default defineComponent({
   name: 'SearchBar',
   components: { BlockResultItem, TransactionItem, AccountItem },
   setup() {
-    const filters = ref<Array<string>>([
-      'All filters',
-      'Blocks',
-      'Transaction',
-      'Account Address',
-    ])
+    // TODO: 'Account Address',
+
+    const filters = ref<Array<string>>(['All filters', 'Blocks', 'Transaction'])
 
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
     const searchResult = ref<SearchResultType | null>(null)
-    const pagination: Pagination = new Pagination([], 0, 100, true, true)
+    // const pagination: Pagination = new Pagination([], 0, 100, true, true)
 
     watch(activeFilter, () => {
       searchResult.value = null
@@ -111,13 +108,13 @@ export default defineComponent({
         ...txs,
       ] as Array<TxResponse>)) as Array<TransactionListFormatted>
     }
-    const getAccount = async (): Promise<Array<TempBalanceType>> => {
-      //TODO: its so baaaad
-      const getTopAcc = await getAccoutsList(pagination)
-      return getTopAcc.filter((a) =>
-        a.address.match(searchedText.value as string)
-      )
-    }
+    // const getAccount = async (): Promise<Array<TempBalanceType>> => {
+    //   //TODO: its so baaaad
+    //   const getTopAcc = await getAccoutsList(pagination)
+    //   return getTopAcc.filter((a) =>
+    //     a.address.match(searchedText.value as string)
+    //   )
+    // }
 
     const getBlock = async () => {
       return (await callers.getBlock(
@@ -143,18 +140,18 @@ export default defineComponent({
           ] as SearchResultType)
         }
 
-        if (activeFilter.value === 'Account Address') {
-          return (searchResult.value = [
-            {
-              accounts: await getAccount(),
-            },
-          ] as SearchResultType)
-        }
+        // if (activeFilter.value === 'Account Address') {
+        //   return (searchResult.value = [
+        //     {
+        //       accounts: await getAccount(),
+        //     },
+        //   ] as SearchResultType)
+        // }
         return (searchResult.value = [
           {
             blocks: [await getBlock()],
             transactions: await getTransactions(),
-            accounts: await getAccount(),
+            // accounts: await getAccount(),
           },
         ] as SearchResultType)
       } catch (e) {

@@ -39,7 +39,7 @@ export default defineComponent({
     const chartDataLoad = ref(false)
 
     const chartData = ref<ChartDataType>({
-      labels: [],
+      labels: [], // ['May 18', 'May 25', 'Jun 1'] test data
       datasets: [
         {
           backgroundColor: '#007bff',
@@ -49,7 +49,7 @@ export default defineComponent({
           borderCapStyle: 'round',
           tension: 0.5,
           borderSkipped: false,
-          data: [],
+          data: [], // [1080, 1220, 1540] test data
         },
       ],
     })
@@ -79,6 +79,7 @@ export default defineComponent({
             bigMath.toNum(el.volume),
           ]
         })
+
         transactionCount.value = chartData.value.datasets[0].data.reduce(
           (sum, el): number => {
             return Number(sum) + Number(el)
@@ -86,6 +87,7 @@ export default defineComponent({
           0
         ) as number
 
+        console.log('chartData', chartData.value)
         chartDataLoad.value = true
       } catch (error) {
         console.log(error)
@@ -119,17 +121,17 @@ export default defineComponent({
       transactionData.value = [
         {
           title: 'Total number of transactions',
-          text: `${transactionCount.value}`,
+          text: `${transactionCount.value ?? 999999} `,
         },
         {
           title: 'Market CAP',
-          text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
+          text: `$${odinMarketCapUSD + geoDBMarketCapUSD ?? 999999}`,
         },
       ]
 
       priceData.value = [
-        { title: odinName, text: `$${odinUSD}` },
-        { title: geoDBName, text: `$${geoDBUSD}` },
+        { title: odinName, text: `$${odinUSD ?? 999999}` },
+        { title: geoDBName, text: `$${geoDBUSD ?? 999999}` },
       ]
     }
 
