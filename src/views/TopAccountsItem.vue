@@ -24,11 +24,11 @@
         <div class="stats-info">
           <div class="stats-row">
             <span class="title">GEO Balance::</span>
-            <span class="amount">12,523,093 GEO {{ delegatorBalance }} </span>
+            <span class="amount">{{ delegatorBalance }} GEO</span>
           </div>
           <div class="stats-row">
             <span class="title">ODIN Balance:</span>
-            <span class="amount">12,523,093 ODIN {{ delegatorStake }}</span>
+            <span class="amount">{{ delegatorStake }} ODIN</span>
           </div>
         </div>
       </div>
@@ -71,44 +71,56 @@
           >
             <div class="app-table__cell">
               <span class="app-table__header">Transaction hash</span>
-              <router-link :to="`/transactions/${item.block}/${item.hash}`">
+              <router-link
+                v-if="item.hash && item.block"
+                :to="`/transactions/${item.block}/${item.hash}`"
+              >
                 <TitledLink
                   class="app-table__cell-txt"
                   :text="`0x${item.hash}`"
                 />
               </router-link>
+              <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Type</span>
-              <span class="app-table__cell-txt" :title="item.type">
+              <span
+                v-if="item.type"
+                class="app-table__cell-txt"
+                :title="item.type"
+              >
                 {{ item.type }}
               </span>
+              <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Block</span>
-              <span class="app-table__cell-txt">
+              <span v-if="item.block" class="app-table__cell-txt">
                 <router-link :to="`/blocks/${item.block}`">
                   <TitledLink class="app-table__cell-txt" :text="item.block" />
                 </router-link>
               </span>
+              <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Date and time</span>
-              <div>
+              <div v-if="item.time">
                 <div class="info-value">
                   {{ convertToTxTime(item.time) }}
                 </div>
               </div>
+              <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Sender</span>
               <!-- <span class="app-table__cell-txt">{{ '0x' + item.sender }}</span> -->
-              <router-link :to="item.sender">
+              <router-link v-if="item.sender" :to="item.sender">
                 <TitledLink
                   class="app-table__cell-txt"
                   :text="`0x${item.sender}`"
                 />
               </router-link>
+              <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Reciever</span>
@@ -119,18 +131,21 @@
                   :text="`0x${item.receiver}`"
                 />
               </router-link>
-              <span v-else> no info </span>
+              <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Amount</span>
-              <span class="app-table__cell-txt" v-if="item.amount">{{
-                item.amount
-              }}</span>
-              <span v-else> no info </span>
+              <span v-if="item.amount">
+                {{ item.amount }}
+              </span>
+              <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Transaction fee</span>
-              <span class="app-table__cell-txt">{{ item.fee }}</span>
+              <span class="app-table__cell-txt" v-if="item.fee">
+                {{ item.fee }}
+              </span>
+              <span class="app-table__cell-txt" v-else>-</span>
             </div>
           </div>
         </template>
@@ -159,10 +174,10 @@ import { copyValue } from '@/helpers/helpers'
 import TitledLink from '@/components/TitledLink.vue'
 import { Bech32, toHex } from '@cosmjs/encoding'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
-import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
+import { bigMath } from '@/helpers/bigMath'
+import { getDateFromMessage } from '@/helpers/decodeMessage'
 
 export default defineComponent({
-  // TODO: this ts-ignore
   components: { TitledLink },
   setup() {
     const router: Router = useRouter()
@@ -175,34 +190,34 @@ export default defineComponent({
     const toHexFunc: (data: Uint8Array) => string = toHex
     const totalTxCount = ref<number>()
 
+    // const _types = [
+    //   'withdrawal',
+    //   'proposal_vote',
+    //   'delegate',
+    //   'unbond',
+    //   'transfer',
+    // ]
+    // const _amountNames = ['withdrawal_amount', 'amount']
+
     prepareTransaction.value = []
     const getDecodeTx = (tx) => Tx.decode(tx)
-    const getReceiver = (tx) =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      MsgSend.decode(getDecodeTx(tx)?.body).toAddress.toUpperCase()
-    const getAmount = (tx) =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      MsgSend.decode(getDecodeTx(tx)?.body).amount[0]?.amount
+    // const getLog = (tx) =>
+    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //   // @ts-ignore
+    //   MsgSend.decode(getDecodeTx(tx)?.body)
 
     const getTime = async (height) => {
       const res = await callers.getBlockchain(height, height)
       return res.blockMetas[0].header.time
     }
 
-    // TODO: get normal type tx
-    const getType = (tx) => {
-      return `${tx.body.messages[0].typeUrl
-        .match(/\.([^ ]*)/)[1]
-        .replace(/([A-Z])/g, ' $1')
-        .trim()}`
-      // return `${
-      //   tx.body.messages[0].typeUrl.toLowerCase().indexOf('withdraw') !== -1
-      //     ? 'Withdraw'
-      //     : 'Send'
-      // }`
-    }
+    const getTotalAmount = async (
+      validatorAddress: string,
+      denom: string
+    ): Promise<string> =>
+      callers
+        .getUnverifiedBalances(validatorAddress, denom)
+        .then((res) => bigMath.bigConvectOdinAndGeo(res.amount).toString())
 
     const getValidator = async () => {
       try {
@@ -216,34 +231,56 @@ export default defineComponent({
             query: `message.sender='${validatorAddress}'`,
           })
         )
+
         const { txs, totalCount } = await callers.getTxSearch({
           query: `message.sender='${validatorAddress}'`,
         })
+
+        delegatorBalance.value = await getTotalAmount(
+          validatorAddress,
+          'minigeo'
+        )
+        delegatorStake.value = await getTotalAmount(validatorAddress, 'loki')
+
+        // console.log('loki in odin', delegatorStake.value)
+        // console.log('minigeo in geo', delegatorBalance.value)
+
         if (txs.length > 0) {
           for (const tx of txs) {
+            // const txType = JSON.parse(tx.result.log as string)[0].events.filter(
+            //   (event) => _types.includes(event.type)
+            // )[0]
+
+            // console.log(getLog(tx.tx))
+            //
+            // console.log(
+            //   'event type',
+            //   JSON.parse(tx.result.log as string)[0].events.map((el) => el.type)
+            // )
+
+            // console.log('getDecodeTx', getDecodeTx(tx.tx))
+            const { receiver, sender, type, amount } = getDateFromMessage(
+              getDecodeTx(tx.tx)?.body?.messages[0] as {
+                typeUrl: string
+                value: Uint8Array
+              }
+            )
+
             prepareTransaction.value = [
               ...prepareTransaction.value,
               {
-                type: getType(getDecodeTx(tx.tx)),
-                hash: toHexFunc(tx.hash),
-                block: tx.height,
-                time: await getTime(tx.height),
-                sender: toHexFunc(
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  getDecodeTx(tx.tx).authInfo?.signerInfos[0]?.publicKey.value
-                ).toUpperCase(),
-                receiver: getReceiver(tx.tx),
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                amount: getAmount(tx.tx),
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                fee: getDecodeTx(tx.tx).authInfo?.fee.amount[0].amount,
+                type,
+                hash: toHexFunc(tx.hash) ?? '-',
+                block: tx.height ?? '-',
+                time: (await getTime(tx.height)) ?? '-',
+                sender,
+                receiver,
+                amount: `${amount[0].amount} ${amount[0].denom}`,
+                fee:
+                  getDecodeTx(tx.tx)?.authInfo?.fee?.amount[0]?.amount ?? '-',
               },
             ]
           }
-          console.log('decodedTx', Tx.decode(txs[0].tx))
           totalTxCount.value = totalCount
         }
       } catch (e) {

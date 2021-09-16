@@ -58,8 +58,8 @@
           v-for="(item, index) in filteredAccounts"
           :key="index"
           :account="item"
-          :geo="totalGeo"
           :odin="totalOdin"
+          :geo="totalGeo"
           :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
         />
       </template>
@@ -123,9 +123,7 @@ export default defineComponent({
       totalGeo.value = Number(
         totalCurrency.value.find((el) => el.denom === 'minigeo')?.amount
       )
-
       accounts.value = await getAccoutsList(pagination)
-
       totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
       sortingValue.value = 'geo'
       try {

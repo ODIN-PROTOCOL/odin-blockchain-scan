@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {NumLike, toBigNumber, toNum, toStr} from './casts'
+import { NumLike, toBigNumber, toNum, toStr } from './casts'
 
 export enum ROUNDING {
   DEFAULT = 4,
@@ -67,12 +67,24 @@ function bigFormat(a: NumLike, format?: BigFormatCfg): string {
   }
 }
 
+function bigConvectOdinAndGeo(num: NumLike): string {
+  return bigFormat(bigDivide(num, _bn(10).exponentiatedBy(6)))
+}
+
 export function bigToPrecise(num: NumLike): BigNumber {
   return bigMultiply(num, '1000000000000000000')
 }
 
 export function bigFromPrecise(num: NumLike): BigNumber {
   return bigMultiply(num, '0.000000000000000001')
+}
+
+function bigToStrStrict(num: NumLike): string {
+  return _bn(num).toFormat({
+    groupSeparator: '',
+    decimalSeparator: '.',
+    fractionGroupSeparator: '',
+  })
 }
 
 const _bn = toBigNumber
@@ -88,5 +100,7 @@ export const bigMath = {
   fromPrecise: bigFromPrecise,
   toNum,
   toStr,
+  bigConvectOdinAndGeo,
+  toStrStrict: bigToStrStrict,
   zero: _bn(0),
 }

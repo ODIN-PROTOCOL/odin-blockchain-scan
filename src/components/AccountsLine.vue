@@ -15,7 +15,7 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">GEO balance</span>
-      <span>{{ account.geoBalance }}</span>
+      <span>{{ geoBalance }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">GEO token percentage</span>
@@ -24,7 +24,7 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">ODIN balance</span>
-      <span>{{ account.odinBalance }}</span>
+      <span>{{ odinBalance }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">ODIN token percentage</span>
@@ -47,6 +47,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
+import { bigMath } from '@/helpers/bigMath'
 
 export default defineComponent({
   components: { TitledLink },
@@ -69,6 +70,17 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const geoBalance = computed(() =>
+      bigMath.bigConvectOdinAndGeo(props.account.geoBalance)
+    )
+    console.log('geoBalance.value',geoBalance.value)
+
+    const odinBalance = computed(() =>
+      bigMath.bigConvectOdinAndGeo(props.account.odinBalance)
+    )
+    console.log('odinBalance.value',odinBalance.value)
+
+
     const accountOdinPercentage = computed(() => {
       return Number.parseFloat(
         (+props.account.odinBalance / props.odin).toFixed(8)
@@ -82,6 +94,8 @@ export default defineComponent({
     return {
       accountGeoPercentage,
       accountOdinPercentage,
+      odinBalance,
+      geoBalance,
     }
   },
 })
