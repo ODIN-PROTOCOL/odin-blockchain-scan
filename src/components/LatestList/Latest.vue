@@ -114,6 +114,7 @@ import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
+import { TxSearchResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 
 export default defineComponent({
   name: 'Latest',

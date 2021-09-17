@@ -244,6 +244,7 @@ import { convertToTime, convertToDate } from '@/helpers/dates'
 import { copyValue } from '@/helpers/helpers'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc/build/dates'
+import { TxSearchResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 
 export default defineComponent({
   name: 'TransactionsItem',
@@ -330,11 +331,9 @@ export default defineComponent({
       return totalTx
     }
 
-    onMounted(
-      async (): Promise<void> => {
-        await getTransaction()
-      }
-    )
+    onMounted(async (): Promise<void> => {
+      await getTransaction()
+    })
 
     return {
       transInfo,

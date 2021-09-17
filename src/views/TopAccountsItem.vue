@@ -84,11 +84,7 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Type</span>
-              <span
-                v-if="item.type"
-                class="app-table__cell-txt"
-                :title="item.type"
-              >
+              <span v-if="item.type" :title="item.type">
                 {{ item.type }}
               </span>
               <span class="app-table__cell-txt" v-else> - </span>
@@ -113,7 +109,6 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Sender</span>
-              <!-- <span class="app-table__cell-txt">{{ '0x' + item.sender }}</span> -->
               <router-link v-if="item.sender" :to="item.sender">
                 <TitledLink
                   class="app-table__cell-txt"
@@ -124,7 +119,6 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Reciever</span>
-              <!-- <span class="app-table__cell-txt">{{ '0x' + item.receiver }}</span> -->
               <router-link v-if="item.receiver !== ''" :to="item.receiver">
                 <TitledLink
                   class="app-table__cell-txt"
@@ -173,7 +167,6 @@ import { copyValue } from '@/helpers/helpers'
 
 import TitledLink from '@/components/TitledLink.vue'
 import { Bech32, toHex } from '@cosmjs/encoding'
-import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { bigMath } from '@/helpers/bigMath'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
 
@@ -190,26 +183,7 @@ export default defineComponent({
     const toHexFunc: (data: Uint8Array) => string = toHex
     const totalTxCount = ref<number>()
 
-    // const _types = [
-    //   'withdrawal',
-    //   'proposal_vote',
-    //   'delegate',
-    //   'unbond',
-    //   'transfer',
-    // ]
-    // const _amountNames = ['withdrawal_amount', 'amount']
-
     prepareTransaction.value = []
-    const getDecodeTx = (tx) => Tx.decode(tx)
-    // const getLog = (tx) =>
-    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //   // @ts-ignore
-    //   MsgSend.decode(getDecodeTx(tx)?.body)
-
-    const getTime = async (height) => {
-      const res = await callers.getBlockchain(height, height)
-      return res.blockMetas[0].header.time
-    }
 
     const getTotalAmount = async (
       validatorAddress: string,
@@ -236,48 +210,25 @@ export default defineComponent({
           query: `message.sender='${validatorAddress}'`,
         })
 
-        geoBalance.value = await getTotalAmount(
-          validatorAddress,
-          'minigeo'
-        )
+        geoBalance.value = await getTotalAmount(validatorAddress, 'minigeo')
         odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
-
-        console.log('loki in odin', odinBalance.value)
-        console.log('minigeo in geo', geoBalance.value)
 
         if (txs.length > 0) {
           for (const tx of txs) {
-            // const txType = JSON.parse(tx.result.log as string)[0].events.filter(
-            //   (event) => _types.includes(event.type)
-            // )[0]
-
-            // console.log(getLog(tx.tx))
-            //
-            // console.log(
-            //   'event type',
-            //   JSON.parse(tx.result.log as string)[0].events.map((el) => el.type)
-            // )
-
-            // console.log('getDecodeTx', getDecodeTx(tx.tx))
-            const { receiver, sender, type, amount } = getDateFromMessage(
-              getDecodeTx(tx.tx)?.body?.messages[0] as {
-                typeUrl: string
-                value: Uint8Array
-              }
-            )
+            const { receiver, sender, type, amount, time, fee } =
+              await getDateFromMessage(tx)
 
             prepareTransaction.value = [
               ...prepareTransaction.value,
               {
-                type,
+                type: type ? type : '-',
                 hash: toHexFunc(tx.hash) ?? '-',
                 block: tx.height ?? '-',
-                time: (await getTime(tx.height)) ?? '-',
-                sender,
-                receiver,
-                amount: `${amount[0].amount} ${amount[0].denom}`,
-                fee:
-                  getDecodeTx(tx.tx)?.authInfo?.fee?.amount[0]?.amount ?? '-',
+                time: time ? time : null,
+                sender: sender ? sender : '',
+                receiver: receiver ? receiver : '',
+                amount: amount ? amount : '',
+                fee: fee ? fee : '-',
               },
             ]
           }

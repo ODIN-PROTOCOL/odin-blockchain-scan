@@ -36,18 +36,19 @@
     <div class="app-table__cell">
       <span class="app-table__header">Transaction count</span>
       <div>
-        <span v-if="account.transactionCount">
-          {{ account.transactionCount }}
+        <span v-if="account.total_tx">
+          {{ account.total_tx }}
         </span>
-        <span v-else>No info</span>
+        <span v-else>0</span>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, onMounted, ref } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { bigMath } from '@/helpers/bigMath'
+import { callers } from '@/api/callers'
 
 export default defineComponent({
   components: { TitledLink },
@@ -73,28 +74,25 @@ export default defineComponent({
     const geoBalance = computed(() =>
       bigMath.bigConvectOdinAndGeo(props.account.geoBalance)
     )
-    console.log('geoBalance.value', geoBalance.value)
-
     const odinBalance = computed(() =>
       bigMath.bigConvectOdinAndGeo(props.account.odinBalance)
     )
-    console.log('odinBalance.value', odinBalance.value)
-
     const accountOdinPercentage = computed(() => {
-      return Number.parseFloat(
-        (+props.account.odinBalance / props.totalOdin).toFixed(8)
-      )
+      return bigMath
+        .divide(props.account.odinBalance, props.totalOdin, { decimals: 3 })
+        .toString()
     })
+
     const accountGeoPercentage = computed(() => {
-      return Number.parseFloat(
-        (+props.account.geoBalance / props.totalGeo).toFixed(8)
-      )
+      return bigMath
+        .divide(props.account.geoBalance, props.totalGeo, { decimals: 8 })
+        .toString()
     })
     return {
       accountGeoPercentage,
       accountOdinPercentage,
       odinBalance,
-      geoBalance,
+      geoBalance
     }
   },
 })

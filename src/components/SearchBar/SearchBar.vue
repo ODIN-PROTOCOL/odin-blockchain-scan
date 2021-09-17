@@ -79,6 +79,7 @@ import {
   TransactionListFormatted,
 } from '@/helpers/makeTransactionListFormatted'
 import { getAccountList } from '@/helpers/Accounts'
+import { TxSearchResponse } from '@cosmjs/tendermint-rpc/build/legacy/responses'
 
 export default defineComponent({
   name: 'SearchBar',
@@ -86,7 +87,12 @@ export default defineComponent({
   setup() {
     // TODO: 'Account Address',
 
-    const filters = ref<Array<string>>(['All filters', 'Blocks', 'Transaction'])
+    const filters = ref<Array<string>>([
+      'All filters',
+      'Blocks',
+      'Transaction',
+      'Account Address',
+    ])
 
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
@@ -107,6 +113,22 @@ export default defineComponent({
         ...txs,
       ] as Array<TxResponse>)) as Array<TransactionListFormatted>
     }
+
+    const getAccount = async () => {
+      // TODO: this trash
+      const res = await callers.getUnverifiedBalances(
+        searchedText.value as string,
+        'minigeo'
+      )
+      const res2 = await callers.getUnverifiedBalances(
+        searchedText.value as string,
+        'loki'
+      )
+
+      console.log(res, res2)
+      return res
+    }
+
     // const getAccount = async (): Promise<Array<TempBalanceType>> => {
     //   //TODO: its so baaaad
     //   const getTopAcc = await getAccountList(pagination)
@@ -139,13 +161,14 @@ export default defineComponent({
           ] as SearchResultType)
         }
 
-        // if (activeFilter.value === 'Account Address') {
-        //   return (searchResult.value = [
-        //     {
-        //       accounts: await getAccount(),
-        //     },
-        //   ] as SearchResultType)
-        // }
+        if (activeFilter.value === 'Account Address') {
+          await getAccount()
+          // return (searchResult.value = [
+          //   {
+          //     accounts: await getAccount(),
+          //   },
+          // ] as SearchResultType)
+        }
         return (searchResult.value = [
           {
             blocks: [await getBlock()],

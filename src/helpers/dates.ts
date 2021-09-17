@@ -39,5 +39,6 @@ export const convertToTime = (time: string): string => {
 }
 
 export const convertToTxTime = (time: string): string => {
+  if (!time) return '-'
   return `${dateFns.format(new Date(time), 'H:MM:SS MMM dd Y')}`
 }

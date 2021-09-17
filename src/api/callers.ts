@@ -141,7 +141,7 @@ const makeCallers = () => {
     },
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
     getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
-    getTxSearch: tmQuerier((tc) => tc.txSearch.bind(tc)),
+    getTxSearch: cacheAnswers(tmQuerier((tc) => tc.txSearch.bind(tc))),
     getTx: tmQuerier((tc) => tc.tx.bind(tc)),
     getAbciInfo: tmQuerier((tc) => tc.abciInfo.bind(tc)),
     getStatus: tmQuerier((tc) => tc.status.bind(tc)),
