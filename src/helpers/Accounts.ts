@@ -3,7 +3,7 @@ import { QueryTopBalancesResponse } from '@provider/codec/telemetry/query'
 import { TempBalanceType } from '@/helpers/Types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
 
-export async function getAccoutsList(
+export async function getAccountList(
   pagination: Pagination
 ): Promise<Array<TempBalanceType>> {
   const balances = (await callers.getTopBalances({

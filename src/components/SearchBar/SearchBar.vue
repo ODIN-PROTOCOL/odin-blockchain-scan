@@ -73,13 +73,12 @@ import { Router, useRouter } from 'vue-router'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
-import { SearchResultType, TempBalanceType } from '@/helpers/Types'
+import { SearchResultType } from '@/helpers/Types'
 import {
   makeTransactionListFormatted,
   TransactionListFormatted,
 } from '@/helpers/makeTransactionListFormatted'
-import { Pagination } from '@/api/query-ext/telemetryExtension'
-import { getAccoutsList } from '@/helpers/Accounts'
+import { getAccountList } from '@/helpers/Accounts'
 
 export default defineComponent({
   name: 'SearchBar',
@@ -110,7 +109,7 @@ export default defineComponent({
     }
     // const getAccount = async (): Promise<Array<TempBalanceType>> => {
     //   //TODO: its so baaaad
-    //   const getTopAcc = await getAccoutsList(pagination)
+    //   const getTopAcc = await getAccountList(pagination)
     //   return getTopAcc.filter((a) =>
     //     a.address.match(searchedText.value as string)
     //   )

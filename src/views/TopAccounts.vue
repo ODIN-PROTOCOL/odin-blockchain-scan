@@ -94,7 +94,7 @@ import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { Pagination } from '@/api/query-ext/telemetryExtension.ts'
 import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
-import { getAccoutsList } from '@/helpers/Accounts'
+import { getAccountList } from '@/helpers/Accounts'
 
 export default defineComponent({
   components: { VPagination, AccountsLine },
@@ -123,7 +123,8 @@ export default defineComponent({
       totalGeo.value = Number(
         totalCurrency.value.find((el) => el.denom === 'minigeo')?.amount
       )
-      accounts.value = await getAccoutsList(pagination)
+      accounts.value = await getAccountList(pagination)
+      console.log(accounts.value)
       totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
       sortingValue.value = 'geo'
       try {
