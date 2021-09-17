@@ -124,7 +124,6 @@ export default defineComponent({
         totalCurrency.value.find((el) => el.denom === 'minigeo')?.amount
       )
       accounts.value = await getAccountList(pagination)
-      console.log(accounts.value)
       totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
       sortingValue.value = 'geo'
       try {

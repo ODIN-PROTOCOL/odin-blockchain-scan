@@ -17,13 +17,13 @@ export async function getAccountList(
     const tempBalanceItem: TempBalanceType = {
       address: el.address,
       geoBalance: Number(
-        el.coins.find((el) => el.denom === 'loki')?.amount
-          ? el.coins.find((el) => el.denom === 'loki')?.amount
+        el.coins.find((el) => el.denom === 'minigeo')?.amount
+          ? el.coins.find((el) => el.denom === 'minigeo')?.amount
           : 0
       ),
       odinBalance: Number(
-        el.coins.find((el) => el.denom === 'minigeo')?.amount
-          ? el.coins.find((el) => el.denom === 'minigeo')?.amount
+        el.coins.find((el) => el.denom === 'loki')?.amount
+          ? el.coins.find((el) => el.denom === 'loki')?.amount
           : 0
       ),
     }
