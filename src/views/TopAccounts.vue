@@ -58,8 +58,8 @@
           v-for="(item, index) in filteredAccounts"
           :key="index"
           :account="item"
-          :odin="totalOdin"
-          :geo="totalGeo"
+          :totalOdin="totalOdin"
+          :totalGeo="totalGeo"
           :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
         />
       </template>

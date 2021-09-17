@@ -24,11 +24,11 @@
         <div class="stats-info">
           <div class="stats-row">
             <span class="title">GEO Balance::</span>
-            <span class="amount">{{ delegatorBalance }} GEO</span>
+            <span class="amount">{{ geoBalance }} GEO</span>
           </div>
           <div class="stats-row">
             <span class="title">ODIN Balance:</span>
-            <span class="amount">{{ delegatorStake }} ODIN</span>
+            <span class="amount">{{ odinBalance }} ODIN</span>
           </div>
         </div>
       </div>
@@ -184,8 +184,8 @@ export default defineComponent({
     const route: RouteLocationNormalizedLoaded = useRoute()
 
     const blocks = ref()
-    const delegatorBalance = ref()
-    const delegatorStake = ref()
+    const geoBalance = ref()
+    const odinBalance = ref()
     const prepareTransaction = ref()
     const toHexFunc: (data: Uint8Array) => string = toHex
     const totalTxCount = ref<number>()
@@ -236,14 +236,14 @@ export default defineComponent({
           query: `message.sender='${validatorAddress}'`,
         })
 
-        delegatorBalance.value = await getTotalAmount(
+        geoBalance.value = await getTotalAmount(
           validatorAddress,
           'minigeo'
         )
-        delegatorStake.value = await getTotalAmount(validatorAddress, 'loki')
+        odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
 
-        // console.log('loki in odin', delegatorStake.value)
-        // console.log('minigeo in geo', delegatorBalance.value)
+        console.log('loki in odin', odinBalance.value)
+        console.log('minigeo in geo', geoBalance.value)
 
         if (txs.length > 0) {
           for (const tx of txs) {
@@ -294,8 +294,8 @@ export default defineComponent({
 
     return {
       route,
-      delegatorBalance,
-      delegatorStake,
+      geoBalance,
+      odinBalance,
       routerBack,
       router,
       copyValue,

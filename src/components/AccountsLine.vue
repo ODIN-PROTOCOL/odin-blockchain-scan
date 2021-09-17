@@ -56,11 +56,11 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-    odin: {
+    totalOdin: {
       type: Number,
       required: true,
     },
-    geo: {
+    totalGeo: {
       type: Number,
       required: true,
     },
@@ -73,22 +73,21 @@ export default defineComponent({
     const geoBalance = computed(() =>
       bigMath.bigConvectOdinAndGeo(props.account.geoBalance)
     )
-    console.log('geoBalance.value',geoBalance.value)
+    console.log('geoBalance.value', geoBalance.value)
 
     const odinBalance = computed(() =>
       bigMath.bigConvectOdinAndGeo(props.account.odinBalance)
     )
-    console.log('odinBalance.value',odinBalance.value)
-
+    console.log('odinBalance.value', odinBalance.value)
 
     const accountOdinPercentage = computed(() => {
       return Number.parseFloat(
-        (+props.account.odinBalance / props.odin).toFixed(8)
+        (+props.account.odinBalance / props.totalOdin).toFixed(8)
       )
     })
     const accountGeoPercentage = computed(() => {
       return Number.parseFloat(
-        (+props.account.geoBalance / props.geo).toFixed(8)
+        (+props.account.geoBalance / props.totalGeo).toFixed(8)
       )
     })
     return {
