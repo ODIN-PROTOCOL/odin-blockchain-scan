@@ -2,33 +2,28 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/blocks/${result?.block?.header?.height}`"
+      :to="`/top_accounts/${result.address}`"
     >
       <div class="search__dropdown--item-left">
-        <div class="search__dropdown--item-label">Bk</div>
+        <div class="search__dropdown--item-label">A</div>
         <div class="search__dropdown--item-height">
           <TitledLink
-            class="app-table__cell-txt"
-            :text="result?.block?.header?.height"
+            class="app-table__cell-txt address-link"
+            :link="`/top_accounts/${result.address}`"
+            :text="`0x${result.address}`"
           />
         </div>
-        <div class="search__dropdown--item-time">
-          {{ diffDays(toDay, getDay(result?.block?.header?.time)) }}
-        </div>
+        <div class="search__dropdown--item-time"></div>
       </div>
       <div class="search__dropdown--item-right">
         <div class="search__dropdown--item-validator">
-          Validator:
-          <TitledLink
-            :link="`/transactions/${result?.block?.header?.height}`"
-            class="app-table__cell-txt"
-            :text="`${cropText(
-              '0x' +
-                toHexFunc(result?.block?.header?.validatorsHash).toUpperCase()
-            )}`"
-          />
+          Geo Balance:
+          {{ geoBalance }}
         </div>
-        <div class="search__dropdown--item-transactions">548 transactions</div>
+        <div class="search__dropdown--item-validator">
+          <span> Odin Balance: </span>
+          {{ odinBalance }}
+        </div>
       </div>
     </router-link>
   </template>
@@ -36,24 +31,43 @@
 
 <script lang="ts">
 import { toHex } from '@cosmjs/encoding'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
+import { bigMath } from '@/helpers/bigMath'
 
 export default defineComponent({
-  name: 'BlockResultItem',
+  name: 'AccountItem',
   components: { TitledLink },
   props: { result: { type: Object, required: true } },
-  setup() {
+  setup(props) {
     const toDay = ref<Date>(new Date())
-
     const toHexFunc: (data: Uint8Array) => string = toHex
-    return { toDay, diffDays, cropText, getDay, toHexFunc }
+
+    const geoBalance = computed(() =>
+      bigMath.bigConvectOdinAndGeo(props.result.geoBalance.amount)
+    )
+    const odinBalance = computed(() =>
+      bigMath.bigConvectOdinAndGeo(props.result.odinBalance.amount)
+    )
+
+    return {
+      toDay,
+      diffDays,
+      cropText,
+      getDay,
+      toHexFunc,
+      geoBalance,
+      odinBalance,
+    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.address-link {
+  max-width: 14rem;
+}
 .search {
   &__dropdown {
     &--item {
@@ -62,7 +76,7 @@ export default defineComponent({
       padding: 1rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       cursor: pointer;
       &-left {
         display: grid;
@@ -76,6 +90,7 @@ export default defineComponent({
         justify-content: space-between;
         align-items: flex-end;
         gap: 1rem;
+        font-size: 1.3rem;
       }
       &-validator {
         display: flex;

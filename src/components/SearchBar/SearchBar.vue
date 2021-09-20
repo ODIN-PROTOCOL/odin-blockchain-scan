@@ -2,7 +2,7 @@
   <div class="search">
     <div class="search__row">
       <VuePicker
-        class="app-form__field-input app-filter"
+        class="app-form__field-input app-filter app-filter--rounding-left"
         name="filter"
         v-model="activeFilter"
       >
@@ -26,8 +26,9 @@
           placeholder="searching by account address , block"
           v-model="searchedText"
         />
+
         <template v-if="searchResult">
-          <div class="search__drop-dawn">
+          <div class="search__dropdown">
             <template v-for="result in searchResult">
               <template v-if="result.blocks">
                 <BlockResultItem
@@ -41,6 +42,13 @@
                   v-for="transaction in result.transactions"
                   :result="transaction"
                   :key="transaction.height"
+                />
+              </template>
+              <template v-if="result.accounts">
+                <AccountItem
+                  v-for="accounts in result.accounts"
+                  :result="accounts"
+                  :key="accounts"
                 />
               </template>
             </template>
@@ -64,15 +72,17 @@ import {
 import { Router, useRouter } from 'vue-router'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
+import AccountItem from '@/components/SearchBar/AccountItem.vue'
 import { SearchResultType } from '@/helpers/Types'
 import {
   makeTransactionListFormatted,
   TransactionListFormatted,
 } from '@/helpers/makeTransactionListFormatted'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'SearchBar',
-  components: { BlockResultItem, TransactionItem },
+  components: { BlockResultItem, TransactionItem, AccountItem },
   setup() {
     const filters = ref<Array<string>>([
       'All filters',
@@ -83,7 +93,7 @@ export default defineComponent({
 
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
-    const searchResult = ref<SearchResultType | null>(null)
+    const searchResult = ref<Array<SearchResultType> | null>(null)
 
     watch(activeFilter, () => {
       searchResult.value = null
@@ -92,52 +102,91 @@ export default defineComponent({
     const getTransactions = async (): Promise<
       Array<TransactionListFormatted>
     > => {
-      const { txs } = await callers.getTxSearch({
-        query: `tx.height = ${Number(searchedText.value)}`,
-      })
-      return (await makeTransactionListFormatted([
-        ...txs,
-      ] as Array<TxResponse>)) as Array<TransactionListFormatted>
+      try {
+        const { txs } = await callers.getTxSearch({
+          query: `tx.height = ${Number(searchedText.value)}`,
+        })
+        return (await makeTransactionListFormatted([
+          ...txs,
+        ] as Array<TxResponse>)) as Array<TransactionListFormatted>
+      } catch {
+        return []
+      }
+    }
+
+    const getAccount = async () => {
+      try {
+        const geoBalance = await callers.getUnverifiedBalances(
+          searchedText.value as string,
+          'minigeo'
+        )
+        const odinBalance = await callers.getUnverifiedBalances(
+          searchedText.value as string,
+          'loki'
+        )
+        return [
+          {
+            address: searchedText.value as string,
+            geoBalance: { ...geoBalance },
+            odinBalance: { ...odinBalance },
+          },
+        ]
+      } catch {
+        return []
+      }
     }
 
     const getBlock = async () => {
-      return (await callers.getBlock(
-        Number(searchedText.value)
-      )) as BlockResponse
+      try {
+        return [
+          (await callers.getBlock(Number(searchedText.value))) as BlockResponse,
+        ]
+      } catch {
+        return []
+      }
     }
 
-    const searchBy = async (): Promise<SearchResultType | null> => {
+    const searchBy = async (): Promise<Array<SearchResultType> | null> => {
       if (searchedText.value === '') return (searchResult.value = null)
       try {
         if (activeFilter.value === 'Blocks') {
           return (searchResult.value = [
             {
-              blocks: [await getBlock()],
+              blocks: await getBlock(),
             },
-          ] as SearchResultType)
+          ])
         }
         if (activeFilter.value === 'Transaction') {
           return (searchResult.value = [
             {
               transactions: await getTransactions(),
             },
-          ] as SearchResultType)
+          ])
         }
 
+        if (activeFilter.value === 'Account Address') {
+          return [
+            {
+              accounts: await getAccount(),
+            },
+          ]
+        }
         return (searchResult.value = [
           {
-            blocks: [await getBlock()],
+            blocks: await getBlock(),
             transactions: await getTransactions(),
+            accounts: await getAccount(),
           },
-        ] as SearchResultType)
-      } catch {
+        ])
+      } catch (e) {
+        console.error(e.message)
+        handleError(e)
         searchResult.value = null
       }
       return null
     }
 
     const router: Router = useRouter()
-
     router.beforeEach(() => {
       searchResult.value = null
     })
@@ -165,7 +214,7 @@ export default defineComponent({
       position: inherit;
     }
   }
-  &__drop-dawn {
+  &__dropdown {
     position: absolute;
     background: white;
     border: 0.1rem solid var(--clr__input-border);
@@ -188,23 +237,6 @@ export default defineComponent({
     padding: 0 1rem 2.5rem 1rem;
     &__row {
       padding: 0;
-    }
-  }
-}
-.app-filter {
-  display: flex;
-  max-width: 16.6rem;
-  height: 4.8rem;
-  border-radius: 0.8rem 0 0 0.8rem;
-  position: relative;
-  &:focus {
-    border: 0.1rem solid var(--clr__input-border);
-  }
-  &__dropdown-inner {
-    .vue-picker-option_cur,
-    .vue-picker-option:hover {
-      color: var(--clr__action);
-      background: rgba(204, 228, 255, 0.4);
     }
   }
 }

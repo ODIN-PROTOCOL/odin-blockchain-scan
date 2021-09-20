@@ -1,12 +1,12 @@
 <template>
   <template v-if="result">
     <router-link
-      class="search__drop-dawn--item"
+      class="search__dropdown--item"
       :to="`/blocks/${result.transHeight}`"
     >
-      <div class="search__drop-dawn--item-left">
-        <div class="search__drop-dawn--item-label">Tx</div>
-        <div class="search__drop-dawn--item-height">
+      <div class="search__dropdown--item-left">
+        <div class="search__dropdown--item-label">Tx</div>
+        <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
             :link="`/blocks/${result.transHeight}`"
@@ -15,12 +15,12 @@
             "
           />
         </div>
-        <div class="search__drop-dawn--item-time">
+        <div class="search__dropdown--item-time">
           {{ diffDays(toDay, getDay(result?.transTime)) }}
         </div>
       </div>
-      <div class="search__drop-dawn--item-right">
-        <div class="search__drop-dawn--item-validator">
+      <div class="search__dropdown--item-right">
+        <div class="search__dropdown--item-validator">
           From:
           <TitledLink
             class="app-table__cell-txt"
@@ -31,7 +31,7 @@
             "
           />
         </div>
-        <div class="search__drop-dawn--item-validator">
+        <div class="search__dropdown--item-validator">
           <span> To: </span>
           <TitledLink
             class="app-table__cell-txt"
@@ -60,7 +60,7 @@ export default defineComponent({
   setup() {
     const toDay = ref<Date>(new Date())
 
-    const toHexFunc = toHex
+    const toHexFunc: (data: Uint8Array) => string = toHex
     return { toDay, diffDays, cropText, getDay, toHexFunc }
   },
 })
@@ -68,7 +68,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .search {
-  &__drop-dawn {
+  &__dropdown {
     &--item {
       text-decoration: none;
       color: var(--clr__text);

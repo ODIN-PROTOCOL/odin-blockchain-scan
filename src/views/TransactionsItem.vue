@@ -330,11 +330,9 @@ export default defineComponent({
       return totalTx
     }
 
-    onMounted(
-      async (): Promise<void> => {
-        await getTransaction()
-      }
-    )
+    onMounted(async (): Promise<void> => {
+      await getTransaction()
+    })
 
     return {
       transInfo,

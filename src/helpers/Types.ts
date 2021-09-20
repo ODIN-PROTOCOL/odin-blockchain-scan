@@ -1,5 +1,6 @@
 import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
+import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 
 export type Link = {
   to?: string
@@ -41,6 +42,13 @@ export type CoingeckoCoinsType = {
 export type SearchResultType = {
   blocks?: Array<BlockResponse>
   transactions?: Array<TransactionListFormatted>
+  accounts?: Array<TempSearchAccountInfoType>
+}
+
+export type TempSearchAccountInfoType = {
+  address: string
+  geoBalance: Coin
+  odinBalance: Coin
 }
 
 export type CoinBlocksDataType = {
@@ -55,4 +63,22 @@ export type CoinBlocksDataType = {
     treasury_pool: string
     providers_pool: string
   }
+}
+
+export type TempBalanceType = {
+  address: string
+  geoBalance: number
+  odinBalance: number
+  total_tx?: number
+}
+
+export type adjustedData = {
+  voter?: string
+  type?: string
+  delegatorAddress?: string
+  time?: Date | undefined | string
+  sender?: string
+  receiver?: string
+  amount?: string | Coin | Array<Coin> | undefined
+  fee?: string
 }

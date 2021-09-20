@@ -109,7 +109,7 @@ export default defineComponent({
   setup() {
     const showTab = ref(true)
 
-    const downloadPaper = () => console.log('download')
+    const downloadPaper = () => console.debug('download')
 
     let timer = setInterval(() => {
       showTab.value = !showTab.value
@@ -133,7 +133,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-
 h1 {
   font-weight: 400;
   font-size: 32px;

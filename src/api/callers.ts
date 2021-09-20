@@ -68,10 +68,17 @@ const makeCallers = () => {
     ),
     proposalVote: broadcaster<MsgVote>('/cosmos.gov.v1beta1.MsgVote', MsgVote),
 
-    getBalances: querier((qc) => () => {
+    getAllBalances: querier((qc) => () => {
       const myAddress = wallet.account.address
       return qc.bank.unverified.allBalances(myAddress)
     }),
+    getBalances: querier((qc) => () => {
+      const myAddress = wallet.account.address
+      return qc.bank.balance(myAddress, 'loki')
+    }),
+    getUnverifiedBalances: querier((qc) => qc.bank.unverified.balance),
+    getUnverifiedTotalSupply: querier((qc) => qc.bank.unverified.totalSupply),
+    getUnverifiedSupplyOff: querier((qc) => qc.bank.unverified.supplyOf),
 
     createExchange: broadcaster<MsgExchange>(
       '/coinswap.MsgExchange',
@@ -94,9 +101,6 @@ const makeCallers = () => {
       querier((qc) => qc.mint.unverified.treasuryPool)
     ),
     getMintParams: cacheAnswers(querier((qc) => qc.mint.unverified.params)),
-    getTotalSupply: cacheAnswers(
-      querier((qc) => qc.bank.unverified.totalSupply)
-    ),
 
     createValidator: broadcaster<MsgCreateValidator>(
       '/cosmos.staking.v1beta1.MsgCreateValidator',
@@ -137,13 +141,17 @@ const makeCallers = () => {
     },
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
     getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
-    getTxSearch: tmQuerier((tc) => tc.txSearch.bind(tc)),
+    getTxSearch: cacheAnswers(tmQuerier((tc) => tc.txSearch.bind(tc))),
+    getTx: tmQuerier((tc) => tc.tx.bind(tc)),
     getAbciInfo: tmQuerier((tc) => tc.abciInfo.bind(tc)),
     getStatus: tmQuerier((tc) => tc.status.bind(tc)),
     getGenesis: tmQuerier((tc) => tc.genesis.bind(tc)),
     getHealth: tmQuerier((tc) => tc.health.bind(tc)),
     getTelemetry: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.txVolume)
+    ),
+    getTopBalances: cacheAnswers(
+      querier((qc) => qc.telemetry.unverified.topBalances)
     ),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)

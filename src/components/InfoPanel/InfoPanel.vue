@@ -28,6 +28,7 @@ import { convertToDayMonth } from '@/helpers/dates'
 import { bigMath } from '@/helpers/bigMath'
 import { getAPIDate } from '@/helpers/requests'
 import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'InfoPanel',
@@ -67,7 +68,7 @@ export default defineComponent({
           endDate,
         })) as QueryTxVolumeResponse
 
-        console.log('txVolumePerDay', txVolumePerDay)
+        console.debug('txVolumePerDay', txVolumePerDay)
 
         txVolumePerDay.map((el) => {
           chartData.value.labels = [
@@ -79,6 +80,7 @@ export default defineComponent({
             bigMath.toNum(el.volume),
           ]
         })
+
         transactionCount.value = chartData.value.datasets[0].data.reduce(
           (sum, el): number => {
             return Number(sum) + Number(el)
@@ -86,9 +88,11 @@ export default defineComponent({
           0
         ) as number
 
+        console.debug('chartData', chartData.value)
         chartDataLoad.value = true
       } catch (error) {
-        console.log(error)
+        handleError(error)
+        console.error(error)
       }
     }
 
@@ -119,7 +123,7 @@ export default defineComponent({
       transactionData.value = [
         {
           title: 'Total number of transactions',
-          text: `${transactionCount.value}`,
+          text: `${transactionCount.value} `,
         },
         {
           title: 'Market CAP',

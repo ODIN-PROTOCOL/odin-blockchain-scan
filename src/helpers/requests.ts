@@ -2,7 +2,7 @@ import { AnyFn, DecoratedFn } from '@/shared-types'
 import axios from 'axios'
 
 export function cacheAnswers<T extends AnyFn>(
-  func: AnyFn,
+  func: T,
   cacheTime: number = 1000 * 60 * 5
 ): DecoratedFn<T> {
   const memoCache = new Map<string, { time: Date; result: ReturnType<T> }>()

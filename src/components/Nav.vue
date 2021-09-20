@@ -14,9 +14,6 @@
       <router-link class="nav__link" :to="{ name: 'Voting' }">
         Voting
       </router-link> -->
-      <!-- <router-link class="nav__link" :to="{ name: 'Validators' }">
-        Validators
-      </router-link> -->
 
       <LinksDropdown :list="BlockchainList" />
       <LinksDropdown :list="TokemonicList" />
@@ -58,6 +55,10 @@ export default defineComponent({
         {
           to: 'Validators',
           text: 'Validators',
+        },
+        {
+          to: 'TopAccounts',
+          text: 'Top Accounts',
         },
       ],
     }
