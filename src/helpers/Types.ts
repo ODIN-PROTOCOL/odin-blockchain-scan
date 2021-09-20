@@ -42,7 +42,13 @@ export type CoingeckoCoinsType = {
 export type SearchResultType = {
   blocks?: Array<BlockResponse>
   transactions?: Array<TransactionListFormatted>
-  accounts?: Array<TempBalanceType>
+  accounts?: Array<TempSearchAccountInfoType>
+}
+
+export type TempSearchAccountInfoType = {
+  address: string
+  geoBalance: Coin
+  odinBalance: Coin
 }
 
 export type CoinBlocksDataType = {

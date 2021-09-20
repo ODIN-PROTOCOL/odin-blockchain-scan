@@ -84,8 +84,6 @@ export default defineComponent({
   name: 'SearchBar',
   components: { BlockResultItem, TransactionItem, AccountItem },
   setup() {
-    // TODO: 'Account Address',
-
     const filters = ref<Array<string>>([
       'All filters',
       'Blocks',
@@ -95,8 +93,7 @@ export default defineComponent({
 
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
-    const searchResult = ref<SearchResultType | null>(null)
-    // const pagination: Pagination = new Pagination([], 0, 100, true, true)
+    const searchResult = ref<Array<SearchResultType> | null>(null)
 
     watch(activeFilter, () => {
       searchResult.value = null
@@ -105,62 +102,82 @@ export default defineComponent({
     const getTransactions = async (): Promise<
       Array<TransactionListFormatted>
     > => {
-      const { txs } = await callers.getTxSearch({
-        query: `tx.height = ${Number(searchedText.value)}`,
-      })
-      return (await makeTransactionListFormatted([
-        ...txs,
-      ] as Array<TxResponse>)) as Array<TransactionListFormatted>
+      try {
+        const { txs } = await callers.getTxSearch({
+          query: `tx.height = ${Number(searchedText.value)}`,
+        })
+        return (await makeTransactionListFormatted([
+          ...txs,
+        ] as Array<TxResponse>)) as Array<TransactionListFormatted>
+      } catch {
+        return []
+      }
     }
 
     const getAccount = async () => {
-      const res = await callers.getUnverifiedBalances(
-        searchedText.value as string,
-        'minigeo'
-      )
-      const res2 = await callers.getUnverifiedBalances(
-        searchedText.value as string,
-        'loki'
-      )
-
-      console.log(res, res2)
-      return res
+      try {
+        const geoBalance = await callers.getUnverifiedBalances(
+          searchedText.value as string,
+          'minigeo'
+        )
+        const odinBalance = await callers.getUnverifiedBalances(
+          searchedText.value as string,
+          'loki'
+        )
+        return [
+          {
+            address: searchedText.value as string,
+            geoBalance: { ...geoBalance },
+            odinBalance: { ...odinBalance },
+          },
+        ]
+      } catch {
+        return []
+      }
     }
 
     const getBlock = async () => {
-      return (await callers.getBlock(
-        Number(searchedText.value)
-      )) as BlockResponse
+      try {
+        return [
+          (await callers.getBlock(Number(searchedText.value))) as BlockResponse,
+        ]
+      } catch {
+        return []
+      }
     }
 
-    const searchBy = async (): Promise<SearchResultType | null> => {
+    const searchBy = async (): Promise<Array<SearchResultType> | null> => {
       if (searchedText.value === '') return (searchResult.value = null)
       try {
         if (activeFilter.value === 'Blocks') {
           return (searchResult.value = [
             {
-              blocks: [await getBlock()],
+              blocks: await getBlock(),
             },
-          ] as SearchResultType)
+          ])
         }
         if (activeFilter.value === 'Transaction') {
           return (searchResult.value = [
             {
               transactions: await getTransactions(),
             },
-          ] as SearchResultType)
+          ])
         }
 
         if (activeFilter.value === 'Account Address') {
-          await getAccount()
+          return [
+            {
+              accounts: await getAccount(),
+            },
+          ]
         }
         return (searchResult.value = [
           {
-            blocks: [await getBlock()],
+            blocks: await getBlock(),
             transactions: await getTransactions(),
-            // accounts: await getAccount(),
+            accounts: await getAccount(),
           },
-        ] as SearchResultType)
+        ])
       } catch (e) {
         console.error(e.message)
         handleError(e)
@@ -170,7 +187,6 @@ export default defineComponent({
     }
 
     const router: Router = useRouter()
-
     router.beforeEach(() => {
       searchResult.value = null
     })

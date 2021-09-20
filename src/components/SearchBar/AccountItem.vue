@@ -18,11 +18,11 @@
       <div class="search__dropdown--item-right">
         <div class="search__dropdown--item-validator">
           Geo Balance:
-          <TitledLink class="app-table__cell-txt" :text="result.geoBalance" />
+          {{ geoBalance }}
         </div>
         <div class="search__dropdown--item-validator">
           <span> Odin Balance: </span>
-          <TitledLink class="app-table__cell-txt" :text="result.odinBalance" />
+          {{ odinBalance }}
         </div>
       </div>
     </router-link>
@@ -31,18 +31,35 @@
 
 <script lang="ts">
 import { toHex } from '@cosmjs/encoding'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
+import { bigMath } from '@/helpers/bigMath'
 
 export default defineComponent({
   name: 'AccountItem',
   components: { TitledLink },
   props: { result: { type: Object, required: true } },
-  setup() {
+  setup(props) {
     const toDay = ref<Date>(new Date())
     const toHexFunc: (data: Uint8Array) => string = toHex
-    return { toDay, diffDays, cropText, getDay, toHexFunc }
+
+    const geoBalance = computed(() =>
+      bigMath.bigConvectOdinAndGeo(props.result.geoBalance.amount)
+    )
+    const odinBalance = computed(() =>
+      bigMath.bigConvectOdinAndGeo(props.result.odinBalance.amount)
+    )
+
+    return {
+      toDay,
+      diffDays,
+      cropText,
+      getDay,
+      toHexFunc,
+      geoBalance,
+      odinBalance,
+    }
   },
 })
 </script>
@@ -59,7 +76,7 @@ export default defineComponent({
       padding: 1rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       cursor: pointer;
       &-left {
         display: grid;
@@ -73,6 +90,7 @@ export default defineComponent({
         justify-content: space-between;
         align-items: flex-end;
         gap: 1rem;
+        font-size: 1.3rem;
       }
       &-validator {
         display: flex;
