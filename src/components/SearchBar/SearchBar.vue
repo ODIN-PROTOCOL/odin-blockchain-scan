@@ -78,7 +78,7 @@ import {
   makeTransactionListFormatted,
   TransactionListFormatted,
 } from '@/helpers/makeTransactionListFormatted'
-import {handleError} from "@/helpers/errors";
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'SearchBar',

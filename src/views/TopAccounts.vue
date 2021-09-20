@@ -94,7 +94,7 @@ import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { Pagination } from '@/api/query-ext/telemetryExtension.ts'
 import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
-import { getAccountList } from '@/helpers/Accounts'
+import { getTopAccountList } from '@/helpers/Accounts'
 
 export default defineComponent({
   components: { VPagination, AccountsLine },
@@ -123,7 +123,7 @@ export default defineComponent({
       totalGeo.value = Number(
         totalCurrency.value.find((el) => el.denom === 'minigeo')?.amount
       )
-      accounts.value = await getAccountList(pagination)
+      accounts.value = await getTopAccountList(pagination)
       for (const a of accounts.value) {
         const { txs } = await callers.getTxSearch({
           query: `message.sender='${a.address}'`,
