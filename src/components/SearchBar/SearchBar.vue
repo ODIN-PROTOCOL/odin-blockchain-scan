@@ -28,7 +28,7 @@
         />
 
         <template v-if="searchResult">
-          <div class="search__drop-dawn">
+          <div class="search__dropdown">
             <template v-for="result in searchResult">
               <template v-if="result.blocks">
                 <BlockResultItem
@@ -78,8 +78,7 @@ import {
   makeTransactionListFormatted,
   TransactionListFormatted,
 } from '@/helpers/makeTransactionListFormatted'
-import { getAccountList } from '@/helpers/Accounts'
-import { TxSearchResponse } from '@cosmjs/tendermint-rpc/build/legacy/responses'
+import {handleError} from "@/helpers/errors";
 
 export default defineComponent({
   name: 'SearchBar',
@@ -115,7 +114,6 @@ export default defineComponent({
     }
 
     const getAccount = async () => {
-      // TODO: this trash
       const res = await callers.getUnverifiedBalances(
         searchedText.value as string,
         'minigeo'
@@ -128,14 +126,6 @@ export default defineComponent({
       console.log(res, res2)
       return res
     }
-
-    // const getAccount = async (): Promise<Array<TempBalanceType>> => {
-    //   //TODO: its so baaaad
-    //   const getTopAcc = await getAccountList(pagination)
-    //   return getTopAcc.filter((a) =>
-    //     a.address.match(searchedText.value as string)
-    //   )
-    // }
 
     const getBlock = async () => {
       return (await callers.getBlock(
@@ -163,11 +153,6 @@ export default defineComponent({
 
         if (activeFilter.value === 'Account Address') {
           await getAccount()
-          // return (searchResult.value = [
-          //   {
-          //     accounts: await getAccount(),
-          //   },
-          // ] as SearchResultType)
         }
         return (searchResult.value = [
           {
@@ -177,7 +162,8 @@ export default defineComponent({
           },
         ] as SearchResultType)
       } catch (e) {
-        console.log(e.message)
+        console.error(e.message)
+        handleError(e)
         searchResult.value = null
       }
       return null
@@ -212,7 +198,7 @@ export default defineComponent({
       position: inherit;
     }
   }
-  &__drop-dawn {
+  &__dropdown {
     position: absolute;
     background: white;
     border: 0.1rem solid var(--clr__input-border);

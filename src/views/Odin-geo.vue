@@ -29,7 +29,7 @@ export default defineComponent({
     const coins = ['geodb', 'odin-protocol']
 
     onMounted(async () => {
-      console.log('"onMounted hook"')
+      console.debug('"onMounted hook"')
       await fetchData(coins)
     })
 
@@ -47,10 +47,10 @@ export default defineComponent({
 
       const TotalSupply = await callers.getUnverifiedTotalSupply()
 
-      console.log('TotalSupply', TotalSupply)
-      console.log('getTreasuryPool', treasuryPool)
-      console.log('getMintParams', mintParams)
-      console.log('getCoinswapParams', CoinswapParams)
+      console.debug('TotalSupply', TotalSupply)
+      console.debug('getTreasuryPool', treasuryPool)
+      console.debug('getMintParams', mintParams)
+      console.debug('getCoinswapParams', CoinswapParams)
 
       coins.map(async (coin) => {
         const {

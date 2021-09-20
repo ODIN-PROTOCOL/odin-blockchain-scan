@@ -6,11 +6,11 @@ import {
   MsgUndelegate,
 } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
-import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { callers } from '@/api/callers'
 import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc/build/dates'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+import { adjustedData } from '@/helpers/Types'
 
 const getDecodeTx = (tx) => Tx.decode(tx)
 
@@ -19,17 +19,6 @@ const getTime = async (
 ): Promise<ReadonlyDateWithNanoseconds> => {
   const res = await callers.getBlockchain(height, height)
   return res.blockMetas[0].header.time
-}
-
-type adjustedData = {
-  voter?: string
-  type?: string
-  delegatorAddress?: string
-  time?: Date | undefined | string
-  sender?: string
-  receiver?: string
-  amount?: string | Coin | Array<Coin> | undefined
-  fee?: string
 }
 
 export function humanizeMessageType(type: string): string {
@@ -59,37 +48,6 @@ export function humanizeMessageType(type: string): string {
       throw new ReferenceError(`Unknown type ${type}`)
   }
 }
-
-/*
-// if ('voter' in res.message) {
-//   res.message.voter
-// }
-
-// export function decodeMessage(obj: {
-//   type: '/mint.MsgWithdrawCoinsToAccFromTreasury'
-//   value: Uint8Array
-// }): MsgWithdrawCoinsToAccFromTreasury
-// export function decodeMessage(obj: {
-//   type: '/cosmos.MsgVote'
-//   value: Uint8Array
-// }): MsgVote
-// export function decodeMessage(obj: {
-//   type: '/cosmos.gov.v1beta1.MsgVote'
-//   value: Uint8Array
-// }): MsgVote
-// export function decodeMessage(obj: {
-//   type: '/cosmos.staking.v1beta1.MsgCreateValidator'
-//   value: Uint8Array
-// }): MsgCreateValidator
-// export function decodeMessage(obj: {
-//   type: '/cosmos.staking.v1beta1.MsgDelegate'
-//   value: Uint8Array
-// }): MsgDelegate
-// export function decodeMessage(obj: {
-//   type: '/cosmos.staking.v1beta1.MsgUndelegate'
-//   value: Uint8Array
-// }): MsgUndelegate
-*/
 
 function decodeMessage(obj: {
   typeUrl: string

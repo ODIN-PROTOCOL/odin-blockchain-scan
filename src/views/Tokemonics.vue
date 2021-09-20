@@ -109,7 +109,7 @@ export default defineComponent({
   setup() {
     const showTab = ref(true)
 
-    const downloadPaper = () => console.log('download')
+    const downloadPaper = () => console.debug('download')
 
     let timer = setInterval(() => {
       showTab.value = !showTab.value

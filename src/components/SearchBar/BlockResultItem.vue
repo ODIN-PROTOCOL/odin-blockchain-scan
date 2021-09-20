@@ -1,23 +1,23 @@
 <template>
   <template v-if="result">
     <router-link
-      class="search__drop-dawn--item"
+      class="search__dropdown--item"
       :to="`/blocks/${result?.block?.header?.height}`"
     >
-      <div class="search__drop-dawn--item-left">
-        <div class="search__drop-dawn--item-label">Bk</div>
-        <div class="search__drop-dawn--item-height">
+      <div class="search__dropdown--item-left">
+        <div class="search__dropdown--item-label">Bk</div>
+        <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
             :text="result?.block?.header?.height"
           />
         </div>
-        <div class="search__drop-dawn--item-time">
+        <div class="search__dropdown--item-time">
           {{ diffDays(toDay, getDay(result?.block?.header?.time)) }}
         </div>
       </div>
-      <div class="search__drop-dawn--item-right">
-        <div class="search__drop-dawn--item-validator">
+      <div class="search__dropdown--item-right">
+        <div class="search__dropdown--item-validator">
           Validator:
           <TitledLink
             :link="`/transactions/${result?.block?.header?.height}`"
@@ -28,7 +28,7 @@
             )}`"
           />
         </div>
-        <div class="search__drop-dawn--item-transactions">548 transactions</div>
+        <div class="search__dropdown--item-transactions">548 transactions</div>
       </div>
     </router-link>
   </template>
@@ -55,7 +55,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .search {
-  &__drop-dawn {
+  &__dropdown {
     &--item {
       text-decoration: none;
       color: var(--clr__text);

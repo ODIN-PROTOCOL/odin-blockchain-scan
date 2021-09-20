@@ -45,10 +45,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from 'vue'
+import { defineComponent, computed } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { bigMath } from '@/helpers/bigMath'
-import { callers } from '@/api/callers'
 
 export default defineComponent({
   components: { TitledLink },
@@ -92,7 +91,7 @@ export default defineComponent({
       accountGeoPercentage,
       accountOdinPercentage,
       odinBalance,
-      geoBalance
+      geoBalance,
     }
   },
 })
@@ -103,7 +102,7 @@ export default defineComponent({
 .data-sources__table-row {
   grid:
     auto /
-    50px repeat(6, minmax(4rem, 1fr));
+    5rem repeat(6, minmax(4rem, 1fr));
 
   @media screen and (max-width: 992px) {
     grid: repeat(7, minmax(4rem, 1fr)) / auto;
@@ -111,20 +110,20 @@ export default defineComponent({
 }
 
 .app-table__cell-txt {
-  max-width: 150px;
-  padding-right: 10px;
+  max-width: 15rem;
+  padding-right: 1rem;
 }
 
 .app-table__header {
   display: none;
 
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 99.2rem) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 
-  @media screen and (max-width: 600px) {
-    width: 170px;
+  @media screen and (max-width: 60rem) {
+    width: 17rem;
   }
 }
 </style>

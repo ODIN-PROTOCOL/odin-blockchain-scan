@@ -114,7 +114,6 @@ import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
-import { TxSearchResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 
 export default defineComponent({
   name: 'Latest',
@@ -136,7 +135,7 @@ export default defineComponent({
       const { blockMetas, lastHeight: reqLastHeight } =
         await callers.getBlockchain(100)
       latestBlocks.value = [...blockMetas].slice(0, 5)
-      console.log('latestBlocks', latestBlocks.value)
+      console.debug('latestBlocks', latestBlocks.value)
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
@@ -147,7 +146,7 @@ export default defineComponent({
       latestTransactions.value = await makeTransactionListFormatted(
         [...txs].slice(0, 5)
       )
-      console.log('latestTransactions', latestTransactions.value)
+      console.debug('latestTransactions', latestTransactions.value)
       totalCount.value = reqTotalCount
     }
 

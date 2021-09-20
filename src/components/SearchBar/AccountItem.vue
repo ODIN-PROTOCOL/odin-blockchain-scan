@@ -1,26 +1,26 @@
 <template>
   <template v-if="result">
     <router-link
-      class="search__drop-dawn--item"
+      class="search__dropdown--item"
       :to="`/top_accounts/${result.address}`"
     >
-      <div class="search__drop-dawn--item-left">
-        <div class="search__drop-dawn--item-label">A</div>
-        <div class="search__drop-dawn--item-height">
+      <div class="search__dropdown--item-left">
+        <div class="search__dropdown--item-label">A</div>
+        <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt address-link"
             :link="`/top_accounts/${result.address}`"
             :text="`0x${result.address}`"
           />
         </div>
-        <div class="search__drop-dawn--item-time"></div>
+        <div class="search__dropdown--item-time"></div>
       </div>
-      <div class="search__drop-dawn--item-right">
-        <div class="search__drop-dawn--item-validator">
+      <div class="search__dropdown--item-right">
+        <div class="search__dropdown--item-validator">
           Geo Balance:
           <TitledLink class="app-table__cell-txt" :text="result.geoBalance" />
         </div>
-        <div class="search__drop-dawn--item-validator">
+        <div class="search__dropdown--item-validator">
           <span> Odin Balance: </span>
           <TitledLink class="app-table__cell-txt" :text="result.odinBalance" />
         </div>
@@ -52,7 +52,7 @@ export default defineComponent({
   max-width: 14rem;
 }
 .search {
-  &__drop-dawn {
+  &__dropdown {
     &--item {
       text-decoration: none;
       color: var(--clr__text);

@@ -28,6 +28,7 @@ import { convertToDayMonth } from '@/helpers/dates'
 import { bigMath } from '@/helpers/bigMath'
 import { getAPIDate } from '@/helpers/requests'
 import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'InfoPanel',
@@ -39,7 +40,7 @@ export default defineComponent({
     const chartDataLoad = ref(false)
 
     const chartData = ref<ChartDataType>({
-      labels: [], // ['May 18', 'May 25', 'Jun 1'] test data
+      labels: [],
       datasets: [
         {
           backgroundColor: '#007bff',
@@ -49,7 +50,7 @@ export default defineComponent({
           borderCapStyle: 'round',
           tension: 0.5,
           borderSkipped: false,
-          data: [], // [1080, 1220, 1540] test data
+          data: [],
         },
       ],
     })
@@ -67,7 +68,7 @@ export default defineComponent({
           endDate,
         })) as QueryTxVolumeResponse
 
-        console.log('txVolumePerDay', txVolumePerDay)
+        console.debug('txVolumePerDay', txVolumePerDay)
 
         txVolumePerDay.map((el) => {
           chartData.value.labels = [
@@ -87,10 +88,11 @@ export default defineComponent({
           0
         ) as number
 
-        console.log('chartData', chartData.value)
+        console.debug('chartData', chartData.value)
         chartDataLoad.value = true
       } catch (error) {
-        console.log(error)
+        handleError(error)
+        console.error(error)
       }
     }
 
@@ -121,17 +123,17 @@ export default defineComponent({
       transactionData.value = [
         {
           title: 'Total number of transactions',
-          text: `${transactionCount.value ?? 999999} `,
+          text: `${transactionCount.value} `,
         },
         {
           title: 'Market CAP',
-          text: `$${odinMarketCapUSD + geoDBMarketCapUSD ?? 999999}`,
+          text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
         },
       ]
 
       priceData.value = [
-        { title: odinName, text: `$${odinUSD ?? 999999}` },
-        { title: geoDBName, text: `$${geoDBUSD ?? 999999}` },
+        { title: odinName, text: `$${odinUSD}` },
+        { title: geoDBName, text: `$${geoDBUSD}` },
       ]
     }
 

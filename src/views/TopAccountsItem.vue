@@ -169,6 +169,7 @@ import TitledLink from '@/components/TitledLink.vue'
 import { Bech32, toHex } from '@cosmjs/encoding'
 import { bigMath } from '@/helpers/bigMath'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   components: { TitledLink },
@@ -235,7 +236,8 @@ export default defineComponent({
           totalTxCount.value = totalCount
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
+        handleError(e)
       }
     }
 

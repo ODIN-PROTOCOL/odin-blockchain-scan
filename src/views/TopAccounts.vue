@@ -95,7 +95,6 @@ import { Pagination } from '@/api/query-ext/telemetryExtension.ts'
 import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
 import { getAccountList } from '@/helpers/Accounts'
-import { TxSearchResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 
 export default defineComponent({
   components: { VPagination, AccountsLine },
@@ -137,7 +136,7 @@ export default defineComponent({
         await sortAccounts()
         await filterAccounts(currentPage.value)
       } catch (err) {
-        console.log(err)
+        console.error(err)
       }
     }
 
