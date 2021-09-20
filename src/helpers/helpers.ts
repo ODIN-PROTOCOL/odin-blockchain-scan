@@ -1,4 +1,7 @@
 import { toHex } from '@cosmjs/encoding'
+import { getDateFromMessage } from '@/helpers/decodeMessage'
+
+const toHexFunc: (data: Uint8Array) => string = toHex
 
 export const convertDate = (time: string): string => {
   const nowTime: Date = new Date()
@@ -67,5 +70,29 @@ export const copyValue = (text: string): void => {
 }
 
 export const getHash = (str: Uint8Array): string => {
-  return toHex(str).toUpperCase()
+  return toHexFunc(str).toUpperCase()
+}
+
+export const prepareTransaction = async (txs, arr) => {
+  if (!txs.length) return console.log('txs empty')
+  let tempArr = arr
+  for (const tx of txs) {
+    const { receiver, sender, type, amount, time, fee } =
+      await getDateFromMessage(tx)
+    tempArr = [
+      ...tempArr,
+      {
+        type: type ? type : '-',
+        hash: toHexFunc(tx.hash) ?? '-',
+        block: tx.height ?? '-',
+        time: time ? time : null,
+        sender: sender ? sender : '',
+        receiver: receiver ? receiver : '',
+        amount: amount ? amount : '',
+        fee: fee ? fee : '-',
+      },
+    ]
+  }
+  console.log(tempArr)
+  return tempArr
 }

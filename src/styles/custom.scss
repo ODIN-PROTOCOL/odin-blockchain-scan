@@ -67,3 +67,15 @@
 .fade-leave-to {
   opacity: 0;
 }
+
+.empty {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  color: var(--clr__input-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}

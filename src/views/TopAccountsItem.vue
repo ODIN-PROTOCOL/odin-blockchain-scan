@@ -177,9 +177,8 @@ export default defineComponent({
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
 
-    const blocks = ref()
-    const geoBalance = ref()
-    const odinBalance = ref()
+    const geoBalance = ref<string>()
+    const odinBalance = ref<string>()
     const prepareTransaction = ref()
     const toHexFunc: (data: Uint8Array) => string = toHex
     const totalTxCount = ref<number>()
@@ -253,7 +252,6 @@ export default defineComponent({
       router,
       copyValue,
       convertToTxTime,
-      blocks,
       prepareTransaction,
       totalTxCount,
     }
