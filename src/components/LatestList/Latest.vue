@@ -34,7 +34,7 @@
                 </template>
                 <!-- TODO: transactions count -->
                 <template #transactions>
-                  <span>548 transactions</span>
+                  <span>{{ item.total_tx }} transactions</span>
                 </template>
                 <!-- TODO: what is block_size  -->
               </LatestListItem>
@@ -49,31 +49,25 @@
             <template v-if="latestTransactions.length">
               <LatestListItem
                 v-for="item in latestTransactions"
-                :key="item.transHash"
+                :key="item.hash"
               >
                 <template #label> Tx </template>
                 <template #name>
                   <TitledLink
                     class="app-table__cell-txt"
-                    :link="`/blocks/${item.transHeight}`"
-                    :text="
-                      item.transHash
-                        ? cropText(`0x${item.transSender}`)
-                        : 'No info'
-                    "
+                    :link="`/blocks/${item.block}`"
+                    :text="item.hash ? cropText(`0x${item.sender}`) : 'No info'"
                   />
                 </template>
                 <template #time>
-                  {{ diffDays(toDay, getDay(item.transTime)) }}
+                  {{ diffDays(toDay, getDay(item.time)) }}
                 </template>
                 <template #from>
                   <span>From:</span>
                   <TitledLink
                     class="app-table__cell-txt"
                     :text="
-                      item.transSender
-                        ? cropText(`0x${item.transSender}`)
-                        : 'No info'
+                      item.sender ? cropText(`0x${item.sender}`) : 'No info'
                     "
                   />
                 </template>
@@ -82,9 +76,7 @@
                   <TitledLink
                     class="app-table__cell-txt"
                     :text="
-                      item.transReceiver
-                        ? cropText(`0x${item.transReceiver}`)
-                        : 'No info'
+                      item.receiver ? cropText(`0x${item.receiver}`) : 'No info'
                     "
                   />
                 </template>
@@ -105,15 +97,13 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
 import { toHex } from '@cosmjs/encoding'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
-import {
-  makeTransactionListFormatted,
-  TransactionListFormatted,
-} from '@/helpers/makeTransactionListFormatted'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
+import { prepareTransaction } from '@/helpers/helpers'
+import { adjustedData } from '@/helpers/Types'
 
 export default defineComponent({
   name: 'Latest',
@@ -127,7 +117,7 @@ export default defineComponent({
     })
 
     let latestBlocks = ref<Array<BlockMeta> | null>([])
-    let latestTransactions = ref<Array<TransactionListFormatted> | null>([])
+    let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
     let totalCount = ref<number>()
 
@@ -135,17 +125,34 @@ export default defineComponent({
       const { blockMetas, lastHeight: reqLastHeight } =
         await callers.getBlockchain(100)
       latestBlocks.value = [...blockMetas].slice(0, 5)
-      console.debug('latestBlocks', latestBlocks.value)
+      // how fix 'any'?
+      let tempA: any = []
+      for (let b of latestBlocks.value) {
+        tempA = [
+          ...tempA,
+          {
+            ...b,
+            total_tx: await callers
+              .getBlock(b.header.height)
+              .then((res) => res.block.txs.length),
+          },
+        ]
+      }
+      latestBlocks.value = tempA
+      console.debug('latestBlocks', tempA)
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
-        // query: `tx.height >= ${500 - 5}`,
         query: `tx.height >= ${lastHeight.value - 100000}`,
       })
-      latestTransactions.value = await makeTransactionListFormatted(
-        [...txs].slice(0, 5)
+
+      latestTransactions.value = await prepareTransaction(txs).then((pt) =>
+        pt.slice(0, 5)
       )
+
+      console.debug(latestTransactions.value)
+
       console.debug('latestTransactions', latestTransactions.value)
       totalCount.value = reqTotalCount
     }

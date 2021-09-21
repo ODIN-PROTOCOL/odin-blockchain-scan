@@ -77,9 +77,7 @@
       </div>
     </template>
     <template v-else>
-      <div class="empty">
-        Waiting to receive data
-      </div>
+      <div class="empty">Waiting to receive data</div>
     </template>
   </div>
 </template>

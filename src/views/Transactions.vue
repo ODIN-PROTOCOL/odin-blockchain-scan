@@ -75,21 +75,21 @@ export default defineComponent({
     const ITEMS_PER_PAGE = 5
     const transactions = ref()
     const filteredTransactions = ref()
-    const page = ref(1)
-    const totalPages = ref()
+    const page = ref<number>(1)
+    const totalPages = ref<number>()
     const totalTransactions = ref<number>()
     let lastHeight = 500
 
     const getTransactions = async () => {
       try {
-        const { txs, totalCount } = await callers.getTxSearch({
+        const { txs } = await callers.getTxSearch({
           query: `tx.height >= ${lastHeight - 10}`,
         })
-        totalTransactions.value = totalCount
-        transactions.value = txs
-        totalPages.value = Math.ceil(txs.length / ITEMS_PER_PAGE)
 
-        await prepareTransaction(txs, transactions.value)
+        transactions.value = await prepareTransaction(txs)
+
+        totalTransactions.value = transactions.value.length
+        totalPages.value = Math.ceil(transactions.value.length / ITEMS_PER_PAGE)
 
         await filterTransactions(page.value)
       } catch (e) {
@@ -100,18 +100,17 @@ export default defineComponent({
 
     const filterTransactions = async (newPage: number): Promise<void> => {
       let tempArr = transactions.value
-
       if (newPage === 1) {
-        transactions.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
+        filteredTransactions.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
       } else {
-        transactions.value = tempArr?.slice(
+        filteredTransactions.value = tempArr?.slice(
           (newPage - 1) * ITEMS_PER_PAGE,
           (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
         )
       }
 
+      console.log('filteredTransactions.value', filteredTransactions.value)
       page.value = newPage
-      console.log(tempArr)
     }
 
     const updateHandler = (num: number) => {

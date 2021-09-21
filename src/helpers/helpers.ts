@@ -1,5 +1,18 @@
 import { toHex } from '@cosmjs/encoding'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
+import { adjustedData } from '@/helpers/Types'
+import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+
+export const _allowedTypes = [
+  'Send',
+  'Receive',
+  'Report',
+  'Request',
+  'Delegate',
+  'Undelegate',
+  'Redelegate',
+  'Withdraw',
+]
 
 const toHexFunc: (data: Uint8Array) => string = toHex
 
@@ -73,9 +86,12 @@ export const getHash = (str: Uint8Array): string => {
   return toHexFunc(str).toUpperCase()
 }
 
-export const prepareTransaction = async (txs, arr) => {
-  if (!txs.length) return console.log('txs empty')
-  let tempArr = arr
+export const prepareTransaction = async (
+  // how rework this to ' readonly Array<TxResponse> ' if its possible?
+  txs: readonly TxResponse[]
+): Promise<Array<adjustedData>> => {
+  // how fix 'any'?
+  let tempArr: Array<adjustedData> | any = []
   for (const tx of txs) {
     const { receiver, sender, type, amount, time, fee } =
       await getDateFromMessage(tx)
@@ -91,8 +107,7 @@ export const prepareTransaction = async (txs, arr) => {
         amount: amount ? amount : '',
         fee: fee ? fee : '-',
       },
-    ]
+    ].filter((item) => _allowedTypes.includes(item.type))
   }
-  console.log(tempArr)
   return tempArr
 }
