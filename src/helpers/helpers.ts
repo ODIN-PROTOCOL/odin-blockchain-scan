@@ -14,7 +14,7 @@ export const _allowedTypes = [
   'Withdraw',
 ]
 
-const toHexFunc: (data: Uint8Array) => string = toHex
+export const toHexFunc: (data: Uint8Array) => string = toHex
 
 export const convertDate = (time: string): string => {
   const nowTime: Date = new Date()
@@ -87,11 +87,9 @@ export const getHash = (str: Uint8Array): string => {
 }
 
 export const prepareTransaction = async (
-  // how rework this to ' readonly Array<TxResponse> ' if its possible?
   txs: readonly TxResponse[]
 ): Promise<Array<adjustedData>> => {
-  // how fix 'any'?
-  let tempArr: Array<adjustedData> | any = []
+  let tempArr: Array<adjustedData> = []
   for (const tx of txs) {
     const { receiver, sender, type, amount, time, fee } =
       await getDateFromMessage(tx)
@@ -99,8 +97,8 @@ export const prepareTransaction = async (
       ...tempArr,
       {
         type: type ? type : '-',
-        hash: toHexFunc(tx.hash) ?? '-',
-        block: tx.height ?? '-',
+        hash: tx.hash ? toHexFunc(tx.hash) : '-',
+        block: tx.height ? tx.height : '-',
         time: time ? time : null,
         sender: sender ? sender : '',
         receiver: receiver ? receiver : '',

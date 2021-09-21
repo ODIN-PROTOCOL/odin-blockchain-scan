@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { toHex } from '@cosmjs/encoding'
+import { toHexFunc } from '@/helpers/helpers'
 import { computed, defineComponent, ref } from 'vue'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
@@ -42,7 +42,6 @@ export default defineComponent({
   props: { result: { type: Object, required: true } },
   setup(props) {
     const toDay = ref<Date>(new Date())
-    const toHexFunc: (data: Uint8Array) => string = toHex
 
     const geoBalance = computed(() =>
       bigMath.bigConvectOdinAndGeo(props.result.geoBalance.amount)

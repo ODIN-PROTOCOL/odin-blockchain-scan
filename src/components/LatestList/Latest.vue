@@ -25,18 +25,16 @@
                 <template #validator>
                   <span>Validator:</span>
                   <TitledLink
-                    :link="`/transactions/${item.header.height}`"
+                    :link="`/validators/${item.header.height}`"
                     class="app-table__cell-txt"
                     :text="`${cropText(
                       '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
                     )}`"
                   />
                 </template>
-                <!-- TODO: transactions count -->
                 <template #transactions>
                   <span>{{ item.total_tx }} transactions</span>
                 </template>
-                <!-- TODO: what is block_size  -->
               </LatestListItem>
             </template>
             <div class="latest-list-item" v-else>
@@ -55,8 +53,8 @@
                 <template #name>
                   <TitledLink
                     class="app-table__cell-txt"
-                    :link="`/blocks/${item.block}`"
-                    :text="item.hash ? cropText(`0x${item.sender}`) : 'No info'"
+                    :link="`/transactions/${item.block}/${item.hash}`"
+                    :text="item.hash ? cropText(`0x${item.hash}`) : 'No info'"
                   />
                 </template>
                 <template #time>
@@ -64,21 +62,27 @@
                 </template>
                 <template #from>
                   <span>From:</span>
-                  <TitledLink
-                    class="app-table__cell-txt"
-                    :text="
-                      item.sender ? cropText(`0x${item.sender}`) : 'No info'
-                    "
-                  />
+                  <router-link :to="`/top_accounts/${item.sender}`">
+                    <TitledLink
+                      class="app-table__cell-txt"
+                      :text="
+                        item.sender ? cropText(`0x${item.sender}`) : 'No info'
+                      "
+                    />
+                  </router-link>
                 </template>
                 <template #to>
                   <span> To: </span>
-                  <TitledLink
-                    class="app-table__cell-txt"
-                    :text="
-                      item.receiver ? cropText(`0x${item.receiver}`) : 'No info'
-                    "
-                  />
+                  <router-link :to="`/top_accounts/${item.receiver}`">
+                    <TitledLink
+                      class="app-table__cell-txt"
+                      :text="
+                        item.receiver
+                          ? cropText(`0x${item.receiver}`)
+                          : 'No info'
+                      "
+                    />
+                  </router-link>
                 </template>
               </LatestListItem>
             </template>
@@ -95,15 +99,14 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
-import { toHex } from '@cosmjs/encoding'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { BlockMeta } from '@cosmjs/tendermint-rpc'
-import { prepareTransaction } from '@/helpers/helpers'
-import { adjustedData } from '@/helpers/Types'
+import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
+import { adjustedData, latestBlocksInterface } from '@/helpers/Types'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'Latest',
@@ -112,11 +115,16 @@ export default defineComponent({
     const toDay = ref<Date>(new Date())
 
     onMounted(async (): Promise<void> => {
-      await getLatestBlocks()
-      await getLatestTransactions()
+      try {
+        await getLatestBlocks()
+        await getLatestTransactions()
+      } catch (e) {
+        console.error(e.message)
+        handleError(e)
+      }
     })
 
-    let latestBlocks = ref<Array<BlockMeta> | null>([])
+    let latestBlocks = ref<Array<latestBlocksInterface> | null>([])
     let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
     let totalCount = ref<number>()
@@ -124,22 +132,22 @@ export default defineComponent({
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
         await callers.getBlockchain(100)
-      latestBlocks.value = [...blockMetas].slice(0, 5)
-      // how fix 'any'?
-      let tempA: any = []
-      for (let b of latestBlocks.value) {
+      let tempA: Array<latestBlocksInterface> = []
+      for (let b of [...blockMetas].slice(0, 5)) {
         tempA = [
           ...tempA,
           {
             ...b,
             total_tx: await callers
-              .getBlock(b.header.height)
-              .then((res) => res.block.txs.length),
+              .getBlock(b?.header?.height)
+              .then((res) => res?.block?.txs?.length),
           },
         ]
       }
       latestBlocks.value = tempA
-      console.debug('latestBlocks', tempA)
+
+      console.debug('latestBlocks.value', latestBlocks.value)
+
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
@@ -150,8 +158,6 @@ export default defineComponent({
       latestTransactions.value = await prepareTransaction(txs).then((pt) =>
         pt.slice(0, 5)
       )
-
-      console.debug(latestTransactions.value)
 
       console.debug('latestTransactions', latestTransactions.value)
       totalCount.value = reqTotalCount
@@ -168,7 +174,6 @@ export default defineComponent({
       linkDataText: 'Transactions',
     }
 
-    const toHexFunc: (data: Uint8Array) => string = toHex
     return {
       latestBlocksHeader,
       latestBlocks,
