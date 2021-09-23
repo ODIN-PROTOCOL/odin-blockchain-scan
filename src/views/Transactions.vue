@@ -3,7 +3,7 @@
     <div class="mg-b16 mg-t32">
       <h2 class="view-title">Transactions</h2>
     </div>
-    <div class="mg-b16 mg-t16">
+    <div class="mg-b16 mg-t16" v-if="filteredTransactions?.length">
       <p>{{ totalTransactions }} transactions found</p>
     </div>
     <template v-if="filteredTransactions?.length">
