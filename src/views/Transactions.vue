@@ -109,7 +109,7 @@ export default defineComponent({
         )
       }
 
-      console.log('filteredTransactions.value', filteredTransactions.value)
+      console.debug('filteredTransactions.value', filteredTransactions.value)
       page.value = newPage
     }
 

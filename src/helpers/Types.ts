@@ -84,6 +84,7 @@ export type adjustedData = {
   receiver?: string
   amount?: string
   fee?: string
+  status?: number | string | undefined
 }
 
 export interface latestBlocksInterface extends BlockMeta {

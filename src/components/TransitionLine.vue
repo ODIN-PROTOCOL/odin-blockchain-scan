@@ -2,7 +2,7 @@
   <div class="data-sources__table-row app-table__row">
     <div class="app-table__cell">
       <span class="app-table__header">Transaction hash</span>
-      <router-link :to="`/transactions/${transition.hash}/${transition.hash}`">
+      <router-link :to="`/transactions/${transition.block}/${transition.hash}`">
         <TitledLink
           class="app-table__cell-txt"
           :text="'Ox' + transition.hash"

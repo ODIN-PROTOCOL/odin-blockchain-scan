@@ -18,7 +18,7 @@ import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc/build/dates'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { adjustedData } from '@/helpers/Types'
 
-const getDecodeTx = (tx) => Tx.decode(tx)
+export const getDecodeTx = (tx: TxResponse['tx']): Tx => Tx.decode(tx)
 
 const getTime = async (
   height: number

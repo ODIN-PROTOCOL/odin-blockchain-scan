@@ -79,3 +79,14 @@
   font-weight: 600;
   text-transform: uppercase;
 }
+.block-id {
+  font-size: 24px;
+  font-weight: 400;
+
+  @media screen and (max-width: 1500px) {
+    text-overflow: ellipsis;
+    max-width: 250px;
+    overflow: hidden;
+    display: block;
+  }
+}

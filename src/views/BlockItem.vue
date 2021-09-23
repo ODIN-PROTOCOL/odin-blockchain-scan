@@ -152,7 +152,7 @@ export default defineComponent({
         blockInfo.value.block.header.lastBlockId.hash
       )
 
-      console.log(blockInfo.value)
+      console.debug(blockInfo.value)
     }
 
     onMounted(async (): Promise<void> => {
