@@ -2,14 +2,14 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/top_accounts/${result.address}`"
+      :to="`/account/${result.address}`"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">A</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt address-link"
-            :link="`/top_accounts/${result.address}`"
+            :link="`/account/${result.address}`"
             :text="`0x${result.address}`"
           />
         </div>

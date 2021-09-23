@@ -78,7 +78,7 @@
             </div>
           </div>
           <div class="info-value">
-            <router-link :to="`/top_accounts/${transaction?.sender}`">
+            <router-link :to="`/account/${transaction?.sender}`">
               {{ transaction?.sender }}
             </router-link>
           </div>
@@ -155,7 +155,7 @@
                 </div>
               </div>
               <div class="info-value">
-                <router-link :to="`/top_accounts/${transaction?.sender}`">
+                <router-link :to="`/account/${transaction?.sender}`">
                   {{ transaction?.sender }}
                 </router-link>
               </div>
@@ -169,7 +169,7 @@
                 </div>
               </div>
               <div class="info-value">
-                <router-link :to="`/top_accounts/${transaction?.receiver}`">
+                <router-link :to="`/account/${transaction?.receiver}`">
                   {{ transaction?.receiver }}
                 </router-link>
               </div>

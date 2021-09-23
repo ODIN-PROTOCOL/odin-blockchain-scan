@@ -62,7 +62,7 @@
                 </template>
                 <template #from>
                   <span>From:</span>
-                  <router-link :to="`/top_accounts/${item.sender}`">
+                  <router-link :to="`/account/${item.sender}`">
                     <TitledLink
                       class="app-table__cell-txt"
                       :text="
@@ -73,7 +73,7 @@
                 </template>
                 <template #to>
                   <span> To: </span>
-                  <router-link :to="`/top_accounts/${item.receiver}`">
+                  <router-link :to="`/account/${item.receiver}`">
                     <TitledLink
                       class="app-table__cell-txt"
                       :text="

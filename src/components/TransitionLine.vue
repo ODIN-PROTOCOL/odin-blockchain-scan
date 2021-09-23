@@ -29,7 +29,7 @@
       <span class="app-table__header">Sender</span>
       <router-link
         v-if="transition.sender !== ''"
-        :to="`/top_accounts/${transition.sender}`"
+        :to="`/account/${transition.sender}`"
       >
         <TitledLink
           class="app-table__cell-txt"
@@ -42,7 +42,7 @@
       <span class="app-table__header">Receiver</span>
       <router-link
         v-if="transition.receiver !== ''"
-        :to="`/top_accounts/${transition.receiver}`"
+        :to="`/account/${transition.receiver}`"
       >
         <TitledLink
           class="app-table__cell-txt"
