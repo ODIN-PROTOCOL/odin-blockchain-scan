@@ -18,15 +18,26 @@
         ref="dropdownEl"
         v-show="dropdown.isShown.value"
       >
-        <router-link
-          class="nav__dropdown-link"
-          v-for="link in list.links"
-          :key="link.to"
-          :data-text="link.text"
-          :to="{ name: link.to }"
-        >
-          <span>{{ link.text }}</span>
-        </router-link>
+        <template v-for="link in list.links">
+          <router-link
+            v-if="link.to"
+            class="nav__dropdown-link"
+            :key="link.to"
+            :data-text="link.text"
+            :to="{ name: link.to }"
+          >
+            <span>{{ link.text }}</span>
+          </router-link>
+          <router-link
+            v-else
+            class="nav__dropdown-link"
+            :key="link.url"
+            :data-text="link.text"
+            :to="link.url"
+          >
+            <span>{{ link.text }}</span>
+          </router-link>
+        </template>
       </div>
     </transition>
   </div>

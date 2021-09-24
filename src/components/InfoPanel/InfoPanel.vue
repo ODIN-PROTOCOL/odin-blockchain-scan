@@ -27,7 +27,6 @@ import { callers } from '@/api/callers'
 import { convertToDayMonth } from '@/helpers/dates'
 import { bigMath } from '@/helpers/bigMath'
 import { getAPIDate } from '@/helpers/requests'
-import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
 import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
@@ -63,10 +62,10 @@ export default defineComponent({
 
         await getCoinInfo()
 
-        const { txVolumePerDay } = (await callers.getTelemetry({
+        const { txVolumePerDay } = await callers.getTelemetry({
           startDate,
           endDate,
-        })) as QueryTxVolumeResponse
+        })
 
         console.debug('txVolumePerDay', txVolumePerDay)
 

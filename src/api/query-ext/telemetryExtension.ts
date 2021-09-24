@@ -22,20 +22,17 @@ import {
 } from '@provider/codec/telemetry/query'
 
 export class Pagination {
-  key?: Uint8Array
   offset: Long
   limit: Long
   desc: boolean
   countTotal: boolean
 
   constructor(
-    key: Array<never>,
     offset: number,
     limit: number,
     desc: boolean,
     countTotal: boolean
   ) {
-    this.key = new Uint8Array(key)
     this.offset = new Long(offset)
     this.limit = new Long(limit)
     this.desc = desc
@@ -84,7 +81,7 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
           return await queryService.TopBalances({
             denom: args.denom,
             pagination: {
-              key: args?.pagination?.key,
+              key: new Uint8Array([]),
               limit: args?.pagination?.limit,
               offset: args?.pagination?.offset,
             },
@@ -95,9 +92,7 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
           return await queryService.ExtendedValidators({
             status: args.status,
             pagination: {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              key: args?.pagination,
+              key: new Uint8Array([]),
               limit: args?.pagination?.limit,
               offset: args?.pagination?.offset,
               countTotal: args?.pagination?.countTotal,
@@ -133,7 +128,7 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
             startDate: args.startDate,
             endDate: args.endDate,
             pagination: {
-              key: args?.pagination?.key,
+              key: new Uint8Array([]),
               limit: args?.pagination?.limit,
               offset: args?.pagination?.offset,
               countTotal: args?.pagination?.countTotal,
@@ -144,7 +139,7 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
           return await queryService.ValidatorBlocks({
             validatorAddress: args.validatorAddress,
             pagination: {
-              key: args?.pagination?.key,
+              key: new Uint8Array([]),
               limit: args?.pagination?.limit,
               offset: args?.pagination?.offset,
             },

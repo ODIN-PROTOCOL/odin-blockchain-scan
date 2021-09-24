@@ -98,7 +98,7 @@ export default defineComponent({
   components: { VPagination, AccountsLine },
   setup() {
     const ITEMS_PER_PAGE = 5
-    const pagination: Pagination = new Pagination([], 0, 100, true, true)
+    const pagination: Pagination = new Pagination(0, 100, true, true)
 
     const accounts = ref<Array<TempBalanceType>>()
     const filteredAccounts = ref<Array<TempBalanceType>>()

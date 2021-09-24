@@ -7,6 +7,7 @@ export type Link = {
   to?: string
   text?: string
   title?: string
+  url?: string
 }
 export type LinkList = {
   name: string
