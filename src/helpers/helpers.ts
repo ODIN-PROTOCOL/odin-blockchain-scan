@@ -86,6 +86,14 @@ export const getHash = (str: Uint8Array): string => {
   return toHexFunc(str).toUpperCase()
 }
 
+export const getRandomColors = (size: number): Array<string> => {
+  const colors: Array<string> = []
+  for (let i = 0; i < size; i++) {
+    colors.push(`hsl(${Math.random() * 360}, 60%, 60%)`)
+  }
+  return colors
+}
+
 export const prepareTransaction = async (
   txs: readonly TxResponse[]
 ): Promise<Array<adjustedData>> => {

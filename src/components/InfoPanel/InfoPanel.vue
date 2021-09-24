@@ -3,14 +3,18 @@
     <div class="info-panel" v-if="priceData && transactionData">
       <InfoPanelCol :key="'priceData'" :infoPanelRows="priceData" />
       <InfoPanelCol :key="'transactionData'" :infoPanelRows="transactionData" />
-      <InfoPanelChart
-        :key="'chartData'"
-        v-if="chartDataLoad"
-        :chartData="chartData"
-      />
-      <span class="info-panel__empty-chart" v-else>
-        We are in the process of drawing a chart!
-      </span>
+      <div class="info-panel__chart">
+        <div class="info-panel__title">Transactions history statistics</div>
+        <AppChart
+          :key="'chartData'"
+          v-if="chartDataLoad"
+          :chartData="chartData"
+          :chartOptions="chartOptions"
+        />
+        <span class="info-panel__empty-chart" v-else>
+          We are in the process of drawing a chart!
+        </span>
+      </div>
     </div>
     <div v-else class="info-panel">
       <span class="info-panel__empty">Waiting to receive data</span>
@@ -20,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import InfoPanelChart from '@/components/InfoPanel/InfoPanelChart.vue'
+import AppChart from '@/components/AppChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
 import { ChartDataType, CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
@@ -31,7 +35,7 @@ import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'InfoPanel',
-  components: { InfoPanelChart, InfoPanelCol },
+  components: { AppChart, InfoPanelCol },
   setup() {
     const priceData = ref<Array<Link> | null>()
     const transactionData = ref<Array<Link> | null>()
@@ -52,6 +56,76 @@ export default defineComponent({
           data: [],
         },
       ],
+    })
+    const chartOptions = ref({
+      scales: {
+        x: {
+          grid: {
+            color: 'transparent',
+            borderColor: '#CCE4FF',
+          },
+          ticks: {
+            padding: 20,
+            color: '#212529',
+            font: {
+              size: 14,
+              family: 'SF Display',
+              lineHeight: 2,
+            },
+          },
+        },
+        y: {
+          grid: {
+            color: '#CCE4FF',
+            borderColor: 'transparent',
+          },
+          ticks: {
+            color: '#212529',
+            padding: 20,
+            font: {
+              size: 14,
+              family: 'SF Display',
+              lineHeight: 2,
+            },
+          },
+        },
+      },
+      elements: {
+        point: {
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
+          borderWidth: 0,
+          radius: 0,
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: false,
+        },
+        subtitle: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false,
+        },
+        point: {
+          borderWidth: 0,
+        },
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true,
+            },
+            mode: 'y',
+          },
+        },
+      },
     })
 
     const getLatestTelemetry = async (): Promise<void> => {
@@ -140,7 +214,13 @@ export default defineComponent({
       await getLatestTelemetry()
     })
 
-    return { chartData, transactionData, priceData, chartDataLoad }
+    return {
+      chartData,
+      chartDataLoad,
+      chartOptions,
+      transactionData,
+      priceData,
+    }
   },
 })
 </script>
