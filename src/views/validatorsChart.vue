@@ -6,14 +6,18 @@
     </div>
     <div class="content">
       <div class="chart-block">
-        <AppChart
-          v-if="chartDataLoad"
-          :key="'chartData'"
-          :chartData="chartData"
-          :chartType="'doughnut'"
-          @afterInit="test($event)"
-          @afterUpdate="test2($event)"
-        />
+        <div class="chart-block__total">
+          <h3>{{ totalBlocks }}</h3>
+          <span>Blocks</span>
+        </div>
+        <div class="chart-block__wrapper" v-if="chartDataLoad">
+          <AppChart
+            :key="'chartData'"
+            :chartData="chartData"
+            :chartType="'doughnut'"
+            :chartOptions="chartOptions"
+          />
+        </div>
         <span class="info-panel__empty-chart" v-else>
           We are in the process of drawing a chart!
         </span>
@@ -29,31 +33,34 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { callers } from '@/api/callers'
+import { ChartDataType } from '@/helpers/Types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
-import BackButton from '@/components/BackButton.vue'
+import { callers } from '@/api/callers'
 import { bigMath } from '@/helpers/bigMath'
 import { getRandomColors } from '@/helpers/helpers'
+import { externalTooltipHandler } from '@/helpers/chartHelpers'
 import AppChart from '@/components/AppChart.vue'
-import { ChartDataType } from '@/helpers/Types'
+import BackButton from '@/components/BackButton.vue'
 
 export default defineComponent({
   name: 'ValidatorChart',
   components: { AppChart, BackButton },
-  setup() {
+  setup: function () {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
     const pagination: Pagination = new Pagination(0, 1000, true, true)
     const endDate = new Date()
     const startDate = new Date()
     startDate.setDate(startDate.getDate() - 2)
+    const totalBlocks = ref<string>('')
 
     const chartDataLoad = ref(false)
     const chartData = ref<ChartDataType>({
+      labels: [],
       datasets: [
         {
-          backgroundColor: '#fff',
-          borderColor: '#fff',
+          backgroundColor: ['#fff'],
+          borderColor: ['#fff'],
           borderWidth: 2,
           borderJoinStyle: 'round',
           borderCapStyle: 'round',
@@ -63,6 +70,31 @@ export default defineComponent({
         },
       ],
     })
+    const chartOptions = {
+      // TODO: try to scale
+      onHover: ({chart}) => {
+        console.log(chart)
+      },
+      plugins: {
+        beforeEvent(chart, args, pluginOptions) {
+          console.log('asdasd')
+          const event = args.event;
+          if (event.type === 'mouseout') {
+            // process the event
+          }
+        },
+        title: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false,
+          external: externalTooltipHandler,
+        },
+        legend: {
+          display: false,
+        },
+      },
+    }
 
     const getValidatorsData = async (): Promise<void> => {
       const { topValidators } = await callers.getTopValidators({
@@ -73,22 +105,28 @@ export default defineComponent({
 
       const backgroundColor = getRandomColors(topValidators.length)
 
+      console.log('topValidators', topValidators)
+      const blocksCounters: Array<number> = []
       for (const v of topValidators) {
         chartData.value.datasets[0].data.push(bigMath.format(v.blocksCount))
+        chartData.value.labels.push({
+          validatorAddress: v.validatorAddress,
+          blocksCounter: bigMath.format(v.blocksCount),
+          stakePercentage: v.stakePercentage,
+        })
+        blocksCounters.push(bigMath.toNum(v.blocksCount))
       }
+
+      totalBlocks.value = bigMath.format(
+        blocksCounters.reduce((sum, el): number => {
+          return Number(sum) + Number(el)
+        }, 0)
+      )
+
       chartData.value.datasets[0].backgroundColor = backgroundColor
       chartData.value.datasets[0].borderColor = backgroundColor
 
       chartDataLoad.value = true
-    }
-
-    const test = (event) => {
-      console.log(event)
-      // console.log(chartRef.value.update())
-    }
-
-    const test2 = (event) => {
-      console.log(event)
     }
 
     onMounted(async (): Promise<void> => {
@@ -104,8 +142,8 @@ export default defineComponent({
       route,
       chartData,
       chartDataLoad,
-      test,
-      test2
+      chartOptions,
+      totalBlocks,
     }
   },
 })
@@ -119,8 +157,32 @@ export default defineComponent({
 }
 .chart-block {
   display: flex;
-  height: 391px;
+  height: 39.1rem;
   width: 100%;
-  margin: 17.5rem 0;
+  position: relative;
+  margin: 17.5rem 0 7.5rem 0;
+  &__wrapper {
+    width: 100%;
+    height: 100%;
+  }
+  &__total {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #212529;
+    text-align: center;
+    h3 {
+      font-weight: 600;
+      font-size: 2.4rem;
+      line-height: 2.9rem;
+    }
+    span {
+      margin-top: 0.4rem;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
+      font-weight: 600;
+    }
+  }
 }
 </style>

@@ -152,12 +152,14 @@ export default defineComponent({
     }
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
-        query: `tx.height >= ${lastHeight.value - 100000}`,
+        query: `tx.height >= ${lastHeight.value - 10}`,
       })
 
-      latestTransactions.value = await prepareTransaction(txs).then((pt) =>
-        pt.slice(0, 5)
-      )
+      if (txs) {
+        latestTransactions.value = await prepareTransaction(txs).then((pt) =>
+          pt.slice(0, 5)
+        )
+      }
 
       console.debug('latestTransactions', latestTransactions.value)
       totalCount.value = reqTotalCount

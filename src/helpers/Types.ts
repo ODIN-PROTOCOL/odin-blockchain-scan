@@ -2,6 +2,7 @@ import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/respons
 import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
+import {bigMath} from "@/helpers/bigMath";
 
 export type Link = {
   to?: string
@@ -15,8 +16,8 @@ export type LinkList = {
 }
 
 export type ChartDataSetsType = {
-  backgroundColor: string
-  borderColor: string
+  backgroundColor: Array<string>
+  borderColor: Array<string>
   borderWidth: string | number
   borderJoinStyle: string
   borderCapStyle: string
@@ -24,9 +25,14 @@ export type ChartDataSetsType = {
   borderSkipped: boolean
   data: Array<string | number>
 }
+export type ChartLabelsType = {
+  validatorAddress?: string
+  blocksCounter?: string | number
+  stakePercentage?: string | number
+}
 
 export type ChartDataType = {
-  labels: Array<string | Date>
+  labels: Array<string | Date | ChartLabelsType>
   datasets: Array<ChartDataSetsType>
 }
 

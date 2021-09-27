@@ -46,8 +46,8 @@ export default defineComponent({
       labels: [],
       datasets: [
         {
-          backgroundColor: '#007bff',
-          borderColor: '#007bff',
+          backgroundColor: ['#007bff'],
+          borderColor: ['#007bff'],
           borderWidth: 2,
           borderJoinStyle: 'round',
           borderCapStyle: 'round',
@@ -134,7 +134,6 @@ export default defineComponent({
         const startDate = new Date()
         startDate.setDate(startDate.getDate() - 2)
 
-        await getCoinInfo()
 
         const { txVolumePerDay } = await callers.getTelemetry({
           startDate,
@@ -162,6 +161,8 @@ export default defineComponent({
         ) as number
 
         console.debug('chartData', chartData.value)
+
+        await getCoinInfo()
         chartDataLoad.value = true
       } catch (error) {
         handleError(error)
@@ -196,7 +197,7 @@ export default defineComponent({
       transactionData.value = [
         {
           title: 'Total number of transactions',
-          text: `${transactionCount.value} `,
+          text: `${transactionCount.value}`,
         },
         {
           title: 'Market CAP',
