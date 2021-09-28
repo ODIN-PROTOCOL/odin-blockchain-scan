@@ -495,9 +495,9 @@ export default defineComponent({
 .app-table__header {
   display: none;
 
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 76.8rem) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 }
 

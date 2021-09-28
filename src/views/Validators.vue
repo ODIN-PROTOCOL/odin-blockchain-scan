@@ -1,181 +1,174 @@
 <template>
-  <div class="blocks-container">
-    <div class="data-sources view-main">
-      <div>
-        <div class="mg-b16 mg-t32 validators-nav">
-          <h2
-            class="view-title"
-            @click="changeTab(true)"
-            :class="showValidators ? 'active' : ''"
-          >
-            Validators
-          </h2>
-          <h2
-            class="view-title"
-            @click="changeTab(false)"
-            :class="!showValidators ? 'active' : ''"
-          >
-            Delegates
-          </h2>
+  <div class="container">
+    <div>
+      <div class="mg-b16 mg-t32 validators-nav">
+        <h2
+          class="view-title"
+          @click="changeTab(true)"
+          :class="showValidators ? 'active' : ''"
+        >
+          Validators
+        </h2>
+        <h2
+          class="view-title"
+          @click="changeTab(false)"
+          :class="!showValidators ? 'active' : ''"
+        >
+          Delegates
+        </h2>
+      </div>
+      <div class="mg-b16 mg-t16" v-if="showValidators && validators?.length">
+        <p>{{ validators?.length }} validators found</p>
+      </div>
+      <div class="mg-b16 mg-t16" v-if="!showValidators && delegators?.length">
+        <p>{{ delegators?.length }} delegates found</p>
+      </div>
+    </div>
+    <div class="app-table" v-if="showValidators">
+      <div class="data-sources__table-head app-table__head validators-head">
+        <div class="app-table__cell" data-tooltip="">
+          <span class="app-table__cell-txt"> Validator </span>
         </div>
-        <div class="mg-b16 mg-t16" v-if="showValidators">
-          <p>{{ validators?.length }} validators found</p>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Balance </span>
         </div>
-        <div class="mg-b16 mg-t16" v-if="!showValidators">
-          <p>{{ delegators?.length }} delegates found</p>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Stake </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Delegation share </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Amount of created blocks </span>
         </div>
       </div>
-
-      <div class="app-table" v-if="showValidators">
-        <div class="data-sources__table-head app-table__head validators-head">
-          <div class="app-table__cell" data-tooltip="">
-            <span class="app-table__cell-txt"> Validator </span>
+      <template v-if="filteredValidators?.length">
+        <div
+          v-for="item in filteredValidators"
+          :key="item.id"
+          class="data-sources__table-row app-table__row validators-row"
+        >
+          <div class="app-table__cell">
+            <span class="app-table__header">Validator</span>
+            <router-link :to="`/validators/${item.operatorAddress}`">
+              <TitledLink
+                class="app-table__cell-txt"
+                :text="item.operatorAddress.toUpperCase()"
+              />
+            </router-link>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Balance </span>
+            <span class="app-table__header">Balance</span>
+            <span class="app-table__cell-txt">{{ 'test' }}</span>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Stake </span>
+            <span class="app-table__header">Stake</span>
+            <span class="app-table__cell-txt">{{ item.tokens }}</span>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Delegation share </span>
+            <span class="app-table__header">Delegation share</span>
+            <span class="app-table__cell-txt">{{ item.delegatorShares }}</span>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Amount of created blocks </span>
+            <span class="app-table__header">Amount of created blocks</span>
+            <div>
+              <span class="app-table__cell-txt">{{}}</span>
+              <span class="currency">{{}}</span>
+            </div>
           </div>
         </div>
-        <template v-if="filteredValidators?.length">
-          <div
-            v-for="item in filteredValidators"
-            :key="item.id"
-            class="data-sources__table-row app-table__row validators-row"
+        <div class="pagination-wrapper mg-t32">
+          <v-pagination
+            v-model="pageValidator"
+            :pages="totalValidatorPages"
+            :range-size="1"
+            active-color="#007bff"
+            @update:modelValue="updateValidatorHandler"
+            :hideFirstButton="true"
+            :hideLastButton="true"
           >
-            <div class="app-table__cell">
-              <span class="app-table__header">Validator</span>
-              <router-link :to="`/validators/${item.operatorAddress}`">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="item.operatorAddress.toUpperCase()"
-                />
-              </router-link>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Balance</span>
-              <span class="app-table__cell-txt">{{ 'test' }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Stake</span>
-              <span class="app-table__cell-txt">{{ item.tokens }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Delegation share</span>
-              <span class="app-table__cell-txt">{{
-                item.delegatorShares
+          </v-pagination>
+        </div>
+      </template>
+      <template v-else>
+        <div class="app-table__row">
+          <p class="app-table__empty-stub">No items yet</p>
+        </div>
+      </template>
+    </div>
+    <div class="app-table" v-if="!showValidators">
+      <div class="data-sources__table-head app-table__head delegators-head">
+        <div class="app-table__cell" data-tooltip="">
+          <span class="app-table__cell-txt"> Delegate </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Balance </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Stake </span>
+        </div>
+      </div>
+      <template v-if="filteredDelegators?.length">
+        <div
+          v-for="item in filteredDelegators"
+          :key="item.id"
+          class="data-sources__table-row app-table__row delegators-row"
+        >
+          <div class="app-table__cell">
+            <span class="app-table__header">Delegate</span>
+            <span
+              class="delegate-status"
+              :class="
+                item.delegation.validatorAddress ? 'validate' : 'delegate'
+              "
+            >
+              {{ item.delegation.validatorAddress ? 'V' : 'D' }}
+            </span>
+            <router-link
+              :to="`/delegators/${item.delegation.delegatorAddress}`"
+            >
+              <TitledLink
+                class="app-table__cell-txt"
+                :text="
+                  item.delegation.validatorAddress
+                    ? item.delegation.validatorAddress
+                    : item.delegation.delegatorAddress
+                "
+              />
+            </router-link>
+          </div>
+          <div class="app-table__cell">
+            <span class="app-table__header">Balance</span>
+            <span>{{ 'test' }}</span>
+          </div>
+          <div class="app-table__cell">
+            <span class="app-table__header">Stake</span>
+            <div>
+              <span class="app-table__cell-txt">{{ item.balance.amount }}</span>
+              <span class="app-table__cell-txt currency">{{
+                item.balance.denom
               }}</span>
             </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Amount of created blocks</span>
-              <div>
-                <span class="app-table__cell-txt">{{}}</span>
-                <span class="currency">{{}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="pagination-wrapper mg-t32">
-            <v-pagination
-              v-model="pageValidator"
-              :pages="totalValidatorPages"
-              :range-size="1"
-              active-color="#007bff"
-              @update:modelValue="updateValidatorHandler"
-              :hideFirstButton="true"
-              :hideLastButton="true"
-            >
-            </v-pagination>
-          </div>
-        </template>
-        <template v-else>
-          <div class="app-table__row">
-            <p class="app-table__empty-stub">No items yet</p>
-          </div>
-        </template>
-      </div>
-      <div class="app-table" v-if="!showValidators">
-        <div class="data-sources__table-head app-table__head delegators-head">
-          <div class="app-table__cell" data-tooltip="">
-            <span class="app-table__cell-txt"> Delegate </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Balance </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Stake </span>
           </div>
         </div>
-        <template v-if="filteredDelegators?.length">
-          <div
-            v-for="item in filteredDelegators"
-            :key="item.id"
-            class="data-sources__table-row app-table__row delegators-row"
+        <div class="pagination-wrapper mg-t32">
+          <v-pagination
+            v-model="pageDelegator"
+            :pages="totalDelegatorPages"
+            :range-size="1"
+            active-color="#007bff"
+            @update:modelValue="updateDelegatorHandler"
+            :hideFirstButton="true"
+            :hideLastButton="true"
           >
-            <div class="app-table__cell">
-              <span class="app-table__header">Delegate</span>
-              <span
-                class="delegate-status"
-                :class="
-                  item.delegation.validatorAddress ? 'validate' : 'delegate'
-                "
-              >
-                {{ item.delegation.validatorAddress ? 'V' : 'D' }}
-              </span>
-              <router-link
-                :to="`/delegators/${item.delegation.delegatorAddress}`"
-              >
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="
-                    item.delegation.validatorAddress
-                      ? item.delegation.validatorAddress
-                      : item.delegation.delegatorAddress
-                  "
-                />
-              </router-link>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Balance</span>
-              <span>{{ 'test' }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Stake</span>
-              <div>
-                <span class="app-table__cell-txt">{{
-                  item.balance.amount
-                }}</span>
-                <span class="app-table__cell-txt currency">{{
-                  item.balance.denom
-                }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="pagination-wrapper mg-t32">
-            <v-pagination
-              v-model="pageDelegator"
-              :pages="totalDelegatorPages"
-              :range-size="1"
-              active-color="#007bff"
-              @update:modelValue="updateDelegatorHandler"
-              :hideFirstButton="true"
-              :hideLastButton="true"
-            >
-            </v-pagination>
-          </div>
-        </template>
-        <template v-else>
-          <div class="app-table__row">
-            <p class="app-table__empty-stub">No items yet</p>
-          </div>
-        </template>
-      </div>
+          </v-pagination>
+        </div>
+      </template>
+      <template v-else>
+        <div class="app-table__row">
+          <p class="app-table__empty-stub">No items yet</p>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -222,7 +215,7 @@ export default defineComponent({
     }
 
     const getDelegators = async () => {
-      validators.value.forEach(async (item: any) => {
+      for (let item of validators.value) {
         await callers.getDelegations(item.operatorAddress).then((res) => {
           if (res.delegationResponses.length > 0) {
             if (Array.isArray(delegators.value)) {
@@ -234,7 +227,7 @@ export default defineComponent({
             }
           }
         })
-      })
+      }
     }
 
     const filterValidators = async (newPage: number) => {
@@ -308,7 +301,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-
 .validators-head,
 .validators-row {
   grid:
@@ -413,9 +405,9 @@ export default defineComponent({
 .app-table__header {
   display: none;
 
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 76.8rem) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 
   @media screen and (max-width: 600px) {

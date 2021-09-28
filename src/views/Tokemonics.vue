@@ -1,6 +1,6 @@
 <template>
-  <div class="blocks-container">
-    <div class="view-main tokemonics">
+  <div class="container">
+    <div class="tokemonics">
       <div class="tokemonics-left">
         <div class="mg-b24 mg-t32">
           <div>

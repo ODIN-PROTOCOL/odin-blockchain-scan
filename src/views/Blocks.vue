@@ -1,89 +1,85 @@
 <template>
-  <div class="blocks-container">
-    <div class="data-sources view-main">
-      <div class="mg-b16 mg-t32">
-        <h2 class="view-title" title="some blocks">Blocks</h2>
-      </div>
-      <div class="mg-b16 mg-t16">
-        <p>{{ blocks?.length }} blocks found</p>
-      </div>
-      <div class="app-table">
-        <div class="data-sources__table-head app-table__head">
-          <div class="app-table__cell" data-tooltip="">
-            <span class="app-table__cell-txt"> Block </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Date and time </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Transactions </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Validator </span>
-          </div>
+  <div class="container">
+    <div class="mg-b16 mg-t32">
+      <h2 class="view-title" title="some blocks">Blocks</h2>
+    </div>
+    <div class="mg-b16 mg-t16" v-if="filteredBlocks?.length">
+      <p>{{ blocks?.length }} blocks found</p>
+    </div>
+    <div class="app-table">
+      <div class="data-sources__table-head app-table__head">
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Block </span>
         </div>
-        <template v-if="filteredBlocks?.length">
-          <div
-            v-for="item in filteredBlocks"
-            :key="item.id"
-            class="data-sources__table-row app-table__row"
-          >
-            <div class="app-table__cell">
-              <span class="app-table__header">Block</span>
-              <router-link :to="`/blocks/${item.header.height}`">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="item.header.height"
-                />
-              </router-link>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Date and time</span>
-              <div>
-                <div class="info-value">
-                  {{ convertToTime(item.header.time) }}
-                </div>
-                <div class="info-value">
-                  {{ convertToDate(item.header.time) }}
-                </div>
-              </div>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Transactions</span>
-              <span class="app-table__cell-txt">{{ item.num_txs }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__header">Validator</span>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Date and time </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Transactions </span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__cell-txt"> Validator </span>
+        </div>
+      </div>
+      <template v-if="filteredBlocks?.length">
+        <div
+          v-for="item in filteredBlocks"
+          :key="item.id"
+          class="data-sources__table-row app-table__row"
+        >
+          <div class="app-table__cell">
+            <span class="app-table__header">Block</span>
+            <router-link :to="`/blocks/${item.header.height}`">
               <TitledLink
                 class="app-table__cell-txt"
-                :text="
-                  '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
-                "
+                :text="item.header.height"
               />
-              <div class="tooltip">
-                {{ '0x' + toHexFunc(item.header.validatorsHash).toUpperCase() }}
+            </router-link>
+          </div>
+          <div class="app-table__cell">
+            <span class="app-table__header">Date and time</span>
+            <div>
+              <div class="info-value">
+                {{ convertToTime(item.header.time) }}
+              </div>
+              <div class="info-value">
+                {{ convertToDate(item.header.time) }}
               </div>
             </div>
           </div>
-        </template>
-        <template v-else>
-          <div class="app-table__row">
-            <p class="app-table__empty-stub">No items yet</p>
+          <div class="app-table__cell">
+            <span class="app-table__header">Transactions</span>
+            <span class="app-table__cell-txt">{{ item.num_txs }}</span>
           </div>
-        </template>
-      </div>
-      <div class="pagination-wrapper mg-t32">
-        <v-pagination
-          v-model="page"
-          :pages="totalPages"
-          :range-size="1"
-          active-color="#007bff"
-          @update:modelValue="updateHandler"
-          :hideFirstButton="true"
-          :hideLastButton="true"
-        >
-        </v-pagination>
-      </div>
+          <div class="app-table__cell">
+            <span class="app-table__header">Validator</span>
+            <TitledLink
+              class="app-table__cell-txt"
+              :text="'0x' + toHexFunc(item.header.validatorsHash).toUpperCase()"
+            />
+            <div class="tooltip">
+              {{ '0x' + toHexFunc(item.header.validatorsHash).toUpperCase() }}
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="app-table__row">
+          <p class="app-table__empty-stub">No items yet</p>
+        </div>
+      </template>
+    </div>
+    <div class="pagination-wrapper mg-t32">
+      <v-pagination
+        v-model="page"
+        :pages="totalPages"
+        :range-size="1"
+        active-color="#007bff"
+        @update:modelValue="updateHandler"
+        :hideFirstButton="true"
+        :hideLastButton="true"
+      >
+      </v-pagination>
     </div>
   </div>
 </template>
@@ -211,7 +207,8 @@ export default defineComponent({
   transform: translateY(-50%);
   transition: all 0.15s ease;
   border-radius: 10px;
-  white-space: nowrap;
+  //white-space: nowrap;
+  word-break: break-all;
   background: var(--clr__tooltip-new);
   padding: 1.2rem 2.4rem;
   color: #fff;
@@ -246,8 +243,7 @@ export default defineComponent({
 
 .app-table__header {
   display: none;
-
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 99.2rem) {
     display: inline-block;
     width: 20rem;
   }

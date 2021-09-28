@@ -89,6 +89,8 @@ export default defineComponent({
         ) as number
 
         console.debug('chartData', chartData.value)
+
+        await getCoinInfo()
         chartDataLoad.value = true
       } catch (error) {
         handleError(error)

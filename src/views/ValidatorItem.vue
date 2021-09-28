@@ -8,16 +8,12 @@
         </button>
         <h1 class="block-name">Validator</h1>
         <div class="hash-wrapper">
-          <span class="block-id">{{ route.params.hash }}</span>
-          <div class="copy-button__wrapper">
-            <button
-              class="copy-button"
-              @click.prevent="copyValue(String(route.params.hash))"
-            >
-              <img src="~@/assets/icons/copy.svg" alt="info" />
-            </button>
-            <div class="tooltip">Copy From Validator Hash to clipboard.</div>
-          </div>
+          <CopyText
+            :text="`0x${route.params.hash}`"
+            :title="`0x${route.params.hash}`"
+            :displayText="`0x${route.params.hash}`"
+            :class-name="'block-id'"
+          />
         </div>
       </div>
       <div class="charts-wrapper mg-b32">
@@ -154,10 +150,11 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 import { API_CONFIG } from '@/api/api-config'
 import { convertDate, copyValue } from '@/helpers/helpers'
 import { convertToTime, convertToDate } from '@/helpers/dates'
+import CopyText from '@/components/CopyText.vue'
 
 export default defineComponent({
   name: 'ValidatorItem',
-  components: { TitledLink },
+  components: { TitledLink, CopyText },
   setup() {
     const router: Router = useRouter()
     const back = (): void => {
@@ -208,11 +205,9 @@ export default defineComponent({
       // })
     }
 
-    onMounted(
-      async (): Promise<void> => {
-        await getValidator()
-      }
-    )
+    onMounted(async (): Promise<void> => {
+      await getValidator()
+    })
 
     return {
       route,
@@ -611,9 +606,9 @@ export default defineComponent({
 .app-table__header {
   display: none;
 
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 76.8rem) {
     display: inline-block;
-    width: 200px;
+    width: 20rem;
   }
 }
 </style>

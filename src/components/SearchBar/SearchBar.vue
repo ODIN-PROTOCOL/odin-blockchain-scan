@@ -23,7 +23,7 @@
         <input
           type="search"
           class="filter-search"
-          placeholder="searching by account address , block"
+          placeholder="Searching by account address , block, Tx hash"
           v-model="searchedText"
         />
 
@@ -65,15 +65,16 @@
 import { defineComponent, ref, watch } from 'vue'
 import { callers } from '@/api/callers'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
-import {
-  BlockResponse,
-  TxResponse,
-} from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { Router, useRouter } from 'vue-router'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
-import {SearchResultType, TempSearchAccountInfoType} from '@/helpers/Types'
+import {
+  searchBlocksInterface,
+  SearchResultType,
+  TempSearchAccountInfoType,
+} from '@/helpers/Types'
 import {
   makeTransactionListFormatted,
   TransactionListFormatted,
@@ -85,7 +86,7 @@ export default defineComponent({
   components: { BlockResultItem, TransactionItem, AccountItem },
   setup() {
     const filters = ref<Array<string>>([
-      'All filters',
+      'All Filters',
       'Blocks',
       'Transaction',
       'Account Address',
@@ -136,11 +137,18 @@ export default defineComponent({
       }
     }
 
-    const getBlock = async (): Promise<Array<BlockResponse>> => {
+    const getBlock = async (): Promise<Array<searchBlocksInterface>> => {
       try {
-        return [
-          (await callers.getBlock(Number(searchedText.value))) as BlockResponse,
-        ]
+        let block: searchBlocksInterface = await callers.getBlock(
+          Number(searchedText.value)
+        )
+        block = {
+          ...block,
+          total_tx: await callers
+            .getBlock(block?.block.header?.height)
+            .then((res) => res?.block?.txs?.length),
+        }
+        return [block]
       } catch {
         return []
       }
