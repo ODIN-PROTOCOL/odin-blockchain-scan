@@ -22,6 +22,50 @@
           We are in the process of drawing a chart!
         </span>
       </div>
+      <div class="validators-table">
+        <div class="app-table">
+          <div class="data-sources__table-head app-table__head">
+            <div class="app-table__cell">
+              <span class="app-table__cell-txt">Rank</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__cell-txt">Address</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__cell-txt"> Blocks </span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__cell-txt"> Stake percentage </span>
+            </div>
+          </div>
+
+          <template v-for="v in topValidators" :key="v.validatorAddress">
+            <div class="data-sources__table-row app-table__row">
+              <div class="app-table__cell">
+                <span class="app-table__header">Rank</span>
+                {{ v.rank }}
+              </div>
+              <div class="app-table__cell">
+                <span class="app-table__header">Address</span>
+                <router-link :to="`/validators/${v.validatorAddress}`">
+                  <TitledLink
+                    class="app-table__cell-txt"
+                    :text="`Ox${v.validatorAddress}`"
+                  />
+                </router-link>
+              </div>
+              <div class="app-table__cell">
+                <span class="app-table__header">Blocks</span>
+                {{ bigMath.format(v.blocksCount) }}
+              </div>
+              <div class="app-table__cell">
+                <span class="app-table__header">Stake percentage</span>
+                {{ bigMath.format(v.stakePercentage) }}
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -33,7 +77,7 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { ChartDataType } from '@/helpers/Types'
+import { ChartDataType, topValidatorsChartDataInterface } from '@/helpers/Types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { callers } from '@/api/callers'
 import { bigMath } from '@/helpers/bigMath'
@@ -41,10 +85,11 @@ import { getRandomColors } from '@/helpers/helpers'
 import { externalTooltipHandler } from '@/helpers/chartHelpers'
 import AppChart from '@/components/AppChart.vue'
 import BackButton from '@/components/BackButton.vue'
+import TitledLink from '@/components/TitledLink.vue'
 
 export default defineComponent({
   name: 'ValidatorChart',
-  components: { AppChart, BackButton },
+  components: { AppChart, BackButton, TitledLink },
   setup: function () {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
@@ -62,6 +107,7 @@ export default defineComponent({
           backgroundColor: ['#fff'],
           borderColor: ['#fff'],
           borderWidth: 2,
+          hoverBorderWidth: 6,
           borderJoinStyle: 'round',
           borderCapStyle: 'round',
           tension: 0.5,
@@ -70,19 +116,43 @@ export default defineComponent({
         },
       ],
     })
+
+    // let selectedIndex = null
+    // let segmentElementOuterRadius = null
+
     const chartOptions = {
       // TODO: try to scale
-      onHover: ({chart}) => {
-        console.log(chart)
-      },
+      // onClick: function ({ chart }, elements) {
+      //   if (elements && elements.length) {
+      //     let segment = elements[0]
+      //     chart.update()
+      //     if (selectedIndex !== segment['index']) {
+      //       selectedIndex = segment['index']
+      //       segmentElementOuterRadius = segment.element.outerRadius
+      //       segment.element.outerRadius += 5
+      //     } else {
+      //       selectedIndex = null
+      //       segment.element.outerRadius = segmentElementOuterRadius
+      //       console.log('selectedIndex else', selectedIndex)
+      //     }
+      //   }
+      // },
+      // onHover: function ({ chart }) {
+      //   if (chart.getActiveElements().length) {
+      //     let segment = chart.getActiveElements()[0]
+      //     chart.update()
+      //     if (selectedIndex !== segment['index']) {
+      //       selectedIndex = segment['index']
+      //       segmentElementOuterRadius = segment.element.outerRadius
+      //       segment.element.outerRadius += 5
+      //     } else {
+      //       selectedIndex = null
+      //       segment.element.outerRadius = segmentElementOuterRadius
+      //       console.log('selectedIndex else', selectedIndex)
+      //     }
+      //   }
+      // },
       plugins: {
-        beforeEvent(chart, args, pluginOptions) {
-          console.log('asdasd')
-          const event = args.event;
-          if (event.type === 'mouseout') {
-            // process the event
-          }
-        },
         title: {
           display: false,
         },
@@ -95,20 +165,33 @@ export default defineComponent({
         },
       },
     }
+    const topValidators = ref<Array<topValidatorsChartDataInterface>>()
+
+    const addedRankBy = <T extends topValidatorsChartDataInterface>(
+      arr: Array<T>,
+      by: string
+    ): Array<T> => {
+      arr
+        .sort(function (a, b) {
+          return bigMath.toNum(a[by]) - bigMath.toNum(b[by])
+        })
+        .forEach(function (d, i) {
+          d.rank = i + 1
+        })
+      return arr
+    }
 
     const getValidatorsData = async (): Promise<void> => {
-      const { topValidators } = await callers.getTopValidators({
+      const { topValidators: TopValidators } = await callers.getTopValidators({
         startDate,
         endDate,
         pagination,
       })
-
-      const backgroundColor = getRandomColors(topValidators.length)
-
-      console.log('topValidators', topValidators)
+      topValidators.value = addedRankBy(TopValidators, 'blocksCount')
+      const backgroundColor = getRandomColors(TopValidators.length)
       const blocksCounters: Array<number> = []
-      for (const v of topValidators) {
-        chartData.value.datasets[0].data.push(bigMath.format(v.blocksCount))
+      for (const v of TopValidators) {
+        chartData.value.datasets[0].data.push(bigMath.toNum(v.blocksCount))
         chartData.value.labels.push({
           validatorAddress: v.validatorAddress,
           blocksCounter: bigMath.format(v.blocksCount),
@@ -126,6 +209,7 @@ export default defineComponent({
       chartData.value.datasets[0].backgroundColor = backgroundColor
       chartData.value.datasets[0].borderColor = backgroundColor
 
+      console.debug(topValidators.value)
       chartDataLoad.value = true
     }
 
@@ -144,12 +228,42 @@ export default defineComponent({
       chartDataLoad,
       chartOptions,
       totalBlocks,
+      topValidators,
+      bigMath,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.data-sources__table-head,
+.data-sources__table-row {
+  grid:
+    auto /
+    repeat(4, minmax(4rem, 1fr));
+
+  @media screen and (max-width: 99.2rem) {
+    grid: repeat(4, minmax(4rem, 1fr)) / auto;
+  }
+}
+.data-sources__table-head {
+  @media (max-width: 48rem) {
+    display: none;
+  }
+}
+
+.app-table__cell-txt {
+  max-width: 150px;
+}
+
+.app-table__header {
+  display: none;
+  @media screen and (max-width: 99.2rem) {
+    display: inline-block;
+    width: 20rem;
+  }
+}
+
 .title {
   display: flex;
   align-items: center;
@@ -161,6 +275,9 @@ export default defineComponent({
   width: 100%;
   position: relative;
   margin: 17.5rem 0 7.5rem 0;
+  @media (max-width: 48rem) {
+    margin: 3.2rem 0 4.2rem;
+  }
   &__wrapper {
     width: 100%;
     height: 100%;

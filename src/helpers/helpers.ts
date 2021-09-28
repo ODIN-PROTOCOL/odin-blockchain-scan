@@ -89,7 +89,8 @@ export const getHash = (str: Uint8Array): string => {
 export const getRandomColors = (size: number): Array<string> => {
   const colors: Array<string> = []
   for (let i = 0; i < size; i++) {
-    colors.push(`hsl(${Math.random() * 360}, 60%, 60%)`)
+    // colors.push(`hsl(${Math.random() * 360}, 60%, 60%)`)
+    colors.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`)
   }
   return colors
 }

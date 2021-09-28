@@ -1,8 +1,9 @@
 import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
+import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
-import {bigMath} from "@/helpers/bigMath";
+import { Chart, ChartType, TooltipModel } from 'chart.js'
 
 export type Link = {
   to?: string
@@ -19,6 +20,7 @@ export type ChartDataSetsType = {
   backgroundColor: Array<string>
   borderColor: Array<string>
   borderWidth: string | number
+  hoverBorderWidth?: string | number
   borderJoinStyle: string
   borderCapStyle: string
   tension: number
@@ -96,4 +98,20 @@ export type adjustedData = {
 
 export interface latestBlocksInterface extends BlockMeta {
   total_tx: string | number
+}
+
+export interface topValidatorsChartDataInterface extends ValidatorBlockStats {
+  rank?: string | number
+}
+
+export type externalTooltipType = {
+  chart?: Chart
+  replay?: boolean | undefined
+  tooltip?: TooltipModel<ChartType>
+}
+
+export type titleLineType = {
+  stakePercentage: string
+  validatorAddress: string
+  blocksCounter: string
 }
