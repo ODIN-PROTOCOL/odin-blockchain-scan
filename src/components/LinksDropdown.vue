@@ -1,23 +1,11 @@
 <template>
-  <div
-    @click.stop="dropdown.show()"
-    class="nav__dropdown"
-    :class="{ 'nav__dropdown-wrapper--open': dropdown.isShown.value }"
-  >
+  <div class="nav__dropdown">
     <span class="nav__dropdown-wrapper">
       <span class="nav__dropdown-wrapper-name">{{ list.name }}</span>
-      <ArrowIcon
-        :className="
-          dropdown.isShown.value ? 'nav__dropdown-wrapper-arrow--open' : ''
-        "
-      />
+      <ArrowIcon />
     </span>
     <transition name="fade">
-      <div
-        class="nav__dropdown-modal"
-        ref="dropdownEl"
-        v-show="dropdown.isShown.value"
-      >
+      <div class="nav__dropdown-modal">
         <router-link
           class="nav__dropdown-link"
           v-for="link in list.links"
@@ -34,29 +22,13 @@
 
 <script lang="ts">
 import ArrowIcon from '@/components/icons/ArrowIcon.vue'
-import { useRoute } from 'vue-router'
-import { defineComponent, ref, watch } from 'vue'
-import { useDropdown } from '@/composables/useDropdown'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'linksDropdown',
   components: { ArrowIcon },
   props: {
-    isOpen: { type: Boolean, default: false },
     list: { type: Object, required: true },
-  },
-  setup() {
-    const route = useRoute()
-    watch(
-      () => route.path,
-      () => {
-        dropdown.hide()
-      }
-    )
-
-    const dropdownEl = ref()
-    const dropdown = useDropdown(dropdownEl)
-    return { dropdown, dropdownEl }
   },
 })
 </script>
@@ -93,12 +65,14 @@ export default defineComponent({
     }
   }
   &-modal {
-    display: flex;
+    //display: flex;
+    display: none;
     flex-direction: column;
     align-items: flex-start;
     position: absolute;
-    top: calc(100% + 1rem);
+    top: 100%;
     left: 0;
+    padding-top: 1rem;
     border-radius: 0.8rem;
     background: var(--clr__main-bg);
     z-index: 1;
@@ -114,6 +88,11 @@ export default defineComponent({
     &:hover {
       background: rgba(204, 228, 255, 0.4);
       color: var(--clr__action);
+    }
+  }
+  &:hover {
+    .nav__dropdown-modal {
+      display: flex;
     }
   }
 }
