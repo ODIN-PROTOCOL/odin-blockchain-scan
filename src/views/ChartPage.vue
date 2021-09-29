@@ -15,7 +15,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: 'Chart',
+  name: 'ChartPage',
   setup() {
     const chartData = ref<string>()
     const route: RouteLocationNormalizedLoaded = useRoute()

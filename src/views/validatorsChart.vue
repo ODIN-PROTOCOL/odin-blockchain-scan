@@ -6,19 +6,16 @@
     </div>
     <div class="content">
       <div class="chart-block">
-        <div class="chart-block__total">
-          <h3>{{ totalBlocks }}</h3>
-          <span>Blocks</span>
-        </div>
-        <div class="chart-block__wrapper" v-if="chartDataLoad">
-          <AppChart
-            :key="'chartData'"
-            :chartData="chartData"
-            :chartType="'doughnut'"
-            :chartOptions="chartOptions"
-          />
-        </div>
-        <span class="info-panel__empty-chart" v-else>
+        <template v-if="chartDataLoad">
+          <div class="chart-block__total">
+            <h3>{{ totalBlocks }}</h3>
+            <span>Blocks</span>
+          </div>
+          <div class="chart-block__wrapper">
+            <DoughnutChart :chartData="chartData" />
+          </div>
+        </template>
+        <span class="empty" v-else>
           We are in the process of drawing a chart!
         </span>
       </div>
@@ -82,14 +79,13 @@ import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { callers } from '@/api/callers'
 import { bigMath } from '@/helpers/bigMath'
 import { getRandomColors } from '@/helpers/helpers'
-import { externalTooltipHandler } from '@/helpers/chartHelpers'
-import AppChart from '@/components/AppChart.vue'
 import BackButton from '@/components/BackButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
+import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 
 export default defineComponent({
   name: 'ValidatorChart',
-  components: { AppChart, BackButton, TitledLink },
+  components: { DoughnutChart, BackButton, TitledLink },
   setup: function () {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
@@ -107,7 +103,7 @@ export default defineComponent({
           backgroundColor: ['#fff'],
           borderColor: ['#fff'],
           borderWidth: 2,
-          hoverBorderWidth: 6,
+          hoverBorderWidth: 8,
           borderJoinStyle: 'round',
           borderCapStyle: 'round',
           tension: 0.5,
@@ -117,54 +113,6 @@ export default defineComponent({
       ],
     })
 
-    // let selectedIndex = null
-    // let segmentElementOuterRadius = null
-
-    const chartOptions = {
-      // TODO: try to scale
-      // onClick: function ({ chart }, elements) {
-      //   if (elements && elements.length) {
-      //     let segment = elements[0]
-      //     chart.update()
-      //     if (selectedIndex !== segment['index']) {
-      //       selectedIndex = segment['index']
-      //       segmentElementOuterRadius = segment.element.outerRadius
-      //       segment.element.outerRadius += 5
-      //     } else {
-      //       selectedIndex = null
-      //       segment.element.outerRadius = segmentElementOuterRadius
-      //       console.log('selectedIndex else', selectedIndex)
-      //     }
-      //   }
-      // },
-      // onHover: function ({ chart }) {
-      //   if (chart.getActiveElements().length) {
-      //     let segment = chart.getActiveElements()[0]
-      //     chart.update()
-      //     if (selectedIndex !== segment['index']) {
-      //       selectedIndex = segment['index']
-      //       segmentElementOuterRadius = segment.element.outerRadius
-      //       segment.element.outerRadius += 5
-      //     } else {
-      //       selectedIndex = null
-      //       segment.element.outerRadius = segmentElementOuterRadius
-      //       console.log('selectedIndex else', selectedIndex)
-      //     }
-      //   }
-      // },
-      plugins: {
-        title: {
-          display: false,
-        },
-        tooltip: {
-          enabled: false,
-          external: externalTooltipHandler,
-        },
-        legend: {
-          display: false,
-        },
-      },
-    }
     const topValidators = ref<Array<topValidatorsChartDataInterface>>()
 
     const addedRankBy = <T extends topValidatorsChartDataInterface>(
@@ -226,7 +174,6 @@ export default defineComponent({
       route,
       chartData,
       chartDataLoad,
-      chartOptions,
       totalBlocks,
       topValidators,
       bigMath,

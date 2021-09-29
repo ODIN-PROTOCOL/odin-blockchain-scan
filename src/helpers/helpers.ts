@@ -2,6 +2,7 @@ import { toHex } from '@cosmjs/encoding'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
 import { adjustedData } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+import { AnyFn } from '@/shared-types'
 
 export const _allowedTypes = [
   'Send',
@@ -86,14 +87,34 @@ export const getHash = (str: Uint8Array): string => {
   return toHexFunc(str).toUpperCase()
 }
 
-export const getRandomColors = (size: number): Array<string> => {
+const _memoize = (fn: AnyFn) => {
+  const cache = {}
+  return (...args) => {
+    const n = args[0]
+    if (n in cache) {
+      return cache[n]
+    } else {
+      const result = fn(n)
+      cache[n] = result
+      return result
+    }
+  }
+}
+
+const _randomColors = (size: number): Array<string> => {
   const colors: Array<string> = []
+  let prevColor = 0
   for (let i = 0; i < size; i++) {
-    // colors.push(`hsl(${Math.random() * 360}, 60%, 60%)`)
-    colors.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`)
+    let h = Math.random() * 360
+    if (Math.abs(h - prevColor) <= 15) {
+      h += 25
+    }
+    colors.push(`hsl(${h}, 60%, 60%)`)
+    prevColor = h
   }
   return colors
 }
+export const getRandomColors = _memoize(_randomColors)
 
 export const prepareTransaction = async (
   txs: readonly TxResponse[]

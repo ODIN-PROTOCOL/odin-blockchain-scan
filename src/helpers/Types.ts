@@ -36,6 +36,7 @@ export type ChartLabelsType = {
 export type ChartDataType = {
   labels: Array<string | Date | ChartLabelsType>
   datasets: Array<ChartDataSetsType>
+  options?: any
 }
 
 export type CoingeckoCoinsType = {

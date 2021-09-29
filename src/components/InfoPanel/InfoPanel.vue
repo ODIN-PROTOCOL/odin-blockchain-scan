@@ -9,7 +9,6 @@
           :key="'chartData'"
           v-if="chartDataLoad"
           :chartData="chartData"
-          :chartOptions="chartOptions"
         />
         <span class="info-panel__empty-chart" v-else>
           We are in the process of drawing a chart!
@@ -24,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import AppChart from '@/components/AppChart.vue'
+import AppChart from '@/components/Charts/LineChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
 import { ChartDataType, CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
@@ -56,76 +55,7 @@ export default defineComponent({
           data: [],
         },
       ],
-    })
-    const chartOptions = ref({
-      scales: {
-        x: {
-          grid: {
-            color: 'transparent',
-            borderColor: '#CCE4FF',
-          },
-          ticks: {
-            padding: 20,
-            color: '#212529',
-            font: {
-              size: 14,
-              family: 'SF Display',
-              lineHeight: 2,
-            },
-          },
-        },
-        y: {
-          grid: {
-            color: '#CCE4FF',
-            borderColor: 'transparent',
-          },
-          ticks: {
-            color: '#212529',
-            padding: 20,
-            font: {
-              size: 14,
-              family: 'SF Display',
-              lineHeight: 2,
-            },
-          },
-        },
-      },
-      elements: {
-        point: {
-          backgroundColor: 'transparent',
-          borderColor: 'transparent',
-          borderWidth: 0,
-          radius: 0,
-        },
-      },
-      plugins: {
-        legend: {
-          display: false,
-        },
-        title: {
-          display: false,
-        },
-        subtitle: {
-          display: false,
-        },
-        tooltip: {
-          enabled: false,
-        },
-        point: {
-          borderWidth: 0,
-        },
-        zoom: {
-          zoom: {
-            wheel: {
-              enabled: true,
-            },
-            pinch: {
-              enabled: true,
-            },
-            mode: 'y',
-          },
-        },
-      },
+
     })
 
     const getLatestTelemetry = async (): Promise<void> => {
@@ -133,7 +63,6 @@ export default defineComponent({
         const endDate = new Date()
         const startDate = new Date()
         startDate.setDate(startDate.getDate() - 2)
-
 
         const { txVolumePerDay } = await callers.getTelemetry({
           startDate,
@@ -160,7 +89,7 @@ export default defineComponent({
           0
         ) as number
 
-        console.debug('chartData', chartData.value)
+        console.log('chartData', chartData.value)
 
         await getCoinInfo()
         chartDataLoad.value = true
@@ -218,7 +147,6 @@ export default defineComponent({
     return {
       chartData,
       chartDataLoad,
-      chartOptions,
       transactionData,
       priceData,
     }

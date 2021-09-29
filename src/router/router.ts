@@ -160,7 +160,7 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
     // beforeEnter: authorizedOnlyGuard,
-    component: () => import('../views/Chart.vue'),
+    component: () => import('../views/ChartPage.vue'),
   },
 ]
 
