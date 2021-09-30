@@ -41,7 +41,7 @@ export type CoingeckoCoinsType = {
 }
 
 export type SearchResultType = {
-  blocks?: Array<BlockResponse>
+  blocks?: Array<searchBlocksInterface>
   transactions?: Array<TransactionListFormatted>
   accounts?: Array<TempSearchAccountInfoType>
 }
@@ -89,4 +89,8 @@ export type adjustedData = {
 
 export interface latestBlocksInterface extends BlockMeta {
   total_tx: string | number
+}
+
+export interface searchBlocksInterface extends BlockResponse {
+  total_tx?: string | number
 }

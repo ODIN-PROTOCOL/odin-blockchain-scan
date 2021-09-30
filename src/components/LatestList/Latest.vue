@@ -25,7 +25,9 @@
                 <template #validator>
                   <span>Validator:</span>
                   <TitledLink
-                    :link="`/validators/${item.header.height}`"
+                    :link="`/validators/${toHexFunc(
+                      item.header.validatorsHash
+                    )}`"
                     class="app-table__cell-txt"
                     :text="`${cropText(
                       '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()

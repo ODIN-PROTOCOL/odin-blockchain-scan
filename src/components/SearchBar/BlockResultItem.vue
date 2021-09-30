@@ -28,7 +28,9 @@
             )}`"
           />
         </div>
-        <div class="search__dropdown--item-transactions">548 transactions</div>
+        <div class="search__dropdown--item-transactions">
+          {{ result.total_tx }} transactions
+        </div>
       </div>
     </router-link>
   </template>
