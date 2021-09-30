@@ -89,7 +89,7 @@ export default defineComponent({
           0
         ) as number
 
-        console.log('chartData', chartData.value)
+        console.debug('chartData', chartData.value)
 
         await getCoinInfo()
         chartDataLoad.value = true
