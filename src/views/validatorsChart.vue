@@ -136,7 +136,10 @@ export default defineComponent({
         pagination,
       })
       topValidators.value = addedRankBy(TopValidators, 'blocksCount')
-      const backgroundColor = getRandomColors(TopValidators.length)
+      const backgroundColor = getRandomColors(
+        TopValidators.length,
+        'validatorsChart'
+      )
       const blocksCounters: Array<number> = []
       for (const v of TopValidators) {
         chartData.value.datasets[0].data.push(bigMath.toNum(v.blocksCount))
