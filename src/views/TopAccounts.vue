@@ -306,42 +306,6 @@ export default defineComponent({
     }
   }
 }
-
-.sort {
-  &-select {
-    border: none;
-    margin-left: 16px;
-    min-width: 150px;
-    width: 100%;
-
-    &:focus {
-      border: none;
-      outline: none;
-    }
-
-    option:checked {
-      background-color: var(--clr__action);
-    }
-
-    @media screen and (max-width: 600px) {
-      margin-left: 0;
-    }
-  }
-
-  &-wrapper {
-    display: flex;
-    align-items: center;
-    span {
-      white-space: nowrap;
-    }
-
-    @media (max-width: 480px) {
-      flex-direction: row;
-      justify-content: space-between;
-      width: 100%;
-    }
-  }
-}
 </style>
 <style lang="scss">
 .pagination-wrapper {

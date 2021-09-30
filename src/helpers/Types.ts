@@ -17,8 +17,8 @@ export type LinkList = {
 }
 
 export type ChartDataSetsType = {
-  backgroundColor: Array<string>
-  borderColor: Array<string>
+  backgroundColor: Array<string> | readonly string[]
+  borderColor: Array<string> | readonly string[]
   borderWidth: string | number
   hoverBorderWidth?: string | number
   borderJoinStyle: string

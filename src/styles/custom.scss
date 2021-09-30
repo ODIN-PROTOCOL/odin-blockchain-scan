@@ -91,3 +91,49 @@
     display: block;
   }
 }
+.sort {
+  &-select {
+    border: none;
+    margin-left: 16px;
+    min-width: 150px;
+    width: 100%;
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
+
+    option:checked {
+      background-color: var(--clr__action);
+    }
+
+    @media screen and (max-width: 600px) {
+      margin-left: 0;
+    }
+  }
+
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    span {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+}
+
+.button {
+  display: flex;
+  flex-shrink: 0;
+  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+  background: var(--clr__action);
+  border-radius: 0.4rem;
+  color: #e4f2fc;
+}
