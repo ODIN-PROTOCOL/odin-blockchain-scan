@@ -9,7 +9,6 @@
         class="app-form__field-input app-filter app-filter--coin"
         name="filter"
         v-model="sortingValue"
-        v-on:update:modelValue="sortChartByDays"
         :isDisabled="isLoading"
       >
         <template #dropdownInner>
@@ -26,80 +25,83 @@
         </template>
       </VuePicker>
     </div>
-
-    <button class="button" @click="getValidatorsData(1)">
-      test request '1 day'
-    </button>
-
-    <template v-if="!isLoading">
-      <div class="content">
-        <div class="chart-block">
-          <div class="chart-block__total">
-            <h3>{{ totalBlocks }}</h3>
-            <span>Blocks</span>
-          </div>
-          <div class="chart-block__wrapper">
-            <DoughnutChart :chartData="chartData" />
-          </div>
-        </div>
-        <div class="validators-table">
-          <div class="app-table">
-            <div class="data-sources__table-head app-table__head">
-              <div class="app-table__cell">
-                <span class="app-table__cell-txt">Rank</span>
-              </div>
-              <div class="app-table__cell">
-                <span class="app-table__cell-txt">Address</span>
-              </div>
-              <div class="app-table__cell">
-                <span class="app-table__cell-txt"> Blocks </span>
-              </div>
-              <div class="app-table__cell">
-                <span class="app-table__cell-txt"> Stake percentage </span>
-              </div>
+    <transition name="fade" mode="out-in">
+      <template v-if="!isLoading">
+        <div class="content">
+          <div class="chart-block">
+            <div class="chart-block__total">
+              <h3>{{ totalBlocks }}</h3>
+              <span>Blocks</span>
             </div>
-
-            <template v-for="v in topValidators" :key="v.validatorAddress">
-              <div class="data-sources__table-row app-table__row">
+            <div class="chart-block__wrapper">
+              <DoughnutChart :chartData="chartData" />
+            </div>
+          </div>
+          <div class="validators-table">
+            <div class="app-table">
+              <div class="data-sources__table-head app-table__head">
                 <div class="app-table__cell">
-                  <span class="app-table__header">Rank</span>
-                  {{ v.rank }}
+                  <span class="app-table__cell-txt">Rank</span>
                 </div>
                 <div class="app-table__cell">
-                  <span class="app-table__header">Address</span>
-                  <router-link :to="`/validators/${v.validatorAddress}`">
-                    <TitledLink
-                      class="app-table__cell-txt"
-                      :text="`Ox${v.validatorAddress}`"
-                    />
-                  </router-link>
+                  <span class="app-table__cell-txt">Address</span>
                 </div>
                 <div class="app-table__cell">
-                  <span class="app-table__header">Blocks</span>
-                  {{ bigMath.format(v.blocksCount) }}
+                  <span class="app-table__cell-txt"> Blocks </span>
                 </div>
                 <div class="app-table__cell">
-                  <span class="app-table__header">Stake percentage</span>
-                  {{ bigMath.format(v.stakePercentage) }}
+                  <span class="app-table__cell-txt"> Stake percentage </span>
                 </div>
               </div>
-            </template>
+
+              <template
+                v-for="item in chartData.labels"
+                :key="item.validatorAddress"
+              >
+                <div class="data-sources__table-row app-table__row">
+                  <div class="app-table__cell">
+                    <span class="app-table__header">Rank</span>
+                    {{ item.rank }}
+                  </div>
+                  <div class="app-table__cell">
+                    <span class="app-table__header">Address</span>
+                    <router-link :to="`/validators/${item.validatorAddress}`">
+                      <TitledLink
+                        class="app-table__cell-txt"
+                        :text="`Ox${item.validatorAddress}`"
+                      />
+                    </router-link>
+                  </div>
+                  <div class="app-table__cell">
+                    <span class="app-table__header">Blocks</span>
+                    {{ item.blocksCounter }}
+                  </div>
+                  <div class="app-table__cell">
+                    <span class="app-table__header">Stake percentage</span>
+                    {{ item.stakePercentage }}
+                  </div>
+                </div>
+              </template>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-    <span class="empty" v-else> Wait data preparation </span>
+      </template>
+      <span class="empty" v-else>
+        <span id="loading" class="empty-loading"></span>
+        Wait data preparation
+      </span>
+    </transition>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import {
   RouteLocationNormalizedLoaded,
   Router,
   useRoute,
   useRouter,
 } from 'vue-router'
-import { ChartDataType, topValidatorsChartDataInterface } from '@/helpers/Types'
+import { ChartDataType, ChartLabelsType } from '@/helpers/Types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { callers } from '@/api/callers'
 import { bigMath } from '@/helpers/bigMath'
@@ -108,6 +110,7 @@ import TitledLink from '@/components/TitledLink.vue'
 import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 import { DONUT_COLORS } from '@/helpers/ChartColors'
+import { addedRankBy } from '@/helpers/helpers'
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -132,16 +135,13 @@ export default defineComponent({
         value: '14',
       },
     ]
-
     const totalBlocks = ref<string>('')
-
-    const chartDataLoad = ref(false)
     const chartData = ref<ChartDataType>({
       labels: [],
       datasets: [
         {
-          backgroundColor: ['#fff'],
-          borderColor: ['#fff'],
+          backgroundColor: DONUT_COLORS,
+          borderColor: DONUT_COLORS,
           borderWidth: 2,
           hoverBorderWidth: 8,
           borderJoinStyle: 'round',
@@ -153,28 +153,11 @@ export default defineComponent({
       ],
     })
 
-    const topValidators = ref<Array<topValidatorsChartDataInterface>>()
-
-    const addedRankBy = <T extends topValidatorsChartDataInterface>(
-      arr: Array<T>,
-      by: string
-    ): Array<T> => {
-      arr
-        .sort(function (a, b) {
-          return bigMath.toNum(a[by]) - bigMath.toNum(b[by])
-        })
-        .forEach(function (d, i) {
-          d.rank = i + 1
-        })
-      return arr
-    }
-
     const getDataByDays = async (
       days: number
     ): Promise<Array<ValidatorBlockStats>> => {
       const endDate = new Date()
       const startDate = new Date()
-
       let tempArr: Array<ValidatorBlockStats> = []
       for (let i = 0; i <= days * 24; ++i) {
         startDate.setHours(startDate.getHours() - 1)
@@ -190,67 +173,91 @@ export default defineComponent({
       tempArr = tempArr.filter(
         (el, index, self) =>
           index ===
-          self.findIndex((t) => t.validatorAddress === el.validatorAddress)
+          self.findIndex(
+            (t) =>
+              t.validatorAddress === el.validatorAddress &&
+              t.stakePercentage === el.stakePercentage
+          )
       )
-      console.debug('getDataByDays', tempArr)
       return tempArr
     }
 
-    const sortChartByDays = async (): Promise<void> =>
+    // TODO: v-on:update:modelValue VuePicker, starts function twice
+    /*
+    const sortChartByDays = async (): Promise<void> => {
+      return await getValidatorsData(Number(sortingValue.value))
+    }
+    */
+
+    watch(
+      sortingValue,
+      async (): Promise<void> =>
+        await getValidatorsData(Number(sortingValue.value))
+    )
+
+    onMounted(async (): Promise<void> => {
       await getValidatorsData(Number(sortingValue.value))
+    })
 
     const getValidatorsData = async (days = 1): Promise<void> => {
       isLoading.value = true
+      chartData.value.datasets[0].data = []
+      chartData.value.labels = []
+
       const TopValidators = await getDataByDays(days)
-      topValidators.value = addedRankBy(TopValidators, 'blocksCount')
 
-      const blocksCounters: Array<number> = []
+      let blocksCounters: Array<number> = []
       for (const v of TopValidators) {
-        // ERROR: RangeError: Maximum call stack size exceeded
-        // TODO: Fix this
-        console.log(v)
-        chartData.value.datasets[0].data.push(bigMath.toNum(v.blocksCount))
-        chartData.value.labels.push({
-          validatorAddress: v.validatorAddress,
-          blocksCounter: bigMath.format(v.blocksCount),
-          stakePercentage: v.stakePercentage,
-        })
-        blocksCounters.push(bigMath.toNum(v.blocksCount))
-      }
+        chartData.value.datasets[0].data = [
+          ...chartData.value.datasets[0].data,
+          bigMath.toNum(v.blocksCount),
+        ]
 
+        chartData.value.labels = [
+          ...chartData.value.labels,
+          {
+            validatorAddress: v.validatorAddress,
+            blocksCounter: bigMath.format(v.blocksCount),
+            stakePercentage: v.stakePercentage,
+          },
+        ]
+        blocksCounters = [...blocksCounters, bigMath.toNum(v.blocksCount)]
+      }
+      chartData.value.labels = addedRankBy(
+        chartData.value.labels as Array<ChartLabelsType>,
+        'blocksCounter'
+      )
       totalBlocks.value = bigMath.format(
         blocksCounters.reduce((sum, el): number => {
           return Number(sum) + Number(el)
         }, 0)
       )
 
-      chartData.value.datasets[0].backgroundColor = DONUT_COLORS
-      chartData.value.datasets[0].borderColor = DONUT_COLORS
-
-      console.debug(topValidators.value)
+      console.debug('chartData.value', chartData.value)
       isLoading.value = false
-      chartDataLoad.value = true
     }
 
     return {
       router,
       route,
       chartData,
-      chartDataLoad,
       totalBlocks,
-      topValidators,
-      bigMath,
       sortingDays,
       sortingValue,
-      sortChartByDays,
       isLoading,
-      getValidatorsData,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.empty {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .sort-wrapper {
   justify-content: flex-end;
 }

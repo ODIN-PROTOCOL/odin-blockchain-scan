@@ -1,7 +1,6 @@
 import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
-import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
 import { Chart, ChartType, TooltipModel } from 'chart.js'
 
@@ -31,10 +30,10 @@ export type ChartLabelsType = {
   validatorAddress?: string
   blocksCounter?: string | number
   stakePercentage?: string | number
+  rank?: number | string
 }
-
 export type ChartDataType = {
-  labels: Array<string | Date | ChartLabelsType>
+  labels: Array<ChartLabelsType | String | Date>
   datasets: Array<ChartDataSetsType>
   options?: any
 }
@@ -99,10 +98,6 @@ export type adjustedData = {
 
 export interface latestBlocksInterface extends BlockMeta {
   total_tx: string | number
-}
-
-export interface topValidatorsChartDataInterface extends ValidatorBlockStats {
-  rank?: string | number
 }
 
 export type externalTooltipType = {

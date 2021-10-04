@@ -55,7 +55,6 @@ export default defineComponent({
           data: [],
         },
       ],
-
     })
 
     const getLatestTelemetry = async (): Promise<void> => {
@@ -75,7 +74,7 @@ export default defineComponent({
           chartData.value.labels = [
             ...chartData.value.labels,
             convertToDayMonth(el?.date as Date),
-          ]
+          ] as Array<string>
           chartData.value.datasets[0].data = [
             ...chartData.value.datasets[0].data,
             bigMath.toNum(el.volume),

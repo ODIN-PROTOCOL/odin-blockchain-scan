@@ -1,8 +1,9 @@
 import { toHex } from '@cosmjs/encoding'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
-import { adjustedData } from '@/helpers/Types'
+import { adjustedData, ChartLabelsType } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { cacheAnswers } from '@/helpers/requests'
+import { bigMath } from '@/helpers/bigMath'
 
 export const _allowedTypes = [
   'Send',
@@ -128,4 +129,17 @@ export const prepareTransaction = async (
     ].filter((item) => _allowedTypes.includes(item.type))
   }
   return tempArr
+}
+export const addedRankBy = <T extends ChartLabelsType>(
+  arr: Array<T>,
+  by: string
+): Array<T> => {
+  arr
+    .sort(function (a, b) {
+      return bigMath.toNum(a[by]) - bigMath.toNum(b[by])
+    })
+    .forEach(function (d, i) {
+      d.rank = i + 1
+    })
+  return arr
 }
