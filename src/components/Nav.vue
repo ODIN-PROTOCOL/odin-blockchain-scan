@@ -85,6 +85,10 @@ export default defineComponent({
           to: 'charts',
           text: 'Charts & Stats',
         },
+        {
+          url: '/chart/validators/',
+          text: 'Block Validators Chart',
+        },
       ],
     }
     return { BlockchainList, TokemonicList, ResourceList }

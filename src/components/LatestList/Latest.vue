@@ -27,7 +27,7 @@
                   <TitledLink
                     :link="`/validators/${toHexFunc(
                       item.header.validatorsHash
-                    )}`"
+                    ).toUpperCase()}`"
                     class="app-table__cell-txt"
                     :text="`${cropText(
                       '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
@@ -109,6 +109,7 @@ import TitledLink from '@/components/TitledLink.vue'
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
 import { adjustedData, latestBlocksInterface } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
+import { BlockResponse } from '@cosmjs/tendermint-rpc'
 
 export default defineComponent({
   name: 'Latest',
@@ -133,7 +134,7 @@ export default defineComponent({
 
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
-        await callers.getBlockchain(100)
+        await callers.getBlockchain()
       let tempA: Array<latestBlocksInterface> = []
       for (let b of [...blockMetas].slice(0, 5)) {
         tempA = [
@@ -141,8 +142,8 @@ export default defineComponent({
           {
             ...b,
             total_tx: await callers
-              .getBlock(b?.header?.height)
-              .then((res) => res?.block?.txs?.length),
+              .getBlock(b?.header?.height as number)
+              .then((res: BlockResponse): number => res?.block?.txs?.length),
           },
         ]
       }
@@ -154,12 +155,14 @@ export default defineComponent({
     }
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
-        query: `tx.height >= ${lastHeight.value - 100000}`,
+        query: `tx.height >= ${lastHeight.value - 10}`,
       })
 
-      latestTransactions.value = await prepareTransaction(txs).then((pt) =>
-        pt.slice(0, 5)
-      )
+      if (txs) {
+        latestTransactions.value = await prepareTransaction(txs).then((pt) =>
+          pt.slice(0, 5)
+        )
+      }
 
       console.debug('latestTransactions', latestTransactions.value)
       totalCount.value = reqTotalCount

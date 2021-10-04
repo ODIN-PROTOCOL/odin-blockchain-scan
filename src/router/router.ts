@@ -149,6 +149,19 @@ const routes: Array<RouteRecordRaw> = [
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/AccountsItem.vue'),
   },
+  {
+    path: '/chart',
+    name: 'ChartValidators',
+    children: [
+      {
+        path: 'validators',
+        name: 'validatorsChart',
+        component: () => import('../views/validatorsChart.vue'),
+      },
+    ],
+    // beforeEnter: authorizedOnlyGuard,
+    component: () => import('../views/ChartPage.vue'),
+  },
 ]
 
 const router = createRouter({

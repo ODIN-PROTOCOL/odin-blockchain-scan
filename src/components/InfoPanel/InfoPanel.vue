@@ -3,14 +3,17 @@
     <div class="info-panel" v-if="priceData && transactionData">
       <InfoPanelCol :key="'priceData'" :infoPanelRows="priceData" />
       <InfoPanelCol :key="'transactionData'" :infoPanelRows="transactionData" />
-      <InfoPanelChart
-        :key="'chartData'"
-        v-if="chartDataLoad"
-        :chartData="chartData"
-      />
-      <span class="info-panel__empty-chart" v-else>
-        We are in the process of drawing a chart!
-      </span>
+      <div class="info-panel__chart">
+        <div class="info-panel__title">Transactions history statistics</div>
+        <AppChart
+          :key="'chartData'"
+          v-if="chartDataLoad"
+          :chartData="chartData"
+        />
+        <span class="info-panel__empty-chart" v-else>
+          We are in the process of drawing a chart!
+        </span>
+      </div>
     </div>
     <div v-else class="info-panel">
       <span class="info-panel__empty">Waiting to receive data</span>
@@ -20,19 +23,18 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import InfoPanelChart from '@/components/InfoPanel/InfoPanelChart.vue'
+import AppChart from '@/components/Charts/LineChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
 import { ChartDataType, CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { convertToDayMonth } from '@/helpers/dates'
 import { bigMath } from '@/helpers/bigMath'
 import { getAPIDate } from '@/helpers/requests'
-import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
 import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'InfoPanel',
-  components: { InfoPanelChart, InfoPanelCol },
+  components: { AppChart, InfoPanelCol },
   setup() {
     const priceData = ref<Array<Link> | null>()
     const transactionData = ref<Array<Link> | null>()
@@ -43,8 +45,8 @@ export default defineComponent({
       labels: [],
       datasets: [
         {
-          backgroundColor: '#007bff',
-          borderColor: '#007bff',
+          backgroundColor: ['#007bff'],
+          borderColor: ['#007bff'],
           borderWidth: 2,
           borderJoinStyle: 'round',
           borderCapStyle: 'round',
@@ -61,12 +63,10 @@ export default defineComponent({
         const startDate = new Date()
         startDate.setDate(startDate.getDate() - 2)
 
-        await getCoinInfo()
-
-        const { txVolumePerDay } = (await callers.getTelemetry({
+        const { txVolumePerDay } = await callers.getTelemetry({
           startDate,
           endDate,
-        })) as QueryTxVolumeResponse
+        })
 
         console.debug('txVolumePerDay', txVolumePerDay)
 
@@ -74,7 +74,7 @@ export default defineComponent({
           chartData.value.labels = [
             ...chartData.value.labels,
             convertToDayMonth(el?.date as Date),
-          ]
+          ] as Array<string>
           chartData.value.datasets[0].data = [
             ...chartData.value.datasets[0].data,
             bigMath.toNum(el.volume),
@@ -125,7 +125,7 @@ export default defineComponent({
       transactionData.value = [
         {
           title: 'Total number of transactions',
-          text: `${transactionCount.value} `,
+          text: `${transactionCount.value}`,
         },
         {
           title: 'Market CAP',
@@ -143,7 +143,12 @@ export default defineComponent({
       await getLatestTelemetry()
     })
 
-    return { chartData, transactionData, priceData, chartDataLoad }
+    return {
+      chartData,
+      chartDataLoad,
+      transactionData,
+      priceData,
+    }
   },
 })
 </script>

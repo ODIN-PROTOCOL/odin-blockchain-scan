@@ -1,7 +1,9 @@
 import { toHex } from '@cosmjs/encoding'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
-import { adjustedData } from '@/helpers/Types'
+import { adjustedData, ChartLabelsType } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+import { cacheAnswers } from '@/helpers/requests'
+import { bigMath } from '@/helpers/bigMath'
 
 export const _allowedTypes = [
   'Send',
@@ -86,6 +88,25 @@ export const getHash = (str: Uint8Array): string => {
   return toHexFunc(str).toUpperCase()
 }
 
+const _randomColors = (size: number, name: string): Array<string> => {
+  if (localStorage.getItem(name)) {
+    return JSON.parse(localStorage.getItem(name) as string)
+  }
+  const colors: Array<string> = []
+  let prevColor = 0
+  for (let i = 0; i < (size >= 50 ? size : 50); i++) {
+    let h = Math.random() * 360
+    if (Math.abs(h - prevColor) <= 15) {
+      h += 25
+    }
+    colors.push(`hsl(${h.toFixed()}, 60%, 60%)`)
+    prevColor = h
+  }
+  localStorage.setItem(name, JSON.stringify(colors))
+  return colors
+}
+export const getRandomColors = cacheAnswers(_randomColors)
+
 export const prepareTransaction = async (
   txs: readonly TxResponse[]
 ): Promise<Array<adjustedData>> => {
@@ -108,4 +129,17 @@ export const prepareTransaction = async (
     ].filter((item) => _allowedTypes.includes(item.type))
   }
   return tempArr
+}
+export const addedRankBy = <T extends ChartLabelsType>(
+  arr: Array<T>,
+  by: string
+): Array<T> => {
+  arr
+    .sort(function (a, b) {
+      return bigMath.toNum(a[by]) - bigMath.toNum(b[by])
+    })
+    .forEach(function (d, i) {
+      d.rank = i + 1
+    })
+  return arr
 }

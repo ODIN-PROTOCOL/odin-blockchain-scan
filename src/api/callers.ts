@@ -153,6 +153,12 @@ const makeCallers = () => {
     getTopBalances: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.topBalances)
     ),
+    getTopValidators: cacheAnswers(
+      querier((qc) => qc.telemetry.unverified.topValidators)
+    ),
+    getValidatorBlocks: cacheAnswers(
+      querier((qc) => qc.telemetry.unverified.validatorBlocks)
+    ),
     getPendingTransactions: (limit: number) => {
       return sendGet(`${API_CONFIG.rpc}/unconfirmed_txs?limit=${limit}`)
     },

@@ -2,11 +2,13 @@ import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/respons
 import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
+import { Chart, ChartType, TooltipModel } from 'chart.js'
 
 export type Link = {
   to?: string
   text?: string
   title?: string
+  url?: string
 }
 export type LinkList = {
   name: string
@@ -14,19 +16,26 @@ export type LinkList = {
 }
 
 export type ChartDataSetsType = {
-  backgroundColor: string
-  borderColor: string
+  backgroundColor: Array<string> | readonly string[]
+  borderColor: Array<string> | readonly string[]
   borderWidth: string | number
+  hoverBorderWidth?: string | number
   borderJoinStyle: string
   borderCapStyle: string
   tension: number
   borderSkipped: boolean
   data: Array<string | number>
 }
-
+export type ChartLabelsType = {
+  validatorAddress?: string
+  blocksCounter?: string | number
+  stakePercentage?: string | number
+  rank?: number | string
+}
 export type ChartDataType = {
-  labels: Array<string | Date>
+  labels: Array<ChartLabelsType | string | Date>
   datasets: Array<ChartDataSetsType>
+  options?: any
 }
 
 export type CoingeckoCoinsType = {
@@ -89,6 +98,18 @@ export type adjustedData = {
 
 export interface latestBlocksInterface extends BlockMeta {
   total_tx: string | number
+}
+
+export type externalTooltipType = {
+  chart?: Chart
+  replay?: boolean | undefined
+  tooltip?: TooltipModel<ChartType>
+}
+
+export type titleLineType = {
+  stakePercentage: string
+  validatorAddress: string
+  blocksCounter: string
 }
 
 export interface searchBlocksInterface extends BlockResponse {

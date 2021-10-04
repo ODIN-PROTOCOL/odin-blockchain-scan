@@ -5,16 +5,27 @@
       <ArrowIcon />
     </span>
     <transition name="fade">
-      <div class="nav__dropdown-modal">
-        <router-link
-          class="nav__dropdown-link"
-          v-for="link in list.links"
-          :key="link.to"
-          :data-text="link.text"
-          :to="{ name: link.to }"
-        >
-          <span>{{ link.text }}</span>
-        </router-link>
+      <div class="nav__dropdown-modal" ref="dropdownEl">
+        <template v-for="link in list.links">
+          <router-link
+            v-if="link.to"
+            class="nav__dropdown-link"
+            :key="link.to"
+            :data-text="link.text"
+            :to="{ name: link.to }"
+          >
+            <span>{{ link.text }}</span>
+          </router-link>
+          <router-link
+            v-else
+            class="nav__dropdown-link"
+            :key="link.url"
+            :data-text="link.text"
+            :to="link.url"
+          >
+            <span>{{ link.text }}</span>
+          </router-link>
+        </template>
       </div>
     </transition>
   </div>
@@ -65,7 +76,6 @@ export default defineComponent({
     }
   }
   &-modal {
-    //display: flex;
     display: none;
     flex-direction: column;
     align-items: flex-start;

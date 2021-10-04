@@ -1,23 +1,16 @@
 <template>
-  <div class="info-panel__chart">
-    <div class="info-panel__title">Transactions history statistics</div>
-    <vue3-chart-js ref="chartRef" v-bind="{ ...Chart }" />
-  </div>
+  <vue3-chart-js ref="chartRef" v-bind="{ ...Chart }" />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import Vue3ChartJs from '@j-t-mcc/vue3-chartjs'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import zoomPlugin from 'chartjs-plugin-zoom'
 Vue3ChartJs.registerGlobalPlugins([zoomPlugin])
 
 export default defineComponent({
-  name: 'InfoPanelChart',
+  name: 'AppChart',
   components: {
     Vue3ChartJs,
   },
@@ -69,10 +62,10 @@ export default defineComponent({
         },
         elements: {
           point: {
-            backgroundColor: 'transparent',
-            borderColor: 'transparent',
-            borderWidth: 0,
-            radius: 0,
+            backgroundColor: '#007bff',
+            borderColor: '#007bff',
+            borderWidth: 3,
+            radius: 2,
           },
         },
         plugins: {
@@ -89,7 +82,7 @@ export default defineComponent({
             enabled: false,
           },
           point: {
-            borderWidth: 0,
+            borderWidth: 2,
           },
           zoom: {
             zoom: {
@@ -109,5 +102,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss" scoped></style>
