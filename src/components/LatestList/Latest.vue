@@ -134,7 +134,7 @@ export default defineComponent({
 
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
-        await callers.getBlockchain(100)
+        await callers.getBlockchain()
       let tempA: Array<latestBlocksInterface> = []
       for (let b of [...blockMetas].slice(0, 5)) {
         tempA = [
