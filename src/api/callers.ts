@@ -8,7 +8,7 @@ import { MsgDeposit, MsgVote } from '@provider/codec/cosmos/gov/v1beta1/tx'
 import { api } from './api'
 import { wallet } from './wallet'
 import { mapResponse, sendPost, sendGet } from './callersHelpers'
-import { cacheAnswers, getAPIDate } from '@/helpers/requests.ts'
+import { cacheAnswers, getAPIDate } from '@/helpers/requests'
 import { decodeRequestResults } from '@/helpers/requestResultDecoders'
 import { decodeProposals } from '@/helpers/proposalDecoders'
 import { decodeValidators } from '@/helpers/validatorDecoders'
@@ -165,6 +165,7 @@ const makeCallers = () => {
     getTxForTxDetailsPage: (hash: string) => {
       return getAPIDate(`${API_CONFIG.rpc}/tx?hash=0x${hash}&prove=true`)
     },
+    getParams: querier((qc) => qc.mint.unverified.params),
   }
 }
 

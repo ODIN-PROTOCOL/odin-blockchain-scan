@@ -45,9 +45,8 @@ export async function makeTransactionListFormatted(
 
   for (const el of arr) {
     const decodedTx = Tx.decode(el.tx)
-    const ttx:
-      | { transReceiver: string; totalTx: number }
-      | undefined = getTotalTx(decodedTx)
+    const ttx: { transReceiver: string; totalTx: number } | undefined =
+      getTotalTx(decodedTx)
     tempArr.push({
       transHeight: el.height,
       transSender: toHex(

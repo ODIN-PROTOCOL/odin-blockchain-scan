@@ -32,14 +32,14 @@
     </section>
     <Footer />
   </template>
-  <!-- <div class="dialogs-container" ref="dialogsContainerRef"></div> -->
-  <!-- <notifications width="100%" /> -->
+  <div class="dialogs-container" ref="dialogsContainerRef"></div>
+  <notifications width="100%" />
 </template>
 
 <script lang="ts">
 import '@invisiburu/vue-picker/dist/vue-picker.min.css'
 import { computed, defineComponent, onMounted, ref } from 'vue'
-// import { dialogs } from '@/helpers/dialogs'
+import { dialogs } from '@/helpers/dialogs'
 // import { useAuthorization } from '@/composables/useAuthorization'
 // import UserWidget from '@/components/UserWidget.vue'
 import Nav from '@/components/Nav.vue'
@@ -52,19 +52,19 @@ export default defineComponent({
   components: { Nav, SearchBar, Footer, BurgerMenu },
   setup() {
     const _readyStates = ref({
-      dialogs: true,
+      dialogs: false,
     })
     const isAppReady = computed(() => {
       return Object.values(_readyStates.value).every((v) => v === true)
     })
 
     // Dialogs
-    // const dialogsContainerRef = ref<HTMLElement>()
+    const dialogsContainerRef = ref<HTMLElement>()
     onMounted(() => {
-      // if (dialogsContainerRef.value instanceof HTMLElement) {
-      //   dialogs.init(dialogsContainerRef.value)
-      //   _readyStates.value.dialogs = true
-      // }
+      if (dialogsContainerRef.value instanceof HTMLElement) {
+        dialogs.init(dialogsContainerRef.value)
+        _readyStates.value.dialogs = true
+      }
     })
 
     // Burger Menu
@@ -78,7 +78,7 @@ export default defineComponent({
     }
     return {
       isAppReady,
-      // dialogsContainerRef,
+      dialogsContainerRef,
       // isLoggedIn: useAuthorization().isLoggedIn,
       isLoggedIn: true,
       isOpen,

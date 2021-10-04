@@ -22,16 +22,11 @@
             </div>
           </div>
           <div class="info-value">
-            <span>{{ route.params.id }}</span>
-            <div class="copy-button__wrapper">
-              <button
-                class="copy-button"
-                @click.prevent="copyValue(String(route.params.id))"
-              >
-                <img src="~@/assets/icons/copy.svg" alt="info" />
-              </button>
-              <div class="tooltip">Copy From Block Hash to clipboard.</div>
-            </div>
+            <CopyText
+              :text="String(route.params.id)"
+              :title="String(route.params.id)"
+              :displayText="String(route.params.id)"
+            />
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -45,16 +40,11 @@
             </div>
           </div>
           <div class="info-value text-blue">
-            <span>0x{{ blockHash }}</span>
-            <div class="copy-button__wrapper">
-              <button
-                class="copy-button"
-                @click.prevent="copyValue('0x' + blockHash)"
-              >
-                <img src="~@/assets/icons/copy.svg" alt="info" />
-              </button>
-              <div class="tooltip">Copy From Block Hash to clipboard.</div>
-            </div>
+            <CopyText
+              :text="`0x${blockHash}`"
+              :title="`0x${blockHash}`"
+              :displayText="`0x${blockHash}`"
+            />
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -69,18 +59,11 @@
             </div>
           </div>
           <div class="info-value text-blue">
-            <span>0x{{ blockParentHash }}</span>
-            <div class="copy-button__wrapper">
-              <button
-                class="copy-button"
-                @click.prevent="copyValue('0x' + blockParentHash)"
-              >
-                <img src="~@/assets/icons/copy.svg" alt="info" />
-              </button>
-              <div class="tooltip">
-                Copy From Block Parent Hash to clipboard.
-              </div>
-            </div>
+            <CopyText
+              :text="`0x${blockParentHash}`"
+              :title="`0x${blockParentHash}`"
+              :displayText="`0x${blockParentHash}`"
+            />
           </div>
         </div>
         <div class="data-sources__table-row app-table__row">
@@ -129,9 +112,11 @@ import {
 import { callers } from '@/api/callers'
 import { convertDate, copyValue, getHash } from '@/helpers/helpers'
 import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+import CopyText from '@/components/CopyText.vue'
 
 export default defineComponent({
   name: 'BlockItem',
+  components: { CopyText },
   setup() {
     const router: Router = useRouter()
     const back = (): void => {
