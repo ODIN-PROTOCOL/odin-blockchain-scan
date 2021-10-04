@@ -10,7 +10,10 @@ import {
   SigningStargateClient,
   StakingExtension,
 } from '@cosmjs/stargate'
-import { setupTelemetryExtension, TelemetryExt } from './query-ext/telemetryExtension'
+import {
+  setupTelemetryExtension,
+  TelemetryExt,
+} from './query-ext/telemetryExtension'
 import { EncodeObject, GeneratedType, Registry } from '@cosmjs/proto-signing'
 import { CoinswapExt, setupCoinswapExt } from './query-ext/coinswapExtension'
 import { GovExt, setupGovExt } from './query-ext/govExtension'

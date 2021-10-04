@@ -19,18 +19,21 @@
       <LinksDropdown :list="TokemonicList" />
       <LinksDropdown :list="ResourceList" />
     </div>
+    <UserWidget />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import LinksDropdown from '@/components/LinksDropdown.vue'
+import UserWidget from '@/components/UserWidget.vue'
 import { LinkList } from '@/helpers/Types'
 
 export default defineComponent({
   name: 'Nav',
   components: {
     LinksDropdown,
+    UserWidget,
   },
   props: {
     isOpen: { type: Boolean, default: false },
@@ -90,6 +93,12 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.nav {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
 .nav__wrap-cont {
   display: flex;
   flex-wrap: wrap;
