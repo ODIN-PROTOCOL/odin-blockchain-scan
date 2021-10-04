@@ -29,7 +29,6 @@ export default defineComponent({
   },
   setup(props) {
     const chartRef = ref<HTMLElement>()
-    // let segment = null
     const Chart = {
       id: 'doughnut',
       type: 'doughnut',
@@ -53,13 +52,6 @@ export default defineComponent({
             display: false,
           },
         },
-        // onHover: function ({ chart }, element) {
-        //   if (element.length) {
-        //     let segment = element[0]
-        //     segment.element.options.offset = 20
-        //     chart.update()
-        //   }
-        // },
       },
     }
     return { chartRef, Chart }

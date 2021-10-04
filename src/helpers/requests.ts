@@ -11,7 +11,7 @@ export function cacheAnswers<T extends AnyFn>(
     if (memoCache.has(memoKey)) {
       const entryDate = memoCache.get(memoKey)?.time as Date
       const diff = Date.now() - entryDate?.getTime()
-      if (diff >= cacheTime) {
+      if (diff <= cacheTime) {
         return memoCache.get(memoKey)?.result as ReturnType<T>
       }
     }

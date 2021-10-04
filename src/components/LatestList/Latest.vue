@@ -109,6 +109,7 @@ import TitledLink from '@/components/TitledLink.vue'
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
 import { adjustedData, latestBlocksInterface } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
+import { BlockResponse } from '@cosmjs/tendermint-rpc'
 
 export default defineComponent({
   name: 'Latest',
@@ -141,8 +142,8 @@ export default defineComponent({
           {
             ...b,
             total_tx: await callers
-              .getBlock(b?.header?.height)
-              .then((res) => res?.block?.txs?.length),
+              .getBlock(b?.header?.height as number)
+              .then((res: BlockResponse): number => res?.block?.txs?.length),
           },
         ]
       }
