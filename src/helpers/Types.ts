@@ -33,7 +33,7 @@ export type ChartLabelsType = {
   rank?: number | string
 }
 export type ChartDataType = {
-  labels: Array<ChartLabelsType | String | Date>
+  labels: Array<ChartLabelsType | string | Date>
   datasets: Array<ChartDataSetsType>
   options?: any
 }
@@ -110,4 +110,8 @@ export type titleLineType = {
   stakePercentage: string
   validatorAddress: string
   blocksCounter: string
+}
+
+export interface searchBlocksInterface extends BlockResponse {
+  total_tx?: string | number
 }

@@ -5,11 +5,7 @@
       <ArrowIcon />
     </span>
     <transition name="fade">
-      <div
-        class="nav__dropdown-modal"
-        ref="dropdownEl"
-        v-show="dropdown.isShown.value"
-      >
+      <div class="nav__dropdown-modal" ref="dropdownEl">
         <template v-for="link in list.links">
           <router-link
             v-if="link.to"
@@ -80,7 +76,6 @@ export default defineComponent({
     }
   }
   &-modal {
-    //display: flex;
     display: none;
     flex-direction: column;
     align-items: flex-start;
