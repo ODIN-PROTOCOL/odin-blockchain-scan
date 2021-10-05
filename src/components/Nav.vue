@@ -89,6 +89,10 @@ export default defineComponent({
           url: '/chart/validators/',
           text: 'Block Validators Chart',
         },
+        {
+          url: '/chart/daily_transactions/',
+          text: 'Daily Transactions Volume Chart',
+        },
       ],
     }
     return { BlockchainList, TokemonicList, ResourceList }

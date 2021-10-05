@@ -105,12 +105,12 @@ import { ChartDataType, ChartLabelsType } from '@/helpers/Types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { callers } from '@/api/callers'
 import { bigMath } from '@/helpers/bigMath'
-import BackButton from '@/components/BackButton.vue'
-import TitledLink from '@/components/TitledLink.vue'
-import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 import { DONUT_COLORS } from '@/helpers/ChartColors'
-import { addedRankBy } from '@/helpers/helpers'
+import { addedRankBy, withoutDuplicates } from '@/helpers/helpers'
+import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
+import BackButton from '@/components/BackButton.vue'
+import TitledLink from '@/components/TitledLink.vue'
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -170,24 +170,9 @@ export default defineComponent({
           tempArr.push(...topValidators)
         }
       }
-      tempArr = tempArr.filter(
-        (el, index, self) =>
-          index ===
-          self.findIndex(
-            (t) =>
-              t.validatorAddress === el.validatorAddress &&
-              t.stakePercentage === el.stakePercentage
-          )
-      )
-      return tempArr
-    }
 
-    // TODO: v-on:update:modelValue VuePicker, starts function twice
-    /*
-    const sortChartByDays = async (): Promise<void> => {
-      return await getValidatorsData(Number(sortingValue.value))
+      return withoutDuplicates(tempArr)
     }
-    */
 
     watch(
       sortingValue,

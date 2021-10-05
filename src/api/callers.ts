@@ -147,7 +147,7 @@ const makeCallers = () => {
     getStatus: tmQuerier((tc) => tc.status.bind(tc)),
     getGenesis: tmQuerier((tc) => tc.genesis.bind(tc)),
     getHealth: tmQuerier((tc) => tc.health.bind(tc)),
-    getTelemetry: cacheAnswers(
+    getTxVolume: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.txVolume)
     ),
     getTopBalances: cacheAnswers(

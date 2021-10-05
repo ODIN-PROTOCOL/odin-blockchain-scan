@@ -63,7 +63,7 @@ export default defineComponent({
         const startDate = new Date()
         startDate.setDate(startDate.getDate() - 2)
 
-        const { txVolumePerDay } = await callers.getTelemetry({
+        const { txVolumePerDay } = await callers.getTxVolume({
           startDate,
           endDate,
         })

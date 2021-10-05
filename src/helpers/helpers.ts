@@ -4,6 +4,12 @@ import { adjustedData, ChartLabelsType } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { cacheAnswers } from '@/helpers/requests'
 import { bigMath } from '@/helpers/bigMath'
+import { AnyFn, DecoratedFn } from '@/shared-types'
+import {
+  QueryTopValidatorsRequest,
+  QueryTopValidatorsResponse,
+} from '@provider/codec/telemetry/query'
+import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 
 export const _allowedTypes = [
   'Send',
@@ -143,3 +149,53 @@ export const addedRankBy = <T extends ChartLabelsType>(
     })
   return arr
 }
+
+export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
+  arr = arr
+    .filter((el) => {
+      return el[Object.keys(el)[0]].length !== 0
+    })
+    .filter(
+      (el, index, self) =>
+        index ===
+        self.findIndex((t) => {
+          return JSON.stringify(t) === JSON.stringify(el)
+        })
+    )
+  return arr
+}
+
+export const testAAAAAAAAA = async <T extends AnyFn>(
+  { startDate, endDate, pagination }: QueryTopValidatorsRequest,
+  fn: AnyFn,
+  days: number
+): Promise<Array<ReturnType<T>>> => {
+  const tempArr: Array<ReturnType<T>> = []
+  for (let i = 0; i <= days * 24; ++i) {
+    startDate?.setHours(startDate.getHours() - 1)
+    const res = (await fn({
+      startDate,
+      endDate,
+      pagination: pagination ? pagination : null,
+    })) as ReturnType<T>
+    if (res[Object.keys(res as string)[0]].length)
+      tempArr.push(...res[Object.keys(res as string)[0]])
+  }
+  return tempArr
+}
+
+// export const testAAAAAAAAA = async <T extends AnyFn>(
+//   fn: AnyFn,
+//   days: number
+// ): Promise<DecoratedFn<T>> => {
+//   return (...args: Parameters<T>): ReturnType<T> => {
+//     console.log('args', args)
+//     const res = fn(...args)
+//     console.log(
+//       'res',
+//       res.then((r: ReturnType<T>) => r)
+//     )
+//     console.log('days', days)
+//     return '' as ReturnType<T>
+//   }
+// }

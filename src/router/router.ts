@@ -158,6 +158,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'validatorsChart',
         component: () => import('../views/validatorsChart.vue'),
       },
+      {
+        path: 'daily_transactions',
+        name: 'dailyTransactions',
+        component: () => import('../views/dailyTransactionsChart.vue'),
+      },
     ],
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/ChartPage.vue'),
