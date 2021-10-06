@@ -7,7 +7,8 @@
 
     <div class="sort-wrapper" v-if="!isLoading">
       <span>
-        Transactions<br /> per Day
+        Transactions<br />
+        per Day
       </span>
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin"

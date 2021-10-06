@@ -4,12 +4,8 @@ import { adjustedData, ChartLabelsType } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { cacheAnswers } from '@/helpers/requests'
 import { bigMath } from '@/helpers/bigMath'
-import { AnyFn, DecoratedFn } from '@/shared-types'
-import {
-  QueryTopValidatorsRequest,
-  QueryTopValidatorsResponse,
-} from '@provider/codec/telemetry/query'
-import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
+import { AnyFn } from '@/shared-types'
+import { QueryTopValidatorsRequest } from '@provider/codec/telemetry/query'
 
 export const _allowedTypes = [
   'Send',
@@ -150,9 +146,7 @@ export const addedRankBy = <T extends ChartLabelsType>(
   return arr
 }
 
-export const withoutDuplicates = <T>(
-  arr: Array<T>
-): ReturnType<() => Array<T>> => {
+export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
   arr = arr.filter((el) => {
     return el[Object.keys(el)[0]].length !== 0
   })
