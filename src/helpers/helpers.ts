@@ -150,18 +150,20 @@ export const addedRankBy = <T extends ChartLabelsType>(
   return arr
 }
 
-export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
-  arr = arr
-    .filter((el) => {
-      return el[Object.keys(el)[0]].length !== 0
-    })
-    .filter(
-      (el, index, self) =>
-        index ===
-        self.findIndex((t) => {
-          return JSON.stringify(t) === JSON.stringify(el)
-        })
-    )
+export const withoutDuplicates = <T>(
+  arr: Array<T>
+): ReturnType<() => Array<T>> => {
+  arr = arr.filter((el) => {
+    return el[Object.keys(el)[0]].length !== 0
+  })
+  arr = arr.filter(
+    (el, index, self) =>
+      index ===
+      self.findIndex((t) => {
+        return JSON.stringify(t) === JSON.stringify(el)
+      })
+  )
+  console.debug('withoutDuplicates', arr)
   return arr
 }
 

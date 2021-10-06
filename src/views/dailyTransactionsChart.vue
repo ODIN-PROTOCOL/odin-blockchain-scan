@@ -4,7 +4,11 @@
       <BackButton :current-router="router" />
       <h1 class="title-name">Daily Transactions Volume Chart</h1>
     </div>
-    <div class="sort-wrapper">
+
+    <div class="sort-wrapper" v-if="!isLoading">
+      <span>
+        Transactions<br /> per Day
+      </span>
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin"
         name="filter"
@@ -170,7 +174,13 @@ export default defineComponent({
 }
 
 .sort-wrapper {
-  justify-content: flex-end;
+  margin-top: 3.2rem;
+  justify-content: space-between;
+  span {
+    font-weight: 300;
+    font-size: 1.4rem;
+    line-height: 2rem;
+  }
 }
 
 .data-sources__table-head,
