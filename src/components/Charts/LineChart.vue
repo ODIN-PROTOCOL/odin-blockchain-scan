@@ -6,8 +6,6 @@
 import { defineComponent, ref } from 'vue'
 
 import Vue3ChartJs from '@j-t-mcc/vue3-chartjs'
-import zoomPlugin from 'chartjs-plugin-zoom'
-Vue3ChartJs.registerGlobalPlugins([zoomPlugin])
 
 export default defineComponent({
   name: 'AppChart',
@@ -83,17 +81,6 @@ export default defineComponent({
           },
           point: {
             borderWidth: 2,
-          },
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true,
-              },
-              mode: 'y',
-            },
           },
         },
       },

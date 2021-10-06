@@ -107,7 +107,11 @@ import { callers } from '@/api/callers'
 import { bigMath } from '@/helpers/bigMath'
 import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 import { DONUT_COLORS } from '@/helpers/ChartColors'
-import { addedRankBy, withoutDuplicates } from '@/helpers/helpers'
+import {
+  addedRankBy,
+  requestByDays,
+  withoutDuplicates,
+} from '@/helpers/helpers'
 import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 import BackButton from '@/components/BackButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
@@ -158,20 +162,14 @@ export default defineComponent({
     ): Promise<Array<ValidatorBlockStats>> => {
       const endDate = new Date()
       const startDate = new Date()
-      let tempArr: Array<ValidatorBlockStats> = []
-      for (let i = 0; i <= days * 24; ++i) {
-        startDate.setHours(startDate.getHours() - 1)
-        const { topValidators } = await callers.getTopValidators({
-          startDate,
-          endDate,
-          pagination,
-        })
-        if (topValidators.length) {
-          tempArr.push(...topValidators)
-        }
-      }
 
-      return withoutDuplicates(tempArr)
+      return withoutDuplicates(
+        await requestByDays(
+          { startDate, endDate, pagination },
+          callers.getTopValidators,
+          days
+        )
+      ) as unknown as Array<ValidatorBlockStats>
     }
 
     watch(

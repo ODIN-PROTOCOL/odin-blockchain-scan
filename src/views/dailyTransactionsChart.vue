@@ -27,7 +27,9 @@
     </div>
     <transition name="fade" mode="out-in">
       <template v-if="!isLoading">
-        <div class="content"></div>
+        <div class="content">
+          <LineChart :key="'chartData'" :chartData="chartData" />
+        </div>
       </template>
       <span class="empty" v-else>
         <span id="loading" class="empty-loading"></span>
@@ -45,46 +47,43 @@ import {
   useRouter,
 } from 'vue-router'
 import { ChartDataType } from '@/helpers/Types'
-import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { callers } from '@/api/callers'
-import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
-import { DONUT_COLORS } from '@/helpers/ChartColors'
-import { withoutDuplicates, testAAAAAAAAA } from '@/helpers/helpers'
+import { requestByDays, withoutDuplicates } from '@/helpers/helpers'
+import LineChart from '@/components/Charts/LineChart.vue'
 import BackButton from '@/components/BackButton.vue'
+import { convertToDayMonth } from '@/helpers/dates'
+import { bigMath } from '@/helpers/bigMath'
+import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'ValidatorChart',
-  components: { BackButton },
+  components: { BackButton, LineChart },
   setup: function () {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
-    const pagination: Pagination = new Pagination(0, 1000, true, true)
     const isLoading = ref<boolean>(false)
     const sortingValue = ref<string>('1')
     const sortingDays: Array<{ text: string; value: string }> = [
       {
-        text: 'Last year',
+        text: 'Last 24 hours',
         value: '1',
       },
       {
-        text: 'Last mounth',
-        value: '1',
+        text: 'Last 7 days',
+        value: '7',
       },
       {
-        text: 'Last week',
-        value: '1',
-      },
-      {
-        text: 'Last day',
-        value: '1',
+        text: 'Last 14 days',
+        value: '14',
       },
     ]
     const chartData = ref<ChartDataType>({
       labels: [],
       datasets: [
         {
-          backgroundColor: DONUT_COLORS,
-          borderColor: DONUT_COLORS,
+          backgroundColor: ['#66B0FF'],
+          borderColor: ['#66B0FF'],
           borderWidth: 2,
           hoverBorderWidth: 8,
           borderJoinStyle: 'round',
@@ -96,15 +95,39 @@ export default defineComponent({
       ],
     })
 
-    const getDataByDays = async (
-      days: number
-    ): Promise<Array<ValidatorBlockStats> | void> => {
+    const getDataByDays = async (days: number): Promise<void> => {
       const endDate = new Date()
       const startDate = new Date()
+      try {
+        // Todo: rework requestByDays, and change get info methods it InfoPanel.vue
+        // const { txVolumePerDay }: { txVolumePerDay: TxVolumePerDay[] } =
+        const txVolumePerDay = withoutDuplicates(
+          (await requestByDays(
+            { startDate, endDate },
+            callers.getTxVolume,
+            days
+          )) as Promise<QueryTxVolumeResponse>[]
+        )
+        // Todo: TS2345
+        // TS2345: Argument of type '(el: TxVolumePerDay) => void' is not assignable to parameter of type '(value: Promise<QueryTxVolumeResponse>, index: number, array: Promise<QueryTxVolumeResponse>[]) => void'.
+        // txVolumePerDay.map((el: TxVolumePerDay) => {
+        txVolumePerDay.map((el: any) => {
+          console.debug('el TxVolumePerDay', el)
+          chartData.value.labels = [
+            ...chartData.value.labels,
+            convertToDayMonth(el?.date as Date),
+          ] as Array<string>
+          chartData.value.datasets[0].data = [
+            ...chartData.value.datasets[0].data,
+            bigMath.toNum(el.volume),
+          ]
+        })
 
-      return withoutDuplicates(
-        await testAAAAAAAAA({ startDate, endDate }, callers.getTxVolume, days)
-      ) as Array<ValidatorBlockStats>
+        console.debug('txVolumePerDay', txVolumePerDay)
+      } catch (error) {
+        handleError(error)
+        console.error(error)
+      }
     }
 
     watch(
@@ -114,7 +137,7 @@ export default defineComponent({
 
     const getChartData = async (_sortingValue: number): Promise<void> => {
       isLoading.value = true
-      console.log(await getDataByDays(_sortingValue))
+      await getDataByDays(_sortingValue)
       isLoading.value = false
     }
 
@@ -135,6 +158,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+#line {
+  height: 45.9rem;
+}
+
 .empty {
   position: absolute;
   left: 50%;

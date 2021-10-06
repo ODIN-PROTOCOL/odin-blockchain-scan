@@ -58,44 +58,39 @@ export default defineComponent({
     })
 
     const getLatestTelemetry = async (): Promise<void> => {
-      try {
-        const endDate = new Date()
-        const startDate = new Date()
-        startDate.setDate(startDate.getDate() - 2)
+      const endDate = new Date()
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - 2)
 
-        const { txVolumePerDay } = await callers.getTxVolume({
-          startDate,
-          endDate,
-        })
+      const { txVolumePerDay } = await callers.getTxVolume({
+        startDate,
+        endDate,
+      })
 
-        console.debug('txVolumePerDay', txVolumePerDay)
+      console.debug('txVolumePerDay', txVolumePerDay)
 
-        txVolumePerDay.map((el) => {
-          chartData.value.labels = [
-            ...chartData.value.labels,
-            convertToDayMonth(el?.date as Date),
-          ] as Array<string>
-          chartData.value.datasets[0].data = [
-            ...chartData.value.datasets[0].data,
-            bigMath.toNum(el.volume),
-          ]
-        })
+      txVolumePerDay.map((el) => {
+        chartData.value.labels = [
+          ...chartData.value.labels,
+          convertToDayMonth(el?.date as Date),
+        ] as Array<string>
+        chartData.value.datasets[0].data = [
+          ...chartData.value.datasets[0].data,
+          bigMath.toNum(el.volume),
+        ]
+      })
 
-        transactionCount.value = chartData.value.datasets[0].data.reduce(
-          (sum, el): number => {
-            return Number(sum) + Number(el)
-          },
-          0
-        ) as number
+      transactionCount.value = chartData.value.datasets[0].data.reduce(
+        (sum, el): number => {
+          return Number(sum) + Number(el)
+        },
+        0
+      ) as number
 
-        console.debug('chartData', chartData.value)
+      console.debug('chartData', chartData.value)
 
-        await getCoinInfo()
-        chartDataLoad.value = true
-      } catch (error) {
-        handleError(error)
-        console.error(error)
-      }
+      await getCoinInfo()
+      chartDataLoad.value = true
     }
 
     const getCoinInfo = async (): Promise<void> => {
@@ -140,7 +135,12 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      await getLatestTelemetry()
+      try {
+        await getLatestTelemetry()
+      } catch (error) {
+        handleError(error)
+        console.error(error)
+      }
     })
 
     return {

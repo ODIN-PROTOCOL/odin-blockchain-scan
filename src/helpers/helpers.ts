@@ -165,9 +165,9 @@ export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
   return arr
 }
 
-export const testAAAAAAAAA = async <T extends AnyFn>(
+export const requestByDays = async <T extends AnyFn>(
   { startDate, endDate, pagination }: QueryTopValidatorsRequest,
-  fn: AnyFn,
+  fn: T,
   days: number
 ): Promise<Array<ReturnType<T>>> => {
   const tempArr: Array<ReturnType<T>> = []
@@ -183,19 +183,3 @@ export const testAAAAAAAAA = async <T extends AnyFn>(
   }
   return tempArr
 }
-
-// export const testAAAAAAAAA = async <T extends AnyFn>(
-//   fn: AnyFn,
-//   days: number
-// ): Promise<DecoratedFn<T>> => {
-//   return (...args: Parameters<T>): ReturnType<T> => {
-//     console.log('args', args)
-//     const res = fn(...args)
-//     console.log(
-//       'res',
-//       res.then((r: ReturnType<T>) => r)
-//     )
-//     console.log('days', days)
-//     return '' as ReturnType<T>
-//   }
-// }
