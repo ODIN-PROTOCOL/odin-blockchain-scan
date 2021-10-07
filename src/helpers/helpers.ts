@@ -4,8 +4,9 @@ import { adjustedData, ChartLabelsType } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { cacheAnswers } from '@/helpers/requests'
 import { bigMath } from '@/helpers/bigMath'
-import { AnyFn } from '@/shared-types'
-import { QueryTopValidatorsRequest } from '@provider/codec/telemetry/query'
+import { AnyFn, Unpacked } from '@/shared-types'
+import { Pagination } from '@/api/query-ext/telemetryExtension'
+//import { QueryTopValidatorsRequest } from '@provider/codec/telemetry/query'
 
 export const _allowedTypes = [
   'Send',
@@ -162,20 +163,33 @@ export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
 }
 
 export const requestByDays = async <T extends AnyFn>(
-  { startDate, endDate, pagination }: QueryTopValidatorsRequest,
+  {
+    startDate,
+    endDate,
+    pagination,
+  }: { startDate: Date; endDate: Date; pagination?: Pagination },
   fn: T,
   days: number
-): Promise<Array<ReturnType<T>>> => {
-  const tempArr: Array<ReturnType<T>> = []
+): Promise<Array<Unpacked<ReturnType<T>>>> => {
+  const tempArr: Array<Unpacked<ReturnType<T>>> = []
+
+  const _startDate = startDate
+  let _endDate = endDate
+
   for (let i = 0; i <= days * 24; ++i) {
-    startDate?.setHours(startDate.getHours() - 1)
+    _startDate?.setHours(startDate.getHours() - 1)
     const res = (await fn({
-      startDate,
-      endDate,
-      pagination: pagination ? pagination : null,
-    })) as ReturnType<T>
-    if (res[Object.keys(res as string)[0]].length)
-      tempArr.push(...res[Object.keys(res as string)[0]])
+      startDate: _startDate,
+      endDate: _endDate,
+      pagination,
+    })) as T extends infer U ? U : Unpacked<ReturnType<T>>
+    console.debug('requestByDays await res: ', res)
+    if (res[Object.keys(res)[0]].length) {
+      tempArr.push(...res[Object.keys(res)[0]])
+      _endDate = _startDate
+    }
+    console.debug('requestByDays: _startDate', _startDate)
+    console.debug('requestByDays: _endDate', _endDate)
   }
   return tempArr
 }

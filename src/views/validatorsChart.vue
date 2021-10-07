@@ -211,9 +211,7 @@ export default defineComponent({
         'blocksCounter'
       )
       totalBlocks.value = bigMath.format(
-        blocksCounters.reduce((sum, el): number => {
-          return Number(sum) + Number(el)
-        }, 0)
+        blocksCounters.reduce((sum: number, el): number => sum + Number(el), 0)
       )
 
       console.debug('chartData.value', chartData.value)

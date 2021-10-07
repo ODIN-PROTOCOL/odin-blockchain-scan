@@ -54,12 +54,11 @@ import {
 import { ChartDataType } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { requestByDays, withoutDuplicates } from '@/helpers/helpers'
+import { bigMath } from '@/helpers/bigMath'
+import { handleError } from '@/helpers/errors'
 import LineChart from '@/components/Charts/LineChart.vue'
 import BackButton from '@/components/BackButton.vue'
 import { convertToDayMonth } from '@/helpers/dates'
-import { bigMath } from '@/helpers/bigMath'
-import { QueryTxVolumeResponse } from '@provider/codec/telemetry/query'
-import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -105,30 +104,20 @@ export default defineComponent({
       const startDate = new Date()
       try {
         // Todo: rework requestByDays, and change get info methods it InfoPanel.vue
-        // const { txVolumePerDay }: { txVolumePerDay: TxVolumePerDay[] } =
-        const txVolumePerDay = withoutDuplicates(
-          (await requestByDays(
-            { startDate, endDate },
-            callers.getTxVolume,
-            days
-          )) as Promise<QueryTxVolumeResponse>[]
+        const queryTxVolumeResponseList = withoutDuplicates(
+          await requestByDays({ startDate, endDate }, callers.getTxVolume, days)
         )
-        // Todo: TS2345
-        // TS2345: Argument of type '(el: TxVolumePerDay) => void' is not assignable to parameter of type '(value: Promise<QueryTxVolumeResponse>, index: number, array: Promise<QueryTxVolumeResponse>[]) => void'.
-        // txVolumePerDay.map((el: TxVolumePerDay) => {
-        txVolumePerDay.map((el: any) => {
-          console.debug('el TxVolumePerDay', el)
-          chartData.value.labels = [
-            ...chartData.value.labels,
-            convertToDayMonth(el?.date as Date),
-          ] as Array<string>
-          chartData.value.datasets[0].data = [
-            ...chartData.value.datasets[0].data,
-            bigMath.toNum(el.volume),
-          ]
-        })
+        for (const { txVolumePerDay } of queryTxVolumeResponseList) {
+          console.debug('el TxVolumePerDay', txVolumePerDay)
+          chartData.value.labels.push(
+            convertToDayMonth(txVolumePerDay[0]?.date as Date)
+          )
+          chartData.value.datasets[0].data.push(
+            bigMath.toNum(txVolumePerDay[0].volume)
+          )
+        }
 
-        console.debug('txVolumePerDay', txVolumePerDay)
+        console.debug('queryTxVolumeResponseList', queryTxVolumeResponseList)
       } catch (error) {
         handleError(error)
         console.error(error)

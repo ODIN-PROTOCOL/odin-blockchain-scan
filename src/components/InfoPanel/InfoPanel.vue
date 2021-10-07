@@ -81,11 +81,9 @@ export default defineComponent({
       })
 
       transactionCount.value = chartData.value.datasets[0].data.reduce(
-        (sum, el): number => {
-          return Number(sum) + Number(el)
-        },
+        (sum: number, el): number => sum + Number(el),
         0
-      ) as number
+      )
 
       console.debug('chartData', chartData.value)
 
