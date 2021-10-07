@@ -78,6 +78,11 @@ function bigFormat(a: NumLike, format?: BigFormatCfg): string {
 function bigConvectOdinAndGeo(num: NumLike): string {
   return bigFormat(bigDivide(num, _bn(10).exponentiatedBy(6)))
 }
+function bigStakePercentage(num: NumLike): string {
+  return bigToStrStrict(
+    bigDivide(num, _bn(10).exponentiatedBy(18), { decimals: 3 })
+  )
+}
 
 function bigCompare(a: NumLike, b: NumLike): COMPARE_RESULT | null {
   return _bn(a).comparedTo(_bn(b))
@@ -121,6 +126,7 @@ export const bigMath = {
   toNum,
   toStr,
   bigConvectOdinAndGeo,
+  bigStakePercentage,
   toStrStrict: bigToStrStrict,
   zero: _bn(0),
   _bn,

@@ -218,7 +218,9 @@ export default defineComponent({
           {
             validatorAddress: v.validatorAddress,
             blocksCounter: bigMath.format(v.blocksCount),
-            stakePercentage: v.stakePercentage,
+            stakePercentage: `${bigMath.bigStakePercentage(
+              v.stakePercentage
+            )}%`,
           },
         ]
         blocksCounters = [...blocksCounters, bigMath.toNum(v.blocksCount)]
