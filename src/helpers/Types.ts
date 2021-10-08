@@ -27,13 +27,16 @@ export type ChartDataSetsType = {
   data: Array<string | number>
 }
 export type ChartLabelsType = {
-  validatorAddress?: string
-  blocksCounter?: string | number
-  stakePercentage?: string | number
-  rank?: number | string
+  validatorAddress: string
+  blocksCounter: string | number
+  stakePercentage: string | number
+  rank: number | string
+  date: string
+  volume: string | number
+  txs: string | number
 }
 export type ChartDataType = {
-  labels: Array<ChartLabelsType | string | Date>
+  labels: Array<Partial<ChartLabelsType> | string | Date>
   datasets: Array<ChartDataSetsType>
   options?: any
 }

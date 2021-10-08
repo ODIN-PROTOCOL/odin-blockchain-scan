@@ -6,7 +6,6 @@ import { cacheAnswers } from '@/helpers/requests'
 import { bigMath } from '@/helpers/bigMath'
 import { AnyFn, Unpacked } from '@/shared-types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
-//import { QueryTopValidatorsRequest } from '@provider/codec/telemetry/query'
 
 export const _allowedTypes = [
   'Send',
@@ -147,10 +146,9 @@ export const addedRankBy = <T extends ChartLabelsType>(
   return arr
 }
 
+// TODO: Come back to this later
 export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
-  arr = arr.filter((el) => {
-    return el[Object.keys(el)[0]].length !== 0
-  })
+  arr = arr.filter((el) => el[Object.keys(el)[0]].length !== 0)
   arr = arr.filter(
     (el, index, self) =>
       index ===
@@ -162,6 +160,7 @@ export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
   return arr
 }
 
+// TODO: Come back to this later
 export const requestByDays = async <T extends AnyFn>(
   {
     startDate,

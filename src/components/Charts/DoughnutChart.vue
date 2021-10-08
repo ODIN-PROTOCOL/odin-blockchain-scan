@@ -33,26 +33,7 @@ export default defineComponent({
       id: 'doughnut',
       type: 'doughnut',
       data: props.chartData,
-
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: 20,
-        },
-        plugins: {
-          title: {
-            display: false,
-          },
-          tooltip: {
-            enabled: false,
-            external: doughnutTooltipHandler,
-          },
-          legend: {
-            display: false,
-          },
-        },
-      },
+      options: props.chartData.options,
     }
     return { chartRef, Chart }
   },

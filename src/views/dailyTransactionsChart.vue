@@ -31,7 +31,7 @@
       </VuePicker>
     </div>
     <transition name="fade" mode="out-in">
-      <template v-if="!isLoading">
+      <template v-if="!isLoading && chartData">
         <div class="content">
           <LineChart :key="'chartData'" :chartData="chartData" />
         </div>
@@ -51,16 +51,20 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import {ChartDataType, ChartLabelsType} from '@/helpers/Types'
+import { ChartDataType, ChartLabelsType } from '@/helpers/Types'
 import { callers } from '@/api/callers'
-import {addedRankBy, requestByDays, withoutDuplicates} from '@/helpers/helpers'
+import {
+  addedRankBy,
+  requestByDays,
+  withoutDuplicates,
+} from '@/helpers/helpers'
 import { bigMath } from '@/helpers/bigMath'
 import { handleError } from '@/helpers/errors'
 import { convertToDayMonth } from '@/helpers/dates'
 // import { TxVolumePerDay } from '@provider/codec/telemetry/telemetry'
 import LineChart from '@/components/Charts/LineChart.vue'
 import BackButton from '@/components/BackButton.vue'
-import { doughnutTooltipHandler } from '@/helpers/chartHelpers'
+import { dailyTransactionsVolumeTooltipHandler } from '@/helpers/chartHelpers'
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -85,7 +89,13 @@ export default defineComponent({
       },
     ]
     const chartData = ref<ChartDataType>({
-      labels: [],
+      labels: [
+        { date: 'Oct 2', txs: 2 },
+        { date: 'Oct 3', txs: 2 },
+        { date: 'Oct 5', txs: 2 },
+        { date: 'Oct 7', txs: 2 },
+        { date: 'Oct 8', txs: 2 },
+      ],
       datasets: [
         {
           backgroundColor: ['#66B0FF'],
@@ -96,11 +106,14 @@ export default defineComponent({
           borderCapStyle: 'round',
           tension: 0.5,
           borderSkipped: false,
-          data: [],
+          data: [2, 5, 1, 17, 2],
         },
       ],
       options: {
         maintainAspectRatio: false,
+        layout: {
+          padding: 20,
+        },
         scales: {
           x: {
             grid: {
@@ -158,7 +171,7 @@ export default defineComponent({
           },
           tooltip: {
             enabled: false,
-            external: doughnutTooltipHandler,
+            external: dailyTransactionsVolumeTooltipHandler,
           },
           point: {
             borderWidth: 2,
@@ -172,36 +185,40 @@ export default defineComponent({
       const startDate = new Date()
       try {
         // Todo: rework requestByDays, and change get info methods it InfoPanel.vue
-        const queryTxVolumeResponseList = withoutDuplicates(
-          await requestByDays({ startDate, endDate }, callers.getTxVolume, days)
-        )
 
-        queryTxVolumeResponseList.forEach((el) => {
+        // const queryTxVolumeResponseList = withoutDuplicates(
+        //   await requestByDays({ startDate, endDate }, callers.getTxVolume, days)
+        // )
+        // const { txVolumePerDay } = await requestByDays(
+        //   { startDate, endDate },
+        //   callers.getTxVolume,
+        //   days
+        // )
+
+        const { txVolumePerDay } = await callers.getTxVolume({
+          startDate,
+          endDate,
+        })
+
+        txVolumePerDay.forEach((el) => {
           /*
            * ERROR: With push we have RangeError: Maximum call stack size exceeded
            */
           // chartData.value.labels.push(convertToDayMonth(el?.date as Date))
           // chartData.value.datasets[0].data.push(bigMath.toNum(el.volume))
-          chartData.value.labels = [
-            ...chartData.value.labels,
-            {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              date: convertToDayMonth(el?.date as Date),
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              volume: bigMath.toNum(el.volume),
-            },
-          ]
-
-          chartData.value.datasets[0].data = [
-            ...chartData.value.datasets[0].data,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            bigMath.toNum(el.volume),
-          ]
+          // chartData.value.labels = [
+          //   ...chartData.value.labels,
+          //   {
+          //     date: convertToDayMonth(el?.date as Date),
+          //     volume: bigMath.toNum(el.volume),
+          //   },
+          // ]
+          //
+          // chartData.value.datasets[0].data = [
+          //   ...chartData.value.datasets[0].data,
+          //   bigMath.toNum(el.volume),
+          // ]
         })
-        console.debug('queryTxVolumeResponseList', queryTxVolumeResponseList)
       } catch (error) {
         handleError(error)
         console.error(error)
@@ -210,17 +227,18 @@ export default defineComponent({
 
     watch(
       sortingValue,
-      async (): Promise<void> => await getChartData(Number(sortingValue.value))
+      // async (): Promise<void> => await getChartData(Number(sortingValue.value))
+      async (): Promise<void> => console.debug(Number(sortingValue.value))
     )
 
     const getChartData = async (_sortingValue: number): Promise<void> => {
       isLoading.value = true
-      await getDataByDays(_sortingValue)
+      // await getDataByDays(_sortingValue)
       isLoading.value = false
     }
 
     onMounted(async (): Promise<void> => {
-      await getChartData(Number(sortingValue.value))
+      // await getChartData(Number(sortingValue.value))
     })
 
     return {

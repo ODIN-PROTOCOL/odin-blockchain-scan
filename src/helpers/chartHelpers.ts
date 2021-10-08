@@ -1,6 +1,98 @@
 import { cropAddress } from '@/helpers/formatters'
 import { externalTooltipType, titleLineType } from '@/helpers/Types'
 
+export class TooltipHandler {
+  private readonly _context: externalTooltipType
+  private _tooltipEl: HTMLElement | null
+
+  constructor(context: externalTooltipType = {}) {
+    this._context = context
+    this._tooltipEl = null
+  }
+
+  get context(): externalTooltipType {
+    return this._context
+  }
+
+  get tooltipEl(): HTMLElement | null {
+    return this._tooltipEl
+  }
+
+  set tooltipEl(value: HTMLElement | null) {
+    this._tooltipEl = value
+  }
+
+  private createTooltipEl(): HTMLElement {
+    const { chart } = this.context
+    if (chart?.canvas?.parentNode?.querySelector('div'))
+      this.tooltipEl = chart?.canvas?.parentNode?.querySelector('div')
+
+    if (!this.tooltipEl) {
+      this.tooltipEl = document.createElement('div')
+      this.tooltipEl.style.background = '#053F7D'
+      this.tooltipEl.style.borderRadius = '3px'
+      this.tooltipEl.style.color = 'white'
+      this.tooltipEl.style.opacity = '1'
+      this.tooltipEl.style.pointerEvents = 'none'
+      this.tooltipEl.style.position = 'absolute'
+      this.tooltipEl.style.transition = 'all .1s ease'
+
+      const table: HTMLElement = document.createElement('table')
+      table.style.margin = '0px'
+
+      this.tooltipEl.appendChild(table)
+      this.tooltipEl.appendChild(_createArrow('left'))
+      chart?.canvas?.parentNode?.appendChild(this.tooltipEl)
+    }
+    return this.tooltipEl
+  }
+
+  init(): void {
+    this.createTooltipEl()
+    if (this.context.tooltip?.opacity === 0 && this.tooltipEl) {
+      this.tooltipEl.style.opacity = '0'
+      return
+    }
+
+    if (this.context.tooltip?.body) {
+      const titleLines: Partial<titleLineType> = this.context.tooltip
+        .dataPoints[0].label as Partial<titleLineType>
+
+      const bodyLines = [titleLines]
+
+      console.debug('titleLines', titleLines)
+
+      const tableHead = document.createElement('thead')
+      const tr = document.createElement('tr')
+      tr.style.borderWidth = '0'
+      const th = document.createElement('th')
+      th.style.borderWidth = '0'
+      th.style.textAlign = 'left'
+
+      const text = document.createTextNode(
+        `${cropAddress(titleLines.validatorAddress)}`
+      )
+
+      th.appendChild(text)
+      tr.appendChild(th)
+      tableHead.appendChild(tr)
+    }
+  }
+}
+
+export const dailyTransactionsVolumeTooltipHandler = (
+  context: externalTooltipType
+): void => {
+  const th = new TooltipHandler(context)
+  th.init()
+}
+export const doughnutTooltipHandler2 = (
+  context: externalTooltipType
+): void => {
+  const th = new TooltipHandler(context)
+  th.init()
+}
+
 const _createDesignSpanForTooltip = (
   text?: string,
   color?: string

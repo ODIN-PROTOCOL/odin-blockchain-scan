@@ -115,6 +115,7 @@ import {
 import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 import BackButton from '@/components/BackButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
+import {doughnutTooltipHandler} from "@/helpers/chartHelpers";
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -141,7 +142,43 @@ export default defineComponent({
     ]
     const totalBlocks = ref<string>('')
     const chartData = ref<ChartDataType>({
-      labels: [],
+      labels: [
+        {
+          validatorAddress:
+            'odinvaloper1nnfeguq30x6nwxjhaypxymx3nulyspsulqprrj',
+          blocksCounter: '332',
+          stakePercentage: '2.439%',
+          rank: 1,
+        },
+        {
+          validatorAddress:
+            'odinvaloper17geerdwmlxpwxlahmt02vj4wy89wfstj8pacf5',
+          blocksCounter: '335',
+          stakePercentage: '24.39%',
+          rank: 2,
+        },
+        {
+          validatorAddress:
+            'odinvaloper129umpweqxfywq0f2zdpgjcfnkhzcu8jyfu5nes',
+          blocksCounter: '335',
+          stakePercentage: '24.39%',
+          rank: 3,
+        },
+        {
+          validatorAddress:
+            'odinvaloper1hkm2qu5v3hlzzfzndut09wjz3lnk028edv7qkg',
+          blocksCounter: '335',
+          stakePercentage: '24.39%',
+          rank: 4,
+        },
+        {
+          validatorAddress:
+            'odinvaloper17rprjgtj0krfw3wyl9creueej6ca9dc4a65n80',
+          blocksCounter: '335',
+          stakePercentage: '24.39%',
+          rank: 5,
+        },
+      ],
       datasets: [
         {
           backgroundColor: DONUT_COLORS,
@@ -152,25 +189,44 @@ export default defineComponent({
           borderCapStyle: 'round',
           tension: 0.5,
           borderSkipped: false,
-          data: [],
+          data: [332, 335, 335, 335, 335],
         },
       ],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: 20,
+        },
+        plugins: {
+          title: {
+            display: false,
+          },
+          tooltip: {
+            enabled: false,
+            external: doughnutTooltipHandler,
+          },
+          legend: {
+            display: false,
+          },
+        },
+      },
     })
 
-    const getDataByDays = async (
-      days: number
-    ): Promise<Array<ValidatorBlockStats>> => {
-      const endDate = new Date()
-      const startDate = new Date()
-
-      return withoutDuplicates(
-        await requestByDays(
-          { startDate, endDate, pagination },
-          callers.getTopValidators,
-          days
-        )
-      ) as unknown as Array<ValidatorBlockStats>
-    }
+    // const getDataByDays = async (
+    //   days: number
+    // ): Promise<Array<ValidatorBlockStats>> => {
+    //   const endDate = new Date()
+    //   const startDate = new Date()
+    //
+    //   return withoutDuplicates(
+    //     await requestByDays(
+    //       { startDate, endDate, pagination },
+    //       callers.getTopValidators,
+    //       days
+    //     )
+    //   ) as unknown as Array<ValidatorBlockStats>
+    // }
 
     watch(
       sortingValue,
@@ -184,34 +240,38 @@ export default defineComponent({
 
     const getValidatorsData = async (days = 1): Promise<void> => {
       isLoading.value = true
-      chartData.value.datasets[0].data = []
-      chartData.value.labels = []
-
-      const TopValidators = await getDataByDays(days)
-
       let blocksCounters: Array<number> = []
-      for (const v of TopValidators) {
-        chartData.value.datasets[0].data = [
-          ...chartData.value.datasets[0].data,
-          bigMath.toNum(v.blocksCount),
-        ]
+      // chartData.value.datasets[0].data = []
+      // chartData.value.labels = []
 
-        chartData.value.labels = [
-          ...chartData.value.labels,
-          {
-            validatorAddress: v.validatorAddress,
-            blocksCounter: bigMath.format(v.blocksCount),
-            stakePercentage: `${bigMath.bigStakePercentage(
-              v.stakePercentage
-            )}%`,
-          },
-        ]
-        blocksCounters = [...blocksCounters, bigMath.toNum(v.blocksCount)]
-      }
-      chartData.value.labels = addedRankBy(
-        chartData.value.labels as Array<ChartLabelsType>,
-        'blocksCounter'
-      )
+      // const TopValidators = await getDataByDays(days)
+
+      // for (const v of TopValidators) {
+      //   chartData.value.datasets[0].data = [
+      //     ...chartData.value.datasets[0].data,
+      //     bigMath.toNum(v.blocksCount),
+      //   ]
+      //
+      //   chartData.value.labels = [
+      //     ...chartData.value.labels,
+      //     {
+      //       validatorAddress: v.validatorAddress,
+      //       blocksCounter: bigMath.format(v.blocksCount),
+      //       stakePercentage: `${bigMath.bigStakePercentage(
+      //         v.stakePercentage
+      //       )}%`,
+      //     },
+      //   ]
+      //   blocksCounters = [...blocksCounters, bigMath.toNum(v.blocksCount)]
+      // }
+      // chartData.value.labels = addedRankBy(
+      //   chartData.value.labels as Array<ChartLabelsType>,
+      //   'blocksCounter'
+      // )
+
+      chartData.value.datasets[0].data.forEach((el): void => {
+        blocksCounters.push(bigMath.toNum(el))
+      })
       totalBlocks.value = bigMath.format(
         blocksCounters.reduce((sum: number, el): number => sum + Number(el), 0)
       )
