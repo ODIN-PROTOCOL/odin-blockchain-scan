@@ -110,6 +110,7 @@ export type titleLineType = {
   stakePercentage: string
   validatorAddress: string
   blocksCounter: string
+  date: string
 }
 
 export interface searchBlocksInterface extends BlockResponse {

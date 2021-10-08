@@ -172,24 +172,16 @@ export const requestByDays = async <T extends AnyFn>(
   days: number
 ): Promise<Array<Unpacked<ReturnType<T>>>> => {
   const tempArr: Array<Unpacked<ReturnType<T>>> = []
-
-  const _startDate = startDate
-  let _endDate = endDate
-
   for (let i = 0; i <= days * 24; ++i) {
-    _startDate?.setHours(startDate.getHours() - 1)
+    startDate?.setHours(startDate.getHours() - 1)
     const res = (await fn({
-      startDate: _startDate,
-      endDate: _endDate,
+      startDate,
+      endDate,
       pagination,
-    })) as T extends infer U ? U : Unpacked<ReturnType<T>>
-    console.debug('requestByDays await res: ', res)
+    })) as T extends Unpacked<ReturnType<T>> ? T : never
     if (res[Object.keys(res)[0]].length) {
       tempArr.push(...res[Object.keys(res)[0]])
-      _endDate = _startDate
     }
-    console.debug('requestByDays: _startDate', _startDate)
-    console.debug('requestByDays: _endDate', _endDate)
   }
   return tempArr
 }

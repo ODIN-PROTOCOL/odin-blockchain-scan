@@ -51,14 +51,16 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { ChartDataType } from '@/helpers/Types'
+import {ChartDataType, ChartLabelsType} from '@/helpers/Types'
 import { callers } from '@/api/callers'
-import { requestByDays, withoutDuplicates } from '@/helpers/helpers'
+import {addedRankBy, requestByDays, withoutDuplicates} from '@/helpers/helpers'
 import { bigMath } from '@/helpers/bigMath'
 import { handleError } from '@/helpers/errors'
+import { convertToDayMonth } from '@/helpers/dates'
+// import { TxVolumePerDay } from '@provider/codec/telemetry/telemetry'
 import LineChart from '@/components/Charts/LineChart.vue'
 import BackButton from '@/components/BackButton.vue'
-import { convertToDayMonth } from '@/helpers/dates'
+import { doughnutTooltipHandler } from '@/helpers/chartHelpers'
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -97,6 +99,72 @@ export default defineComponent({
           data: [],
         },
       ],
+      options: {
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            grid: {
+              color: 'transparent',
+              borderColor: '#CCE4FF',
+            },
+            ticks: {
+              padding: 20,
+              color: '#212529',
+              font: {
+                size: 14,
+                family: 'SF Display',
+                lineHeight: 2,
+              },
+              callback: function (value) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                return this.getLabelForValue(value).date
+              },
+            },
+          },
+          y: {
+            grid: {
+              color: '#CCE4FF',
+              borderColor: 'transparent',
+            },
+            ticks: {
+              color: '#212529',
+              padding: 20,
+              font: {
+                size: 14,
+                family: 'SF Display',
+                lineHeight: 2,
+              },
+            },
+          },
+        },
+        elements: {
+          point: {
+            backgroundColor: '#007bff',
+            borderColor: '#007bff',
+            borderWidth: 3,
+            radius: 2,
+          },
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+          title: {
+            display: false,
+          },
+          subtitle: {
+            display: false,
+          },
+          tooltip: {
+            enabled: false,
+            external: doughnutTooltipHandler,
+          },
+          point: {
+            borderWidth: 2,
+          },
+        },
+      },
     })
 
     const getDataByDays = async (days: number): Promise<void> => {
@@ -107,16 +175,32 @@ export default defineComponent({
         const queryTxVolumeResponseList = withoutDuplicates(
           await requestByDays({ startDate, endDate }, callers.getTxVolume, days)
         )
-        for (const { txVolumePerDay } of queryTxVolumeResponseList) {
-          console.debug('el TxVolumePerDay', txVolumePerDay)
-          chartData.value.labels.push(
-            convertToDayMonth(txVolumePerDay[0]?.date as Date)
-          )
-          chartData.value.datasets[0].data.push(
-            bigMath.toNum(txVolumePerDay[0].volume)
-          )
-        }
 
+        queryTxVolumeResponseList.forEach((el) => {
+          /*
+           * ERROR: With push we have RangeError: Maximum call stack size exceeded
+           */
+          // chartData.value.labels.push(convertToDayMonth(el?.date as Date))
+          // chartData.value.datasets[0].data.push(bigMath.toNum(el.volume))
+          chartData.value.labels = [
+            ...chartData.value.labels,
+            {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              date: convertToDayMonth(el?.date as Date),
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              volume: bigMath.toNum(el.volume),
+            },
+          ]
+
+          chartData.value.datasets[0].data = [
+            ...chartData.value.datasets[0].data,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            bigMath.toNum(el.volume),
+          ]
+        })
         console.debug('queryTxVolumeResponseList', queryTxVolumeResponseList)
       } catch (error) {
         handleError(error)

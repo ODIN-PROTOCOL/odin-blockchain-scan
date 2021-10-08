@@ -14,7 +14,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import Vue3ChartJs from '@j-t-mcc/vue3-chartjs'
-import { externalTooltipHandler } from '@/helpers/chartHelpers'
+import { doughnutTooltipHandler } from '@/helpers/chartHelpers'
 
 export default defineComponent({
   name: 'DoughnutChart',
@@ -46,7 +46,7 @@ export default defineComponent({
           },
           tooltip: {
             enabled: false,
-            external: externalTooltipHandler,
+            external: doughnutTooltipHandler,
           },
           legend: {
             display: false,
