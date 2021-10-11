@@ -1,5 +1,5 @@
 <template>
-  <vue3-chart-js ref="chartRef" v-bind="{ ...Chart }" />
+  <vue3-chart-js ref="lineChartRef" v-bind="{ ...Chart }" />
 </template>
 
 <script lang="ts">
@@ -8,7 +8,7 @@ import { defineComponent, ref } from 'vue'
 import Vue3ChartJs from '@j-t-mcc/vue3-chartjs'
 
 export default defineComponent({
-  name: 'AppChart',
+  name: 'LineChart',
   components: {
     Vue3ChartJs,
   },
@@ -19,14 +19,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const chartRef = ref<HTMLElement>()
-    const Chart = {
+    const lineChartRef = ref<HTMLElement>()
+    const Chart = ref({
       id: 'line',
       type: 'line',
       data: props.chartData,
       options: props.chartData.options,
-    }
-    return { chartRef, Chart }
+    })
+    return { lineChartRef, Chart }
   },
 })
 </script>

@@ -24,7 +24,7 @@ export type ChartDataSetsType = {
   borderCapStyle: string
   tension: number
   borderSkipped: boolean
-  data: Array<string | number>
+  data: Array<string | number | any>
 }
 export type ChartLabelsType = {
   validatorAddress: string

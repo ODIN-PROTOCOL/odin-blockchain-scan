@@ -1,6 +1,6 @@
 <template>
   <div class="doughnut_chart">
-    <vue3-chart-js ref="chartRef" v-bind="{ ...Chart }" />
+    <vue3-chart-js ref="doughnutChartRef" v-bind="{ ...Chart }" />
   </div>
 </template>
 
@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+
 import Vue3ChartJs from '@j-t-mcc/vue3-chartjs'
-import { doughnutTooltipHandler } from '@/helpers/chartHelpers'
 
 export default defineComponent({
   name: 'DoughnutChart',
@@ -28,14 +28,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const chartRef = ref<HTMLElement>()
-    const Chart = {
+    const doughnutChartRef = ref<HTMLElement>()
+    const Chart = ref({
       id: 'doughnut',
       type: 'doughnut',
       data: props.chartData,
       options: props.chartData.options,
-    }
-    return { chartRef, Chart }
+    })
+    return { doughnutChartRef, Chart }
   },
 })
 </script>

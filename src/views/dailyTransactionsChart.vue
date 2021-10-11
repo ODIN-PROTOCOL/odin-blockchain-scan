@@ -51,23 +51,14 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { ChartDataType, ChartLabelsType } from '@/helpers/Types'
-import { callers } from '@/api/callers'
-import {
-  addedRankBy,
-  requestByDays,
-  withoutDuplicates,
-} from '@/helpers/helpers'
-import { bigMath } from '@/helpers/bigMath'
+import { ChartDataType } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
-import { convertToDayMonth } from '@/helpers/dates'
-// import { TxVolumePerDay } from '@provider/codec/telemetry/telemetry'
 import LineChart from '@/components/Charts/LineChart.vue'
 import BackButton from '@/components/BackButton.vue'
-import { dailyTransactionsVolumeTooltipHandler } from '@/helpers/chartHelpers'
+import { dailyTransactionsVolumeTooltipHandler } from '@/helpers/chartTooltipHelpers'
 
 export default defineComponent({
-  name: 'ValidatorChart',
+  name: 'DailyTransactionsVolumeChart',
   components: { BackButton, LineChart },
   setup: function () {
     const router: Router = useRouter()
@@ -88,31 +79,35 @@ export default defineComponent({
         value: '14',
       },
     ]
-    const chartData = ref<ChartDataType>({
-      labels: [
-        { date: 'Oct 2', txs: 2 },
-        { date: 'Oct 3', txs: 2 },
-        { date: 'Oct 5', txs: 2 },
-        { date: 'Oct 7', txs: 2 },
-        { date: 'Oct 8', txs: 2 },
-      ],
+    // Todo: some kind of wild trash with data for the graph, somewhere the data is convect to a string, somewhere not, (in the same place), I did not find any pattern, now there is just a test dataset that "works" All this is needed will redo from scratch
+    const chartData = ref<Partial<ChartDataType>>({
       datasets: [
         {
           backgroundColor: ['#66B0FF'],
           borderColor: ['#66B0FF'],
           borderWidth: 2,
-          hoverBorderWidth: 8,
+          hoverBorderWidth: 4,
           borderJoinStyle: 'round',
           borderCapStyle: 'round',
           tension: 0.5,
           borderSkipped: false,
-          data: [2, 5, 1, 17, 2],
+          data: [
+            { label: 'Oct 1', data: 4 },
+            { label: 'Oct 2', data: 2 },
+            { label: 'Oct 3', data: 5 },
+            { label: 'Oct 4', data: 11 },
+            { label: 'Oct 5', data: 21 },
+          ],
         },
       ],
       options: {
         maintainAspectRatio: false,
         layout: {
           padding: 20,
+        },
+        parsing: {
+          xAxisKey: 'label',
+          yAxisKey: 'data',
         },
         scales: {
           x: {
@@ -127,11 +122,6 @@ export default defineComponent({
                 size: 14,
                 family: 'SF Display',
                 lineHeight: 2,
-              },
-              callback: function (value) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                return this.getLabelForValue(value).date
               },
             },
           },
@@ -181,11 +171,13 @@ export default defineComponent({
     })
 
     const getDataByDays = async (days: number): Promise<void> => {
-      const endDate = new Date()
-      const startDate = new Date()
+      // const endDate = new Date()
+      // const startDate = new Date()
+      console.debug('getDataByDays', days)
+      isLoading.value = true
+      let tsx: Array<number> = []
       try {
         // Todo: rework requestByDays, and change get info methods it InfoPanel.vue
-
         // const queryTxVolumeResponseList = withoutDuplicates(
         //   await requestByDays({ startDate, endDate }, callers.getTxVolume, days)
         // )
@@ -194,31 +186,31 @@ export default defineComponent({
         //   callers.getTxVolume,
         //   days
         // )
-
-        const { txVolumePerDay } = await callers.getTxVolume({
-          startDate,
-          endDate,
-        })
-
-        txVolumePerDay.forEach((el) => {
-          /*
-           * ERROR: With push we have RangeError: Maximum call stack size exceeded
-           */
-          // chartData.value.labels.push(convertToDayMonth(el?.date as Date))
-          // chartData.value.datasets[0].data.push(bigMath.toNum(el.volume))
-          // chartData.value.labels = [
-          //   ...chartData.value.labels,
-          //   {
-          //     date: convertToDayMonth(el?.date as Date),
-          //     volume: bigMath.toNum(el.volume),
-          //   },
-          // ]
-          //
-          // chartData.value.datasets[0].data = [
-          //   ...chartData.value.datasets[0].data,
-          //   bigMath.toNum(el.volume),
-          // ]
-        })
+        // const { txVolumePerDay } = await callers.getTxVolume({
+        //   startDate,
+        //   endDate,
+        // })
+        // txVolumePerDay.forEach((el) => {
+        /*
+         * ERROR: With push we have RangeError: Maximum call stack size exceeded
+         */
+        // chartData.value.labels.push(convertToDayMonth(el?.date as Date))
+        // chartData.value.datasets[0].data.push(bigMath.toNum(el.volume))
+        // chartData.value.labels = [
+        //   ...chartData.value.labels,
+        //   {
+        //     date: convertToDayMonth(el?.date as Date),
+        //     volume: bigMath.toNum(el.volume),
+        //   },
+        // ]
+        //
+        // chartData.value.datasets[0].data = [
+        //   ...chartData.value.datasets[0].data,
+        //   bigMath.toNum(el.volume),
+        // ]
+        // })
+        console.debug('chartData.value', chartData.value)
+        isLoading.value = false
       } catch (error) {
         handleError(error)
         console.error(error)
@@ -227,18 +219,15 @@ export default defineComponent({
 
     watch(
       sortingValue,
-      // async (): Promise<void> => await getChartData(Number(sortingValue.value))
-      async (): Promise<void> => console.debug(Number(sortingValue.value))
+      async (): Promise<void> => await getChartData(Number(sortingValue.value))
     )
 
     const getChartData = async (_sortingValue: number): Promise<void> => {
-      isLoading.value = true
-      // await getDataByDays(_sortingValue)
-      isLoading.value = false
+      await getDataByDays(_sortingValue)
     }
 
     onMounted(async (): Promise<void> => {
-      // await getChartData(Number(sortingValue.value))
+      await getChartData(Number(sortingValue.value))
     })
 
     return {

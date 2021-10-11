@@ -101,21 +101,13 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { ChartDataType, ChartLabelsType } from '@/helpers/Types'
-import { Pagination } from '@/api/query-ext/telemetryExtension'
-import { callers } from '@/api/callers'
-import { bigMath } from '@/helpers/bigMath'
-import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
+import { ChartDataType } from '@/helpers/Types'
+import { handleError } from '@/helpers/errors'
 import { DONUT_COLORS } from '@/helpers/ChartColors'
-import {
-  addedRankBy,
-  requestByDays,
-  withoutDuplicates,
-} from '@/helpers/helpers'
 import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 import BackButton from '@/components/BackButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import {doughnutTooltipHandler} from "@/helpers/chartHelpers";
+import { doughnutTooltipHandler } from '@/helpers/chartHelpers'
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -123,7 +115,6 @@ export default defineComponent({
   setup: function () {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
-    const pagination: Pagination = new Pagination(0, 1000, true, true)
     const isLoading = ref<boolean>(false)
     const sortingValue = ref<string>('1')
     const sortingDays: Array<{ text: string; value: string }> = [
@@ -239,45 +230,54 @@ export default defineComponent({
     })
 
     const getValidatorsData = async (days = 1): Promise<void> => {
+      console.debug('getValidatorsData', days)
       isLoading.value = true
       let blocksCounters: Array<number> = []
-      // chartData.value.datasets[0].data = []
-      // chartData.value.labels = []
+      try {
+        // chartData.value.datasets[0].data = []
+        // chartData.value.labels = []
 
-      // const TopValidators = await getDataByDays(days)
+        // const TopValidators = await getDataByDays(days)
 
-      // for (const v of TopValidators) {
-      //   chartData.value.datasets[0].data = [
-      //     ...chartData.value.datasets[0].data,
-      //     bigMath.toNum(v.blocksCount),
-      //   ]
-      //
-      //   chartData.value.labels = [
-      //     ...chartData.value.labels,
-      //     {
-      //       validatorAddress: v.validatorAddress,
-      //       blocksCounter: bigMath.format(v.blocksCount),
-      //       stakePercentage: `${bigMath.bigStakePercentage(
-      //         v.stakePercentage
-      //       )}%`,
-      //     },
-      //   ]
-      //   blocksCounters = [...blocksCounters, bigMath.toNum(v.blocksCount)]
-      // }
-      // chartData.value.labels = addedRankBy(
-      //   chartData.value.labels as Array<ChartLabelsType>,
-      //   'blocksCounter'
-      // )
+        // for (const v of TopValidators) {
+        //   chartData.value.datasets[0].data = [
+        //     ...chartData.value.datasets[0].data,
+        //     bigMath.toNum(v.blocksCount),
+        //   ]
+        //
+        //   chartData.value.labels = [
+        //     ...chartData.value.labels,
+        //     {
+        //       validatorAddress: v.validatorAddress,
+        //       blocksCounter: bigMath.format(v.blocksCount),
+        //       stakePercentage: `${bigMath.bigStakePercentage(
+        //         v.stakePercentage
+        //       )}%`,
+        //     },
+        //   ]
+        //   blocksCounters = [...blocksCounters, bigMath.toNum(v.blocksCount)]
+        // }
+        // chartData.value.labels = addedRankBy(
+        //   chartData.value.labels as Array<ChartLabelsType>,
+        //   'blocksCounter'
+        // )
 
-      chartData.value.datasets[0].data.forEach((el): void => {
-        blocksCounters.push(bigMath.toNum(el))
-      })
-      totalBlocks.value = bigMath.format(
-        blocksCounters.reduce((sum: number, el): number => sum + Number(el), 0)
-      )
+        // chartData.value.datasets[0].data.forEach((el): void => {
+        //   blocksCounters.push(bigMath.toNum(el))
+        // })
+        // totalBlocks.value = bigMath.format(
+        //   blocksCounters.reduce(
+        //     (sum: number, el): number => sum + Number(el),
+        //     0
+        //   )
+        // )
 
-      console.debug('chartData.value', chartData.value)
-      isLoading.value = false
+        console.debug('chartData.value', chartData.value)
+        isLoading.value = false
+      } catch (error) {
+        handleError(error)
+        console.error(error)
+      }
     }
 
     return {
