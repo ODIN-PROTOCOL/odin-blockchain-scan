@@ -109,6 +109,12 @@ const _randomColors = (size: number, name: string): Array<string> => {
 }
 export const getRandomColors = cacheAnswers(_randomColors)
 
+export const allowedTxCount = async (
+  txs: readonly TxResponse[]
+): Promise<number> => {
+  return await prepareTransaction(txs).then((res) => res.length)
+}
+
 export const prepareTransaction = async (
   txs: readonly TxResponse[]
 ): Promise<Array<adjustedData>> => {

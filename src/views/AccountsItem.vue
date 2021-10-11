@@ -202,15 +202,14 @@ export default defineComponent({
           })
         )
 
-        const { txs, totalCount } = await callers.getTxSearch({
+        const { txs } = await callers.getTxSearch({
           query: `message.sender='${validatorAddress}'`,
         })
 
         geoBalance.value = await getTotalAmount(validatorAddress, 'minigeo')
         odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
         transactions.value = await prepareTransaction(txs)
-
-        totalTxCount.value = totalCount
+        totalTxCount.value = transactions.value.length
       } catch (e) {
         console.error(e)
         handleError(e)
