@@ -175,7 +175,6 @@ export default defineComponent({
       // const startDate = new Date()
       console.debug('getDataByDays', days)
       isLoading.value = true
-      let tsx: Array<number> = []
       try {
         // Todo: rework requestByDays, and change get info methods it InfoPanel.vue
         // const queryTxVolumeResponseList = withoutDuplicates(

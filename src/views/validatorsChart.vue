@@ -108,6 +108,7 @@ import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 import BackButton from '@/components/BackButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { doughnutTooltipHandler } from '@/helpers/chartHelpers'
+import { bigMath } from '@/helpers/bigMath'
 
 export default defineComponent({
   name: 'ValidatorChart',
@@ -132,7 +133,7 @@ export default defineComponent({
       },
     ]
     const totalBlocks = ref<string>('')
-    const chartData = ref<ChartDataType>({
+    const chartData = ref<Partial<ChartDataType>>({
       labels: [
         {
           validatorAddress:
@@ -180,7 +181,7 @@ export default defineComponent({
           borderCapStyle: 'round',
           tension: 0.5,
           borderSkipped: false,
-          data: [332, 335, 335, 335, 335],
+          data: [2.439, 24.39, 24.39, 24.39, 24.39],
         },
       ],
       options: {
@@ -262,15 +263,18 @@ export default defineComponent({
         //   'blocksCounter'
         // )
 
-        // chartData.value.datasets[0].data.forEach((el): void => {
-        //   blocksCounters.push(bigMath.toNum(el))
-        // })
-        // totalBlocks.value = bigMath.format(
-        //   blocksCounters.reduce(
-        //     (sum: number, el): number => sum + Number(el),
-        //     0
-        //   )
-        // )
+        // Temp any, Todo: ChartLabelsType
+        chartData.value?.labels?.forEach((el): void => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          blocksCounters.push(bigMath.toNum(el.blocksCounter))
+        })
+        totalBlocks.value = bigMath.format(
+          blocksCounters.reduce(
+            (sum: number, el): number => sum + Number(el),
+            0
+          )
+        )
 
         console.debug('chartData.value', chartData.value)
         isLoading.value = false
