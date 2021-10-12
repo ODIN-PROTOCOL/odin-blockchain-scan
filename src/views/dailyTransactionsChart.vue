@@ -5,6 +5,10 @@
       <h1 class="title-name">Daily Transactions Volume Chart</h1>
     </div>
 
+    <div class="test">
+      <LineChartD3 :chart="test"></LineChartD3>
+    </div>
+
     <div class="sort-wrapper" v-if="!isLoading">
       <span>
         Transactions<br />
@@ -55,12 +59,28 @@ import { ChartDataType } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
 import LineChart from '@/components/Charts/LineChart.vue'
 import BackButton from '@/components/BackButton.vue'
+import LineChartD3 from '@/components/Charts/LineChartd3.vue'
 import { dailyTransactionsVolumeTooltipHandler } from '@/helpers/chartTooltipHelpers'
 
 export default defineComponent({
   name: 'DailyTransactionsVolumeChart',
-  components: { BackButton, LineChart },
+  components: { LineChartD3, BackButton, LineChart },
   setup: function () {
+    const test = ref([
+      { date: '2013-05-01', value: 4 },
+      { date: '2013-05-02', value: 2 },
+      { date: '2013-05-03', value: 5 },
+      { date: '2013-05-04', value: 10 },
+      { date: '2013-05-05', value: 2 },
+    ])
+    // const test = ref([
+    //   { date: 'Oct 1', value: 4 },
+    //   { date: 'Oct 2', value: 2 },
+    //   { date: 'Oct 3', value: 5 },
+    //   { date: 'Oct 4', value: 11 },
+    //   { date: 'Oct 5', value: 21 },
+    // ])
+
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
     const isLoading = ref<boolean>(false)
@@ -227,6 +247,12 @@ export default defineComponent({
 
     onMounted(async (): Promise<void> => {
       await getChartData(Number(sortingValue.value))
+
+      // setTimeout(() => {
+      //   test.value[1].value = 2
+      //   test.value[0].value = 6
+      //   test.value[4].value = 3
+      // }, 5000)
     })
 
     return {
@@ -236,6 +262,7 @@ export default defineComponent({
       sortingDays,
       sortingValue,
       isLoading,
+      test,
     }
   },
 })

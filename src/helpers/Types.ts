@@ -3,6 +3,7 @@ import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
 import { Chart, ChartType, TooltipModel } from 'chart.js'
+import { number } from '@/composables/useForm/validators'
 
 export type Link = {
   to?: string
@@ -118,4 +119,11 @@ export type titleLineType = {
 
 export interface searchBlocksInterface extends BlockResponse {
   total_tx?: string | number
+}
+
+export type marginType = {
+  top: number
+  right: number
+  bottom: number
+  left: number
 }
