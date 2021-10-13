@@ -72,19 +72,19 @@ export default defineComponent({
           to: 'Tokemonics',
           text: 'Tokemonics overview',
         },
-        {
-          to: 'odin&geo',
-          text: 'Odin & Geo',
-        },
+        // {
+        //   to: 'odin&geo',
+        //   text: 'Odin & Geo',
+        // },
       ],
     }
     const ResourceList: LinkList = {
       name: 'Resources',
       links: [
-        {
-          to: 'charts',
-          text: 'Charts & Stats',
-        },
+        // {
+        //   to: 'charts',
+        //   text: 'Charts & Stats',
+        // },
         {
           url: '/chart/validators/',
           text: 'Block Validators Chart',

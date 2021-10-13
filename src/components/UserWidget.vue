@@ -1,12 +1,15 @@
 <template>
   <div class="user-widget fx-row">
-    <MetaMask />
+    <!--    <MetaMask />-->
     <!--
     <BalanceButton />
     <button class="app-ico-btn mg-l8" type="button" @click="logOutAndLeave()">
       <img src="~@/assets/icons/exit.svg" alt="Log out" />
     </button>
     -->
+    <button class="app-btn-login" type="button" @click="logInAndLeave()">
+      <span>Sign in</span>
+    </button>
   </div>
 </template>
 
@@ -14,21 +17,22 @@
 import { defineComponent } from 'vue'
 import { useAuthorization } from '@/composables/useAuthorization'
 // import BalanceButton from '@/components/BalanceButton.vue'
-import MetaMask from '@/components/MetaMask/MetaMask.vue'
+// import MetaMask from '@/components/MetaMask/MetaMask.vue'
 import router from '@/router'
 
 export default defineComponent({
   name: 'UserWidget',
   // BalanceButton
-  components: { MetaMask },
+  // MetaMask
+  components: {},
   setup() {
     const auth = useAuthorization()
-    const logOutAndLeave = () => {
-      auth.logOut()
-      router.push({ name: 'Auth' })
+    const logInAndLeave = () => {
+      // auth.logOut()
+      router.push('/')
     }
 
-    return { logOutAndLeave }
+    return { logInAndLeave }
   },
 })
 </script>

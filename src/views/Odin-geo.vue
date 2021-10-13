@@ -19,6 +19,7 @@ import {
   QueryParamsResponse,
   QueryTreasuryPoolResponse,
 } from '@provider/codec/mint/query'
+import { bigMath } from '@/helpers/bigMath'
 
 export default defineComponent({
   name: 'Odin-geo',
@@ -29,7 +30,6 @@ export default defineComponent({
     const coins = ['geodb', 'odin-protocol']
 
     onMounted(async () => {
-      console.debug('"onMounted hook"')
       await fetchData(coins)
     })
 
@@ -57,15 +57,16 @@ export default defineComponent({
           data,
           data: {
             name,
+            symbol,
             market_data: { total_supply },
           },
         } = (await getAPIDate(
           `${process.env.VUE_APP_COINGECKO_API}/coins/${coin}`
         )) as CoingeckoCoinsType
 
-        console.log(`COINGECKO_API coin ${name}:`, data)
-        console.log(
-          `COINGECKO_API coin ${name} total_supply:`,
+        console.debug(`COINGECKO_API coin ${name}:`, data)
+        console.debug(
+          `COINGECKO_API coin ${name}/( ${symbol} ) total_supply:`,
           data.market_data.total_supply
         )
 
@@ -80,12 +81,12 @@ export default defineComponent({
             amount: {
               balances: '4,684',
               community_pool: '4,684',
-              treasury_pool: `${
+              treasury_pool: `${bigMath.bigConvectOdinAndGeo(
                 treasuryPool[0].amount
-              } ${treasuryPool[0].denom.toUpperCase()}`,
-              providers_pool: `${
+              )} ${symbol.toUpperCase()}`,
+              providers_pool: `${bigMath.bigConvectOdinAndGeo(
                 treasuryPool[0].amount
-              } ${treasuryPool[0].denom.toUpperCase()}`,
+              )} ${symbol.toUpperCase()}`,
             },
           },
         ]
