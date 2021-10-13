@@ -67,11 +67,11 @@ export default defineComponent({
   components: { LineChartD3, BackButton, LineChart },
   setup: function () {
     const test = ref([
-      { date: '2013-05-01', value: 4 },
-      { date: '2013-05-02', value: 2 },
-      { date: '2013-05-03', value: 5 },
-      { date: '2013-05-04', value: 10 },
-      { date: '2013-05-05', value: 2 },
+      { date: new Date(2021, 10, 1), value: 4 },
+      { date: new Date(2021, 10, 2), value: 2 },
+      { date: new Date(2021, 10, 3), value: 5 },
+      { date: new Date(2021, 10, 4), value: 11 },
+      { date: new Date(2021, 10, 5), value: 21 },
     ])
     // const test = ref([
     //   { date: 'Oct 1', value: 4 },

@@ -15,6 +15,12 @@
 .tick text {
   font-size: 1.3rem;
 }
+.y.axis-grid .tick line {
+  color: #cce4ff !important;
+}
+.y.axis-grid > .domain {
+  display: none;
+}
 </style>
 
 <script lang="ts">
@@ -23,14 +29,14 @@ import { marginType } from '@/helpers/Types'
 import {
   select,
   scaleLinear,
-  scaleBand,
   scaleTime,
   line,
-  max,
   extent,
-  timeParse,
   axisLeft,
   axisBottom,
+  curveBumpY,
+  curveBumpX,
+  max,
 } from 'd3'
 
 export default defineComponent({
@@ -43,10 +49,10 @@ export default defineComponent({
     margin: {
       type: Object as () => marginType,
       default: () => ({
-        top: 50,
-        right: 50,
-        bottom: 50,
-        left: 50,
+        top: 25,
+        right: 25,
+        bottom: 25,
+        left: 25,
       }),
     },
     duration: {
@@ -54,19 +60,23 @@ export default defineComponent({
       default: () => 250,
     },
   },
-  setup(props) {
+  setup: function (props) {
     const chartEl = ref<HTMLDivElement | null>(null)
+    const chart = ref()
+
     const height = ref<number>()
     const width = ref<number>()
-    const chart = ref()
-    const _scaleX = ref()
-    const _scaleY = ref()
+
+    const _x = ref()
+    const _y = ref()
     const xAxis = ref()
+    const yAxisGrid = ref()
     const yAxis = ref()
     const _line = ref()
 
     function _init() {
       if (!chartEl.value) throw new ReferenceError(`chartEl ref error`)
+
       height.value =
         chartEl?.value?.clientHeight - props.margin.top - props.margin.bottom
       width.value =
@@ -74,6 +84,14 @@ export default defineComponent({
 
       chart.value = select(chartEl.value)
         .append('svg')
+        .attr(
+          'viewBox',
+          `0, 0, ${width.value + props.margin.left + props.margin.right}, ${
+            height.value + props.margin.top + props.margin.bottom
+          }`
+        )
+        .style('-webkit-tap-highlight-color', 'transparent')
+        .style('overflow', 'visible')
         .attr('class', 'chart-svg')
         .attr('width', width.value + props.margin.left + props.margin.right)
         .attr('height', height.value + props.margin.top + props.margin.bottom)
@@ -83,33 +101,54 @@ export default defineComponent({
           `translate(${props.margin.left},${props.margin.top})`
         )
 
-      _scaleX.value = scaleBand().range([0, width.value as number])
-      _scaleY.value = scaleLinear().range([height.value as number, 0])
+      /**
+       * Tooltip
+       */
+      chart.value.append('svg:g').attr('class', 'chart-tooltip')
+      chart.value.on('touchmove mousemove', (event) => {
+        console.debug('event', event)
+      })
 
-      xAxis.value = axisBottom(_scaleX.value)
-      yAxis.value = axisLeft(_scaleY.value)
+      // TODO: scaleBand ? scaleTime? or smth else?
+      _x.value = scaleTime()
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .domain(extent(props.chart, (d: any) => d.date))
+        .range([
+          props.margin.left,
+          (width.value as number) - props.margin.right,
+        ])
 
-      chart.value
-        .append('svg:g')
-        .attr('class', 'axis-x')
-        .call(xAxis.value)
-        .attr('transform', `translate(0,${height.value})`)
+      _y.value = scaleLinear()
+        .domain([0, max(props.chart, (d: any) => d.value)])
+        .range([
+          (height.value as number) - props.margin.bottom,
+          props.margin.top,
+        ])
+        .range([
+          (height.value as number) - props.margin.bottom,
+          props.margin.top,
+        ])
 
-      chart.value.append('svg:g').attr('class', 'axis-y').call(yAxis.value)
+      xAxis.value = axisBottom(_x.value)
+      yAxis.value = axisLeft(_y.value)
+
+      yAxisGrid.value = axisLeft(_y.value)
+        .tickSize(-width.value)
+        .tickFormat(() => '')
+        .ticks(10)
 
       _draw()
     }
 
     function _draw() {
-      _scaleX.value
-        .domain(props.chart.map((d: any) => d.date))
-        .range([0, width.value])
-      _scaleY.value.domain([0, max(props.chart, (d: any) => d.value)])
-
-      // Define the line
       _line.value = line()
-        .y((d: any) => _scaleY.value(d.value))
-        .x((d: any) => _scaleX.value(d.date))
+        .defined((d: any) => !isNaN(d.value))
+        // Kappa :D
+        .curve(curveBumpY)
+        .curve(curveBumpX)
+        .x((d: any) => _x.value(d.date))
+        .y((d: any) => _y.value(d.value))
 
       chart.value
         .append('path')
@@ -118,10 +157,42 @@ export default defineComponent({
         .attr('fill', 'none')
         .attr('stroke', '#66B0FF')
         .attr('stroke-width', 1.5)
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
         .attr('d', _line.value)
 
-      select('.chart-svg').select('.axis-x').transition().call(xAxis.value)
-      select('.chart-svg').select('.axis-y').transition().call(yAxis.value)
+      chart.value
+        .append('svg:g')
+        .attr('class', 'dots')
+        .selectAll('dot')
+        .data(props.chart)
+        .enter()
+        .append('circle')
+        .attr('cx', (d: any) => _x.value(d.date))
+        .attr('cy', (d: any) => _y.value(d.value))
+        .attr('r', 3)
+        .attr('fill', '#66B0FF')
+
+      chart.value
+        .append('svg:g')
+        .attr('class', 'axis-x')
+        .attr(
+          'transform',
+          `translate(0,${(height.value as number) - props.margin.bottom})`
+        )
+        .call(xAxis.value)
+
+      chart.value
+        .append('svg:g')
+        .attr('class', 'y axis-grid')
+        .call(yAxisGrid.value)
+        .attr('transform', `translate(${props.margin.left},0)`)
+
+      chart.value
+        .append('svg:g')
+        .attr('class', 'axis-y')
+        .attr('transform', `translate(${props.margin.left},0)`)
+        .call(yAxis.value)
     }
 
     onMounted(() => {
