@@ -22,6 +22,7 @@ import router from '@/router'
 
 export default defineComponent({
   name: 'UserWidget',
+  // TODO: In the process of discussion, whether it is necessary or not, but in the design there is
   // BalanceButton
   // MetaMask
   components: {},

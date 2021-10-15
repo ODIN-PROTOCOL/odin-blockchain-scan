@@ -65,6 +65,8 @@ export default defineComponent({
         },
       ],
     }
+
+    // TODO: return hide date when pages be done
     const TokemonicList: LinkList = {
       name: 'Tokemonics',
       links: [
