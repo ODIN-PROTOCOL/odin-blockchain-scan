@@ -4,11 +4,6 @@
       <BackButton :current-router="router" />
       <h1 class="title-name">Daily Transactions Volume Chart</h1>
     </div>
-
-    <div class="test">
-      <LineChartD3 :chart="test"></LineChartD3>
-    </div>
-
     <div class="sort-wrapper" v-if="!isLoading">
       <span>
         Transactions<br />
@@ -35,9 +30,11 @@
       </VuePicker>
     </div>
     <transition name="fade" mode="out-in">
-      <template v-if="!isLoading && chartData">
+      <template v-if="!isLoading">
         <div class="content">
-          <LineChart :key="'chartData'" :chartData="chartData" />
+          <div class="test">
+            <LineChartD3 :chart="tempDate"></LineChartD3>
+          </div>
         </div>
       </template>
       <span class="empty" v-else>
@@ -55,31 +52,21 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { ChartDataType } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
-import LineChart from '@/components/Charts/LineChart.vue'
 import BackButton from '@/components/BackButton.vue'
 import LineChartD3 from '@/components/Charts/LineChartd3.vue'
-import { dailyTransactionsVolumeTooltipHandler } from '@/helpers/chartTooltipHelpers'
 
 export default defineComponent({
   name: 'DailyTransactionsVolumeChart',
-  components: { LineChartD3, BackButton, LineChart },
+  components: { LineChartD3, BackButton },
   setup: function () {
-    const test = ref([
-      { date: new Date(2021, 10, 1), value: 4 },
-      { date: new Date(2021, 10, 2), value: 2 },
-      { date: new Date(2021, 10, 3), value: 5 },
-      { date: new Date(2021, 10, 4), value: 11 },
-      { date: new Date(2021, 10, 5), value: 21 },
+    const tempDate = ref([
+      { date: new Date('October 1, 2021 00:00:00'), value: 4 },
+      { date: new Date('October 2, 2021 00:00:00'), value: 2 },
+      { date: new Date('October 3, 2021 00:00:00'), value: 5 },
+      { date: new Date('October 4, 2021 00:00:00'), value: 11 },
+      { date: new Date('October 5, 2021 00:00:00'), value: 22 },
     ])
-    // const test = ref([
-    //   { date: 'Oct 1', value: 4 },
-    //   { date: 'Oct 2', value: 2 },
-    //   { date: 'Oct 3', value: 5 },
-    //   { date: 'Oct 4', value: 11 },
-    //   { date: 'Oct 5', value: 21 },
-    // ])
 
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
@@ -99,104 +86,13 @@ export default defineComponent({
         value: '14',
       },
     ]
-    // Todo: some kind of wild trash with data for the graph, somewhere the data is convect to a string, somewhere not, (in the same place), I did not find any pattern, now there is just a test dataset that "works" All this is needed will redo from scratch
-    const chartData = ref<Partial<ChartDataType>>({
-      datasets: [
-        {
-          backgroundColor: ['#66B0FF'],
-          borderColor: ['#66B0FF'],
-          borderWidth: 2,
-          hoverBorderWidth: 4,
-          borderJoinStyle: 'round',
-          borderCapStyle: 'round',
-          tension: 0.5,
-          borderSkipped: false,
-          data: [
-            { label: 'Oct 1', data: 4 },
-            { label: 'Oct 2', data: 2 },
-            { label: 'Oct 3', data: 5 },
-            { label: 'Oct 4', data: 11 },
-            { label: 'Oct 5', data: 21 },
-          ],
-        },
-      ],
-      options: {
-        maintainAspectRatio: false,
-        layout: {
-          padding: 20,
-        },
-        parsing: {
-          xAxisKey: 'label',
-          yAxisKey: 'data',
-        },
-        scales: {
-          x: {
-            grid: {
-              color: 'transparent',
-              borderColor: '#CCE4FF',
-            },
-            ticks: {
-              padding: 20,
-              color: '#212529',
-              font: {
-                size: 14,
-                family: 'SF Display',
-                lineHeight: 2,
-              },
-            },
-          },
-          y: {
-            grid: {
-              color: '#CCE4FF',
-              borderColor: 'transparent',
-            },
-            ticks: {
-              color: '#212529',
-              padding: 20,
-              font: {
-                size: 14,
-                family: 'SF Display',
-                lineHeight: 2,
-              },
-            },
-          },
-        },
-        elements: {
-          point: {
-            backgroundColor: '#007bff',
-            borderColor: '#007bff',
-            borderWidth: 3,
-            radius: 2,
-          },
-        },
-        plugins: {
-          legend: {
-            display: false,
-          },
-          title: {
-            display: false,
-          },
-          subtitle: {
-            display: false,
-          },
-          tooltip: {
-            enabled: false,
-            external: dailyTransactionsVolumeTooltipHandler,
-          },
-          point: {
-            borderWidth: 2,
-          },
-        },
-      },
-    })
 
     const getDataByDays = async (days: number): Promise<void> => {
       // const endDate = new Date()
       // const startDate = new Date()
-      console.debug('getDataByDays', days)
       isLoading.value = true
       try {
-        // Todo: rework requestByDays, and change get info methods it InfoPanel.vue
+        // Todo: Wait for back-end
         // const queryTxVolumeResponseList = withoutDuplicates(
         //   await requestByDays({ startDate, endDate }, callers.getTxVolume, days)
         // )
@@ -210,25 +106,6 @@ export default defineComponent({
         //   endDate,
         // })
         // txVolumePerDay.forEach((el) => {
-        /*
-         * ERROR: With push we have RangeError: Maximum call stack size exceeded
-         */
-        // chartData.value.labels.push(convertToDayMonth(el?.date as Date))
-        // chartData.value.datasets[0].data.push(bigMath.toNum(el.volume))
-        // chartData.value.labels = [
-        //   ...chartData.value.labels,
-        //   {
-        //     date: convertToDayMonth(el?.date as Date),
-        //     volume: bigMath.toNum(el.volume),
-        //   },
-        // ]
-        //
-        // chartData.value.datasets[0].data = [
-        //   ...chartData.value.datasets[0].data,
-        //   bigMath.toNum(el.volume),
-        // ]
-        // })
-        console.debug('chartData.value', chartData.value)
         isLoading.value = false
       } catch (error) {
         handleError(error)
@@ -236,10 +113,22 @@ export default defineComponent({
       }
     }
 
+    // TODO: temp change date
     watch(
       sortingValue,
-      async (): Promise<void> => await getChartData(Number(sortingValue.value))
+      // async (): Promise<void> => await getChartData(Number(sortingValue.value))
+      (): void => changeTestDate(Number(sortingValue.value))
     )
+    const changeTestDate = (num) => {
+      for (let i = 0; i < num; i++) {
+        const date = new Date()
+        date.setDate(date.getDate() + i)
+        tempDate.value.push({
+          date,
+          value: Number((Math.random() * (num - 1) + 1).toFixed()),
+        })
+      }
+    }
 
     const getChartData = async (_sortingValue: number): Promise<void> => {
       await getDataByDays(_sortingValue)
@@ -247,22 +136,15 @@ export default defineComponent({
 
     onMounted(async (): Promise<void> => {
       await getChartData(Number(sortingValue.value))
-
-      // setTimeout(() => {
-      //   test.value[1].value = 2
-      //   test.value[0].value = 6
-      //   test.value[4].value = 3
-      // }, 5000)
     })
 
     return {
       router,
       route,
-      chartData,
+      tempDate,
       sortingDays,
       sortingValue,
       isLoading,
-      test,
     }
   },
 })
