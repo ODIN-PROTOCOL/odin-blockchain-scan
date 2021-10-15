@@ -139,6 +139,10 @@ const makeCallers = () => {
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
+    getValidator: querier((qc) => qc.staking.unverified.validator),
+    getValidatorDelegations: querier(
+      (qc) => qc.staking.unverified.validatorDelegations
+    ),
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
     getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
     getTxSearch: cacheAnswers(tmQuerier((tc) => tc.txSearch.bind(tc))),
