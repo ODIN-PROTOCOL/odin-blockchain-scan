@@ -1,3 +1,10 @@
+html,
+body {
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+}
+
 .app-filter {
   display: flex;
   max-width: 16.6rem;
