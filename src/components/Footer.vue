@@ -37,9 +37,7 @@ export default defineComponent({
 })
 </script>
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display', serif;
-}
+
 footer {
   background: var(--clr__tooltip-new);
   height: 92px;

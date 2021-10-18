@@ -65,12 +65,11 @@
                   </div>
                   <div class="app-table__cell">
                     <span class="app-table__header">Address</span>
-                    <router-link :to="`/validators/${item.validatorAddress}`">
-                      <TitledLink
-                        class="app-table__cell-txt"
-                        :text="`Ox${item.validatorAddress}`"
-                      />
-                    </router-link>
+                    <TitledLink
+                      :to="`/validators/${item.validatorAddress}`"
+                      class="app-table__cell-txt"
+                      :text="`Ox${item.validatorAddress}`"
+                    />
                   </div>
                   <div class="app-table__cell">
                     <span class="app-table__header">Blocks</span>

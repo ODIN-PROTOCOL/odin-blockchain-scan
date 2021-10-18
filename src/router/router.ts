@@ -107,7 +107,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Validators.vue'),
   },
   {
-    path: '/validators/:hash/',
+    path: '/validators/:address',
     name: 'ValidatorItem',
     // beforeEnter: authorizedOnlyGuard,
     component: () => import('../views/ValidatorItem.vue'),

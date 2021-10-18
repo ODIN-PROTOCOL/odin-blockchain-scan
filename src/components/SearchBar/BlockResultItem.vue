@@ -20,7 +20,7 @@
         <div class="search__dropdown--item-validator">
           Validator:
           <TitledLink
-            :link="`/transactions/${result?.block?.header?.height}`"
+            :to="`/transactions/${result?.block?.header?.height}`"
             class="app-table__cell-txt"
             :text="`${cropText(
               '0x' +

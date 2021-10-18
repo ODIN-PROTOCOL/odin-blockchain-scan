@@ -97,7 +97,7 @@ export type adjustedData = {
   status?: number | string | undefined
 }
 
-export interface latestBlocksInterface extends BlockMeta {
+export interface blocksWithTotalTxInterface extends BlockMeta {
   total_tx: string | number
 }
 

@@ -108,9 +108,7 @@ export default defineComponent({
   justify-content: space-between;
 }
 
-* {
-  font-family: 'SF Display', serif;
-}
+
 
 .logo {
   width: 90px;

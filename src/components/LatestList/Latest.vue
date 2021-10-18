@@ -12,7 +12,7 @@
                 <template #label> Bk </template>
                 <template #name>
                   <TitledLink
-                    :link="`/blocks/${item.header.height}`"
+                    :to="`/blocks/${item.header.height}`"
                     class="app-table__cell-txt"
                     :text="item.header.height"
                   />
@@ -25,7 +25,7 @@
                 <template #validator>
                   <span>Validator:</span>
                   <TitledLink
-                    :link="`/validators/${toHexFunc(
+                    :to="`/validators/${toHexFunc(
                       item.header.validatorsHash
                     ).toUpperCase()}`"
                     class="app-table__cell-txt"
@@ -55,7 +55,7 @@
                 <template #name>
                   <TitledLink
                     class="app-table__cell-txt"
-                    :link="`/transactions/${item.block}/${item.hash}`"
+                    :to="`/transactions/${item.block}/${item.hash}`"
                     :text="item.hash ? cropText(`0x${item.hash}`) : 'No info'"
                   />
                 </template>
@@ -64,27 +64,23 @@
                 </template>
                 <template #from>
                   <span>From:</span>
-                  <router-link :to="`/account/${item.sender}`">
-                    <TitledLink
-                      class="app-table__cell-txt"
-                      :text="
-                        item.sender ? cropText(`0x${item.sender}`) : 'No info'
-                      "
-                    />
-                  </router-link>
+                  <TitledLink
+                    :to="`/account/${item.sender}`"
+                    class="app-table__cell-txt"
+                    :text="
+                      item.sender ? cropText(`0x${item.sender}`) : 'No info'
+                    "
+                  />
                 </template>
                 <template #to>
                   <span> To: </span>
-                  <router-link :to="`/account/${item.receiver}`">
-                    <TitledLink
-                      class="app-table__cell-txt"
-                      :text="
-                        item.receiver
-                          ? cropText(`0x${item.receiver}`)
-                          : 'No info'
-                      "
-                    />
-                  </router-link>
+                  <TitledLink
+                    class="app-table__cell-txt"
+                    :to="`/account/${item.receiver}`"
+                    :text="
+                      item.receiver ? cropText(`0x${item.receiver}`) : 'No info'
+                    "
+                  />
                 </template>
               </LatestListItem>
             </template>
@@ -107,7 +103,7 @@ import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
-import { adjustedData, latestBlocksInterface } from '@/helpers/Types'
+import { adjustedData, blocksWithTotalTxInterface } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
 import { BlockResponse } from '@cosmjs/tendermint-rpc'
 
@@ -127,7 +123,7 @@ export default defineComponent({
       }
     })
 
-    let latestBlocks = ref<Array<latestBlocksInterface> | null>([])
+    let latestBlocks = ref<Array<blocksWithTotalTxInterface> | null>([])
     let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
     let totalCount = ref<number>()
@@ -135,7 +131,7 @@ export default defineComponent({
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
         await callers.getBlockchain()
-      let tempA: Array<latestBlocksInterface> = []
+      let tempA: Array<blocksWithTotalTxInterface> = []
       for (let b of [...blockMetas].slice(0, 5)) {
         tempA = [
           ...tempA,

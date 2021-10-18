@@ -9,7 +9,7 @@
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt address-link"
-            :link="`/account/${result.address}`"
+            :to="`/account/${result.address}`"
             :text="`0x${result.address}`"
           />
         </div>

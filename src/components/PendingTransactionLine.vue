@@ -57,8 +57,8 @@
 <script>
 import { ref, onMounted, defineComponent, toRef, watch } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { toHex } from '@cosmjs/encoding'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
+import { toHexFunc } from '@/helpers/helpers'
 
 export default defineComponent({
   name: 'PendingTransactionLine',
@@ -70,7 +70,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const toHexFunc = toHex
     const transSender = ref()
     const transFeeList = ref([])
     const transHash = ref()
@@ -93,7 +92,7 @@ export default defineComponent({
 
       transGasLimit.value = props.transition.authInfo.fee.gasLimit.low
       transFeeList.value = props.transition.authInfo.fee.amount
-      transSender.value = toHex(
+      transSender.value = toHexFunc(
         props.transition.authInfo.signerInfos[0].publicKey.value
       ).toUpperCase()
 
@@ -142,7 +141,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-
 .app-table__cell-txt {
   max-width: 150px;
   padding-right: 10px;
