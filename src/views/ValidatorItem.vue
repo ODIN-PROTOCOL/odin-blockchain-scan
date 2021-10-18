@@ -1,27 +1,11 @@
 <template>
-  <div class="validator view-main">
+  <div class="validator container">
     <div class="page-title">
       <BackButton :text="'Validators'" />
       <h2 class="view-title">Validator</h2>
       <div class="validator__address">
         <p class="view-subtitle">{{ validator?.operatorAddress }}</p>
         <CopyButton class="mg-l8" :text="String(validator?.operatorAddress)" />
-      </div>
-      <div class="validator__activities validator__activities_top fx-sae">
-        <button
-          class="app-btn app-btn_outlined app-btn_small"
-          type="button"
-          @click="withdraw"
-        >
-          Withdraw stake
-        </button>
-        <button
-          class="app-btn app-btn_small mg-l24"
-          type="button"
-          @click="delegate"
-        >
-          Delegate
-        </button>
       </div>
     </div>
 
@@ -75,6 +59,8 @@ import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
 import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
 import { showDelegateFormDialog } from '@/components/modals/DelegateFormModal.vue'
 import { showWithdrawFormDialog } from '@/components/modals/WithdrawFormModal.vue'
+import { BlockResponse } from '@cosmjs/tendermint-rpc'
+import { blocksWithTotalTxInterface } from '@/helpers/Types'
 
 export default defineComponent({
   components: {
@@ -118,6 +104,21 @@ export default defineComponent({
         if (encodedAddress === String(route.params.address)) return true
         return false
       })
+
+      let tempA: Array<blocksWithTotalTxInterface> = []
+      for (let b of blocks.value) {
+        tempA = [
+          ...tempA,
+          {
+            ...b,
+            total_tx: await callers
+              .getBlock(b?.header?.height as number)
+              .then((res: BlockResponse): number => res?.block?.txs?.length),
+          },
+        ]
+      }
+
+      blocks.value = tempA
     }
 
     const getReports = async () => {

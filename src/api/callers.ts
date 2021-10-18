@@ -59,6 +59,7 @@ const makeCallers = () => {
         }
       })
     ),
+    getReports: querier((qc) => qc.oracle.unverified.reporters),
     getProposalVote: querier((qc) => qc.gov.unverified.vote),
     getProposalVotes: querier((qc) => qc.gov.unverified.votes),
     getProposalTally: querier((qc) => qc.gov.unverified.tallyResult),
@@ -157,6 +158,7 @@ const makeCallers = () => {
     getTopBalances: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.topBalances)
     ),
+    getValidatorStatus: querier((qc) => qc.oracle.unverified.validator),
     getTopValidators: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.topValidators)
     ),

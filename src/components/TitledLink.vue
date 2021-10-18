@@ -1,8 +1,9 @@
 <template>
-  <!-- :title="title || text" -->
-  <a :href="link">
-    {{ text }}
-  </a>
+  <router-link class="nav__link" :to="to" :title="title || text">
+    <span>
+      {{ text }}
+    </span>
+  </router-link>
 </template>
 
 <script lang="ts">
@@ -19,21 +20,10 @@ export default defineComponent({
       type: [String, Number],
       required: false,
     },
-    link: {
-      type: [String],
-      required: false,
+    to: {
+      type: String,
+      default: () => '#',
     },
   },
 })
 </script>
-
-<style scoped lang="scss">
-a {
-  color: var(--clr__action);
-  font-size: 16px;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-</style>

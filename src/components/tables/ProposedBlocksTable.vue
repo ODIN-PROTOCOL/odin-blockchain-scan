@@ -10,14 +10,14 @@
         <template v-if="blocks.length">
           <div
             v-for="item in filteredBlocks"
-            :key="toHex(item.blockId.hash)"
+            :key="toHexFunc(item.blockId.hash)"
             class="app-table__row"
           >
             <div class="app-table__cell">
               <span class="app-table__title">Block</span>
               <TitledLink
                 class="app-table__cell-txt app-table__link"
-                :text="toHex(item.blockId.hash)"
+                :text="toHexFunc(item.blockId.hash)"
               />
             </div>
             <div class="app-table__cell">
@@ -26,7 +26,7 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__title">Transactions</span>
-              <span>{{ item.numTxs }}</span>
+              <span>{{ item.total_tx }}</span>
             </div>
           </div>
         </template>
@@ -50,8 +50,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, toRef, ref } from 'vue'
-import { toHex } from '@cosmjs/encoding'
-// import { Bech32 } from '@cosmjs/encoding'
+import { toHexFunc } from '@/helpers/helpers'
 import TitledLink from '@/components/TitledLink.vue'
 import Pagination from '@/components/pagination/pagination.vue'
 
@@ -96,7 +95,7 @@ export default defineComponent({
       blocksCount,
       filteredBlocks,
       paginationHandler,
-      toHex,
+      toHexFunc,
     }
   },
 })

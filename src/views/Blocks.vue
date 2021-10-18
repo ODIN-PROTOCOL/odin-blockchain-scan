@@ -29,12 +29,11 @@
         >
           <div class="app-table__cell">
             <span class="app-table__header">Block</span>
-            <router-link :to="`/blocks/${item.header.height}`">
-              <TitledLink
-                class="app-table__cell-txt"
-                :text="item.header.height"
-              />
-            </router-link>
+            <TitledLink
+              :to="`/blocks/${item.header.height}`"
+              class="app-table__cell-txt"
+              :text="item.header.height"
+            />
           </div>
           <div class="app-table__cell">
             <span class="app-table__header">Date and time</span>
@@ -148,9 +147,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display', serif;
-}
+
 .data-sources__table-head,
 .data-sources__table-row {
   grid:

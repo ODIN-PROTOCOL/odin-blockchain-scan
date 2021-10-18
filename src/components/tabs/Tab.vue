@@ -8,15 +8,12 @@
 import { defineComponent, inject } from 'vue'
 
 export default defineComponent({
+  name: 'Tab',
   props: ['title'],
   setup: function () {
     const selectedTitle = inject('selectedTitle')
 
     return { selectedTitle }
-  }
+  },
 })
 </script>
-
-<style lang="scss" scoped>
-
-</style>

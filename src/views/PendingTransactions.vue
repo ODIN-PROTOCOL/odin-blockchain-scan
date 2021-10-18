@@ -215,9 +215,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: 'SF Display', serif;
-}
+
 .data-sources__table-head,
 .data-sources__table-row {
   grid:

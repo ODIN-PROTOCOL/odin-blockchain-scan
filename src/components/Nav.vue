@@ -172,12 +172,11 @@ export default defineComponent({
   grid-template-columns: 100%;
   text-decoration: none;
   white-space: nowrap;
-  color: inherit;
+  color: var(--clr__action);
   font-weight: 400;
   line-height: 2.4rem;
   font-size: 1.6rem;
   cursor: pointer;
-
   &:hover {
     color: var(--clr__action);
   }

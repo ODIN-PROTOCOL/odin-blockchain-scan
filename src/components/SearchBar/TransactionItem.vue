@@ -9,7 +9,7 @@
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
-            :link="`/blocks/${result.transHeight}`"
+            :to="`/blocks/${result.transHeight}`"
             :text="
               result.transHash ? cropText(`0x${result.transSender}`) : 'No info'
             "

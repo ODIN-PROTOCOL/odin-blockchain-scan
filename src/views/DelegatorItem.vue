@@ -59,12 +59,11 @@
           >
             <div class="app-table__cell">
               <span class="app-table__header">Transaction hash</span>
-              <router-link :to="`/blocks/block height`">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="'block height'"
-                />
-              </router-link>
+              <TitledLink
+                :to="`/blocks/block height`"
+                class="app-table__cell-txt"
+                :text="'block height'"
+              />
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Date and time</span>
@@ -184,9 +183,7 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-* {
-  font-family: 'SF Display', serif;
-}
+
 .block {
   &-item {
     padding: 2.6rem 3.3rem;

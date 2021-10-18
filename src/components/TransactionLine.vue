@@ -2,9 +2,11 @@
   <div class="data-sources__table-row app-table__row">
     <div class="app-table__cell">
       <span class="app-table__header">Transaction hash</span>
-      <router-link :to="`/transactions/${transHeight}/${transHash}`">
-        <TitledLink class="app-table__cell-txt" :text="'Ox' + transHash" />
-      </router-link>
+      <TitledLink
+        :to="`/transactions/${transHeight}/${transHash}`"
+        class="app-table__cell-txt"
+        :text="'Ox' + transHash"
+      />
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Type</span>
@@ -12,9 +14,11 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Block</span>
-      <router-link :to="`/blocks/${transitionT.height}`">
-        <TitledLink class="app-table__cell-txt" :text="transitionT.height" />
-      </router-link>
+      <TitledLink
+        :to="`/blocks/${transitionT.height}`"
+        class="app-table__cell-txt"
+        :text="transitionT.height"
+      />
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Date and time</span>
@@ -57,7 +61,7 @@
 <script>
 import { ref, onMounted, defineComponent, toRef, watch } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { toHex } from '@cosmjs/encoding'
+import { toHexFunc } from '@/helpers/helpers'
 import { callers } from '@/api/callers'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
@@ -72,7 +76,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const toHexFunc = toHex
     const transHeight = ref()
     const transSender = ref()
     const transTime = ref()
@@ -113,11 +116,11 @@ export default defineComponent({
           transTime.value = res.blockMetas[0].header.time
         })
 
-      transHash.value = toHex(
+      transHash.value = toHexFunc(
         txs.txs[0].hash || transitionT.value.hash
       ).toUpperCase()
       transFeeList.value = decodedTx.authInfo.fee.amount
-      transSender.value = toHex(
+      transSender.value = toHexFunc(
         decodedTx.authInfo.signerInfos[0].publicKey.value
       ).toUpperCase()
     }
@@ -187,8 +190,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-
-
 .app-table__cell-txt {
   max-width: 150px;
   padding-right: 10px;
