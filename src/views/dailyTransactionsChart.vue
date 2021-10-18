@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="title">
-      <BackButton :current-router="router" />
+      <BackButton :current-router="router" text="" />
       <h1 class="title-name">Daily Transactions Volume Chart</h1>
     </div>
     <div class="sort-wrapper" v-if="!isLoading">
@@ -88,11 +88,14 @@ export default defineComponent({
     ]
 
     const getDataByDays = async (days: number): Promise<void> => {
+      // Todo: Wait for back-end
+
+      console.debug('getDataByDays', days)
+
       // const endDate = new Date()
       // const startDate = new Date()
       isLoading.value = true
       try {
-        // Todo: Wait for back-end
         // const queryTxVolumeResponseList = withoutDuplicates(
         //   await requestByDays({ startDate, endDate }, callers.getTxVolume, days)
         // )
@@ -117,18 +120,8 @@ export default defineComponent({
     watch(
       sortingValue,
       // async (): Promise<void> => await getChartData(Number(sortingValue.value))
-      (): void => changeTestDate(Number(sortingValue.value))
+      (): void => console.debug('sortingValue', Number(sortingValue.value))
     )
-    const changeTestDate = (num) => {
-      for (let i = 0; i < num; i++) {
-        const date = new Date()
-        date.setDate(date.getDate() + i)
-        tempDate.value.push({
-          date,
-          value: Number((Math.random() * (num - 1) + 1).toFixed()),
-        })
-      }
-    }
 
     const getChartData = async (_sortingValue: number): Promise<void> => {
       await getDataByDays(_sortingValue)

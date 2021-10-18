@@ -1,7 +1,8 @@
 <template>
+  <!-- TODO: Will be replaced with a different chart, now this page hide in router.ts   -->
   <div>
     <div class="title">
-      <BackButton :current-router="router" />
+      <BackButton :current-router="router" text="" />
       <h1 class="title-name">Block Validators Chart</h1>
     </div>
     <div class="sort-wrapper">

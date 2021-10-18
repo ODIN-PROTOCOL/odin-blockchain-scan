@@ -33,7 +33,7 @@
         </div>
       </div>
       <h1 class="page-title mg-b32">
-        Transactions
+        <span>Transactions</span>
         <small v-if="totalTxCount">{{ totalTxCount }}</small>
       </h1>
       <div class="app-table">
@@ -236,7 +236,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .page-title {
   small {
-    font-weight: 100;
+    margin-left: 1rem;
+    font-weight: 500;
     color: var(--clr__text-muted);
   }
 }
