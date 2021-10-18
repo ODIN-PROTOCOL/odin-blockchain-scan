@@ -11,7 +11,7 @@
           :chartData="chartData"
         />
         <span class="info-panel__empty-chart" v-else>
-          We are in the process of drawing a chart!
+          We are in the process of drawing the chart
         </span>
       </div>
     </div>
@@ -173,6 +173,7 @@ export default defineComponent({
       font-size: 3.4rem;
       font-weight: 600;
       text-transform: uppercase;
+      height: 100%;
     }
   }
   display: grid;
