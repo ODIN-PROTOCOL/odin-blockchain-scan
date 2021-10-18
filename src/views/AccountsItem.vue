@@ -71,15 +71,12 @@
           >
             <div class="app-table__cell">
               <span class="app-table__header">Transaction hash</span>
-              <router-link
+              <TitledLink
                 v-if="item.hash && item.block"
                 :to="`/transactions/${item.block}/${item.hash}`"
-              >
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="`0x${item.hash}`"
-                />
-              </router-link>
+                class="app-table__cell-txt"
+                :text="`0x${item.hash}`"
+              />
               <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
@@ -92,9 +89,11 @@
             <div class="app-table__cell">
               <span class="app-table__header">Block</span>
               <span v-if="item.block" class="app-table__cell-txt">
-                <router-link :to="`/blocks/${item.block}`">
-                  <TitledLink class="app-table__cell-txt" :text="item.block" />
-                </router-link>
+                <TitledLink
+                  :to="`/blocks/${item.block}`"
+                  class="app-table__cell-txt"
+                  :text="item.block"
+                />
               </span>
               <span class="app-table__cell-txt" v-else> - </span>
             </div>
@@ -109,22 +108,22 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Sender</span>
-              <router-link v-if="item.sender" :to="item.sender">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="`0x${item.sender}`"
-                />
-              </router-link>
+              <TitledLink
+                v-if="item.sender"
+                :to="item.sender"
+                class="app-table__cell-txt"
+                :text="`0x${item.sender}`"
+              />
               <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__header">Reciever</span>
-              <router-link v-if="item.receiver !== ''" :to="item.receiver">
-                <TitledLink
-                  class="app-table__cell-txt"
-                  :text="`0x${item.receiver}`"
-                />
-              </router-link>
+              <TitledLink
+                v-if="item.receiver !== ''"
+                :to="item.receiver"
+                class="app-table__cell-txt"
+                :text="`0x${item.receiver}`"
+              />
               <span class="app-table__cell-txt" v-else> - </span>
             </div>
             <div class="app-table__cell">

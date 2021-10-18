@@ -6,12 +6,11 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Address</span>
-      <router-link :to="`/account/${account.address}`">
-        <TitledLink
-          class="app-table__cell-txt"
-          :text="`0x${account.address}`"
-        />
-      </router-link>
+      <TitledLink
+        :to="`/account/${account.address}`"
+        class="app-table__cell-txt"
+        :text="`0x${account.address}`"
+      />
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">GEO balance</span>

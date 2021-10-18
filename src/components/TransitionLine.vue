@@ -2,12 +2,11 @@
   <div class="data-sources__table-row app-table__row">
     <div class="app-table__cell">
       <span class="app-table__header">Transaction hash</span>
-      <router-link :to="`/transactions/${transition.block}/${transition.hash}`">
-        <TitledLink
-          class="app-table__cell-txt"
-          :text="'Ox' + transition.hash"
-        />
-      </router-link>
+      <TitledLink
+        :to="`/transactions/${transition.block}/${transition.hash}`"
+        class="app-table__cell-txt"
+        :text="'Ox' + transition.hash"
+      />
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Type</span>
@@ -15,9 +14,11 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Block</span>
-      <router-link :to="`/blocks/${transition.block}`">
-        <TitledLink class="app-table__cell-txt" :text="transition.block" />
-      </router-link>
+      <TitledLink
+        :to="`/blocks/${transition.block}`"
+        class="app-table__cell-txt"
+        :text="transition.block"
+      />
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Date and time</span>
@@ -27,28 +28,22 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Sender</span>
-      <router-link
+      <TitledLink
         v-if="transition.sender !== ''"
         :to="`/account/${transition.sender}`"
-      >
-        <TitledLink
-          class="app-table__cell-txt"
-          :text="`0x${transition.sender}`"
-        />
-      </router-link>
+        class="app-table__cell-txt"
+        :text="`0x${transition.sender}`"
+      />
       <span class="app-table__cell-txt" v-else> - </span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__header">Receiver</span>
-      <router-link
+      <TitledLink
         v-if="transition.receiver !== ''"
         :to="`/account/${transition.receiver}`"
-      >
-        <TitledLink
-          class="app-table__cell-txt"
-          :text="`0x${transition.receiver}`"
-        />
-      </router-link>
+        class="app-table__cell-txt"
+        :text="`0x${transition.receiver}`"
+      />
       <span class="app-table__cell-txt" v-else> - </span>
     </div>
     <div class="app-table__cell">

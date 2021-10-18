@@ -65,6 +65,8 @@ export default defineComponent({
         },
       ],
     }
+
+    // TODO: return hide date when pages be done
     const TokemonicList: LinkList = {
       name: 'Tokemonics',
       links: [
@@ -72,19 +74,19 @@ export default defineComponent({
           to: 'Tokemonics',
           text: 'Tokemonics overview',
         },
-        {
-          to: 'odin&geo',
-          text: 'Odin & Geo',
-        },
+        // {
+        //   to: 'odin&geo',
+        //   text: 'Odin & Geo',
+        // },
       ],
     }
     const ResourceList: LinkList = {
       name: 'Resources',
       links: [
-        {
-          to: 'charts',
-          text: 'Charts & Stats',
-        },
+        // {
+        //   to: 'charts',
+        //   text: 'Charts & Stats',
+        // },
         {
           url: '/chart/validators/',
           text: 'Block Validators Chart',
@@ -176,12 +178,11 @@ export default defineComponent({
   grid-template-columns: 100%;
   text-decoration: none;
   white-space: nowrap;
-  color: inherit;
+  color: var(--clr__action);
   font-weight: 400;
   line-height: 2.4rem;
   font-size: 1.6rem;
   cursor: pointer;
-
   &:hover {
     color: var(--clr__action);
   }

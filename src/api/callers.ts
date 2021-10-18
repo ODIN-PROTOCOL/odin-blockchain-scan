@@ -59,6 +59,7 @@ const makeCallers = () => {
         }
       })
     ),
+    getReports: querier((qc) => qc.oracle.unverified.reporters),
     getProposalVote: querier((qc) => qc.gov.unverified.vote),
     getProposalVotes: querier((qc) => qc.gov.unverified.votes),
     getProposalTally: querier((qc) => qc.gov.unverified.tallyResult),
@@ -139,6 +140,10 @@ const makeCallers = () => {
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
+    getValidator: querier((qc) => qc.staking.unverified.validator),
+    getValidatorDelegations: querier(
+      (qc) => qc.staking.unverified.validatorDelegations
+    ),
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
     getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
     getTxSearch: cacheAnswers(tmQuerier((tc) => tc.txSearch.bind(tc))),
@@ -153,6 +158,7 @@ const makeCallers = () => {
     getTopBalances: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.topBalances)
     ),
+    getValidatorStatus: querier((qc) => qc.oracle.unverified.validator),
     getTopValidators: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.topValidators)
     ),

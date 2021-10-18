@@ -45,6 +45,7 @@ export type ChartDataType = {
 export type CoingeckoCoinsType = {
   data: {
     name: string
+    symbol: string
     market_data: {
       current_price: { usd: string }
       market_cap: { usd: string }
@@ -100,7 +101,7 @@ export type adjustedData = {
   status?: number | string | undefined
 }
 
-export interface latestBlocksInterface extends BlockMeta {
+export interface blocksWithTotalTxInterface extends BlockMeta {
   total_tx: string | number
 }
 

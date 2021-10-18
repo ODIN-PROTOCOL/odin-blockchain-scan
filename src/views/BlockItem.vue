@@ -158,9 +158,7 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-* {
-  font-family: 'SF Display', serif;
-}
+
 .block {
   &-item {
     padding: 2.6rem 3.3rem;

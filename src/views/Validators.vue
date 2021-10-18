@@ -1,511 +1,371 @@
 <template>
-  <div class="container">
-    <div>
-      <div class="mg-b16 mg-t32 validators-nav">
-        <h2
-          class="view-title"
-          @click="changeTab(true)"
-          :class="showValidators ? 'active' : ''"
-        >
-          Validators
-        </h2>
-        <h2
-          class="view-title"
-          @click="changeTab(false)"
-          :class="!showValidators ? 'active' : ''"
-        >
-          Delegators
-        </h2>
-      </div>
-      <div class="mg-b16 mg-t16" v-if="showValidators && validators?.length">
-        <p>{{ validators?.length }} validators found</p>
-      </div>
-      <div class="mg-b16 mg-t16" v-if="!showValidators && delegators?.length">
-        <p>{{ delegators?.length }} delegators found</p>
-      </div>
+  <div
+    class="validators container load-fog"
+    :class="{ 'load-fog_show': isLoading && validators?.length }"
+  >
+    <div class="page-title">
+      <h2 class="view-title">All Validators</h2>
     </div>
-    <div class="app-table" v-if="showValidators">
-      <div class="data-sources__table-head app-table__head validators-head">
-        <div class="app-table__cell" data-tooltip="">
-          <span class="app-table__cell-txt"> Validator </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Balance </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Stake </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Delegation share </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Amount of created blocks </span>
-        </div>
+
+    <template v-if="validatorsCount">
+      <div class="validators__count-info">
+        <p>{{ validatorsCount }} validators found</p>
       </div>
-      <template v-if="filteredValidators?.length">
-        <div
-          v-for="item in filteredValidators"
-          :key="item.id"
-          class="data-sources__table-row app-table__row validators-row"
-        >
-          <div class="app-table__cell">
-            <span class="app-table__header">Validator</span>
-            <router-link :to="`/validators/${item.operatorAddress}`">
+    </template>
+
+    <Tabs @changeTab="tabHandler($event)">
+      <Tab title="Active" />
+      <Tab title="Inactive" />
+    </Tabs>
+
+    <div class="app-table">
+      <div class="app-table__head">
+        <span>Rank</span>
+        <span>Moniker</span>
+        <span>Delegator Share</span>
+        <span>Commission</span>
+        <span>Oracle Status</span>
+      </div>
+      <div class="app-table__body">
+        <template v-if="validators?.length">
+          <div
+            v-for="item in filteredValidators"
+            :key="item.operatorAddress"
+            class="app-table__row"
+          >
+            <div class="app-table__cell">
+              <span class="app-table__title">Rank</span>
+              <span>{{ item.rank }}</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Moniker</span>
               <TitledLink
-                class="app-table__cell-txt"
-                :text="item.operatorAddress.toUpperCase()"
+                class="app-table__cell-txt app-table__link"
+                :text="item.description.moniker"
+                :to="`/validators/${item.operatorAddress}`"
               />
-            </router-link>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__header">Balance</span>
-            <span class="app-table__cell-txt">{{ 'test' }}</span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__header">Stake</span>
-            <span class="app-table__cell-txt">{{ item.tokens }}</span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__header">Delegation share</span>
-            <span class="app-table__cell-txt">{{ item.delegatorShares }}</span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__header">Amount of created blocks</span>
-            <div>
-              <span class="app-table__cell-txt">{{}}</span>
-              <span class="currency">{{}}</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Delegator Share</span>
+              <span>{{ $preciseAsPercents(item.delegatorShares) }}</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Commission</span>
+              <span>
+                {{ $preciseAsPercents(item.commission.commissionRates.rate) }}
+              </span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Oracle Status</span>
+              <StatusIcon
+                :status="item.isOracleValidator ? 'success' : 'error'"
+              />
+            </div>
+            <div class="app-table__cell">
+              <div class="app-table__activities">
+                <!--
+                <div class="app-table__activities-item">
+                  <button
+                    class="app-btn app-btn_outlined app-btn_small"
+                    type="button"
+                    @click="withdraw(item)"
+                  >
+                    Withdraw stake
+                  </button>
+                  <button
+                    class="app-btn app-btn_small mg-l24"
+                    type="button"
+                    @click="delegate(item)"
+                  >
+                    Delegate
+                  </button>
+                </div>
+                -->
+                <div
+                  v-if="delegations[item.operatorAddress]"
+                  class="app-table__activities-item"
+                >
+                  <button
+                    class="app-btn app-btn_outlined app-btn_small"
+                    type="button"
+                    @click="undelegate"
+                  >
+                    Undelegate
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="pagination-wrapper mg-t32">
-          <v-pagination
-            v-model="pageValidator"
-            :pages="totalValidatorPages"
-            :range-size="1"
-            active-color="#007bff"
-            @update:modelValue="updateValidatorHandler"
-            :hideFirstButton="true"
-            :hideLastButton="true"
-          >
-          </v-pagination>
-        </div>
-      </template>
-      <template v-else>
-        <div class="app-table__row">
-          <p class="app-table__empty-stub">No items yet</p>
-        </div>
-      </template>
-    </div>
-    <div class="app-table" v-if="!showValidators">
-      <div class="data-sources__table-head app-table__head delegators-head">
-        <div class="app-table__cell" data-tooltip="">
-          <span class="app-table__cell-txt"> Delegate </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Balance </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Stake </span>
-        </div>
+        </template>
+        <template v-else>
+          <div class="app-table__empty-stub">
+            <p v-if="isLoading">Loading…</p>
+            <p v-else>No items yet</p>
+          </div>
+        </template>
       </div>
-      <template v-if="filteredDelegators?.length">
-        <div
-          v-for="item in filteredDelegators"
-          :key="item.id"
-          class="data-sources__table-row app-table__row delegators-row"
-        >
-          <div class="app-table__cell">
-            <span class="app-table__header">Delegate</span>
-            <span
-              class="delegate-status"
-              :class="
-                item.delegation.validatorAddress ? 'validate' : 'delegate'
-              "
-            >
-              {{ item.delegation.validatorAddress ? 'V' : 'D' }}
-            </span>
-            <router-link
-              :to="`/delegators/${item.delegation.delegatorAddress}`"
-            >
-              <TitledLink
-                class="app-table__cell-txt"
-                :text="
-                  item.delegation.validatorAddress
-                    ? item.delegation.validatorAddress
-                    : item.delegation.delegatorAddress
-                "
-              />
-            </router-link>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__header">Balance</span>
-            <span>{{ 'test' }}</span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__header">Stake</span>
-            <div>
-              <span class="app-table__cell-txt">{{ item.balance.amount }}</span>
-              <span class="app-table__cell-txt currency">{{
-                item.balance.denom
-              }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="pagination-wrapper mg-t32">
-          <v-pagination
-            v-model="pageDelegator"
-            :pages="totalDelegatorPages"
-            :range-size="1"
-            active-color="#007bff"
-            @update:modelValue="updateDelegatorHandler"
-            :hideFirstButton="true"
-            :hideLastButton="true"
-          >
-          </v-pagination>
-        </div>
-      </template>
-      <template v-else>
-        <div class="app-table__row">
-          <p class="app-table__empty-stub">No items yet</p>
-        </div>
-      </template>
     </div>
+
+    <template v-if="filteredValidatorsCount > ITEMS_PER_PAGE">
+      <Pagination
+        @changePageNumber="paginationHandler($event)"
+        :blocksPerPage="ITEMS_PER_PAGE"
+        :total-length="filteredValidatorsCount"
+        :startFrom="currentPage"
+      />
+    </template>
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue'
 import { callers } from '@/api/callers'
-import { toHex } from '@cosmjs/encoding'
+import { wallet } from '@/api/wallet'
+import { handleError } from '@/helpers/errors'
+import {
+  isActiveValidator,
+  isOracleValidator,
+  ValidatorDecoded,
+} from '@/helpers/validatorDecoders'
+import { DelegationResponse } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import { showBecomeValidatorFormDialog } from '@/components/modals/BecomeValidatorFormModal.vue'
+import Tabs from '@/components/tabs/Tabs.vue'
+import Tab from '@/components/tabs/Tab.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { defineComponent, ref, onMounted, watch } from 'vue'
-import VPagination from '@hennge/vue3-pagination'
-import '@hennge/vue3-pagination/dist/vue3-pagination.css'
-// import { Bech32, fromBase64 } from '@cosmjs/encoding'
-// import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
+import StatusIcon from '@/components/StatusIcon.vue'
+import Pagination from '@/components/pagination/pagination.vue'
+import { showWithdrawFormDialog } from '@/components/modals/WithdrawFormModal.vue'
+import { showDelegateFormDialog } from '@/components/modals/DelegateFormModal.vue'
+import { showUndelegateFormDialog } from '@/components/modals/UndelegateFormModal.vue'
 
 export default defineComponent({
-  components: { TitledLink, VPagination },
+  name: 'Validators',
+  components: { Tabs, Tab, TitledLink, StatusIcon, Pagination },
   setup() {
-    const validators = ref()
-    const delegators = ref()
+    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+    const ITEMS_PER_PAGE = 6
+    const currentPage = ref(1)
+    const validatorsStatus = ref('Active')
+    const filteredValidatorsCount = ref(0)
+    const validatorsCount = ref(0)
     const filteredValidators = ref()
-    const filteredDelegators = ref()
-    const itemsPerPage = 5
-    const pageValidator = ref(1)
-    const pageDelegator = ref()
-    const totalValidatorPages = ref()
-    const totalDelegatorPages = ref()
-    const toHexFunc = toHex
-    const showValidators = ref(true)
+    const validators = ref()
+
+    let activeValidators: ValidatorDecoded[] = []
+    let inactiveValidators: ValidatorDecoded[] = []
 
     const getValidators = async () => {
-      const response = await callers.getValidators('BOND_STATUS_BONDED')
-
-      if (response && response.pagination) {
-        validators.value = response.validators
-
-        totalValidatorPages.value = Math.ceil(
-          validators.value.length / itemsPerPage
-        )
-
-        await filterValidators(pageValidator.value).then(
-          async () => await getDelegators()
-        )
-      }
-    }
-
-    const getDelegators = async () => {
-      for (let item of validators.value) {
-        await callers.getDelegations(item.operatorAddress).then((res) => {
-          if (res.delegationResponses.length > 0) {
-            if (Array.isArray(delegators.value)) {
-              delegators.value = [...res.delegationResponses].concat(
-                delegators.value
-              )
-            } else {
-              delegators.value = [...res.delegationResponses]
+      lockLoading()
+      try {
+        const bonded = await callers.getValidators('BOND_STATUS_BONDED')
+        const unbonding = await callers.getValidators('BOND_STATUS_UNBONDING')
+        const unbonded = await callers.getValidators('BOND_STATUS_UNBONDED')
+        const _validators = [
+          ...bonded.validators,
+          ...unbonding.validators,
+          ...unbonded.validators,
+        ]
+        let _updatedValidators: ValidatorDecoded[] = []
+        _updatedValidators = await Promise.all(
+          _validators.map(async (item, idx) => {
+            return {
+              ...item,
+              rank: idx + 1,
+              isOracleValidator: await isOracleValidator(item.operatorAddress),
             }
-          }
-        })
+          })
+        )
+        for (let i = 0; i < _updatedValidators.length; i++) {
+          const active = await isActiveValidator(
+            _updatedValidators[i].operatorAddress
+          )
+          if (active) activeValidators.push(_updatedValidators[i])
+          else inactiveValidators.push(_updatedValidators[i])
+        }
+        if (validatorsStatus.value === 'Active') {
+          validators.value = [...activeValidators]
+        } else if (validatorsStatus.value === 'Inactive') {
+          validators.value = [...inactiveValidators]
+        }
+        filteredValidatorsCount.value = validators.value.length
+        validatorsCount.value = _validators.length
+        filterValidators(currentPage.value)
+      } catch (error) {
+        handleError(error)
       }
+      releaseLoading()
     }
 
-    const filterValidators = async (newPage: number) => {
+    const delegations = ref<{ [k: string]: DelegationResponse }>({})
+    const getDelegations = async () => {
+      lockLoading()
+      try {
+        // TODO: delegations returns invalid delegator's amount?
+        const response = await callers.getDelegations(wallet.account.address)
+
+        const _delegations: { [k: string]: DelegationResponse } = {}
+        for (const delegation of response.delegationResponses) {
+          if (!delegation.delegation?.validatorAddress) continue
+          _delegations[delegation.delegation.validatorAddress] = delegation
+        }
+        delegations.value = _delegations
+
+        console.debug('Delegations:', response)
+      } catch (error) {
+        // error is ignored, since no delegations also throws the error
+      }
+      releaseLoading()
+    }
+
+    const filterValidators = (newPage: number) => {
       let tempArr = validators.value
 
       if (newPage === 1) {
-        filteredValidators.value = tempArr.slice(0, newPage * itemsPerPage)
+        filteredValidators.value = tempArr.slice(0, newPage * ITEMS_PER_PAGE)
       } else {
         filteredValidators.value = tempArr.slice(
-          (newPage - 1) * itemsPerPage,
-          (newPage - 1) * itemsPerPage + itemsPerPage
+          (newPage - 1) * ITEMS_PER_PAGE,
+          (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
         )
       }
-      pageValidator.value = newPage
+      currentPage.value = newPage
     }
 
-    const filterDelegators = async (num?: number) => {
-      const page = num || 1
-      let tempArr = delegators.value ? delegators.value : []
-
-      totalDelegatorPages.value = Math.ceil(
-        delegators.value.length / itemsPerPage
-      )
-
-      if (page === 1) {
-        filteredDelegators.value = tempArr.slice(0, page * itemsPerPage)
-      } else {
-        filteredDelegators.value = tempArr.slice(
-          (page - 1) * itemsPerPage,
-          (page - 1) * itemsPerPage + itemsPerPage
-        )
-      }
-
-      pageDelegator.value = page
-    }
-
-    const changeTab = (state: boolean) => (showValidators.value = state)
-
-    const updateValidatorHandler = (num: number) => {
+    const paginationHandler = (num: number) => {
       filterValidators(num)
     }
 
-    const updateDelegatorHandler = (num: number) => {
-      filterDelegators(num)
+    const tabHandler = async (title: string) => {
+      console.debug('tabHandler', title)
+      if (title !== validatorsStatus.value) {
+        validatorsStatus.value = title
+
+        if (validatorsStatus.value === 'Active') {
+          validators.value = [...activeValidators]
+        } else if (validatorsStatus.value === 'Inactive') {
+          validators.value = [...inactiveValidators]
+        }
+
+        filteredValidatorsCount.value = validators.value.length
+        currentPage.value = 1
+        filterValidators(currentPage.value)
+      }
+    }
+    const becomeValidator = async () => {
+      await showBecomeValidatorFormDialog({
+        onSubmit: (d) => {
+          d.kill()
+          getValidators()
+          getDelegations()
+        },
+      })
     }
 
-    watch(delegators, () => filterDelegators())
+    const withdraw = (validator: ValidatorDecoded) => {
+      showWithdrawFormDialog({
+        onSubmit: (d) => {
+          d.kill()
+          console.log(validator)
+        },
+      })
+    }
 
-    onMounted(() => {
-      getValidators()
-      pageDelegator.value = 1
+    const delegate = (validator: ValidatorDecoded) => {
+      showDelegateFormDialog(
+        {
+          onSubmit: (d) => {
+            d.kill()
+            getValidators()
+            getDelegations()
+          },
+        },
+        { validator, delegation: delegations.value[validator.operatorAddress] }
+      )
+    }
+
+    const undelegate = (validator: ValidatorDecoded) => {
+      if (!delegations.value[validator.operatorAddress]) return
+      showUndelegateFormDialog(
+        {
+          onSubmit: (d) => {
+            d.kill()
+            getValidators()
+            getDelegations()
+          },
+        },
+        { validator, delegation: delegations.value[validator.operatorAddress] }
+      )
+    }
+
+    onMounted(async () => {
+      await getValidators()
+      await getDelegations()
     })
 
     return {
-      validators,
-      delegators,
-      pageValidator,
-      pageDelegator,
-      totalValidatorPages,
-      totalDelegatorPages,
+      ITEMS_PER_PAGE,
+      currentPage,
+      filteredValidatorsCount,
+      validatorsCount,
       filteredValidators,
-      filteredDelegators,
-      showValidators,
-      updateValidatorHandler,
-      updateDelegatorHandler,
-      toHexFunc,
-      changeTab,
+      validators,
+      delegations,
+      isLoading,
+      getValidators,
+      getDelegations,
+      paginationHandler,
+      tabHandler,
+      becomeValidator,
+      withdraw,
+      delegate,
+      undelegate,
     }
   },
 })
 </script>
 
-<style scoped lang="scss">
-.validators-head,
-.validators-row {
-  grid:
-    auto /
-    repeat(5, minmax(4rem, 1fr));
+<style lang="scss" scoped>
+.validators__count-info {
+  margin-bottom: 3.2rem;
 
-  @media screen and (max-width: 992px) {
-    grid: repeat(5, minmax(4rem, 1fr)) / auto;
+  @media screen and (max-width: 768px) {
+    margin-bottom: 0;
   }
 }
 
-.delegators-head,
-.delegators-row {
-  grid:
-    auto /
-    repeat(3, minmax(4rem, 1fr));
-
-  @media screen and (max-width: 992px) {
-    grid: repeat(3, minmax(4rem, 1fr)) / auto;
-  }
-}
-
-.blocks-container {
-  border-top: 1px solid var(--clr__table-border);
-}
-
+.app-table__head,
 .app-table__row {
-  padding: 3.2rem 0 2rem;
+  grid:
+    auto /
+    minmax(3rem, 1fr)
+    minmax(8rem, 4fr)
+    minmax(8rem, 4fr)
+    minmax(8rem, 4fr)
+    minmax(8rem, 4fr)
+    //minmax(28.5rem, 4fr);
+}
 
-  @media screen and (max-width: 992px) {
-    padding: 1.6rem 0 0 0;
+.app-table__activities {
+  & > *:not(:last-child) {
+    margin-bottom: 2.4rem;
   }
 }
 
-.app-table__cell {
-  position: relative;
-}
-
-.app-table__cell-txt {
-  max-width: 200px;
-  padding-right: 20px;
-
-  @media screen and (max-width: 600px) {
-    max-width: 150px;
-  }
-}
-
-.view-title {
-  font-weight: 400;
-  font-size: 32px;
-
-  @media screen and (max-width: 600px) {
-    font-size: 28px;
-  }
-}
-
-.app-table__cell-txt:hover + .tooltip {
-  opacity: 1;
-}
-
-.tooltip {
-  opacity: 0;
-  position: absolute;
-  left: 0;
-  bottom: 100%;
-  transform: translateY(-50%);
-  transition: all 0.15s ease;
-  border-radius: 10px;
-  white-space: nowrap;
-  background: var(--clr__tooltip-new);
-  padding: 12px 24px;
-  color: #fff;
-  z-index: 1;
-  pointer-events: none;
-
-  &:before {
-    content: '';
-    border-top: 10px solid var(--clr__tooltip-new);
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-    position: absolute;
-    left: 20px;
-    top: 100%;
-    transform: translateY(-50%);
+@media screen and (max-width: 768px) {
+  .app-table__row {
+    grid: none;
   }
 
-  @media screen and (max-width: 600px) {
-    display: none;
-  }
-}
-
-.currency {
-  text-transform: uppercase;
-}
-
-.app-table__head {
-  @media screen and (max-width: 992px) {
-    display: none;
-  }
-}
-
-.app-table__header {
-  display: none;
-
-  @media screen and (max-width: 76.8rem) {
-    display: inline-block;
-    width: 20rem;
-  }
-
-  @media screen and (max-width: 600px) {
-    width: 170px;
-  }
-}
-
-.validators-nav {
-  display: flex;
-
-  h2 {
-    width: 137px;
-    color: var(--clr__text);
-    border-bottom: 2px solid rgba(0, 123, 255, 0.16);
-    font-size: 2rem;
-    cursor: pointer;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &.active {
-      border-bottom: 2px solid var(--clr__action);
-      font-weight: 600;
-    }
-  }
-}
-.delegate-status {
-  min-width: 26px;
-  min-height: 24px;
-  width: 26px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  color: #fff;
-  border-radius: 4px;
-  margin-right: 11px;
-
-  &.delegate {
-    background: #00c4d0;
-  }
-
-  &.validate {
-    background: #00d097;
-  }
-}
-</style>
-<style lang="scss">
-.pagination-wrapper {
-  display: flex;
-  justify-content: center;
-
-  li {
-    background: #fff;
-    border: 1px solid var(--clr__action);
-    border-radius: 4px;
-    margin: 0 4px;
-    min-width: 26px;
-    height: 36px;
-  }
-
-  button {
-    height: 100%;
+  .app-table__activities {
     width: 100%;
-    border: none;
-    margin: 0;
-    padding: 10px;
-  }
 
-  .Page {
-    color: var(--clr__action);
+    &-item {
+      display: flex;
 
-    &:hover {
-      border: none;
-    }
-  }
-  .Page-active {
-    color: #fff;
-  }
-
-  .PaginationControl .Control.Control-active {
-    fill: var(--clr__action);
-  }
-  .PaginationControl .Control {
-    fill: #cce4ff;
-  }
-
-  .DotsHolder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    svg,
-    path {
-      color: var(--clr__action);
+      & > * {
+        flex: 1;
+      }
     }
   }
 }
