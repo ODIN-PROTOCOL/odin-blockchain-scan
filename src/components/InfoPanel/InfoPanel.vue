@@ -5,13 +5,16 @@
       <InfoPanelCol :key="'transactionData'" :infoPanelRows="transactionData" />
       <div class="info-panel__chart">
         <div class="info-panel__title">Transactions history statistics</div>
-        <AppChart
-          :key="'chartData'"
-          v-if="chartDataLoad"
-          :chartData="chartData"
-        />
-        <span class="info-panel__empty-chart" v-else>
-          We are in the process of drawing the chart
+        <!-- TODO: Will be replaced with a different chart -->
+        <!--
+          <AppChart
+            :key="'chartData'"
+            v-if="chartDataLoad"
+            :chartData="chartData"
+          />
+        -->
+        <span class="info-panel__empty-chart">
+          Insufficient data to visualize
         </span>
       </div>
     </div>
@@ -23,79 +26,136 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import AppChart from '@/components/Charts/LineChart.vue'
+// import AppChart from '@/components/Charts/LineChart.vue'
 import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
-import { ChartDataType, CoingeckoCoinsType, Link } from '@/helpers/Types'
-import { callers } from '@/api/callers'
-import { convertToDayMonth } from '@/helpers/dates'
-import { bigMath } from '@/helpers/bigMath'
+import { CoingeckoCoinsType, Link } from '@/helpers/Types'
+// import { callers } from '@/api/callers'
+// import { convertToDayMonth } from '@/helpers/dates'
+// import { bigMath } from '@/helpers/bigMath'
 import { getAPIDate } from '@/helpers/requests'
 import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'InfoPanel',
-  components: { AppChart, InfoPanelCol },
+  components: { InfoPanelCol },
   setup() {
     const priceData = ref<Array<Link> | null>()
     const transactionData = ref<Array<Link> | null>()
     const transactionCount = ref<number>()
     const chartDataLoad = ref(false)
+    /*
 
-    const chartData = ref<ChartDataType>({
-      labels: [],
-      datasets: [
-        {
-          backgroundColor: ['#007bff'],
-          borderColor: ['#007bff'],
-          borderWidth: 2,
-          borderJoinStyle: 'round',
-          borderCapStyle: 'round',
-          tension: 0.5,
-          borderSkipped: false,
-          data: [],
+    // TODO: Will be replaced with a different chart
+
+  const chartData = ref<ChartDataType>({
+    labels: [],
+    datasets: [
+      {
+        backgroundColor: ['#007bff'],
+        borderColor: ['#007bff'],
+        borderWidth: 2,
+        borderJoinStyle: 'round',
+        borderCapStyle: 'round',
+        tension: 0.5,
+        borderSkipped: false,
+        data: [],
+      },
+    ],
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: {
+            color: 'transparent',
+            borderColor: '#CCE4FF',
+          },
+          ticks: {
+            padding: 20,
+            color: '#212529',
+            font: {
+              size: 14,
+              family: 'SF Display',
+              lineHeight: 2,
+            },
+          },
         },
-      ],
-    })
+        y: {
+          grid: {
+            color: '#CCE4FF',
+            borderColor: 'transparent',
+          },
+          ticks: {
+            color: '#212529',
+            padding: 20,
+            font: {
+              size: 14,
+              family: 'SF Display',
+              lineHeight: 2,
+            },
+          },
+        },
+      },
+      elements: {
+        point: {
+          backgroundColor: '#007bff',
+          borderColor: '#007bff',
+          borderWidth: 3,
+          radius: 2,
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: false,
+        },
+        subtitle: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false,
+        },
+        point: {
+          borderWidth: 2,
+        },
+      },
+    },
+  })
+    */
 
     const getLatestTelemetry = async (): Promise<void> => {
-      try {
-        const endDate = new Date()
-        const startDate = new Date()
-        startDate.setDate(startDate.getDate() - 2)
+      /*
 
-        const { txVolumePerDay } = await callers.getTelemetry({
-          startDate,
-          endDate,
-        })
+      // TODO: Will be replaced with a different chart
 
-        console.debug('txVolumePerDay', txVolumePerDay)
+      const endDate = new Date()
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - 2)
 
-        txVolumePerDay.map((el) => {
-          chartData.value.labels = [
-            ...chartData.value.labels,
-            convertToDayMonth(el?.date as Date),
-          ] as Array<string>
-          chartData.value.datasets[0].data = [
-            ...chartData.value.datasets[0].data,
-            bigMath.toNum(el.volume),
-          ]
-        })
+      const { txVolumePerDay } = await callers.getTxVolume({
+        startDate,
+        endDate,
+      })
 
-        transactionCount.value = chartData.value.datasets[0].data.reduce(
-          (sum, el): number => {
-            return Number(sum) + Number(el)
-          },
-          0
-        ) as number
+      txVolumePerDay.map((el) => {
+        chartData.value.labels = [
+          ...chartData.value.labels,
+          convertToDayMonth(el?.date as Date),
+        ]
+        chartData.value.datasets[0].data = [
+          ...chartData.value.datasets[0].data,
+          bigMath.toNum(el.volume),
+        ]
+      })
 
-        console.debug('chartData', chartData.value)
-
-        await getCoinInfo()
-        chartDataLoad.value = true
-      } catch (error) {
-        handleError(error)
-        console.error(error)
-      }
+      transactionCount.value = chartData.value.datasets[0].data.reduce(
+        (sum: number, el): number => sum + Number(el),
+        0
+      )
+        */
+      await getCoinInfo()
+      chartDataLoad.value = true
     }
 
     const getCoinInfo = async (): Promise<void> => {
@@ -125,7 +185,7 @@ export default defineComponent({
       transactionData.value = [
         {
           title: 'Total number of transactions',
-          text: `${transactionCount.value}`,
+          text: `${transactionCount.value ?? 'Insufficient data'}`,
         },
         {
           title: 'Market CAP',
@@ -140,11 +200,15 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      await getLatestTelemetry()
+      try {
+        await getLatestTelemetry()
+      } catch (error) {
+        handleError(error)
+        console.error(error)
+      }
     })
 
     return {
-      chartData,
       chartDataLoad,
       transactionData,
       priceData,

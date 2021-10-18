@@ -3,6 +3,7 @@ import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
 import { Chart, ChartType, TooltipModel } from 'chart.js'
+import { number } from '@/composables/useForm/validators'
 
 export type Link = {
   to?: string
@@ -24,16 +25,19 @@ export type ChartDataSetsType = {
   borderCapStyle: string
   tension: number
   borderSkipped: boolean
-  data: Array<string | number>
+  data: Array<string | number | any>
 }
 export type ChartLabelsType = {
-  validatorAddress?: string
-  blocksCounter?: string | number
-  stakePercentage?: string | number
-  rank?: number | string
+  validatorAddress: string
+  blocksCounter: string | number
+  stakePercentage: string | number
+  rank: number | string
+  date: string
+  volume: string | number
+  txs: string | number
 }
 export type ChartDataType = {
-  labels: Array<ChartLabelsType | string | Date>
+  labels: Array<Partial<ChartLabelsType> | string | Date>
   datasets: Array<ChartDataSetsType>
   options?: any
 }
@@ -111,8 +115,16 @@ export type titleLineType = {
   stakePercentage: string
   validatorAddress: string
   blocksCounter: string
+  date: string
 }
 
 export interface searchBlocksInterface extends BlockResponse {
   total_tx?: string | number
+}
+
+export type marginType = {
+  top: number
+  right: number
+  bottom: number
+  left: number
 }

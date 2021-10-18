@@ -66,7 +66,6 @@ export default defineComponent({
       ],
     }
 
-    // TODO: return hide date when pages be done
     const TokemonicList: LinkList = {
       name: 'Tokemonics',
       links: [
@@ -74,6 +73,7 @@ export default defineComponent({
           to: 'Tokemonics',
           text: 'Tokemonics overview',
         },
+        // TODO: return hide date when pages be done
         // {
         //   to: 'odin&geo',
         //   text: 'Odin & Geo',
@@ -83,13 +83,18 @@ export default defineComponent({
     const ResourceList: LinkList = {
       name: 'Resources',
       links: [
+        // TODO: return hide date when pages be done
         // {
         //   to: 'charts',
         //   text: 'Charts & Stats',
         // },
+        // {
+        //   url: '/chart/validators/',
+        //   text: 'Block Validators Chart',
+        // },
         {
-          url: '/chart/validators/',
-          text: 'Block Validators Chart',
+          url: '/chart/daily_transactions/',
+          text: 'Daily Transactions Volume Chart',
         },
       ],
     }

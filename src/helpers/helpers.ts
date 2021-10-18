@@ -4,6 +4,8 @@ import { adjustedData, ChartLabelsType } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { cacheAnswers } from '@/helpers/requests'
 import { bigMath } from '@/helpers/bigMath'
+import { AnyFn, Unpacked } from '@/shared-types'
+import { Pagination } from '@/api/query-ext/telemetryExtension'
 
 export const _allowedTypes = [
   'Send',
@@ -107,6 +109,12 @@ const _randomColors = (size: number, name: string): Array<string> => {
 }
 export const getRandomColors = cacheAnswers(_randomColors)
 
+export const allowedTxCount = async (
+  txs: readonly TxResponse[]
+): Promise<number> => {
+  return await prepareTransaction(txs).then((res) => res.length)
+}
+
 export const prepareTransaction = async (
   txs: readonly TxResponse[]
 ): Promise<Array<adjustedData>> => {
@@ -142,4 +150,43 @@ export const addedRankBy = <T extends ChartLabelsType>(
       d.rank = i + 1
     })
   return arr
+}
+
+// TODO: Come back to this later
+export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
+  arr = arr.filter((el) => el[Object.keys(el)[0]].length !== 0)
+  arr = arr.filter(
+    (el, index, self) =>
+      index ===
+      self.findIndex((t) => {
+        return JSON.stringify(t) === JSON.stringify(el)
+      })
+  )
+  console.debug('withoutDuplicates', arr)
+  return arr
+}
+
+// TODO: Come back to this later
+export const requestByDays = async <T extends AnyFn>(
+  {
+    startDate,
+    endDate,
+    pagination,
+  }: { startDate: Date; endDate: Date; pagination?: Pagination },
+  fn: T,
+  days: number
+): Promise<Array<Unpacked<ReturnType<T>>>> => {
+  const tempArr: Array<Unpacked<ReturnType<T>>> = []
+  for (let i = 0; i <= days * 24; ++i) {
+    startDate?.setHours(startDate.getHours() - 1)
+    const res = (await fn({
+      startDate,
+      endDate,
+      pagination,
+    })) as T extends Unpacked<ReturnType<T>> ? T : never
+    if (res[Object.keys(res)[0]].length) {
+      tempArr.push(...res[Object.keys(res)[0]])
+    }
+  }
+  return tempArr
 }
