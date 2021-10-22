@@ -23,7 +23,7 @@
         <input
           type="search"
           class="filter-search"
-          placeholder="Searching by account address block, Tx hash"
+          placeholder="Searching by account address, block, Tx hash"
           v-model="searchedText"
         />
 

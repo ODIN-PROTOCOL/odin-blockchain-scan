@@ -21,7 +21,6 @@ export default defineComponent({
 <style scoped lang="scss">
 .home {
   &__wrapper {
-    padding: 0 1rem;
     margin: 0 10.3rem;
     @media (max-width: 768px) {
       margin: 0;

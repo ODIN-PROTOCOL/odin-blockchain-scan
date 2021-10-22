@@ -221,6 +221,7 @@ export default defineComponent({
       flex-direction: column;
       padding: 0 1.6rem;
       gap: 0;
+      margin-bottom: 2.4rem;
     }
     &__dropdown {
       width: 100%;
@@ -266,7 +267,8 @@ export default defineComponent({
     }
   }
   .nav-mob {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

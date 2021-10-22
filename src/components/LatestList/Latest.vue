@@ -151,7 +151,7 @@ export default defineComponent({
     }
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
-        query: `tx.height >= ${lastHeight.value - 10}`,
+        query: `tx.height >= 0`,
       })
 
       if (txs) {

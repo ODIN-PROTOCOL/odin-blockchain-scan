@@ -39,7 +39,7 @@ export default defineComponent({
 <style scoped lang="scss">
 
 footer {
-  background: var(--clr__tooltip-new);
+  background: var(--clr__tooltip-bg);
   height: 92px;
   margin-top: 64px;
 

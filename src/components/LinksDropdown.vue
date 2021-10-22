@@ -82,12 +82,11 @@ export default defineComponent({
     position: absolute;
     top: 100%;
     left: 0;
-    padding-top: 1rem;
     border-radius: 0.8rem;
-    background: var(--clr__main-bg);
     z-index: 1;
     box-shadow: 0 0.4rem 2.4rem rgba(8, 87, 172, 0.12);
     min-width: 16rem;
+    background: var(--clr__main-bg);
   }
   &-link {
     margin: 0;

@@ -2,23 +2,14 @@
   <div class="container">
     <div class="block-item">
       <div class="block-item__title">
-        <button class="block-back" @click.prevent="routerBack(router)">
-          <img src="~@/assets/icons/back-arrow.svg" alt="back-arrow" />
-          <span>Account</span>
-        </button>
+        <BackButton />
         <h1 class="block-name">Account</h1>
-        <div class="hash-wrapper">
-          <span class="block-id">{{ route.params.hash }}</span>
-          <div class="copy-button__wrapper">
-            <button
-              class="copy-button"
-              @click.prevent="copyValue(String(route.params.hash))"
-            >
-              <img src="~@/assets/icons/copy.svg" alt="info" />
-            </button>
-            <div class="tooltip">Copy From Account Hash to clipboard.</div>
-          </div>
-        </div>
+        <CopyText
+          :text="route.params.hash"
+          :title="route.params.hash"
+          :displayText="route.params.hash"
+          :class-name="'block-id'"
+        />
       </div>
       <div class="stats-wrapper mg-b32">
         <div class="stats-info">
@@ -164,13 +155,15 @@ import { callers } from '@/api/callers'
 import { convertToTxTime } from '@/helpers/dates'
 import { copyValue, prepareTransaction } from '@/helpers/helpers'
 
-import TitledLink from '@/components/TitledLink.vue'
 import { Bech32 } from '@cosmjs/encoding'
 import { bigMath } from '@/helpers/bigMath'
 import { handleError } from '@/helpers/errors'
+import BackButton from '@/components/BackButton.vue'
+import CopyText from '@/components/CopyText.vue'
+import TitledLink from '@/components/TitledLink.vue'
 
 export default defineComponent({
-  components: { TitledLink },
+  components: { BackButton, TitledLink, CopyText },
   setup() {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
@@ -237,7 +230,7 @@ export default defineComponent({
 .page-title {
   small {
     margin-left: 1rem;
-    font-weight: 500;
+    font-weight: 400;
     color: var(--clr__text-muted);
   }
 }
@@ -257,8 +250,7 @@ export default defineComponent({
       }
 
       @media screen and (max-width: 600px) {
-        flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
       }
     }
 
