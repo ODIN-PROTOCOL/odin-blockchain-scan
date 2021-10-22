@@ -17,7 +17,8 @@
 
       <LinksDropdown :list="BlockchainList" />
       <LinksDropdown :list="TokemonicList" />
-      <LinksDropdown :list="ResourceList" />
+      <!--        // TODO: return hide date when pages be done -->
+      <!--      <LinksDropdown :list="ResourceList" />-->
     </div>
     <UserWidget />
   </div>
@@ -92,10 +93,10 @@ export default defineComponent({
         //   url: '/chart/validators/',
         //   text: 'Block Validators Chart',
         // },
-        {
-          url: '/chart/daily_transactions/',
-          text: 'Daily Transactions Volume Chart',
-        },
+        // {
+        //   url: '/chart/daily_transactions/',
+        //   text: 'Daily Transactions Volume Chart',
+        // },
       ],
     }
     return { BlockchainList, TokemonicList, ResourceList }
