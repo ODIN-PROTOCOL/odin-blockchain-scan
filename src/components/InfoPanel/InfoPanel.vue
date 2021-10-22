@@ -238,6 +238,10 @@ export default defineComponent({
       font-weight: 600;
       text-transform: uppercase;
       height: 100%;
+      @media (max-width: 48rem) {
+        text-align: center;
+        font-size: 2.4rem;
+      }
     }
   }
   display: grid;

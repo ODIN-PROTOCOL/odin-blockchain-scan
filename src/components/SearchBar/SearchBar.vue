@@ -106,9 +106,6 @@ export default defineComponent({
         const { txs } = await callers.getTxSearch({
           query: `tx.height = ${Number(searchedText.value)}`,
         })
-
-        console.log('txs', txs)
-
         return (await makeTransactionListFormatted([
           ...txs,
         ] as Array<TxResponse>)) as Array<TransactionListFormatted>
@@ -228,13 +225,15 @@ export default defineComponent({
     border-radius: 0 0 0.8rem 0.8rem;
     width: 100%;
     z-index: 2;
+    @media (max-width: 48rem) {
+      left: 0;
+    }
   }
   &__row {
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
     @media screen and (max-width: 600px) {
       padding: 0 1.6rem;
     }

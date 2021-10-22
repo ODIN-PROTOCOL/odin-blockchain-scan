@@ -1,6 +1,6 @@
 <template>
   <div class="copy-text">
-    <span :class="className" :title="displayTitle">
+    <span class="text" :class="className" :title="displayTitle">
       {{ displayValue }}
     </span>
     <div class="copy-text__btn-wrp mg-l8">
@@ -63,6 +63,14 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.text {
+  @media (max-width: 48rem) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100px;
+  }
+}
 .copy-text {
   display: flex;
   align-items: center;
