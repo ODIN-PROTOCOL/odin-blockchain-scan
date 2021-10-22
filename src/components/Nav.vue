@@ -15,8 +15,8 @@
         Voting
       </router-link> -->
 
-      <LinksDropdown :list="BlockchainList" />
-      <LinksDropdown :list="TokemonicList" />
+      <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
+      <LinksDropdown :list="TokemonicList" @redirect="changeRoute" />
       <!--        // TODO: return hide date when pages be done -->
       <!--      <LinksDropdown :list="ResourceList" />-->
     </div>
@@ -40,7 +40,7 @@ export default defineComponent({
     isOpen: { type: Boolean, default: false },
   },
 
-  setup() {
+  setup(_, { emit }) {
     const BlockchainList: LinkList = {
       name: 'Blockchain',
       links: [
@@ -66,7 +66,6 @@ export default defineComponent({
         },
       ],
     }
-
     const TokemonicList: LinkList = {
       name: 'Tokemonics',
       links: [
@@ -99,7 +98,13 @@ export default defineComponent({
         // },
       ],
     }
-    return { BlockchainList, TokemonicList, ResourceList }
+
+    const changeRoute = () => {
+      console.log('asdsadsad')
+      emit('changeRoute')
+    }
+
+    return { BlockchainList, TokemonicList, ResourceList, changeRoute }
   },
 })
 </script>

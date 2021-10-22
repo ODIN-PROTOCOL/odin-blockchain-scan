@@ -10,6 +10,7 @@
           <router-link
             v-if="link.to"
             class="nav__dropdown-link"
+            @click="isRedirect"
             :key="link.to"
             :data-text="link.text"
             :to="{ name: link.to }"
@@ -19,6 +20,7 @@
           <router-link
             v-else
             class="nav__dropdown-link"
+            @click="isRedirect"
             :key="link.url"
             :data-text="link.text"
             :to="link.url"
@@ -37,9 +39,16 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'linksDropdown',
+  emits: ['redirect'],
   components: { ArrowIcon },
   props: {
     list: { type: Object, required: true },
+  },
+  setup(_, { emit }) {
+    const isRedirect = () => {
+      emit('redirect')
+    }
+    return { isRedirect }
   },
 })
 </script>

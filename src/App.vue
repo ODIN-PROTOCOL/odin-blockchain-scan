@@ -11,7 +11,7 @@
                 alt="Logo"
               />
             </router-link>
-            <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
+            <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)"  />
             <BurgerMenu
               class="burger-menu"
               :isOpen="isOpen"
@@ -72,7 +72,9 @@ export default defineComponent({
       event.preventDefault()
       isOpen.value = isOpen.value !== true
     }
-    const changeRoute = (): void => {
+    const changeRoute = (event): void => {
+      console.log(event)
+      console.log(isOpen.value)
       if (isOpen.value === true) isOpen.value = false
     }
     return {
