@@ -133,13 +133,12 @@ export default defineComponent({
         await callers.getBlockchain()
       let tempA: Array<blocksWithTotalTxInterface> = []
       for (let b of [...blockMetas].slice(0, 5)) {
+        const blockData = await callers.getBlock(b?.header?.height as number)
         tempA = [
           ...tempA,
           {
             ...b,
-            total_tx: await callers
-              .getBlock(b?.header?.height as number)
-              .then((res: BlockResponse): number => res?.block?.txs?.length),
+            total_tx: blockData.block.txs.length,
           },
         ]
       }
