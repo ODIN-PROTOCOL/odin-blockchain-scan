@@ -23,28 +23,28 @@
         <input
           type="search"
           class="filter-search"
-          placeholder="Searching by account address block, Tx hash"
+          placeholder="Searching by account address, block, Tx hash"
           v-model="searchedText"
         />
 
         <template v-if="searchResult">
           <div class="search__dropdown">
             <template v-for="result in searchResult">
-              <template v-if="result.blocks">
+              <template v-if="result.blocks.length !== 0">
                 <BlockResultItem
                   v-for="block in result.blocks"
                   :result="block"
                   :key="block.block.header.height"
                 />
               </template>
-              <template v-if="result.transactions">
+              <template v-if="result.transactions.length !== 0">
                 <TransactionItem
                   v-for="transaction in result.transactions"
                   :result="transaction"
                   :key="transaction.height"
                 />
               </template>
-              <template v-if="result.accounts">
+              <template v-if="result.accounts.length !== 0">
                 <AccountItem
                   v-for="accounts in result.accounts"
                   :result="accounts"
@@ -84,7 +84,7 @@ import { handleError } from '@/helpers/errors'
 export default defineComponent({
   name: 'SearchBar',
   components: { BlockResultItem, TransactionItem, AccountItem },
-  setup() {
+  setup: function () {
     const filters = ref<Array<string>>([
       'All Filters',
       'Blocks',
@@ -95,7 +95,6 @@ export default defineComponent({
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
     const searchResult = ref<Array<SearchResultType> | null>(null)
-
     watch(activeFilter, () => {
       searchResult.value = null
     })
@@ -144,9 +143,7 @@ export default defineComponent({
         )
         block = {
           ...block,
-          total_tx: await callers
-            .getBlock(block?.block.header?.height)
-            .then((res) => res?.block?.txs?.length),
+          total_tx: block.block?.txs?.length as number,
         }
         return [block]
       } catch {
@@ -178,13 +175,13 @@ export default defineComponent({
             },
           ]
         }
-        return (searchResult.value = [
+        searchResult.value = [
           {
             blocks: await getBlock(),
             transactions: await getTransactions(),
             accounts: await getAccount(),
           },
-        ])
+        ]
       } catch (e) {
         console.error(e.message)
         handleError(e)
@@ -228,13 +225,15 @@ export default defineComponent({
     border-radius: 0 0 0.8rem 0.8rem;
     width: 100%;
     z-index: 2;
+    @media (max-width: 48rem) {
+      left: 0;
+    }
   }
   &__row {
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
     @media screen and (max-width: 600px) {
       padding: 0 1.6rem;
     }

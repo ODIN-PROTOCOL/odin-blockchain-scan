@@ -2,7 +2,6 @@ import { toHex } from '@cosmjs/encoding'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
 import { adjustedData, ChartLabelsType } from '@/helpers/Types'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
-import { cacheAnswers } from '@/helpers/requests'
 import { bigMath } from '@/helpers/bigMath'
 import { AnyFn, Unpacked } from '@/shared-types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
@@ -107,7 +106,6 @@ const _randomColors = (size: number, name: string): Array<string> => {
   localStorage.setItem(name, JSON.stringify(colors))
   return colors
 }
-export const getRandomColors = cacheAnswers(_randomColors)
 
 export const allowedTxCount = async (
   txs: readonly TxResponse[]

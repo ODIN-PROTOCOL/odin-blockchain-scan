@@ -4,7 +4,8 @@
       <img src="@/assets/icons/back-arrow.svg" alt="back" />
     </button>
     <button class="back-btn__mobile" @click.prevent="routerBack()">
-      <img src="@/assets/icons/back-arrow-small.svg" alt="back" />
+      <!--      <img src="@/assets/icons/back-arrow-small.svg" alt="back" />-->
+      <img src="@/assets/icons/back-arrow.svg" alt="back" />
       <span>{{ text }}</span>
     </button>
   </div>
@@ -16,7 +17,7 @@ import { Router, useRouter } from 'vue-router'
 
 export default defineComponent({
   props: {
-    text: { type: String, required: true },
+    text: { type: String, required: false },
   },
   setup: function () {
     const router: Router = useRouter()

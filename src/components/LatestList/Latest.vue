@@ -133,13 +133,12 @@ export default defineComponent({
         await callers.getBlockchain()
       let tempA: Array<blocksWithTotalTxInterface> = []
       for (let b of [...blockMetas].slice(0, 5)) {
+        const blockData = await callers.getBlock(b?.header?.height as number)
         tempA = [
           ...tempA,
           {
             ...b,
-            total_tx: await callers
-              .getBlock(b?.header?.height as number)
-              .then((res: BlockResponse): number => res?.block?.txs?.length),
+            total_tx: blockData.block.txs.length,
           },
         ]
       }
@@ -151,7 +150,7 @@ export default defineComponent({
     }
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
-        query: `tx.height >= ${lastHeight.value - 10}`,
+        query: `tx.height >= 0`,
       })
 
       if (txs) {

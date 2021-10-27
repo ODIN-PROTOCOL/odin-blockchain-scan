@@ -105,7 +105,8 @@ export function formatDate(
     default: 'MMM d, yyyy, HH:mm',
     thisYear: 'MMM d, HH:mm',
   }
-): string {
+): string | void {
+  if (!input) return
   try {
     if (Long.isLong(input)) input = input.toNumber() * 1000
     format = _chooseFormat(input, format)

@@ -77,7 +77,7 @@
             </div>
           </div>
           <div class="info-value">
-            <span>{{ convertDate(blockInfo?.block?.header.time) }}</span>
+            <span>{{ formatDate(blockInfo?.block?.header.time, 'MMM d, yyyy, HH:mm') }}</span>
           </div>
         </div>
         <div
@@ -110,7 +110,8 @@ import {
   useRouter,
 } from 'vue-router'
 import { callers } from '@/api/callers'
-import { convertDate, copyValue, getHash } from '@/helpers/helpers'
+import { copyValue, getHash } from '@/helpers/helpers'
+import { formatDate } from '@/helpers/formatters'
 import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import CopyText from '@/components/CopyText.vue'
 
@@ -136,8 +137,6 @@ export default defineComponent({
       blockParentHash.value = getHash(
         blockInfo.value.block.header.lastBlockId.hash
       )
-
-      console.debug(blockInfo.value)
     }
 
     onMounted(async (): Promise<void> => {
@@ -151,14 +150,13 @@ export default defineComponent({
       blockHash,
       back,
       copyValue,
-      convertDate,
+      formatDate,
       blockParentHash,
     }
   },
 })
 </script>
 <style lang="scss" scoped>
-
 .block {
   &-item {
     padding: 2.6rem 3.3rem;

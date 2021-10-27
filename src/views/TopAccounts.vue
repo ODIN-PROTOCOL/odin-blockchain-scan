@@ -4,7 +4,7 @@
       <h2 class="view-title" title="some blocks">Top accounts</h2>
     </div>
     <div class="mg-b16 mg-t16 accounts-header__wrapper">
-      <p v-if="accounts?.length">{{ accounts?.length }} accounts found</p>
+      <p class="accounts-header__count" v-if="accounts?.length">{{ accounts?.length }} accounts found</p>
       <p v-else></p>
       <div class="sort-wrapper">
         <span>Sort By</span>
@@ -292,6 +292,9 @@ export default defineComponent({
 
 .accounts {
   &-header {
+    &__count {
+      align-self: flex-start;
+    }
     &__wrapper {
       display: flex;
       justify-content: space-between;

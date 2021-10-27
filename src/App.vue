@@ -9,7 +9,6 @@
                 class="logo"
                 src="~@/assets/brand/odin-logo-black.png"
                 alt="Logo"
-                width="120"
               />
             </router-link>
             <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
@@ -112,7 +111,6 @@ export default defineComponent({
 
 .logo {
   width: 90px;
-  height: 34px;
 }
 
 .main-section {
