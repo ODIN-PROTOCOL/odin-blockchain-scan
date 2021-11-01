@@ -240,7 +240,7 @@ export default defineComponent({
 
 .app-table__header {
   display: none;
-  @media screen and (max-width: 99.2rem) {
+  @media screen and (max-width: 992px) {
     display: inline-block;
     width: 20rem;
   }

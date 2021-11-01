@@ -64,7 +64,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .text {
-  @media (max-width: 48rem) {
+  @media (max-width: 480px) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
