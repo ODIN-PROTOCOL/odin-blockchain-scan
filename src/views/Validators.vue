@@ -122,11 +122,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { callers } from '@/api/callers'
 import { wallet } from '@/api/wallet'
 import { handleError } from '@/helpers/errors'
-import {
-  isActiveValidator,
-  isOracleValidator,
-  ValidatorDecoded,
-} from '@/helpers/validatorDecoders'
+import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { DelegationResponse } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import { showBecomeValidatorFormDialog } from '@/components/modals/BecomeValidatorFormModal.vue'
@@ -138,6 +134,7 @@ import Pagination from '@/components/pagination/pagination.vue'
 import { showWithdrawFormDialog } from '@/components/modals/WithdrawFormModal.vue'
 import { showDelegateFormDialog } from '@/components/modals/DelegateFormModal.vue'
 import { showUndelegateFormDialog } from '@/components/modals/UndelegateFormModal.vue'
+import { getTransformedValidators } from '@/helpers/validatorsHelpers'
 
 export default defineComponent({
   name: 'Validators',
@@ -161,42 +158,30 @@ export default defineComponent({
         const bonded = await callers.getValidators('BOND_STATUS_BONDED')
         const unbonding = await callers.getValidators('BOND_STATUS_UNBONDING')
         const unbonded = await callers.getValidators('BOND_STATUS_UNBONDED')
-        const _validators = [
+
+        activeValidators = await getTransformedValidators([
           ...bonded.validators,
           ...unbonding.validators,
+        ])
+        inactiveValidators = await getTransformedValidators([
           ...unbonded.validators,
-        ]
-        let _updatedValidators: ValidatorDecoded[] = []
-        _updatedValidators = await Promise.all(
-          _validators.map(async (item, idx) => {
-            return {
-              ...item,
-              rank: idx + 1,
-              isOracleValidator: await isOracleValidator(item.operatorAddress),
-            }
-          })
-        )
-        for (let i = 0; i < _updatedValidators.length; i++) {
-          const active = await isActiveValidator(
-            _updatedValidators[i].operatorAddress
-          )
-          if (active) activeValidators.push(_updatedValidators[i])
-          else inactiveValidators.push(_updatedValidators[i])
-        }
+        ])
+
         if (validatorsStatus.value === 'Active') {
           validators.value = [...activeValidators]
         } else if (validatorsStatus.value === 'Inactive') {
           validators.value = [...inactiveValidators]
         }
+
+        validatorsCount.value =
+          activeValidators.length + inactiveValidators.length
         filteredValidatorsCount.value = validators.value.length
-        validatorsCount.value = _validators.length
         filterValidators(currentPage.value)
       } catch (error) {
         handleError(error)
       }
       releaseLoading()
     }
-
     const delegations = ref<{ [k: string]: DelegationResponse }>({})
     const getDelegations = async () => {
       lockLoading()
@@ -342,8 +327,8 @@ export default defineComponent({
     minmax(8rem, 4fr)
     minmax(8rem, 4fr)
     minmax(8rem, 4fr)
-    minmax(8rem, 4fr)
-    //minmax(28.5rem, 4fr);
+    minmax(8rem, 4fr);
+  //minmax(28.5rem, 4fr);
 }
 
 .app-table__activities {
