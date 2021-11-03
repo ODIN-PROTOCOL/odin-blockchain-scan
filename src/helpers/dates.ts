@@ -30,7 +30,7 @@ export const convertToTime = (time: string): string => {
   const someTime = new Date(time)
 
   const minutes =
-    someTime.getMinutes() > 90
+    someTime.getMinutes() > 9
       ? someTime.getMinutes()
       : '0' + someTime.getMinutes()
   const hours =
