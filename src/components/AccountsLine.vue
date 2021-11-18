@@ -121,6 +121,7 @@ export default defineComponent({
 .app-table__cell-txt {
   max-width: 15rem;
   padding-right: 1rem;
+  @include ellipsis(inline-block);
 }
 
 .app-table__header {
