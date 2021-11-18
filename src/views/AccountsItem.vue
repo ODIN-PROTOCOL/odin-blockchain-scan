@@ -14,7 +14,7 @@
       <div class="stats-wrapper mg-b32">
         <div class="stats-info">
           <div class="stats-row">
-            <span class="title">GEO Balance::</span>
+            <span class="title">GEO Balance:</span>
             <span class="amount">{{ geoBalance }} GEO</span>
           </div>
           <div class="stats-row">
