@@ -2,16 +2,16 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/blocks/${result.transHeight}`"
+      :to="`/transactions/${result.transHeight}/${result.transHash}`"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Tx</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
-            :to="`/blocks/${result.transHeight}`"
+            :to="`/transactions/${result.transHeight}/${result.transHash}`"
             :text="
-              result.transHash ? cropText(`0x${result.transSender}`) : 'No info'
+              result.transHash ? cropText(`0x${result.transHash}`) : 'No info'
             "
           />
         </div>
