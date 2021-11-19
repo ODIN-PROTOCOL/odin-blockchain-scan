@@ -29,27 +29,38 @@
 
         <template v-if="searchResult">
           <div class="search__dropdown">
-            <template v-for="result in searchResult">
-              <template v-if="result.blocks.length !== 0">
+            <template v-for="(result, idx) in searchResult" :key="idx">
+              <template v-if="result.blocks?.length !== 0">
                 <BlockResultItem
                   v-for="block in result.blocks"
                   :result="block"
                   :key="block.block.header.height"
                 />
               </template>
-              <template v-if="result.transactions.length !== 0">
+              <template v-if="result.transactions?.length !== 0">
                 <TransactionItem
                   v-for="transaction in result.transactions"
                   :result="transaction"
                   :key="transaction.height"
                 />
               </template>
-              <template v-if="result.accounts.length !== 0">
+              <template v-if="result.accounts?.length !== 0">
                 <AccountItem
                   v-for="accounts in result.accounts"
                   :result="accounts"
                   :key="accounts"
                 />
+              </template>
+              <template
+                v-if="
+                  !result.transactions?.length &&
+                  !result.blocks?.length &&
+                  !result.accounts?.length
+                "
+              >
+                <div class="search__dropdown-empty-msg">
+                  <span>Does not match any result!</span>
+                </div>
               </template>
             </template>
           </div>
@@ -67,6 +78,7 @@ import { callers } from '@/api/callers'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { Router, useRouter } from 'vue-router'
+import { fromHex } from '@cosmjs/encoding'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
@@ -103,11 +115,11 @@ export default defineComponent({
       Array<TransactionListFormatted>
     > => {
       try {
-        const { txs } = await callers.getTxSearch({
-          query: `tx.height = ${Number(searchedText.value)}`,
+        const tx = await callers.getTx({
+          hash: fromHex(searchedText.value as string)
         })
         return (await makeTransactionListFormatted([
-          ...txs,
+          tx
         ] as Array<TxResponse>)) as Array<TransactionListFormatted>
       } catch {
         return []
@@ -169,11 +181,11 @@ export default defineComponent({
           ])
         }
         if (activeFilter.value === 'Account Address') {
-          return [
+          return (searchResult.value = [
             {
               accounts: await getAccount(),
             },
-          ]
+          ])
         }
         searchResult.value = [
           {
@@ -183,8 +195,8 @@ export default defineComponent({
           },
         ]
       } catch (e) {
-        console.error(e.message)
-        handleError(e)
+        console.error((e as Error).message)
+        handleError(e as Error)
         searchResult.value = null
       }
       return null
@@ -228,6 +240,12 @@ export default defineComponent({
     @media (max-width: 48rem) {
       left: 0;
     }
+  }
+  &__dropdown-empty-msg {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    color: var(--clr__text-muted);
   }
   &__row {
     margin: 0 auto;

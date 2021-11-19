@@ -14,7 +14,7 @@
       <div class="stats-wrapper mg-b32">
         <div class="stats-info">
           <div class="stats-row">
-            <span class="title">GEO Balance::</span>
+            <span class="title">GEO Balance:</span>
             <span class="amount">{{ geoBalance }} GEO</span>
           </div>
           <div class="stats-row">
@@ -535,6 +535,7 @@ export default defineComponent({
 }
 
 .app-table__cell-txt {
+  display: inline-block;
   max-width: 100px;
   text-overflow: ellipsis;
   overflow: hidden;

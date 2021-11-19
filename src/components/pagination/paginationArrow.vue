@@ -48,6 +48,9 @@ export default defineComponent({
     .right-arrow {
       transform: rotate(180deg);
     }
+    .left-arrow {
+      transform: rotate(0deg);
+    }
     &[disabled],
     &:hover {
       .right-arrow,

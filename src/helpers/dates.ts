@@ -19,7 +19,7 @@ export const convertToDate = (time: string): string => {
       ? someTime.getFullYear()
       : '0' + someTime.getFullYear()
 
-  return `${day}:${month}:${year}`
+  return `${day}.${month}.${year}`
 }
 
 export const convertToDayMonth = (time: string | Date): string => {

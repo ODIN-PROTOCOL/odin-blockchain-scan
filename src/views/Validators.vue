@@ -21,7 +21,7 @@
     <div class="app-table">
       <div class="app-table__head">
         <span>Rank</span>
-        <span>Moniker</span>
+        <span>Validator</span>
         <span>Delegator Share</span>
         <span>Commission</span>
         <span>Oracle Status</span>
@@ -38,7 +38,7 @@
               <span>{{ item.rank }}</span>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Moniker</span>
+              <span class="app-table__title">Validator</span>
               <TitledLink
                 class="app-table__cell-txt app-table__link"
                 :text="item.description.moniker"

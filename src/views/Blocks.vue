@@ -177,6 +177,7 @@ export default defineComponent({
 
 .app-table__cell-txt {
   max-width: 20rem;
+  @include ellipsis(inline-block);
 
   @media screen and (max-width: 600px) {
     max-width: 15rem;

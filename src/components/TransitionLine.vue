@@ -83,6 +83,7 @@ export default defineComponent({
 <style scoped lang="scss">
 .app-table__cell-txt {
   max-width: 150px;
+  @include ellipsis(inline-block);
 }
 
 .app-table__header {
