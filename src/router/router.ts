@@ -126,12 +126,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Odin-geo.vue'),
   },
   {
-    path: '/charts',
-    name: 'charts',
-    // beforeEnter: authorizedOnlyGuard,
-    component: () => import('../views/Tokemonics.vue'),
-  },
-  {
     path: '/delegators/:hash/',
     name: 'DelegatorItem',
     // beforeEnter: authorizedOnlyGuard,
@@ -150,23 +144,27 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/AccountsItem.vue'),
   },
   {
-    path: '/chart',
-    name: 'ChartValidators',
-    children: [
-      // TODO: wait for backend
-      // {
-      //   path: 'validators',
-      //   name: 'validatorsChart',
-      //   component: () => import('../views/validatorsChart.vue'),
-      // },
-      // {
-      //   path: 'daily_transactions',
-      //   name: 'dailyTransactions',
-      //   component: () => import('../views/dailyTransactionsChart.vue'),
-      // },
-    ],
+    path: '/charts-stats',
+    name: 'Chart&Stats',
     // beforeEnter: authorizedOnlyGuard,
-    component: () => import('../views/ChartPage.vue'),
+    component: () => import('../views/Charts-stats.vue'),
+  },
+  {
+    path: '/charts-stats/charts',
+    name: 'charts',
+    children: [
+      {
+        path: 'validators',
+        name: 'validatorsChart',
+        component: () => import('../views/validatorsChart.vue'),
+      },
+      {
+        path: 'daily-transactions-volume',
+        name: 'dailyTransactionsVolume',
+        component: () => import('../views/DailyTransactionsVolumeChart.vue'),
+      },
+    ],
+    component: () => import('../views/ChartPage.vue')
   },
 ]
 
