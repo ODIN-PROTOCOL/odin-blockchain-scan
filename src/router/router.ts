@@ -159,9 +159,24 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/validatorsChart.vue'),
       },
       {
+        path: 'average-odin-block-size',
+        name: 'AverageOdinBlockSizeChart',
+        component: () => import('../views/AverageOdinBlockSizeChart.vue'),
+      },
+      {
+        path: 'average-block-time',
+        name: 'AverageBlockTimeChart',
+        component: () => import('../views/AverageBlockTimeChart.vue'),
+      },
+      {
         path: 'daily-transactions-volume',
-        name: 'dailyTransactionsVolume',
+        name: 'DailyTransactionsVolumeChart',
         component: () => import('../views/DailyTransactionsVolumeChart.vue'),
+      },
+      {
+        path: 'average-transactions-fee',
+        name: 'AverageTransactionFeeChart',
+        component: () => import('../views/AverageTransactionFeeChart.vue'),
       },
     ],
     component: () => import('../views/ChartPage.vue')

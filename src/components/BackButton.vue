@@ -4,8 +4,7 @@
       <img src="@/assets/icons/back-arrow.svg" alt="back" />
     </button>
     <button class="back-btn__mobile" @click.prevent="routerBack()">
-      <!--      <img src="@/assets/icons/back-arrow-small.svg" alt="back" />-->
-      <img src="@/assets/icons/back-arrow.svg" alt="back" />
+      <img src="@/assets/icons/back-arrow-small.svg" alt="back" />
       <span>{{ text }}</span>
     </button>
   </div>

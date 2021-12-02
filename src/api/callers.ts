@@ -19,6 +19,7 @@ import {
   MsgUndelegate,
 } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx'
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
+import axios from 'axios'
 
 const makeCallers = () => {
   const broadcaster = api.makeBroadcastCaller.bind(api)
@@ -172,6 +173,50 @@ const makeCallers = () => {
       return getAPIDate(`${API_CONFIG.rpc}/tx?hash=0x${hash}&prove=true`)
     },
     getParams: querier((qc) => qc.mint.unverified.params),
+    getTxVolumePerDays: (start_time: Date, end_time: Date) => {
+      return axios.get(
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/txVolumePerDays`,
+        {
+          params: {
+            start_time: (start_time.getTime() / 1000).toFixed(),
+            end_time: (end_time.getTime() / 1000).toFixed(),
+          },
+        }
+      )
+    },
+    getAvgSizePerDays: (start_time: Date, end_time: Date) => {
+      return axios.get(
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgSizePerDays`,
+        {
+          params: {
+            start_time: (start_time.getTime() / 1000).toFixed(),
+            end_time: (end_time.getTime() / 1000).toFixed(),
+          },
+        }
+      )
+    },
+    getAvgTimePerDays: (start_time: Date, end_time: Date) => {
+      return axios.get(
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTimePerDays`,
+        {
+          params: {
+            start_time: (start_time.getTime() / 1000).toFixed(),
+            end_time: (end_time.getTime() / 1000).toFixed(),
+          },
+        }
+      )
+    },
+    getAvgTxFeePerDays: (start_time: Date, end_time: Date) => {
+      return axios.get(
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTxFeePerDays`,
+        {
+          params: {
+            start_time: (start_time.getTime() / 1000).toFixed(),
+            end_time: (end_time.getTime() / 1000).toFixed(),
+          },
+        }
+      )
+    },
   }
 }
 
