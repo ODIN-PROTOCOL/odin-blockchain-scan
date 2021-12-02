@@ -8,6 +8,7 @@ export const getChartOptions = (datasetUnit: string, labels: string[]) => {
     responsive: true,
     scales: {
       yAxis: {
+        beginAtZero: true,
         ticks: {
           count: 6,
         }
