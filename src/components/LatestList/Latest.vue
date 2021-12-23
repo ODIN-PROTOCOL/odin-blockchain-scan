@@ -67,9 +67,7 @@
                   <TitledLink
                     :to="`/account/${item.sender}`"
                     class="app-table__cell-txt"
-                    :text="
-                      item.sender ? cropText(`0x${item.sender}`) : 'No info'
-                    "
+                    :text="item.sender ? cropText(item.sender) : 'No info'"
                   />
                 </template>
                 <template #to>
@@ -77,9 +75,7 @@
                   <TitledLink
                     class="app-table__cell-txt"
                     :to="`/account/${item.receiver}`"
-                    :text="
-                      item.receiver ? cropText(`0x${item.receiver}`) : 'No info'
-                    "
+                    :text="item.receiver ? cropText(item.receiver) : 'No info'"
                   />
                 </template>
               </LatestListItem>

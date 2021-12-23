@@ -9,7 +9,7 @@
       <TitledLink
         :to="`/account/${account.address}`"
         class="app-table__cell-txt"
-        :text="`0x${account.address}`"
+        :text="account.address"
       />
     </div>
     <div class="app-table__cell">

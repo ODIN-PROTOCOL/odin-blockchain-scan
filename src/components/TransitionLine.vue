@@ -32,7 +32,7 @@
         v-if="transition.sender !== ''"
         :to="`/account/${transition.sender}`"
         class="app-table__cell-txt"
-        :text="`0x${transition.sender}`"
+        :text="transition.sender"
       />
       <span class="app-table__cell-txt" v-else> - </span>
     </div>
@@ -42,7 +42,7 @@
         v-if="transition.receiver !== ''"
         :to="`/account/${transition.receiver}`"
         class="app-table__cell-txt"
-        :text="`0x${transition.receiver}`"
+        :text="transition.receiver"
       />
       <span class="app-table__cell-txt" v-else> - </span>
     </div>
