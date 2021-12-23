@@ -54,10 +54,10 @@
             <span class="app-table__header">Validator</span>
             <TitledLink
               class="app-table__cell-txt"
-              :text="'0x' + toHexFunc(item.header.validatorsHash).toUpperCase()"
+              :text="toHexFunc(item.header.validatorsHash).toUpperCase()"
             />
             <div class="tooltip">
-              {{ '0x' + toHexFunc(item.header.validatorsHash).toUpperCase() }}
+              {{ toHexFunc(item.header.validatorsHash).toUpperCase() }}
             </div>
           </div>
         </div>

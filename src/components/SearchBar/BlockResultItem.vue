@@ -23,8 +23,7 @@
             :to="`/transactions/${result?.block?.header?.height}`"
             class="app-table__cell-txt"
             :text="`${cropText(
-              '0x' +
-                toHexFunc(result?.block?.header?.validatorsHash).toUpperCase()
+              toHexFunc(result?.block?.header?.validatorsHash).toUpperCase()
             )}`"
           />
         </div>

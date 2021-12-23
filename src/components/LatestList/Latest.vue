@@ -30,7 +30,7 @@
                     ).toUpperCase()}`"
                     class="app-table__cell-txt"
                     :text="`${cropText(
-                      '0x' + toHexFunc(item.header.validatorsHash).toUpperCase()
+                      toHexFunc(item.header.validatorsHash).toUpperCase()
                     )}`"
                   />
                 </template>
