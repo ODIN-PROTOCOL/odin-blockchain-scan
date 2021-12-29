@@ -32,7 +32,7 @@
       </VuePicker>
     </div>
     <CustomBarChart
-      :data="chartData"
+      :chartDataset="chartData"
       :datasetLabel="'Block Size'"
       :datasetUnit="'kilobytes'"
     />

@@ -7,7 +7,7 @@
         <div class="info-panel__title">Transactions history statistics</div>
         <CustomLineChart
           v-if="chartData"
-          :data="chartData"
+          :chartDataset="chartData"
           :datasetLabel="'Transactions'"
         />
         <span v-else class="info-panel__empty-chart">
@@ -24,9 +24,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { CoingeckoCoinsType, Link } from '@/helpers/Types'
-// import { callers } from '@/api/callers'
-// import { convertToDayMonth } from '@/helpers/dates'
-// import { bigMath } from '@/helpers/bigMath'
 import { callers } from '@/api/callers'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { getAPIDate } from '@/helpers/requests'
@@ -38,6 +35,7 @@ export default defineComponent({
   name: 'InfoPanel',
   components: { InfoPanelCol, CustomLineChart },
   setup() {
+    const CHART_DATA_PERIOD = 7
     const priceData = ref<Array<Link> | null>()
     const transactionData = ref<Array<Link> | null>()
     const transactionCount = ref<number>()
@@ -58,7 +56,7 @@ export default defineComponent({
     const getLatestTelemetry = async (): Promise<void> => {
       const endDate = new Date()
       const startDate = new Date()
-      startDate.setDate(startDate.getDate() - 4)
+      startDate.setDate(startDate.getDate() - CHART_DATA_PERIOD)
 
       try {
         const { data } = await callers.getTxVolumePerDays(startDate, endDate)

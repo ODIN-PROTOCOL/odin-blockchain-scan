@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRef, PropType } from 'vue'
+import { defineComponent, computed, ref, PropType, toRefs } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import { LineChart, useLineChart } from 'vue-chart-3'
 import { getChartOptions } from '@/helpers/customChartHelpers'
@@ -18,29 +18,27 @@ export default defineComponent({
   props: {
     datasetLabel: { type: String, default: 'Dataset' },
     datasetUnit: { type: String, default: '' },
-    data: {
+    chartDataset: {
       type: Object as PropType<formatedTelemetryDataForCharts>,
+      default: () => ({ data: [], labels: [] }),
     },
   },
   setup: function (props) {
-    const _data = toRef(props, 'data')
-    const _datasetLabel = toRef(props, 'datasetLabel')
-    const _datasetUnit = toRef(props, 'datasetUnit')
+    const { chartDataset, datasetUnit, datasetLabel } = toRefs(props)
     const lineRef = ref()
 
     const options = computed(() => {
-      return getChartOptions(_datasetUnit.value, _data.value?.labels || [])
+      return getChartOptions(datasetUnit.value, chartDataset.value.labels)
     })
 
     const chartData = computed(() => ({
-      labels: _data.value?.labels || [],
+      labels: chartDataset.value.labels,
       datasets: [
         {
-          label: _datasetLabel.value,
-          data: _data.value?.data || [],
+          label: datasetLabel.value,
+          data: chartDataset.value.data,
           borderColor: '#66B0FF',
           backgroundColor: '#007BFF',
-
           tension: 0.4,
           radius: 0,
         },

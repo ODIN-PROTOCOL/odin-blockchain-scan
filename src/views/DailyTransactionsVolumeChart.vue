@@ -31,7 +31,7 @@
         </template>
       </VuePicker>
     </div>
-    <CustomLineChart :data="chartData" :datasetLabel="'Transactions'" />
+    <CustomLineChart :chartDataset="chartData" :datasetLabel="'Transactions'" />
   </div>
 </template>
 

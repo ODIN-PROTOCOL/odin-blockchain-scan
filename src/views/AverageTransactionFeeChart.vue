@@ -33,7 +33,7 @@
       </VuePicker>
     </div>
     <CustomLineChart
-      :data="chartData"
+      :chartDataset="chartData"
       :datasetLabel="'Average Transaction Fee'"
     />
   </div>

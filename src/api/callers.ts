@@ -173,46 +173,46 @@ const makeCallers = () => {
       return getAPIDate(`${API_CONFIG.rpc}/tx?hash=0x${hash}&prove=true`)
     },
     getParams: querier((qc) => qc.mint.unverified.params),
-    getTxVolumePerDays: (start_time: Date, end_time: Date) => {
+    getTxVolumePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
         `${API_CONFIG.telemetryUrl}/telemetry/blocks/txVolumePerDays`,
         {
           params: {
-            start_time: (start_time.getTime() / 1000).toFixed(),
-            end_time: (end_time.getTime() / 1000).toFixed(),
+            start_time: (startTime.getTime() / 1000).toFixed(),
+            end_time: (endTime.getTime() / 1000).toFixed(),
           },
         }
       )
     },
-    getAvgSizePerDays: (start_time: Date, end_time: Date) => {
+    getAvgSizePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
         `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgSizePerDays`,
         {
           params: {
-            start_time: (start_time.getTime() / 1000).toFixed(),
-            end_time: (end_time.getTime() / 1000).toFixed(),
+            start_time: (startTime.getTime() / 1000).toFixed(),
+            end_time: (endTime.getTime() / 1000).toFixed(),
           },
         }
       )
     },
-    getAvgTimePerDays: (start_time: Date, end_time: Date) => {
+    getAvgTimePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
         `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTimePerDays`,
         {
           params: {
-            start_time: (start_time.getTime() / 1000).toFixed(),
-            end_time: (end_time.getTime() / 1000).toFixed(),
+            start_time: (startTime.getTime() / 1000).toFixed(),
+            end_time: (endTime.getTime() / 1000).toFixed(),
           },
         }
       )
     },
-    getAvgTxFeePerDays: (start_time: Date, end_time: Date) => {
+    getAvgTxFeePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
         `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTxFeePerDays`,
         {
           params: {
-            start_time: (start_time.getTime() / 1000).toFixed(),
-            end_time: (end_time.getTime() / 1000).toFixed(),
+            start_time: (startTime.getTime() / 1000).toFixed(),
+            end_time: (endTime.getTime() / 1000).toFixed(),
           },
         }
       )
