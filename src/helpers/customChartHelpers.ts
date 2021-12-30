@@ -34,13 +34,15 @@ export const getChartOptions = (datasetUnit: string, labels: string[]) => {
         display: false,
       },
       tooltip: {
-        yAlign: 'bottom',
+        yAlign: 'chartjs-tooltip_bottom',
         padding: 0,
         enabled: false,
         external: function (ctx): void {
           const tooltipModel = ctx.tooltip
           let tooltipEl = document.getElementById('chartjs-tooltip')
-          let tooltipArrow = tooltipEl?.querySelector('.arrow') as HTMLElement
+          let tooltipArrow = tooltipEl?.querySelector(
+            '.chartjs-tooltip__arrow'
+          ) as HTMLElement
 
           // Create element on first render
           if (!tooltipEl) {
@@ -87,7 +89,7 @@ const _createTooltip = (): HTMLElement => {
 
 const _createTooltipArrow = (tooltip: HTMLElement): HTMLElement => {
   const tooltipArrow = document.createElement('span')
-  tooltipArrow.className = 'arrow'
+  tooltipArrow.className = 'chartjs-tooltip__arrow'
   tooltip.appendChild(tooltipArrow)
   
   return tooltipArrow
@@ -153,7 +155,7 @@ const _setTooltipBody = (tooltipModel, unit: string) => {
     const lineTitle = body[0].substring(0, delimiterIndex + 1)
     const lineValue = body[0].substring(delimiterIndex + 1, body[0].length)
     innerHtml +=
-      '<div class="tooltip-row"><span class="tooltip-row__title">' +
+      '<div class="tooltip-row"><span class="chartjs-tooltip__row-title">' +
       lineTitle +
       '</span><span>' +
       '&nbsp' +

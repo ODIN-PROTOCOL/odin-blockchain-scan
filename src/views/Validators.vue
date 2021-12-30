@@ -3,8 +3,8 @@
     class="validators container load-fog"
     :class="{ 'load-fog_show': isLoading && validators?.length }"
   >
-    <div class="page-title">
-      <h2 class="view-title">All Validators</h2>
+    <div class="view-main__title-wrapper">
+      <h2 class="view-main__title">All Validators</h2>
     </div>
 
     <template v-if="validatorsCount">
@@ -63,24 +63,6 @@
             </div>
             <div class="app-table__cell">
               <div class="app-table__activities">
-                <!--
-                <div class="app-table__activities-item">
-                  <button
-                    class="app-btn app-btn_outlined app-btn_small"
-                    type="button"
-                    @click="withdraw(item)"
-                  >
-                    Withdraw stake
-                  </button>
-                  <button
-                    class="app-btn app-btn_small mg-l24"
-                    type="button"
-                    @click="delegate(item)"
-                  >
-                    Delegate
-                  </button>
-                </div>
-                -->
                 <div
                   v-if="delegations[item.operatorAddress]"
                   class="app-table__activities-item"

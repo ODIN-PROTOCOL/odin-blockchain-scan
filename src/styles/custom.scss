@@ -13,25 +13,23 @@ body {
   border-radius: 0.8rem;
   color: #fff;
 
-  &.bottom {
-    .arrow {
+  &.chartjs-tooltip_bottom {
+    .chartjs-tooltip__arrow {
       display: block;
-      width: 14px;
-      height: 14px;
+      width: 1.4rem;
+      height: 1.4rem;
       position: absolute;
       background-color: #053F7D;
-      transform: translateX(-7px) rotate(45deg);
-      bottom: -5px;
+      transform: translateX(-0.7rem) rotate(45deg);
+      bottom: -0.5rem;
       pointer-events: none;
     }
   }
 
-  .tooltip-row {
-    &__title {
-      font-size: 1.4rem;
-      font-weight: 300;
-      opacity: 0.6; 
-    }
+  .chartjs-tooltip__row-title {
+    font-size: 1.4rem;
+    font-weight: 300;
+    opacity: 0.6; 
   }
 }
 

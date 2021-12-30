@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <h1 class="page-title mg-b32">
+      <h1 class="view-main__subtitle mg-b32">
         <span>Transactions</span>
         <small v-if="totalTxCount">{{ totalTxCount }}</small>
       </h1>
@@ -227,13 +227,6 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-.page-title {
-  small {
-    margin-left: 1rem;
-    font-weight: 400;
-    color: var(--clr__text-muted);
-  }
-}
 .block {
   &-item {
     padding: 2.6rem 3.3rem;

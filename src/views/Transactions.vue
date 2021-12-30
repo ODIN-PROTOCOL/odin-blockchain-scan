@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="mg-b16 mg-t32">
-      <h2 class="view-title">Transactions</h2>
+    <div class="view-main__title-wrapper">
+      <h2 class="view-main__title">Transactions</h2>
     </div>
     <div class="mg-b16 mg-t16" v-if="filteredTransactions?.length">
       <p>{{ totalTransactions }} transactions found</p>
@@ -162,15 +162,6 @@ export default defineComponent({
 .app-table__cell-txt {
   max-width: 150px;
   padding-right: 10px;
-}
-
-.view-title {
-  font-weight: 400;
-  font-size: 3.2rem;
-
-  @media screen and (max-width: 600px) {
-    font-size: 2.8rem;
-  }
 }
 
 .app-table__head {

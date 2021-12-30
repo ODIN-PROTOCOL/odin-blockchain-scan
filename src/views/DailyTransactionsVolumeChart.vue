@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <div class="page-title">
+    <div class="view-main__title-wrapper">
       <BackButton :current-router="router" :text="'Charts & Stats'" />
-      <h2 class="view-title">DailyTransactionsVolumeChart</h2>
+      <h2 class="view-main__title">DailyTransactionsVolumeChart</h2>
     </div>
 
-    <div class="sort-wrapper">
+    <div class="view-main__sort-wrapper">
       <span>
         Transactions <br />
         per Day
@@ -46,7 +46,7 @@ import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import BackButton from '@/components/BackButton.vue'
 
 export default defineComponent({
-  name: 'DailyTransactionsVolumeChart',
+  name: 'daily-transaction-volume-chart',
   components: { CustomLineChart, BackButton },
   setup: function () {
     const router: Router = useRouter()
@@ -66,7 +66,6 @@ export default defineComponent({
         chartData.value = formatDataForCharts(data)
       } catch (error) {
         handleError(error as Error)
-        console.error(error)
       } finally {
         isLoading.value = false
       }
@@ -90,30 +89,34 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-title {
-  margin: 0 1.6rem 0 2rem;
-}
+.view-main {
+  &__title {
+    margin: 0 1.6rem 0 2rem;
+  }
 
-.sort-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2.4rem;
-  width: 100%;
+  &__sort-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.4rem;
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 768px) {
-  .view-title {
-    margin: 0.8rem 0 0.4rem 0;
-  }
+  .view-main {
+    &__title {
+      margin: 0.8rem 0 0.4rem 0;
+    }
 
-  .sort-wrapper {
-    flex-direction: column-reverse;
-    gap: 3.2rem;
+    &__sort-wrapper {
+      flex-direction: column-reverse;
+      gap: 3.2rem;
 
-    .app-filter {
-      width: 100%;
-      padding: 0;
+      .app-filter {
+        width: 100%;
+        padding: 0;
+      }
     }
   }
 }

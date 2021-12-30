@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="mg-b16 mg-t32">
-      <h2 class="view-title" title="some blocks">Blocks</h2>
+    <div class="view-main__title-wrapper">
+      <h2 class="view-main__title">Blocks</h2>
     </div>
     <div class="mg-b16 mg-t16" v-if="filteredBlocks?.length">
       <p>{{ blocks?.length }} blocks found</p>
@@ -181,15 +181,6 @@ export default defineComponent({
 
   @media screen and (max-width: 600px) {
     max-width: 15rem;
-  }
-}
-
-.view-title {
-  font-weight: 400;
-  font-size: 3.2rem;
-
-  @media screen and (max-width: 600px) {
-    font-size: 2.8rem;
   }
 }
 

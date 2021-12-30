@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="mg-b16 mg-t32">
-      <h2 class="view-title" title="some blocks">Top accounts</h2>
+    <div class="view-main__title-wrapper">
+      <h2 class="view-main__title">Top accounts</h2>
     </div>
     <div class="mg-b16 mg-t16 accounts-header__wrapper">
       <p class="accounts-header__count" v-if="accounts?.length">{{ accounts?.length }} accounts found</p>
@@ -224,15 +224,6 @@ export default defineComponent({
 
   @media screen and (max-width: 600px) {
     max-width: 150px;
-  }
-}
-
-.view-title {
-  font-weight: 400;
-  font-size: 32px;
-
-  @media screen and (max-width: 600px) {
-    font-size: 28px;
   }
 }
 
