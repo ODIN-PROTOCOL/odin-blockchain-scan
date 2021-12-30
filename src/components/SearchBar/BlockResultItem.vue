@@ -22,9 +22,7 @@
           <TitledLink
             :to="`/transactions/${result?.block?.header?.height}`"
             class="app-table__cell-txt"
-            :text="`${cropText(
-              toHexFunc(result?.block?.header?.validatorsHash).toUpperCase()
-            )}`"
+            :text="cropValidatorHash"
           />
         </div>
         <div class="search__dropdown--item-transactions">
@@ -37,7 +35,7 @@
 
 <script lang="ts">
 import { toHexFunc } from '@/helpers/helpers'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
 
@@ -45,10 +43,15 @@ export default defineComponent({
   name: 'BlockResultItem',
   components: { TitledLink },
   props: { result: { type: Object, required: true } },
-  setup() {
+  setup(props) {
     const toDay = ref<Date>(new Date())
+    const cropValidatorHash = computed(() => {
+      return cropText(
+        toHexFunc(props.result.block.header.validatorsHash).toUpperCase()
+      )
+    })
 
-    return { toDay, diffDays, cropText, getDay, toHexFunc }
+    return { toDay, cropValidatorHash, diffDays, cropText, getDay, toHexFunc }
   },
 })
 </script>
