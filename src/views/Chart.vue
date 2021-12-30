@@ -2,14 +2,11 @@
   <div class="container">
     <div class="view-main__title-wrapper">
       <BackButton :current-router="router" :text="'Charts & Stats'" />
-      <h2 class="view-main__title">AverageBlockTimeChart</h2>
+      <h2 class="view-main__title">{{ chartPageTitle }}</h2>
     </div>
 
     <div class="view-main__sort-wrapper">
-      <span>
-        Block Time in<br />
-        Seconds
-      </span>
+      <span class="view-main__y-axis">{{ yAxisTitle }}</span>
 
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin"
@@ -31,28 +28,47 @@
         </template>
       </VuePicker>
     </div>
-    <CustomBarChart
-      :chartDataset="chartData"
-      :datasetLabel="'Block Time'"
-      :datasetUnit="'sec'"
-    />
+    <template v-if="chartType === 'bar'">
+      <CustomBarChart
+        :chartDataset="chartData"
+        :datasetLabel="datasetLabel"
+        :datasetUnit="datasetUnit"
+      />
+    </template>
+    <template v-if="chartType === 'line'">
+      <CustomLineChart
+        :chartDataset="chartData"
+        :datasetLabel="datasetLabel"
+        :datasetUnit="datasetUnit"
+      />
+    </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref, toRefs, watch } from 'vue'
 import { Router, useRouter } from 'vue-router'
 import { callers } from '@/api/callers'
 import { handleError } from '@/helpers/errors'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { sortingDaysForChart } from '@/helpers/helpers'
 import CustomBarChart from '@/components/Charts/CustomBarChart.vue'
+import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import BackButton from '@/components/BackButton.vue'
 
 export default defineComponent({
-  name: 'average-block-time-chart',
-  components: { CustomBarChart, BackButton },
-  setup() {
+  name: 'chart',
+  components: { CustomBarChart, CustomLineChart, BackButton },
+  props: {
+    chartPageTitle: { type: String, required: true },
+    chartType: { type: String, required: true },
+    getDataMethodName: { type: String, required: true },
+    datasetLabel: { type: String, required: true },
+    datasetUnit: { type: String, default: '' },
+    yAxisTitle: { type: String, required: true },
+  },
+  setup(props) {
+    const { getDataMethodName } = toRefs(props)
     const router: Router = useRouter()
     const chartData = ref()
     const isLoading = ref<boolean>(false)
@@ -65,7 +81,10 @@ export default defineComponent({
 
       isLoading.value = true
       try {
-        const { data } = await callers.getAvgTimePerDays(startDate, endDate)
+        const { data } = await callers[getDataMethodName.value](
+          startDate,
+          endDate
+        )
 
         chartData.value = formatDataForCharts(data)
       } catch (error) {
@@ -104,6 +123,11 @@ export default defineComponent({
     align-items: flex-start;
     margin-bottom: 2.4rem;
     width: 100%;
+  }
+
+  &__y-axis {
+    font-size: 1.4rem;
+    width: 8rem;
   }
 }
 
