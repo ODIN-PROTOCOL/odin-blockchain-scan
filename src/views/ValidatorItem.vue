@@ -1,10 +1,10 @@
 <template>
   <div class="validator container">
-    <div class="page-title">
+    <div class="view-main__title-wrapper">
       <BackButton :text="'Validators'" />
-      <h2 class="view-title">Validator</h2>
+      <h2 class="view-main__title">Validator</h2>
       <div class="validator__address">
-        <p class="view-subtitle">{{ validator?.operatorAddress }}</p>
+        <p class="view-main__subtitle">{{ validator?.operatorAddress }}</p>
         <CopyButton class="mg-l8" :text="String(validator?.operatorAddress)" />
       </div>
     </div>
@@ -193,11 +193,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-title {
+.view-main__title {
   margin: 0 1.6rem 0 2rem;
 }
 
-.view-subtitle {
+.view-main__subtitle {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -228,7 +228,7 @@ export default defineComponent({
 }
 
 @media screen and (max-width: 768px) {
-  .view-title {
+  .view-main__title  {
     margin: 0.8rem 0 0.4rem 0;
   }
 

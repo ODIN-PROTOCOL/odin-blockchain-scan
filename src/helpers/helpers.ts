@@ -6,6 +6,29 @@ import { bigMath } from '@/helpers/bigMath'
 import { AnyFn, Unpacked } from '@/shared-types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
 
+export const sortingDaysForChart = [
+  {
+    text: 'Last day',
+    value: '1',
+  },
+  {
+    text: 'Last week',
+    value: '7',
+  },
+  {
+    text: 'Last 14 days',
+    value: '14',
+  },
+  {
+    text: 'Last month',
+    value: '31'
+  },
+  {
+    text: 'Last year',
+    value: '365'
+  }
+]
+
 export const _allowedTypes = [
   'Send',
   'Receive',

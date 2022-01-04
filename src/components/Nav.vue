@@ -1,24 +1,9 @@
 <template>
   <div class="nav" :class="{ 'nav-mob': isOpen }">
     <div class="nav__wrap-cont">
-      <!-- TODO: temp. hidden all but validators -->
-      <!-- <router-link class="nav__link" :to="{ name: 'DataSources' }">
-        Data Sources
-      </router-link> -->
-      <!--<router-link class="nav__link" :to="{ name: 'OracleScripts' }">
-        Oracle Scripts
-      </router-link>
-      <router-link class="nav__link" :to="{ name: 'Requests' }">
-        Requests
-      </router-link>
-      <router-link class="nav__link" :to="{ name: 'Voting' }">
-        Voting
-      </router-link> -->
-
       <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
       <LinksDropdown :list="TokemonicList" @redirect="changeRoute" />
-      <!--        // TODO: return hide date when pages be done -->
-      <!--      <LinksDropdown :list="ResourceList" />-->
+      <LinksDropdown :list="ResourceList" @redirect="changeRoute" />
     </div>
     <UserWidget />
   </div>
@@ -83,19 +68,10 @@ export default defineComponent({
     const ResourceList: LinkList = {
       name: 'Resources',
       links: [
-        // TODO: return hide date when pages be done
-        // {
-        //   to: 'charts',
-        //   text: 'Charts & Stats',
-        // },
-        // {
-        //   url: '/chart/validators/',
-        //   text: 'Block Validators Chart',
-        // },
-        // {
-        //   url: '/chart/daily_transactions/',
-        //   text: 'Daily Transactions Volume Chart',
-        // },
+        {
+          to: 'Chart&Stats',
+          text: 'Charts & Stats',
+        },
       ],
     }
 
@@ -107,7 +83,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="scss">
-
-</style>

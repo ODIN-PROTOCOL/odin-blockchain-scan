@@ -1,8 +1,8 @@
 <template>
   <div class="blocks-container">
     <div class="data-sources view-main">
-      <div class="mg-b16 mg-t32">
-        <h2 class="view-title">Pending Transactions</h2>
+      <div class="view-main__title-wrapper">
+        <h2 class="view-main__title">Pending Transactions</h2>
       </div>
       <div class="mg-b16 mg-t16">
         <p>{{ totalTransactions }} pending transactions found</p>
@@ -242,15 +242,6 @@ export default defineComponent({
 .app-table__cell-txt {
   max-width: 150px;
   padding-right: 10px;
-}
-
-.view-title {
-  font-weight: 400;
-  font-size: 32px;
-
-  @media screen and (max-width: 600px) {
-    font-size: 28px;
-  }
 }
 
 .app-table__head {

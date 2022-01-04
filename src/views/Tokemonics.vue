@@ -2,22 +2,14 @@
   <div class="container">
     <div class="tokemonics">
       <div class="tokemonics-left">
-        <div class="mg-b24 mg-t32">
+        <div class="mg-b24">
           <div>
-            <h1>Tokenomics overview</h1>
+            <h1 class="view-main__title">Tokenomics overview</h1>
             <div class="mg-b16 mg-t32 tokemonics-nav">
-              <h2
-                class="view-title"
-                @click="changeTab(true)"
-                :class="showTab ? 'active' : ''"
-              >
+              <h2 @click="changeTab(true)" :class="showTab ? 'active' : ''">
                 ODIN
               </h2>
-              <h2
-                class="view-title"
-                @click="changeTab(false)"
-                :class="!showTab ? 'active' : ''"
-              >
+              <h2 @click="changeTab(false)" :class="!showTab ? 'active' : ''">
                 GEO
               </h2>
             </div>

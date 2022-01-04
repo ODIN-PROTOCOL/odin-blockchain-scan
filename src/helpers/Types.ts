@@ -128,3 +128,16 @@ export type marginType = {
   bottom: number
   left: number
 }
+
+export type telemetryDataForCharts = {
+  date: string
+  size?: number
+  seconds?: number
+  volume?: number
+  fee?: Coin[]
+}
+
+export type formatedTelemetryDataForCharts = {
+  data: number[]
+  labels: string[]
+}

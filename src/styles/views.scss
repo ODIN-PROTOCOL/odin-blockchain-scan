@@ -4,6 +4,35 @@
   padding: 0 3.2rem;
   margin: 0 auto;
 
+  &__subtitle {
+    font-size: 2.4rem;
+    line-height: 3.2rem;
+    font-weight: 400;
+  }
+
+  &__title {
+    font-size: 3.2rem;
+    line-height: 4.6rem;
+    font-weight: 400;
+  
+    @media (max-width: 768px) {
+      font-size: 2.4rem;
+      line-height: 3.2rem;
+    }
+  }
+
+  &__title-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3.2rem;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
   @media screen and (max-width: 600px) {
     padding: 0 1.6rem;
   }
@@ -30,28 +59,6 @@
   border-bottom: 0.1rem solid #CCE4FF;
   margin-bottom: 3rem;
 }
-
-.page-title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 3.2rem;
-  font-weight: 400;
-  font-size: 2.4rem;
-  font-style: normal;
-}
-
-h2.view-title {
-  font-size: 3.2rem;
-  line-height: 4.6rem;
-}
-
-.view-subtitle {
-  font-size: 2.4rem;
-  line-height: 3.2rem;
-  font-weight: 400;
-}
-
 
 .container{
   width: calc(100% - 20.6rem);

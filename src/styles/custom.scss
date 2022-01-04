@@ -5,9 +5,37 @@ body {
   }
 }
 
+#chartjs-tooltip {
+  position: absolute;
+  padding: 1.2rem 1.6rem;
+  pointer-events: none;
+  background-color: #053F7D;
+  border-radius: 0.8rem;
+  color: #fff;
+
+  &.chartjs-tooltip_bottom {
+    .chartjs-tooltip__arrow {
+      display: block;
+      width: 1.4rem;
+      height: 1.4rem;
+      position: absolute;
+      background-color: #053F7D;
+      transform: translateX(-0.7rem) rotate(45deg);
+      bottom: -0.5rem;
+      pointer-events: none;
+    }
+  }
+
+  .chartjs-tooltip__row-title {
+    font-size: 1.4rem;
+    font-weight: 300;
+    opacity: 0.6; 
+  }
+}
+
 .app-filter {
   display: flex;
-  max-width: 16.6rem;
+  width: 16.6rem;
   height: 4.8rem;
   position: relative;
   &:focus {
