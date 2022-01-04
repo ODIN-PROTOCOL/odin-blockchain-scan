@@ -1,9 +1,7 @@
 <template>
-  <div class="home">
-    <div class="home__wrapper">
-      <InfoPanel />
-      <Latest />
-    </div>
+  <div class="view-main">
+    <InfoPanel />
+    <Latest />
   </div>
 </template>
 
@@ -17,14 +15,3 @@ export default defineComponent({
   components: { Latest, InfoPanel },
 })
 </script>
-
-<style scoped lang="scss">
-.home {
-  &__wrapper {
-    margin: 0 10.3rem;
-    @media (max-width: 768px) {
-      margin: 0;
-    }
-  }
-}
-</style>
