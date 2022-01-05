@@ -7,58 +7,47 @@
       <p>{{ blocks?.length }} blocks found</p>
     </div>
     <div class="app-table">
-      <div class="data-sources__table-head app-table__head">
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Block </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Date and time </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Transactions </span>
-        </div>
-        <div class="app-table__cell">
-          <span class="app-table__cell-txt"> Validator </span>
-        </div>
+      <div class="app-table__head">
+        <span> Block </span>
+        <span> Date and time </span>
+        <span> Transactions </span>
+        <span> Validator </span>
       </div>
       <template v-if="filteredBlocks?.length">
         <div
           v-for="item in filteredBlocks"
           :key="item.id"
-          class="data-sources__table-row app-table__row"
+          class="app-table__row"
         >
           <div class="app-table__cell">
-            <span class="app-table__header">Block</span>
+            <span class="app-table__title">Block</span>
             <TitledLink
               :to="`/blocks/${item.header.height}`"
-              class="app-table__cell-txt"
+              class="app-table__cell-txt app-table__link"
               :text="item.header.height"
             />
           </div>
           <div class="app-table__cell">
-            <span class="app-table__header">Date and time</span>
+            <span class="app-table__title">Date and time</span>
             <div>
-              <div class="info-value">
+              <div>
                 {{ convertToTime(item.header.time) }}
               </div>
-              <div class="info-value">
+              <div>
                 {{ convertToDate(item.header.time) }}
               </div>
             </div>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__header">Transactions</span>
+            <span class="app-table__title">Transactions</span>
             <span class="app-table__cell-txt">{{ item.num_txs }}</span>
           </div>
           <div class="app-table__cell">
-            <span class="app-table__header">Validator</span>
+            <span class="app-table__title">Validator</span>
             <TitledLink
-              class="app-table__cell-txt"
+              class="app-table__cell-txt app-table__link"
               :text="toHexFunc(item.header.validatorsHash).toUpperCase()"
             />
-            <div class="tooltip">
-              {{ toHexFunc(item.header.validatorsHash).toUpperCase() }}
-            </div>
           </div>
         </div>
       </template>
@@ -146,98 +135,6 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
-
-.data-sources__table-head,
-.data-sources__table-row {
-  grid:
-    auto /
-    repeat(4, minmax(4rem, 1fr));
-
-  @media screen and (max-width: 992px) {
-    grid: repeat(4, minmax(4rem, 1fr)) / auto;
-  }
-}
-
-.blocks-container {
-  border-top: 0.1rem solid var(--clr__table-border);
-}
-
-.app-table__row {
-  padding: 3.2rem 0 2rem;
-
-  @media screen and (max-width: 992px) {
-    padding: 1.6rem 0 0 0;
-  }
-}
-
-.app-table__cell {
-  position: relative;
-}
-
-.app-table__cell-txt {
-  max-width: 20rem;
-  @include ellipsis(inline-block);
-
-  @media screen and (max-width: 600px) {
-    max-width: 15rem;
-  }
-}
-
-.app-table__cell-txt:hover + .tooltip {
-  opacity: 1;
-}
-
-.tooltip {
-  opacity: 0;
-  position: absolute;
-  left: 0;
-  bottom: 100%;
-  transform: translateY(-50%);
-  transition: all 0.15s ease;
-  border-radius: 10px;
-  //white-space: nowrap;
-  word-break: break-all;
-  background: var(--clr__tooltip-new);
-  padding: 1.2rem 2.4rem;
-  color: #fff;
-  z-index: 1;
-  pointer-events: none;
-
-  &:before {
-    content: '';
-    border-top: 1rem solid var(--clr__tooltip-new);
-    border-right: 1rem solid transparent;
-    border-left: 1rem solid transparent;
-    position: absolute;
-    left: 2rem;
-    top: 100%;
-    transform: translateY(-50%);
-  }
-
-  @media screen and (max-width: 600px) {
-    display: none;
-  }
-}
-
-.currency {
-  text-transform: uppercase;
-}
-
-.app-table__head {
-  @media screen and (max-width: 992px) {
-    display: none;
-  }
-}
-
-.app-table__header {
-  display: none;
-  @media screen and (max-width: 992px) {
-    display: inline-block;
-    width: 20rem;
-  }
-}
-</style>
 <style lang="scss">
 .pagination-wrapper {
   display: flex;

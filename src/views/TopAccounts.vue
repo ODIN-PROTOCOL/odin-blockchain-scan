@@ -4,8 +4,9 @@
       <h2 class="view-main__title">Top accounts</h2>
     </div>
     <div class="mg-b16 mg-t16 accounts-header__wrapper">
-      <p class="accounts-header__count" v-if="accounts?.length">{{ accounts?.length }} accounts found</p>
-      <p v-else></p>
+      <p class="accounts-header__count" v-if="accounts?.length">
+        {{ accounts.length }} accounts found
+      </p>
       <div class="sort-wrapper">
         <span>Sort By</span>
         <VuePicker
@@ -31,28 +32,14 @@
     </div>
     <template v-if="filteredAccounts?.length">
       <div class="app-table">
-        <div class="data-sources__table-head app-table__head">
-          <div class="app-table__cell" data-tooltip="">
-            <span class="app-table__cell-txt"> Rank </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Address </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> GEO balance </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> GEO token percentage </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> ODIN balance </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> ODIN token percentage </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Transaction count </span>
-          </div>
+        <div class="app-table__head">
+          <span> Rank </span>
+          <span> Address </span>
+          <span> GEO balance </span>
+          <span> GEO token percentage </span>
+          <span> ODIN balance </span>
+          <span> ODIN token percentage </span>
+          <span> Transaction count </span>
         </div>
         <AccountsLine
           v-for="(item, index) in filteredAccounts"
@@ -89,11 +76,11 @@ import { defineComponent, ref, onMounted } from 'vue'
 import VPagination from '@hennge/vue3-pagination'
 import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
-import { Pagination } from '@/api/query-ext/telemetryExtension.ts'
+import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
 import { getTopAccountList } from '@/helpers/Accounts'
-import {allowedTxCount} from "@/helpers/helpers";
+import { allowedTxCount } from '@/helpers/helpers'
 
 export default defineComponent({
   components: { VPagination, AccountsLine },
@@ -195,92 +182,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.data-sources__table-head,
-.data-sources__table-row {
-  grid: auto/50px repeat(6, 1fr);
-  @media screen and (max-width: 992px) {
-    grid: 60px repeat(6, minmax(4rem, 1fr)) / auto;
-  }
-}
-
-.blocks-container {
-  border-top: 1px solid var(--clr__table-border);
-}
-
-.app-table__row {
-  padding: 3.2rem 0 2rem;
-
-  @media screen and (max-width: 992px) {
-    padding: 1.6rem 0 0 0;
-  }
-}
-
-.app-table__cell {
-  position: relative;
-}
-
-.app-table__cell-txt {
-  max-width: 200px;
-
-  @media screen and (max-width: 600px) {
-    max-width: 150px;
-  }
-}
-
-.app-table__cell-txt:hover + .tooltip {
-  opacity: 1;
-}
-
-.tooltip {
-  opacity: 0;
-  position: absolute;
-  left: 0;
-  bottom: 100%;
-  transform: translateY(-50%);
-  transition: all 0.15s ease;
-  border-radius: 10px;
-  white-space: nowrap;
-  background: var(--clr__tooltip-new);
-  padding: 12px 24px;
-  color: #fff;
-  z-index: 1;
-  pointer-events: none;
-
-  &:before {
-    content: '';
-    border-top: 10px solid var(--clr__tooltip-new);
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-    position: absolute;
-    left: 20px;
-    top: 100%;
-    transform: translateY(-50%);
-  }
-
-  @media screen and (max-width: 600px) {
-    display: none;
-  }
-}
-
-.currency {
-  text-transform: uppercase;
-}
-
-.app-table__head {
-  @media screen and (max-width: 992px) {
-    display: none;
-  }
-}
-
-.app-table__header {
-  display: none;
-
-  @media screen and (max-width: 992px) {
-    display: inline-block;
-    width: 170px;
-  }
-}
-
 .accounts {
   &-header {
     &__count {

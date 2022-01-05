@@ -26,7 +26,7 @@
         <span>Commission</span>
         <span>Oracle Status</span>
       </div>
-      <div class="app-table__body">
+      <div>
         <template v-if="validators?.length">
           <div
             v-for="item in filteredValidators"
@@ -61,22 +61,6 @@
                 :status="item.isOracleValidator ? 'success' : 'error'"
               />
             </div>
-            <div class="app-table__cell">
-              <div class="app-table__activities">
-                <div
-                  v-if="delegations[item.operatorAddress]"
-                  class="app-table__activities-item"
-                >
-                  <button
-                    class="app-btn app-btn_outlined app-btn_small"
-                    type="button"
-                    @click="undelegate"
-                  >
-                    Undelegate
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </template>
         <template v-else>
@@ -102,20 +86,14 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import { callers } from '@/api/callers'
-import { wallet } from '@/api/wallet'
 import { handleError } from '@/helpers/errors'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
-import { DelegationResponse } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
-import { showBecomeValidatorFormDialog } from '@/components/modals/BecomeValidatorFormModal.vue'
 import Tabs from '@/components/tabs/Tabs.vue'
 import Tab from '@/components/tabs/Tab.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import StatusIcon from '@/components/StatusIcon.vue'
 import Pagination from '@/components/pagination/pagination.vue'
-import { showWithdrawFormDialog } from '@/components/modals/WithdrawFormModal.vue'
-import { showDelegateFormDialog } from '@/components/modals/DelegateFormModal.vue'
-import { showUndelegateFormDialog } from '@/components/modals/UndelegateFormModal.vue'
 import { getTransformedValidators } from '@/helpers/validatorsHelpers'
 
 export default defineComponent({
@@ -160,27 +138,7 @@ export default defineComponent({
         filteredValidatorsCount.value = validators.value.length
         filterValidators(currentPage.value)
       } catch (error) {
-        handleError(error)
-      }
-      releaseLoading()
-    }
-    const delegations = ref<{ [k: string]: DelegationResponse }>({})
-    const getDelegations = async () => {
-      lockLoading()
-      try {
-        // TODO: delegations returns invalid delegator's amount?
-        const response = await callers.getDelegations(wallet.account.address)
-
-        const _delegations: { [k: string]: DelegationResponse } = {}
-        for (const delegation of response.delegationResponses) {
-          if (!delegation.delegation?.validatorAddress) continue
-          _delegations[delegation.delegation.validatorAddress] = delegation
-        }
-        delegations.value = _delegations
-
-        console.debug('Delegations:', response)
-      } catch (error) {
-        // error is ignored, since no delegations also throws the error
+        handleError(error as Error)
       }
       releaseLoading()
     }
@@ -219,55 +177,9 @@ export default defineComponent({
         filterValidators(currentPage.value)
       }
     }
-    const becomeValidator = async () => {
-      await showBecomeValidatorFormDialog({
-        onSubmit: (d) => {
-          d.kill()
-          getValidators()
-          getDelegations()
-        },
-      })
-    }
-
-    const withdraw = (validator: ValidatorDecoded) => {
-      showWithdrawFormDialog({
-        onSubmit: (d) => {
-          d.kill()
-          console.log(validator)
-        },
-      })
-    }
-
-    const delegate = (validator: ValidatorDecoded) => {
-      showDelegateFormDialog(
-        {
-          onSubmit: (d) => {
-            d.kill()
-            getValidators()
-            getDelegations()
-          },
-        },
-        { validator, delegation: delegations.value[validator.operatorAddress] }
-      )
-    }
-
-    const undelegate = (validator: ValidatorDecoded) => {
-      if (!delegations.value[validator.operatorAddress]) return
-      showUndelegateFormDialog(
-        {
-          onSubmit: (d) => {
-            d.kill()
-            getValidators()
-            getDelegations()
-          },
-        },
-        { validator, delegation: delegations.value[validator.operatorAddress] }
-      )
-    }
 
     onMounted(async () => {
       await getValidators()
-      await getDelegations()
     })
 
     return {
@@ -277,16 +189,10 @@ export default defineComponent({
       validatorsCount,
       filteredValidators,
       validators,
-      delegations,
       isLoading,
       getValidators,
-      getDelegations,
       paginationHandler,
       tabHandler,
-      becomeValidator,
-      withdraw,
-      delegate,
-      undelegate,
     }
   },
 })
@@ -295,10 +201,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .validators__count-info {
   margin-bottom: 3.2rem;
-
-  @media screen and (max-width: 768px) {
-    margin-bottom: 0;
-  }
 }
 
 .app-table__head,
@@ -310,30 +212,15 @@ export default defineComponent({
     minmax(8rem, 4fr)
     minmax(8rem, 4fr)
     minmax(8rem, 4fr);
-  //minmax(28.5rem, 4fr);
 }
 
-.app-table__activities {
-  & > *:not(:last-child) {
-    margin-bottom: 2.4rem;
-  }
-}
-
-@media screen and (max-width: 768px) {
+@include respond-to(768px) {
   .app-table__row {
     grid: none;
   }
 
-  .app-table__activities {
-    width: 100%;
-
-    &-item {
-      display: flex;
-
-      & > * {
-        flex: 1;
-      }
-    }
+  .validators__count-info {
+    margin-bottom: 0;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div class="data-sources__table-row app-table__row">
+  <div class="app-table__row">
     <div class="app-table__cell">
-      <span class="app-table__header">Transaction hash</span>
+      <span class="app-table__title">Transaction hash</span>
       <TitledLink
         :to="`/transactions/${transition.block}/${transition.hash}`"
         class="app-table__cell-txt"
@@ -9,11 +9,11 @@
       />
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Type</span>
+      <span class="app-table__title">Type</span>
       <span class="app-table__cell-txt">{{ transition.type }}</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Block</span>
+      <span class="app-table__title">Block</span>
       <TitledLink
         :to="`/blocks/${transition.block}`"
         class="app-table__cell-txt"
@@ -21,13 +21,13 @@
       />
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Date and time</span>
+      <span class="app-table__title">Date and time</span>
       <span class="app-table__cell-txt">
         {{ convertToTxTime(transition.time) }}
       </span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Sender</span>
+      <span class="app-table__title">Sender</span>
       <TitledLink
         v-if="transition.sender !== ''"
         :to="`/account/${transition.sender}`"
@@ -37,7 +37,7 @@
       <span class="app-table__cell-txt" v-else> - </span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Receiver</span>
+      <span class="app-table__title">Receiver</span>
       <TitledLink
         v-if="transition.receiver !== ''"
         :to="`/account/${transition.receiver}`"
@@ -47,11 +47,11 @@
       <span class="app-table__cell-txt" v-else> - </span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Amount</span>
+      <span class="app-table__title">Amount</span>
       <span class="app-table__cell-txt">{{ transition.amount }}</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Transaction Fee</span>
+      <span class="app-table__title">Transaction Fee</span>
       <span class="app-table__cell-txt">
         {{ transition.fee }}
       </span>
@@ -79,19 +79,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="scss">
-.app-table__cell-txt {
-  max-width: 150px;
-  @include ellipsis(inline-block);
-}
-
-.app-table__header {
-  display: none;
-
-  @media screen and (max-width: 76.8rem) {
-    display: inline-block;
-    width: 20rem;
-  }
-}
-</style>
