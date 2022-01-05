@@ -50,24 +50,18 @@
             />
           </div>
         </div>
+        <Pagination
+          class="mg-t32"
+          v-model="currentPage"
+          :pages="totalPages"
+          @update:modelValue="updateHandler"
+        />
       </template>
       <template v-else>
         <div class="app-table__row">
           <p class="app-table__empty-stub">No items yet</p>
         </div>
       </template>
-    </div>
-    <div class="pagination-wrapper mg-t32">
-      <v-pagination
-        v-model="page"
-        :pages="totalPages"
-        :range-size="1"
-        active-color="#007bff"
-        @update:modelValue="updateHandler"
-        :hideFirstButton="true"
-        :hideLastButton="true"
-      >
-      </v-pagination>
     </div>
   </div>
 </template>
@@ -77,25 +71,24 @@ import { callers } from '@/api/callers'
 import { toHexFunc } from '@/helpers/helpers'
 import TitledLink from '@/components/TitledLink.vue'
 import { defineComponent, ref, onMounted } from 'vue'
-import VPagination from '@hennge/vue3-pagination'
-import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { convertToTime, convertToDate } from '@/helpers/dates'
+import Pagination from '@/components/pagination/Pagination.vue'
 
 export default defineComponent({
-  name: 'Blocks',
-  components: { TitledLink, VPagination },
+  name: 'blocks',
+  components: { TitledLink, Pagination },
   setup() {
     const blocks = ref()
     const filteredBlocks = ref()
     const blocksPerPage = 5
-    const page = ref<number>(1)
+    const currentPage = ref<number>(1)
     const totalPages = ref<number>()
 
     const getBLocks = async (): Promise<void> => {
       const { blockMetas } = await callers.getBlockchain()
       blocks.value = [...blockMetas]
       totalPages.value = Math.ceil(blocks.value.length / blocksPerPage)
-      filterBlocks(page.value)
+      filterBlocks(currentPage.value)
     }
 
     const filterBlocks = (newPage: number): void => {
@@ -109,7 +102,7 @@ export default defineComponent({
           (newPage - 1) * blocksPerPage + blocksPerPage
         )
       }
-      page.value = newPage
+      currentPage.value = newPage
     }
 
     const updateHandler = (num: number): void => {
@@ -122,7 +115,7 @@ export default defineComponent({
 
     return {
       blocks,
-      page,
+      currentPage,
       totalPages,
       filteredBlocks,
       filterBlocks,
@@ -134,57 +127,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss">
-.pagination-wrapper {
-  display: flex;
-  justify-content: center;
-
-  li {
-    background: #fff;
-    border: 0.1rem solid var(--clr__action);
-    border-radius: 0.4rem;
-    margin: 0 0.4rem;
-    min-width: 2.6rem;
-    height: 3.6rem;
-  }
-
-  button {
-    height: 100%;
-    width: 100%;
-    border: none;
-    margin: 0;
-    padding: 1rem;
-  }
-
-  .Page {
-    color: var(--clr__action);
-
-    &:hover {
-      border: none;
-    }
-  }
-  .Page-active {
-    color: #fff;
-  }
-
-  .PaginationControl .Control.Control-active {
-    fill: var(--clr__action);
-  }
-  .PaginationControl .Control {
-    fill: #cce4ff;
-  }
-
-  .DotsHolder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    svg,
-    path {
-      color: var(--clr__action);
-    }
-  }
-}
-</style>

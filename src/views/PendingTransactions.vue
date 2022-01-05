@@ -40,24 +40,18 @@
             :key="index"
             :transition="item"
           />
+          <Pagination
+            class="mg-t32"
+            v-model="page"
+            :pages="totalPages"
+            @update:modelValue="updateHandler"
+          />
         </template>
         <template v-else>
           <div class="app-table__row">
             <p class="app-table__empty-stub">No items yet</p>
           </div>
         </template>
-      </div>
-      <div class="pagination-wrapper mg-t32">
-        <v-pagination
-          v-model="page"
-          :pages="totalPages"
-          :range-size="1"
-          active-color="#007bff"
-          @update:modelValue="updateHandler"
-          :hideFirstButton="true"
-          :hideLastButton="true"
-        >
-        </v-pagination>
       </div>
     </div>
   </div>
@@ -67,21 +61,20 @@
 import { callers } from '@/api/callers'
 import PendingTransactionLine from '@/components/PendingTransactionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
-import VPagination from '@hennge/vue3-pagination'
-import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { useRoute } from 'vue-router'
 import { toHex } from '@cosmjs/encoding'
 import { fromBase64 } from '@cosmjs/encoding'
+import Pagination from '@/components/pagination/Pagination.vue'
 
 export default defineComponent({
   name: 'PendingTransactions',
-  components: { PendingTransactionLine, VPagination },
+  components: { PendingTransactionLine, Pagination },
   setup() {
     const transactions = ref()
     const filteredTransactions = ref()
     const transactionsPerPage = 5
-    const page = ref(1)
+    const currentPage = ref(1)
     const totalPages = ref()
     const route = useRoute()
     const totalTransactions = ref()
@@ -172,7 +165,7 @@ export default defineComponent({
 
           totalPages.value = Math.ceil(tempStrings.length / transactionsPerPage)
         })
-        .then((): void => filterTransactions(page.value))
+        .then((): void => filterTransactions(currentPage.value))
     }
 
     const filterTransactions = (newPage: number): void => {
@@ -189,7 +182,7 @@ export default defineComponent({
           (newPage - 1) * transactionsPerPage + transactionsPerPage
         )
       }
-      page.value = newPage
+      currentPage.value = newPage
     }
 
     const updateHandler = (num: number): void => {
@@ -202,7 +195,7 @@ export default defineComponent({
 
     return {
       transactions,
-      page,
+      currentPage,
       totalPages,
       totalTransactions,
       filteredTransactions,
@@ -256,59 +249,6 @@ export default defineComponent({
   @media screen and (max-width: 768px) {
     display: inline-block;
     width: 20rem;
-  }
-}
-</style>
-<style lang="scss">
-.pagination-wrapper {
-  display: flex;
-  justify-content: center;
-
-  li {
-    background: #fff;
-    border: 1px solid var(--clr__action);
-    border-radius: 4px;
-    margin: 0 4px;
-    min-width: 26px;
-    height: 36px;
-  }
-
-  button {
-    height: 100%;
-    width: 100%;
-    border: none;
-    margin: 0;
-    padding: 10px;
-  }
-
-  .Page {
-    color: var(--clr__action);
-
-    &:hover {
-      border: none;
-    }
-  }
-  .Page-active {
-    color: #fff;
-  }
-
-  .PaginationControl .Control.Control-active {
-    fill: var(--clr__action);
-  }
-  .PaginationControl .Control {
-    fill: #cce4ff;
-  }
-
-  .DotsHolder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    svg,
-    path {
-      color: var(--clr__action);
-    }
   }
 }
 </style>

@@ -24,18 +24,12 @@
           :transition="item"
         />
       </div>
-      <div class="pagination-wrapper mg-t32">
-        <v-pagination
-          v-model="page"
-          :pages="totalPages"
-          :range-size="1"
-          active-color="#007bff"
-          @update:modelValue="updateHandler"
-          :hideFirstButton="true"
-          :hideLastButton="true"
-        >
-        </v-pagination>
-      </div>
+      <Pagination
+        class="mg-t32"
+        v-model="page"
+        :pages="totalPages"
+        @update:modelValue="updateHandler"
+      />
     </template>
     <template v-else>
       <div class="empty">Waiting to receive data</div>
@@ -45,16 +39,15 @@
 
 <script lang="ts">
 import { callers } from '@/api/callers'
-import TransitionLine from '@/components/TransitionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
-import VPagination from '@hennge/vue3-pagination'
-import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { handleError } from '@/helpers/errors'
 import { prepareTransaction } from '@/helpers/helpers'
+import TransitionLine from '@/components/TransitionLine.vue'
+import Pagination from '@/components/pagination/Pagination.vue'
 
 export default defineComponent({
   name: 'transactions',
-  components: { VPagination, TransitionLine },
+  components: { TransitionLine, Pagination },
   setup() {
     const ITEMS_PER_PAGE = 5
     const transactions = ref()
@@ -117,57 +110,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss">
-.pagination-wrapper {
-  display: flex;
-  justify-content: center;
-
-  li {
-    background: #fff;
-    border: 0.1rem solid var(--clr__action);
-    border-radius: 0.4rem;
-    margin: 0 0.4rem;
-    min-width: 2.6rem;
-    height: 3.6rem;
-  }
-
-  button {
-    height: 100%;
-    width: 100%;
-    border: none;
-    margin: 0;
-    padding: 1rem;
-  }
-
-  .Page {
-    color: var(--clr__action);
-
-    &:hover {
-      border: none;
-    }
-  }
-  .Page-active {
-    color: #fff;
-  }
-
-  .PaginationControl .Control.Control-active {
-    fill: var(--clr__action);
-  }
-  .PaginationControl .Control {
-    fill: #cce4ff;
-  }
-
-  .DotsHolder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    svg,
-    path {
-      color: var(--clr__action);
-    }
-  }
-}
-</style>

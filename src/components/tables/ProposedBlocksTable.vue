@@ -40,19 +40,20 @@
 
     <template v-if="blocksCount > ITEMS_PER_PAGE">
       <Pagination
-        @changePageNumber="paginationHandler($event)"
-        :blocksPerPage="ITEMS_PER_PAGE"
-        :total-length="blocksCount"
+        class="mg-t32"
+        v-model="currentPage"
+        :pages="totalPages"
+        @update:modelValue="paginationHandler"
       />
     </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, toRef, ref } from 'vue'
+import { defineComponent, onMounted, toRef, ref, computed } from 'vue'
 import { toHexFunc } from '@/helpers/helpers'
 import TitledLink from '@/components/TitledLink.vue'
-import Pagination from '@/components/pagination/pagination.vue'
+import Pagination from '@/components/pagination/Pagination.vue'
 
 export default defineComponent({
   components: { TitledLink, Pagination },
@@ -64,6 +65,9 @@ export default defineComponent({
     const currentPage = ref(1)
     const blocksCount = ref()
     const filteredBlocks = ref()
+    const totalPages = computed(() =>
+      Math.ceil(blocksCount.value / ITEMS_PER_PAGE)
+    )
 
     const _blocks = toRef(props, 'blocks')
 
@@ -93,6 +97,8 @@ export default defineComponent({
     return {
       ITEMS_PER_PAGE,
       blocksCount,
+      currentPage,
+      totalPages,
       filteredBlocks,
       paginationHandler,
       toHexFunc,

@@ -21,12 +21,12 @@ export const sortingDaysForChart = [
   },
   {
     text: 'Last month',
-    value: '31'
+    value: '31',
   },
   {
     text: 'Last year',
-    value: '365'
-  }
+    value: '365',
+  },
 ]
 
 export const _allowedTypes = [

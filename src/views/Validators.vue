@@ -74,10 +74,10 @@
 
     <template v-if="filteredValidatorsCount > ITEMS_PER_PAGE">
       <Pagination
-        @changePageNumber="paginationHandler($event)"
-        :blocksPerPage="ITEMS_PER_PAGE"
-        :total-length="filteredValidatorsCount"
-        :startFrom="currentPage"
+        class="mg-t32"
+        v-model="currentPage"
+        :pages="totalPages"
+        @update:modelValue="paginationHandler"
       />
     </template>
   </div>
@@ -93,7 +93,7 @@ import Tabs from '@/components/tabs/Tabs.vue'
 import Tab from '@/components/tabs/Tab.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import StatusIcon from '@/components/StatusIcon.vue'
-import Pagination from '@/components/pagination/pagination.vue'
+import Pagination from '@/components/pagination/Pagination.vue'
 import { getTransformedValidators } from '@/helpers/validatorsHelpers'
 
 export default defineComponent({
@@ -103,6 +103,7 @@ export default defineComponent({
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const ITEMS_PER_PAGE = 6
     const currentPage = ref(1)
+    const totalPages = ref()
     const validatorsStatus = ref('Active')
     const filteredValidatorsCount = ref(0)
     const validatorsCount = ref(0)
@@ -136,6 +137,7 @@ export default defineComponent({
         validatorsCount.value =
           activeValidators.length + inactiveValidators.length
         filteredValidatorsCount.value = validators.value.length
+        totalPages.value = Math.ceil(validatorsCount.value / ITEMS_PER_PAGE)
         filterValidators(currentPage.value)
       } catch (error) {
         handleError(error as Error)
@@ -185,6 +187,7 @@ export default defineComponent({
     return {
       ITEMS_PER_PAGE,
       currentPage,
+      totalPages,
       filteredValidatorsCount,
       validatorsCount,
       filteredValidators,
