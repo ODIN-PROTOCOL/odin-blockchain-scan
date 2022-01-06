@@ -1,6 +1,12 @@
 <template>
+  <div class="view-main">
+    <div class="view-main__title-wrapper">
+      <BackButton :text="'Charts & Stats'" />
+      <h2 class="view-main__title">Block Validators Chart</h2>
+    </div>
+  </div>
   <!-- TODO: Will be replaced with a different chart, now this page hide in router.ts   -->
-  <div>
+  <!-- <div>
     <div class="title">
       <BackButton :current-router="router" text="" />
       <h1 class="title-name">Block Validators Chart</h1>
@@ -91,7 +97,7 @@
         Wait data preparation
       </span>
     </transition>
-  </div>
+  </div> -->
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from 'vue'
@@ -112,7 +118,11 @@ import { bigMath } from '@/helpers/bigMath'
 
 export default defineComponent({
   name: 'ValidatorChart',
-  components: { DoughnutChart, BackButton, TitledLink },
+  components: {
+    // DoughnutChart,
+    BackButton,
+    // TitledLink
+  },
   setup: function () {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
@@ -298,81 +308,94 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.empty {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.sort-wrapper {
-  justify-content: flex-end;
-}
-
-.data-sources__table-head,
-.data-sources__table-row {
-  grid:
-    auto /
-    repeat(4, minmax(4rem, 1fr));
-
-  @media screen and (max-width: 99.2rem) {
-    grid: repeat(4, minmax(4rem, 1fr)) / auto;
-  }
-}
-.data-sources__table-head {
-  @media (max-width: 48rem) {
-    display: none;
+.view-main {
+  &__title {
+    margin: 0 1.6rem 0 2rem;
   }
 }
 
-.app-table__cell-txt {
-  max-width: 150px;
-}
-
-.app-table__header {
-  display: none;
-  @media screen and (max-width: 99.2rem) {
-    display: inline-block;
-    width: 20rem;
-  }
-}
-
-.title {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-.chart-block {
-  display: flex;
-  height: 39.1rem;
-  width: 100%;
-  position: relative;
-  margin: 10.3rem 0 7.5rem 0;
-  @media (max-width: 48rem) {
-    margin: 3.2rem 0 4.2rem;
-  }
-  &__wrapper {
-    width: 100%;
-    height: 100%;
-  }
-  &__total {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #212529;
-    text-align: center;
-    h3 {
-      font-weight: 600;
-      font-size: 2.4rem;
-      line-height: 2.9rem;
-    }
-    span {
-      margin-top: 0.4rem;
-      font-size: 1.6rem;
-      line-height: 2.4rem;
-      font-weight: 600;
+@include respond-to(768px) {
+  .view-main {
+    &__title {
+      margin: 0.8rem 0 0.4rem 0;
     }
   }
 }
+// .empty {
+//   position: absolute;
+//   left: 50%;
+//   top: 50%;
+//   transform: translate(-50%, -50%);
+// }
+
+// .sort-wrapper {
+//   justify-content: flex-end;
+// }
+
+// .data-sources__table-head,
+// .data-sources__table-row {
+//   grid:
+//     auto /
+//     repeat(4, minmax(4rem, 1fr));
+
+//   @media screen and (max-width: 99.2rem) {
+//     grid: repeat(4, minmax(4rem, 1fr)) / auto;
+//   }
+// }
+// .data-sources__table-head {
+//   @media (max-width: 48rem) {
+//     display: none;
+//   }
+// }
+
+// .app-table__cell-txt {
+//   max-width: 150px;
+// }
+
+// .app-table__header {
+//   display: none;
+//   @media screen and (max-width: 99.2rem) {
+//     display: inline-block;
+//     width: 20rem;
+//   }
+// }
+
+// .title {
+//   display: flex;
+//   align-items: center;
+//   gap: 2rem;
+// }
+// .chart-block {
+//   display: flex;
+//   height: 39.1rem;
+//   width: 100%;
+//   position: relative;
+//   margin: 10.3rem 0 7.5rem 0;
+//   @media (max-width: 48rem) {
+//     margin: 3.2rem 0 4.2rem;
+//   }
+//   &__wrapper {
+//     width: 100%;
+//     height: 100%;
+//   }
+//   &__total {
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     color: #212529;
+//     text-align: center;
+//     h3 {
+//       font-weight: 600;
+//       font-size: 2.4rem;
+//       line-height: 2.9rem;
+//     }
+//     span {
+//       margin-top: 0.4rem;
+//       font-size: 1.6rem;
+//       line-height: 2.4rem;
+//       font-weight: 600;
+//     }
+//   }
+// }
 </style>
