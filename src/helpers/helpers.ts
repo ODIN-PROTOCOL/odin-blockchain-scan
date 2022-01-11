@@ -21,12 +21,12 @@ export const sortingDaysForChart = [
   },
   {
     text: 'Last month',
-    value: '31'
+    value: '31',
   },
   {
     text: 'Last year',
-    value: '365'
-  }
+    value: '365',
+  },
 ]
 
 export const _allowedTypes = [
@@ -152,10 +152,10 @@ export const prepareTransaction = async (
         time: time ? time : null,
         sender: sender ? sender : '',
         receiver: receiver ? receiver : '',
-        amount: amount ? amount : '',
+        amount: amount ? amount : '-',
         fee: fee ? fee : '-',
       },
-    ].filter((item) => _allowedTypes.includes(item.type))
+    ]
   }
   return tempArr
 }

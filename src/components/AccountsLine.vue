@@ -1,11 +1,11 @@
 <template>
-  <div class="data-sources__table-row app-table__row">
+  <div class="app-table__row">
     <div class="app-table__cell">
-      <span class="app-table__header">Rank</span>
+      <span class="app-table__title">Rank</span>
       <span>{{ rank }}</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Address</span>
+      <span class="app-table__title">Address</span>
       <TitledLink
         :to="`/account/${account.address}`"
         class="app-table__cell-txt"
@@ -13,27 +13,27 @@
       />
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">GEO balance</span>
+      <span class="app-table__title">GEO balance</span>
       <span>{{ geoBalance }}</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">GEO token percentage</span>
+      <span class="app-table__title">GEO token percentage</span>
       <span v-if="accountOdinPercentage">{{ accountOdinPercentage }}%</span>
       <span v-else>No info</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">ODIN balance</span>
+      <span class="app-table__title">ODIN balance</span>
       <span>{{ odinBalance }}</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">ODIN token percentage</span>
+      <span class="app-table__title">ODIN token percentage</span>
       <div>
         <span v-if="accountGeoPercentage">{{ accountGeoPercentage }}%</span>
         <span v-else>No info</span>
       </div>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__header">Transaction count</span>
+      <span class="app-table__title">Transaction count</span>
       <div>
         <span v-if="account.total_tx">
           {{ account.total_tx }}
@@ -105,33 +105,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="scss">
-.data-sources__table-head,
-.data-sources__table-row {
-  grid:
-    auto /
-    5rem repeat(6, minmax(4rem, 1fr));
-
-  @media screen and (max-width: 992px) {
-    grid: repeat(7, minmax(4rem, 1fr)) / auto;
-  }
-}
-
-.app-table__cell-txt {
-  max-width: 15rem;
-  padding-right: 1rem;
-  @include ellipsis(inline-block);
-}
-
-.app-table__header {
-  display: none;
-  @media screen and (max-width: 992px) {
-    display: inline-block;
-    width: 20rem;
-  }
-  @media screen and (max-width: 60rem) {
-    width: 17rem;
-  }
-}
-</style>

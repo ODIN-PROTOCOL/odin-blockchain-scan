@@ -8,31 +8,15 @@
     </div>
     <template v-if="filteredTransactions?.length">
       <div class="app-table">
-        <div class="data-sources__table-head app-table__head">
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Transaction hash </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Type </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Block </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Date and time </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Sender </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Receiver </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Amount </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__cell-txt"> Transaction Fee </span>
-          </div>
+        <div class="app-table__head">
+          <span> Transaction hash </span>
+          <span> Type </span>
+          <span> Block </span>
+          <span> Date and time </span>
+          <span> Sender </span>
+          <span> Receiver </span>
+          <span> Amount </span>
+          <span> Transaction Fee </span>
         </div>
         <TransitionLine
           v-for="(item, index) in filteredTransactions"
@@ -40,18 +24,12 @@
           :transition="item"
         />
       </div>
-      <div class="pagination-wrapper mg-t32">
-        <v-pagination
-          v-model="page"
-          :pages="totalPages"
-          :range-size="1"
-          active-color="#007bff"
-          @update:modelValue="updateHandler"
-          :hideFirstButton="true"
-          :hideLastButton="true"
-        >
-        </v-pagination>
-      </div>
+      <Pagination
+        class="mg-t32"
+        v-model="page"
+        :pages="totalPages"
+        @update:modelValue="updateHandler"
+      />
     </template>
     <template v-else>
       <div class="empty">Waiting to receive data</div>
@@ -61,16 +39,15 @@
 
 <script lang="ts">
 import { callers } from '@/api/callers'
-import TransitionLine from '@/components/TransitionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
-import VPagination from '@hennge/vue3-pagination'
-import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import { handleError } from '@/helpers/errors'
 import { prepareTransaction } from '@/helpers/helpers'
+import TransitionLine from '@/components/TransitionLine.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
 export default defineComponent({
-  name: 'Transactions',
-  components: { VPagination, TransitionLine },
+  name: 'transactions',
+  components: { TransitionLine, Pagination },
   setup() {
     const ITEMS_PER_PAGE = 5
     const transactions = ref()
@@ -84,6 +61,7 @@ export default defineComponent({
       try {
         const { txs } = await callers.getTxSearch({
           query: `tx.height >= ${lastHeight - 10}`,
+          per_page: 100,
         })
 
         transactions.value = await prepareTransaction(txs)
@@ -93,8 +71,7 @@ export default defineComponent({
 
         await filterTransactions(page.value)
       } catch (e) {
-        console.error(e.message)
-        handleError(e)
+        handleError(e as Error)
       }
     }
 
@@ -133,102 +110,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="scss">
-
-.data-sources__table-head,
-.data-sources__table-row {
-  grid:
-    auto /
-    repeat(8, minmax(4rem, 1fr));
-
-  @media screen and (max-width: 992px) {
-    grid: repeat(8, minmax(4rem, 1fr)) / auto;
-  }
-}
-
-.blocks-container {
-  border-top: 1px solid var(--clr__table-border);
-}
-
-.app-table__row {
-  padding: 3.2rem 0 2rem;
-
-  @media screen and (max-width: 992px) {
-    padding: 1.6rem 0 0 0;
-  }
-}
-
-.app-table__cell-txt {
-  max-width: 150px;
-  padding-right: 10px;
-}
-
-.app-table__head {
-  @media screen and (max-width: 992px) {
-    display: none;
-  }
-}
-
-.app-table__header {
-  display: none;
-
-  @media screen and (max-width: 992px) {
-    display: inline-block;
-    width: 20rem;
-  }
-}
-</style>
-<style lang="scss">
-.pagination-wrapper {
-  display: flex;
-  justify-content: center;
-
-  li {
-    background: #fff;
-    border: 0.1rem solid var(--clr__action);
-    border-radius: 0.4rem;
-    margin: 0 0.4rem;
-    min-width: 2.6rem;
-    height: 3.6rem;
-  }
-
-  button {
-    height: 100%;
-    width: 100%;
-    border: none;
-    margin: 0;
-    padding: 1rem;
-  }
-
-  .Page {
-    color: var(--clr__action);
-
-    &:hover {
-      border: none;
-    }
-  }
-  .Page-active {
-    color: #fff;
-  }
-
-  .PaginationControl .Control.Control-active {
-    fill: var(--clr__action);
-  }
-  .PaginationControl .Control {
-    fill: #cce4ff;
-  }
-
-  .DotsHolder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    svg,
-    path {
-      color: var(--clr__action);
-    }
-  }
-}
-</style>

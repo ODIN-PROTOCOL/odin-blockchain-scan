@@ -3,9 +3,11 @@
     <div class="view-main__title-wrapper">
       <BackButton :text="'Validators'" />
       <h2 class="view-main__title">Validator</h2>
-      <div class="validator__address">
-        <p class="view-main__subtitle">{{ validator?.operatorAddress }}</p>
-        <CopyButton class="mg-l8" :text="String(validator?.operatorAddress)" />
+      <div class="view-main__subtitle-wrapper" v-if="validator">
+        <p class="view-main__subtitle fs-cut">
+          {{ validator.operatorAddress }}
+        </p>
+        <CopyButton class="mg-l8" :text="String(validator.operatorAddress)" />
       </div>
     </div>
 
@@ -30,15 +32,9 @@
         </Tab>
       </Tabs>
     </template>
-
-    <div class="validator__activities validator__activities_bottom">
-      <button class="app-btn app-btn_outlined" type="button" @click="withdraw">
-        Withdraw stake
-      </button>
-      <button class="app-btn mg-l24" type="button" @click="delegate">
-        Delegate
-      </button>
-    </div>
+    <template v-else>
+      <p>Validator not found!</p>
+    </template>
   </div>
 </template>
 
@@ -46,8 +42,6 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
-import { wallet } from '@/api/wallet'
-import { DelegationResponse } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking'
 import { Bech32 } from '@cosmjs/encoding'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
@@ -57,10 +51,9 @@ import ValidatorInfoCard from '@/components/ValidatorInfoCard.vue'
 import OracleReportsTable from '@/components/tables/OracleReportsTable.vue'
 import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
 import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
-import { showDelegateFormDialog } from '@/components/modals/DelegateFormModal.vue'
-import { showWithdrawFormDialog } from '@/components/modals/WithdrawFormModal.vue'
 import { BlockResponse } from '@cosmjs/tendermint-rpc'
 import { blocksWithTotalTxInterface } from '@/helpers/Types'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   components: {
@@ -79,7 +72,6 @@ export default defineComponent({
     const delegators = ref()
     const blocks = ref()
     const reports = ref()
-    const delegations = ref<{ [k: string]: DelegationResponse }>({})
 
     const getValidator = async () => {
       const response = await callers.getValidator(String(route.params.address))
@@ -129,55 +121,15 @@ export default defineComponent({
       reports.value = response.txs
     }
 
-    const getDelegations = async () => {
-      try {
-        // TODO: delegations returns invalid delegator's amount?
-        const response = await callers.getDelegations(wallet.account.address)
-
-        const _delegations: { [k: string]: DelegationResponse } = {}
-        for (const delegation of response.delegationResponses) {
-          if (!delegation.delegation?.validatorAddress) continue
-          _delegations[delegation.delegation.validatorAddress] = delegation
-        }
-        delegations.value = _delegations
-      } catch (error) {
-        // error is ignored, since no delegations also throws the error
-      }
-    }
-
-    const delegate = () => {
-      showDelegateFormDialog(
-        {
-          onSubmit: (d) => {
-            d.kill()
-            getValidator()
-            getDelegators()
-            getBlocks()
-            getReports()
-            getDelegations()
-          },
-        },
-        {
-          validator: validator.value,
-          delegation: delegations.value[String(route.params.address)],
-        }
-      )
-    }
-
-    const withdraw = () => {
-      showWithdrawFormDialog({
-        onSubmit: (d) => {
-          d.kill()
-        },
-      })
-    }
-
     onMounted(async () => {
-      await getValidator()
-      await getDelegators()
-      await getBlocks()
-      await getReports()
-      await getDelegations()
+      try {
+        await getValidator()
+        await getDelegators()
+        await getBlocks()
+        await getReports()
+      } catch (error) {
+        handleError(error as Error)
+      }
     })
 
     return {
@@ -185,55 +137,31 @@ export default defineComponent({
       delegators,
       blocks,
       reports,
-      withdraw,
-      delegate,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.view-main__title {
-  margin: 0 1.6rem 0 2rem;
-}
-
-.view-main__subtitle {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.validator__address {
-  display: flex;
-}
-
-.validator__activities {
-  &_bottom {
-    display: none;
-
-    & > * {
-      flex: 1;
-    }
-    @media screen and (max-width: 768px) {
-      display: flex;
-    }
+.view-main {
+  &__title {
+    margin: 0 1.6rem 0 2rem;
   }
-  &_top {
-    display: block;
-    min-width: 281px;
-    @media screen and (max-width: 768px) {
-      display: none;
-    }
+
+  &__subtitle-wrapper {
+    display: flex;
   }
 }
 
-@media screen and (max-width: 768px) {
-  .view-main__title  {
-    margin: 0.8rem 0 0.4rem 0;
-  }
+@include respond-to(tablet) {
+  .view-main {
+    &__title {
+      margin: 0.8rem 0 0.4rem 0;
+    }
 
-  .validator__address {
-    width: 100%;
+    &__subtitle-wrapper {
+      width: 100%;
+    }
   }
 }
 </style>

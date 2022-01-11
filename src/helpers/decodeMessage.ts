@@ -1,5 +1,5 @@
 import { MsgWithdrawCoinsToAccFromTreasury } from '@provider/codec/mint/tx'
-import { MsgVote } from '@provider/codec/cosmos/gov/v1beta1/tx'
+import { MsgSubmitProposal, MsgVote } from '@provider/codec/cosmos/gov/v1beta1/tx'
 import {
   MsgCreateValidator,
   MsgDelegate,
@@ -11,6 +11,8 @@ import {
   MsgAddReporter,
   MsgCreateDataSource,
   MsgCreateOracleScript,
+  MsgReportData,
+  MsgRequestData,
 } from '@provider/codec/oracle/v1/tx'
 import { MsgWithdrawDelegatorReward } from '@cosmjs/stargate/build/codec/cosmos/distribution/v1beta1/tx'
 import { callers } from '@/api/callers'
@@ -39,6 +41,9 @@ export function humanizeMessageType(type: string): string {
     case '/cosmos.gov.v1beta1.MsgVote':
       return 'Vote'
 
+    case '/cosmos.gov.v1beta1.MsgSubmitProposal':
+      return 'Submit Proposal'
+
     case '/cosmos.staking.v1beta1.MsgCreateValidator':
       return 'Create Validator'
 
@@ -63,6 +68,12 @@ export function humanizeMessageType(type: string): string {
     case '/oracle.v1.MsgAddReporter':
       return 'Add Reporter'
 
+    case '/oracle.v1.MsgRequestData':
+      return 'Request Data'
+
+    case '/oracle.v1.MsgReportData':
+      return 'Report Data'
+
     case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
       return 'Withdraw delegator reward'
 
@@ -81,10 +92,13 @@ function decodeMessage(obj: {
   | MsgUndelegate
   | MsgSend
   | MsgVote
+  | MsgSubmitProposal
   | MsgAddReporter
   | MsgActivate
   | MsgCreateOracleScript
-  | MsgCreateDataSource {
+  | MsgCreateDataSource
+  | MsgRequestData
+  | MsgReportData {
   switch (obj.typeUrl) {
     case '/mint.MsgWithdrawCoinsToAccFromTreasury':
       return MsgWithdrawCoinsToAccFromTreasury.decode(obj.value)
@@ -101,6 +115,9 @@ function decodeMessage(obj: {
     case '/cosmos.gov.v1beta1.MsgVote':
       return MsgVote.decode(obj.value)
 
+    case '/cosmos.gov.v1beta1.MsgSubmitProposal':
+      return MsgSubmitProposal.decode(obj.value)
+
     case '/cosmos.bank.v1beta1.MsgSend':
       return MsgSend.decode(obj.value)
 
@@ -115,6 +132,12 @@ function decodeMessage(obj: {
 
     case '/oracle.v1.MsgAddReporter':
       return MsgAddReporter.decode(obj.value)
+
+    case '/oracle.v1.MsgRequestData':
+      return MsgRequestData.decode(obj.value)
+
+    case '/oracle.v1.MsgReportData':
+      return MsgReportData.decode(obj.value)
 
     case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
       return MsgWithdrawDelegatorReward.decode(obj.value)

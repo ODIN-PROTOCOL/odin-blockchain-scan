@@ -1,109 +1,93 @@
 <template>
-  <footer>
-    <div class="footer-inner container">
-      <div class="footer-logo">
-        <a href="/">
-          <img
-            class="logo"
-            src="~@/assets/brand/odin-logo-white.png"
-            alt="Logo"
-            width="80"
-          />
-        </a>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__logo">
+          <a href="/">
+            <img
+              class="logo"
+              src="~@/assets/brand/odin-logo-white.png"
+              alt="Logo"
+              width="80"
+            />
+          </a>
+        </div>
+        <nav class="footer__nav">
+          <a class="footer__nav-item" href="">About us</a>
+          <a class="footer__nav-item" href="">Contact us</a>
+          <a class="footer__nav-item" href="">Terms of service</a>
+          <a class="footer__nav-item" href="">Developer APIs</a>
+          <a class="footer__nav-item" href="">Knowledge base</a>
+          <a class="footer__nav-item" href="">Network status</a>
+        </nav>
       </div>
-      <nav>
-        <a href="">About us</a>
-        <a href="">Contact us</a>
-        <a href="">Terms of service</a>
-        <a href="">Developer APIs</a>
-        <a href="">Knowledge base</a>
-        <a href="">Network status</a>
-      </nav>
     </div>
   </footer>
 </template>
+
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Footer',
-  setup() {
-    const test = ref()
-
-    return {
-      test,
-    }
-  },
 })
 </script>
+
 <style scoped lang="scss">
-
-footer {
+.footer {
   background: var(--clr__tooltip-bg);
-  height: 92px;
-  margin-top: 64px;
+  margin-top: 6.4rem;
 
-  @media screen and (max-width: 992px) {
-    height: auto;
-    padding: 0 15px;
+  &__inner {
+    display: flex;
+    align-items: center;
+    padding: 3.1rem 0;
   }
 
-  @media screen and (max-width: 600px) {
-    margin-top: 40px;
+  &__logo {
+    margin-right: 12.8rem;
+    width: 9rem;
+  }
+
+  &__nav {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__nav-item {
+    color: var(--clr__text-on-action);
+    text-decoration: none;
   }
 }
 
-nav {
-  display: flex;
-  flex: 1;
-  justify-content: space-between;
+@include respond-to(small) {
+  .footer {
+    margin-top: 4rem;
 
-  a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 400;
-  }
-
-  @media screen and (max-width: 992px) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 24px;
-    width: 100%;
-
-    a {
-      display: block;
-      margin-bottom: 1.6rem;
-      text-align: left;
+    &__inner {
+      padding: 2.4rem 0;
     }
   }
 }
 
-.container {
-  max-width: 1220px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.footer {
-  &-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-
-    @media screen and (max-width: 992px) {
-      display: flex;
+@include respond-to(992px) {
+  .footer {
+    &__inner {
       flex-direction: column;
       align-items: flex-start;
     }
-  }
 
-  &-logo {
-    margin-right: 128px;
+    &__logo {
+      margin: 0 0 2.4rem 0;
+    }
 
-    @media screen and (max-width: 992px) {
-      margin: 2.4rem 0;
+    &__nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 2.4rem;
+      row-gap: 2.4rem;
+      width: 100%;
     }
   }
 }
