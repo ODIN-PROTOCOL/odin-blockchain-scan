@@ -1,5 +1,5 @@
 <template>
-  <div class="view-main">
+  <div class="container">
     <InfoPanel />
     <Latest />
   </div>

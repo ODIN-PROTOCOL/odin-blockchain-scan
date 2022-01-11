@@ -69,14 +69,14 @@ export default defineComponent({
     }
   }
   .Page-active {
-    color: #fff;
+    color: var(--clr__text-on-action);
   }
 
   .PaginationControl .Control.Control-active {
     fill: var(--clr__action);
   }
   .PaginationControl .Control {
-    fill: #cce4ff;
+    fill: var(--clr__table-border);
   }
 
   .DotsHolder {

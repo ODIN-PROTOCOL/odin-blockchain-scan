@@ -65,7 +65,7 @@ import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { useRoute } from 'vue-router'
 import { toHex } from '@cosmjs/encoding'
 import { fromBase64 } from '@cosmjs/encoding'
-import Pagination from '@/components/pagination/Pagination.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
 export default defineComponent({
   name: 'PendingTransactions',

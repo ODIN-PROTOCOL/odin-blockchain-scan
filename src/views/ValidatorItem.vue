@@ -3,11 +3,11 @@
     <div class="view-main__title-wrapper">
       <BackButton :text="'Validators'" />
       <h2 class="view-main__title">Validator</h2>
-      <div class="view-main__subtitle-wrapper">
+      <div class="view-main__subtitle-wrapper" v-if="validator">
         <p class="view-main__subtitle fs-cut">
-          {{ validator?.operatorAddress }}
+          {{ validator.operatorAddress }}
         </p>
-        <CopyButton class="mg-l8" :text="String(validator?.operatorAddress)" />
+        <CopyButton class="mg-l8" :text="String(validator.operatorAddress)" />
       </div>
     </div>
 
@@ -32,6 +32,9 @@
         </Tab>
       </Tabs>
     </template>
+    <template v-else>
+      <p>Validator not found!</p>
+    </template>
   </div>
 </template>
 
@@ -50,6 +53,7 @@ import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
 import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
 import { BlockResponse } from '@cosmjs/tendermint-rpc'
 import { blocksWithTotalTxInterface } from '@/helpers/Types'
+import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
   components: {
@@ -118,10 +122,14 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      await getValidator()
-      await getDelegators()
-      await getBlocks()
-      await getReports()
+      try {
+        await getValidator()
+        await getDelegators()
+        await getBlocks()
+        await getReports()
+      } catch (error) {
+        handleError(error as Error)
+      }
     })
 
     return {
@@ -145,7 +153,7 @@ export default defineComponent({
   }
 }
 
-@include respond-to(768px) {
+@include respond-to(tablet) {
   .view-main {
     &__title {
       margin: 0.8rem 0 0.4rem 0;

@@ -43,7 +43,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { handleError } from '@/helpers/errors'
 import { prepareTransaction } from '@/helpers/helpers'
 import TransitionLine from '@/components/TransitionLine.vue'
-import Pagination from '@/components/pagination/Pagination.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
 export default defineComponent({
   name: 'transactions',

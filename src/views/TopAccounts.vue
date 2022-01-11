@@ -72,7 +72,7 @@ import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
 import { getTopAccountList } from '@/helpers/Accounts'
 import { allowedTxCount } from '@/helpers/helpers'
-import Pagination from '@/components/pagination/Pagination.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
 export default defineComponent({
   name: 'top-accounts',

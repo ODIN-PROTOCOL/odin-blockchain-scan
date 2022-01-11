@@ -53,7 +53,7 @@
 import { defineComponent, onMounted, toRef, ref, computed } from 'vue'
 import { toHexFunc } from '@/helpers/helpers'
 import TitledLink from '@/components/TitledLink.vue'
-import Pagination from '@/components/pagination/Pagination.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
 export default defineComponent({
   components: { TitledLink, Pagination },

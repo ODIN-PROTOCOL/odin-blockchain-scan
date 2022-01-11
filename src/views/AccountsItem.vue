@@ -241,7 +241,7 @@ export default defineComponent({
   }
 }
 
-@include respond-to(768px) {
+@include respond-to(tablet) {
   .view-main {
     &__title {
       margin: 0.8rem 0 0.4rem 0;

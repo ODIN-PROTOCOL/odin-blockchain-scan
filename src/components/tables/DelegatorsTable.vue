@@ -56,7 +56,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, toRef } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
-import Pagination from '@/components/pagination/Pagination.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 
 export default defineComponent({
   components: { TitledLink, Pagination },

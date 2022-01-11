@@ -124,7 +124,7 @@ export default defineComponent({
   }
 }
 
-@media screen and (max-width: 768px) {
+@include respond-to(tablet) {
   .view-main__charts-table {
     tr {
       display: flex;

@@ -48,9 +48,10 @@
 // MEDIA
 
 $mediaBreakpoints: (
-  x-small: 480px,
-  small: 600px,
-  tablet: 820px,
+  small: 480px,
+  x-small: 600px,
+  tablet: 768px,
+  x-tablet: 820px,
   medium: 1024px,
   x-medium: 1200px,
   large: 1440px,

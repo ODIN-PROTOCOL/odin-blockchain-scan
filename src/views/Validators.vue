@@ -93,7 +93,7 @@ import Tabs from '@/components/tabs/Tabs.vue'
 import Tab from '@/components/tabs/Tab.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import StatusIcon from '@/components/StatusIcon.vue'
-import Pagination from '@/components/pagination/Pagination.vue'
+import Pagination from '@/components/Pagination/Pagination.vue'
 import { getTransformedValidators } from '@/helpers/validatorsHelpers'
 
 export default defineComponent({
@@ -217,7 +217,7 @@ export default defineComponent({
     minmax(8rem, 4fr);
 }
 
-@include respond-to(768px) {
+@include respond-to(tablet) {
   .app-table__row {
     grid: none;
   }
