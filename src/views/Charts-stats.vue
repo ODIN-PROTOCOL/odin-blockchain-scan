@@ -171,7 +171,7 @@ export default defineComponent({
   }
 }
 
-@include respond-to(768px) {
+@include respond-to(tablet) {
   .view-main {
     &__charts-section {
       flex-direction: column;
