@@ -3,6 +3,11 @@ import {
   formatedTelemetryDataForCharts,
 } from '@/helpers/Types'
 
+export enum DoughnutChartType {
+  SIMPLE,
+  EXTENDED,
+}
+
 export const getChartOptions = (datasetUnit: string, labels: string[]) => {
   return {
     responsive: true,
@@ -37,44 +42,53 @@ export const getChartOptions = (datasetUnit: string, labels: string[]) => {
         yAlign: 'chartjs-tooltip_bottom',
         padding: 0,
         enabled: false,
-        external: function (ctx): void {
-          const tooltipModel = ctx.tooltip
-          let tooltipEl = document.getElementById('chartjs-tooltip')
-          let tooltipArrow = tooltipEl?.querySelector(
-            '.chartjs-tooltip__arrow'
-          ) as HTMLElement
-
-          // Create element on first render
-          if (!tooltipEl) {
-            tooltipEl = _createTooltip()
-            tooltipArrow = _createTooltipArrow(tooltipEl)
-          }
-
-          _setTooltipArrowPosition(tooltipEl, tooltipModel)
-
-          // Set Text
-          if (tooltipModel.body) {
-            let innerHtml = ''
-            innerHtml += _setTooltipTitles(tooltipModel)
-            innerHtml += _setTooltipBody(tooltipModel, datasetUnit)
-
-            const divRoot = tooltipEl.querySelector('div')
-            if (divRoot) {
-              divRoot.innerHTML = innerHtml
-            }
-          }
-
-          _toggleTooltipDisplay(tooltipEl, tooltipModel)
-
-          _setTooltipAndArrowOnChart(
-            ctx.chart,
-            tooltipModel,
-            tooltipEl,
-            tooltipArrow
-          )
-        },
+        external: createExternalTooltip(datasetUnit),
       },
     },
+  }
+}
+
+export const createExternalTooltip = (
+  datasetUnit: string,
+  additionalInfo: any = null
+) => {
+  return (ctx): void => {
+    const tooltipModel = ctx.tooltip
+    let tooltipEl = document.getElementById('chartjs-tooltip')
+    let tooltipArrow = tooltipEl?.querySelector(
+      '.chartjs-tooltip__arrow'
+    ) as HTMLElement
+  
+    // Create element on first render
+    if (!tooltipEl) {
+      tooltipEl = _createTooltip()
+      tooltipArrow = _createTooltipArrow(tooltipEl)
+    }
+  
+    _setTooltipArrowPosition(tooltipEl, tooltipModel)
+  
+    // Set Text
+    if (tooltipModel.body) {
+      let innerHtml = ''
+      if (additionalInfo) {
+        innerHtml += _setTooltipDataFromAdditionalInfo(
+          tooltipModel,
+          additionalInfo
+        )
+      } else {
+        innerHtml += _setTooltipTitles(tooltipModel)
+        innerHtml += _setTooltipBody(tooltipModel, datasetUnit)
+      }
+  
+      const divRoot = tooltipEl.querySelector('div')
+      if (divRoot) {
+        divRoot.innerHTML = innerHtml
+      }
+    }
+  
+    _toggleTooltipDisplay(tooltipEl, tooltipModel)
+  
+    _setTooltipAndArrowOnChart(ctx.chart, tooltipModel, tooltipEl, tooltipArrow)
   }
 }
 
@@ -165,6 +179,30 @@ const _setTooltipBody = (tooltipModel, unit: string) => {
       '</span></div>'
   })
 
+  return innerHtml
+}
+
+const _setTooltipDataFromAdditionalInfo = (tooltipModel, additionalInfo) => {
+  const dataIndex = tooltipModel.dataPoints[0].dataIndex
+  const data = additionalInfo[dataIndex]
+  let innerHtml = ''
+
+  let firstEnter = true
+  for (const [key, value] of Object.entries(data)) {
+    if (firstEnter) {
+      innerHtml += '<span class="chartjs-tooltip__title">' + value + '</span>'
+      firstEnter = false
+    } else {
+      innerHtml +=
+        '<div class="tooltip-row"><span class="chartjs-tooltip__row-title">' +
+        key +
+        ':' +
+        '</span><span>' +
+        '&nbsp' +
+        value +
+        '</span></div>'
+    }
+  }
   return innerHtml
 }
 

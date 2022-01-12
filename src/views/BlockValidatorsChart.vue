@@ -4,14 +4,8 @@
       <BackButton :text="'Charts & Stats'" />
       <h2 class="view-main__title">Block Validators Chart</h2>
     </div>
-  </div>
-  <!-- TODO: Will be replaced with a different chart, now this page hide in router.ts   -->
-  <!-- <div>
-    <div class="title">
-      <BackButton :current-router="router" text="" />
-      <h1 class="title-name">Block Validators Chart</h1>
-    </div>
-    <div class="sort-wrapper">
+
+    <div class="view-main__sort-wrapper mg-b32">
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin"
         name="filter"
@@ -21,7 +15,7 @@
         <template #dropdownInner>
           <div class="app-filter__dropdown-inner">
             <VuePickerOption
-              v-for="{ text, value } in sortingDays"
+              v-for="{ text, value } in sortingDaysForChart"
               :key="text"
               :value="value"
               :text="text"
@@ -32,103 +26,86 @@
         </template>
       </VuePicker>
     </div>
-    <transition name="fade" mode="out-in">
-      <template v-if="!isLoading">
-        <div class="content">
-          <div class="chart-block">
-            <div class="chart-block__total">
-              <h3>{{ totalBlocks }}</h3>
-              <span>Blocks</span>
-            </div>
-            <div class="chart-block__wrapper">
-              <DoughnutChart :chartData="chartData" />
-            </div>
-          </div>
-          <div class="validators-table">
-            <div class="app-table">
-              <div class="data-sources__table-head app-table__head">
-                <div class="app-table__cell">
-                  <span class="app-table__cell-txt">Rank</span>
-                </div>
-                <div class="app-table__cell">
-                  <span class="app-table__cell-txt">Address</span>
-                </div>
-                <div class="app-table__cell">
-                  <span class="app-table__cell-txt"> Blocks </span>
-                </div>
-                <div class="app-table__cell">
-                  <span class="app-table__cell-txt"> Stake percentage </span>
-                </div>
-              </div>
 
-              <template
-                v-for="item in chartData.labels"
-                :key="item.validatorAddress"
-              >
-                <div class="data-sources__table-row app-table__row">
-                  <div class="app-table__cell">
-                    <span class="app-table__header">Rank</span>
-                    {{ item.rank }}
-                  </div>
-                  <div class="app-table__cell">
-                    <span class="app-table__header">Address</span>
-                    <TitledLink
-                      :to="`/validators/${item.validatorAddress}`"
-                      class="app-table__cell-txt"
-                      :text="`Ox${item.validatorAddress}`"
-                    />
-                  </div>
-                  <div class="app-table__cell">
-                    <span class="app-table__header">Blocks</span>
-                    {{ item.blocksCounter }}
-                  </div>
-                  <div class="app-table__cell">
-                    <span class="app-table__header">Stake percentage</span>
-                    {{ item.stakePercentage }}
-                  </div>
-                </div>
-              </template>
+    <CustomDoughnutChart
+      class="mg-b40"
+      :type="DoughnutChartType.EXTENDED"
+      :chartDataset="chartData"
+      :additionalInfo="additionalData"
+    />
+
+    <div class="app-table">
+      <div class="app-table__head">
+        <span>Rank</span>
+        <span>Address</span>
+        <span>Blocks</span>
+        <span>Stake percentage</span>
+      </div>
+      <template v-if="validators">
+        <div>
+          <div
+            class="app-table__row"
+            v-for="(item, idx) in validators"
+            :key="item.validatorAddress"
+          >
+            <div class="app-table__cell">
+              <span class="app-table__title">Rank</span>
+              <span>{{ idx + 1 }}</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Address</span>
+              <TitledLink
+                :to="`/validators/${item.validatorAddress}`"
+                :text="item.validatorAddress"
+                class="app-table-cell-txt"
+              />
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Blocks</span>
+              <span>{{ item.blocksCount }}</span>
+            </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Stake percentage</span>
+              <span>{{ item.stakePercentage }}</span>
             </div>
           </div>
         </div>
       </template>
-      <span class="empty" v-else>
-        <span id="loading" class="empty-loading"></span>
-        Wait data preparation
-      </span>
-    </transition>
-  </div> -->
+      <template v-else>
+        <div class="app-table__empty-stub">
+          <p v-if="isLoading">Loading…</p>
+          <p v-else>No items yet</p>
+        </div>
+      </template>
+    </div>
+  </div>
 </template>
+
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from 'vue'
-import {
-  RouteLocationNormalizedLoaded,
-  Router,
-  useRoute,
-  useRouter,
-} from 'vue-router'
-import { ChartDataType } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
-import { DONUT_COLORS } from '@/helpers/ChartColors'
-import DoughnutChart from '@/components/Charts/DoughnutChart.vue'
 import BackButton from '@/components/BackButton.vue'
+import { callers } from '@/api/callers'
 import TitledLink from '@/components/TitledLink.vue'
-import { doughnutTooltipHandler } from '@/helpers/chartHelpers'
-import { bigMath } from '@/helpers/bigMath'
+import CustomDoughnutChart from '@/components/Charts/CustomDoughnutChart.vue'
+import { DoughnutChartType } from '@/helpers/customChartHelpers'
+import { ExtendedDoughnutChartAdditionalInfo } from '@/helpers/Types'
+import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 
 export default defineComponent({
   name: 'ValidatorChart',
   components: {
-    // DoughnutChart,
+    CustomDoughnutChart,
     BackButton,
-    // TitledLink
+    TitledLink,
   },
   setup: function () {
-    const router: Router = useRouter()
-    const route: RouteLocationNormalizedLoaded = useRoute()
     const isLoading = ref<boolean>(false)
+    const validators = ref<ValidatorBlockStats[]>()
     const sortingValue = ref<string>('1')
-    const sortingDays: Array<{ text: string; value: string }> = [
+    const chartData = ref()
+    const additionalData = ref<ExtendedDoughnutChartAdditionalInfo[]>()
+    const sortingDaysForChart: Array<{ text: string; value: string }> = [
       {
         text: 'Last 24 hours',
         value: '1',
@@ -142,164 +119,52 @@ export default defineComponent({
         value: '14',
       },
     ]
-    const totalBlocks = ref<string>('')
-    const chartData = ref<Partial<ChartDataType>>({
-      labels: [
-        {
-          validatorAddress:
-            'odinvaloper1nnfeguq30x6nwxjhaypxymx3nulyspsulqprrj',
-          blocksCounter: '332',
-          stakePercentage: '2.439%',
-          rank: 1,
-        },
-        {
-          validatorAddress:
-            'odinvaloper17geerdwmlxpwxlahmt02vj4wy89wfstj8pacf5',
-          blocksCounter: '335',
-          stakePercentage: '24.39%',
-          rank: 2,
-        },
-        {
-          validatorAddress:
-            'odinvaloper129umpweqxfywq0f2zdpgjcfnkhzcu8jyfu5nes',
-          blocksCounter: '335',
-          stakePercentage: '24.39%',
-          rank: 3,
-        },
-        {
-          validatorAddress:
-            'odinvaloper1hkm2qu5v3hlzzfzndut09wjz3lnk028edv7qkg',
-          blocksCounter: '335',
-          stakePercentage: '24.39%',
-          rank: 4,
-        },
-        {
-          validatorAddress:
-            'odinvaloper17rprjgtj0krfw3wyl9creueej6ca9dc4a65n80',
-          blocksCounter: '335',
-          stakePercentage: '24.39%',
-          rank: 5,
-        },
-      ],
-      datasets: [
-        {
-          backgroundColor: DONUT_COLORS,
-          borderColor: DONUT_COLORS,
-          borderWidth: 2,
-          hoverBorderWidth: 8,
-          borderJoinStyle: 'round',
-          borderCapStyle: 'round',
-          tension: 0.5,
-          borderSkipped: false,
-          data: [2.439, 24.39, 24.39, 24.39, 24.39],
-        },
-      ],
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: 20,
-        },
-        plugins: {
-          title: {
-            display: false,
-          },
-          tooltip: {
-            enabled: false,
-            external: doughnutTooltipHandler,
-          },
-          legend: {
-            display: false,
-          },
-        },
-      },
-    })
 
-    // const getDataByDays = async (
-    //   days: number
-    // ): Promise<Array<ValidatorBlockStats>> => {
-    //   const endDate = new Date()
-    //   const startDate = new Date()
-    //
-    //   return withoutDuplicates(
-    //     await requestByDays(
-    //       { startDate, endDate, pagination },
-    //       callers.getTopValidators,
-    //       days
-    //     )
-    //   ) as unknown as Array<ValidatorBlockStats>
-    // }
-
-    watch(
-      sortingValue,
-      async (): Promise<void> =>
-        await getValidatorsData(Number(sortingValue.value))
-    )
-
-    onMounted(async (): Promise<void> => {
-      await getValidatorsData(Number(sortingValue.value))
-    })
-
-    const getValidatorsData = async (days = 1): Promise<void> => {
-      console.debug('getValidatorsData', days)
+    const getChartData = async () => {
+      const endDate = new Date()
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - Number(sortingValue.value))
       isLoading.value = true
-      let blocksCounters: Array<number> = []
       try {
-        // chartData.value.datasets[0].data = []
-        // chartData.value.labels = []
-
-        // const TopValidators = await getDataByDays(days)
-
-        // for (const v of TopValidators) {
-        //   chartData.value.datasets[0].data = [
-        //     ...chartData.value.datasets[0].data,
-        //     bigMath.toNum(v.blocksCount),
-        //   ]
-        //
-        //   chartData.value.labels = [
-        //     ...chartData.value.labels,
-        //     {
-        //       validatorAddress: v.validatorAddress,
-        //       blocksCounter: bigMath.format(v.blocksCount),
-        //       stakePercentage: `${bigMath.bigStakePercentage(
-        //         v.stakePercentage
-        //       )}%`,
-        //     },
-        //   ]
-        //   blocksCounters = [...blocksCounters, bigMath.toNum(v.blocksCount)]
-        // }
-        // chartData.value.labels = addedRankBy(
-        //   chartData.value.labels as Array<ChartLabelsType>,
-        //   'blocksCounter'
-        // )
-
-        // Temp any, Todo: ChartLabelsType
-        chartData.value?.labels?.forEach((el): void => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          blocksCounters.push(bigMath.toNum(el.blocksCounter))
+        // TODO check the request when the telemetry is ready, data is temporarily not returned
+        const { topValidators } = await callers.getValidatorsBlockStats({
+          startDate,
+          endDate,
         })
-        totalBlocks.value = bigMath.format(
-          blocksCounters.reduce(
-            (sum: number, el): number => sum + Number(el),
-            0
-          )
-        )
-
-        console.debug('chartData.value', chartData.value)
-        isLoading.value = false
+        validators.value = topValidators
+        _prepareAdditionalData(validators.value)
       } catch (error) {
-        handleError(error)
-        console.error(error)
+        handleError(error as Error)
       }
+      isLoading.value = false
     }
 
+    const _prepareAdditionalData = (validatorsArr: ValidatorBlockStats[]) => {
+      let tempDataArr: number[] = []
+
+      additionalData.value = validatorsArr.map((item: ValidatorBlockStats) => {
+        tempDataArr.push(Number(item.blocksCount))
+        return {
+          validatorAddress: item.validatorAddress,
+          Blocks: Number(item.blocksCount),
+          'Stake percentage': item.stakePercentage
+        }
+      })
+      chartData.value = { data: tempDataArr }
+    }
+
+    watch(sortingValue, async (): Promise<void> => await getChartData())
+
+    onMounted(async () => {
+      await getChartData()
+    })
+
     return {
-      router,
-      route,
+      DoughnutChartType,
       chartData,
-      totalBlocks,
-      sortingDays,
+      additionalData,
+      validators,
+      sortingDaysForChart,
       sortingValue,
       isLoading,
     }
@@ -312,90 +177,37 @@ export default defineComponent({
   &__title {
     margin: 0 1.6rem 0 2rem;
   }
+
+  &__sort-wrapper {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
-@include respond-to(768px) {
+.app-table__head,
+.app-table__row {
+  grid:
+    auto /
+    minmax(3rem, 0.5fr)
+    minmax(8rem, 8fr)
+    minmax(8rem, 2fr)
+    minmax(8rem, 2fr);
+}
+
+@include respond-to(tablet) {
   .view-main {
     &__title {
       margin: 0.8rem 0 0.4rem 0;
     }
   }
+
+  .app-table__row {
+    grid: none;
+  }
+
+  .app-filter {
+    width: 100%;
+    padding: 0;
+  }
 }
-// .empty {
-//   position: absolute;
-//   left: 50%;
-//   top: 50%;
-//   transform: translate(-50%, -50%);
-// }
-
-// .sort-wrapper {
-//   justify-content: flex-end;
-// }
-
-// .data-sources__table-head,
-// .data-sources__table-row {
-//   grid:
-//     auto /
-//     repeat(4, minmax(4rem, 1fr));
-
-//   @media screen and (max-width: 99.2rem) {
-//     grid: repeat(4, minmax(4rem, 1fr)) / auto;
-//   }
-// }
-// .data-sources__table-head {
-//   @media (max-width: 48rem) {
-//     display: none;
-//   }
-// }
-
-// .app-table__cell-txt {
-//   max-width: 150px;
-// }
-
-// .app-table__header {
-//   display: none;
-//   @media screen and (max-width: 99.2rem) {
-//     display: inline-block;
-//     width: 20rem;
-//   }
-// }
-
-// .title {
-//   display: flex;
-//   align-items: center;
-//   gap: 2rem;
-// }
-// .chart-block {
-//   display: flex;
-//   height: 39.1rem;
-//   width: 100%;
-//   position: relative;
-//   margin: 10.3rem 0 7.5rem 0;
-//   @media (max-width: 48rem) {
-//     margin: 3.2rem 0 4.2rem;
-//   }
-//   &__wrapper {
-//     width: 100%;
-//     height: 100%;
-//   }
-//   &__total {
-//     position: absolute;
-//     top: 50%;
-//     left: 50%;
-//     transform: translate(-50%, -50%);
-//     color: #212529;
-//     text-align: center;
-//     h3 {
-//       font-weight: 600;
-//       font-size: 2.4rem;
-//       line-height: 2.9rem;
-//     }
-//     span {
-//       margin-top: 0.4rem;
-//       font-size: 1.6rem;
-//       line-height: 2.4rem;
-//       font-weight: 600;
-//     }
-//   }
-// }
 </style>

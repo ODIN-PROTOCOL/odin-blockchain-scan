@@ -217,6 +217,9 @@ const makeCallers = () => {
         }
       )
     },
+    getValidatorsBlockStats: querier(
+      (qc) => qc.telemetry.unverified.topValidators
+    ),
   }
 }
 

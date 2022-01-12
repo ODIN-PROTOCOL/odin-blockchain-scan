@@ -141,3 +141,16 @@ export type formatedTelemetryDataForCharts = {
   data: number[]
   labels: string[]
 }
+
+export type SimpleDoughnutChartAdditionalInfo = {
+  count: number;
+  percent: number;
+  title: string;
+  denom: string;
+}
+
+export type ExtendedDoughnutChartAdditionalInfo = {
+  validatorAddress: string;
+  Blocks: number;
+  'Stake percentage': string;
+}
