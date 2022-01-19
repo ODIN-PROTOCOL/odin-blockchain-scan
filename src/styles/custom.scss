@@ -12,6 +12,7 @@ body {
   background-color: #053F7D;
   border-radius: 0.8rem;
   color: #fff;
+  max-width: 18.5rem;
 
   &.chartjs-tooltip_bottom {
     .chartjs-tooltip__arrow {
@@ -26,10 +27,16 @@ body {
     }
   }
 
-  .chartjs-tooltip__row-title {
-    font-size: 1.4rem;
-    font-weight: 300;
-    opacity: 0.6; 
+  .chartjs-tooltip {
+    &__title {
+      @include ellipsis(inline-block, 100%)
+    }
+
+    &__row-title {
+      font-size: 1.4rem;
+      font-weight: 300;
+      opacity: 0.6; 
+    }
   }
 }
 

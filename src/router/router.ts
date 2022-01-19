@@ -110,6 +110,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'charts',
     children: [
       {
+        path: 'validators',
+        name: 'BlockValidatorsChart',
+        component: () => import('../views/BlockValidatorsChart.vue'),
+      },
+      {
         path: 'average-odin-block-size',
         name: 'AverageOdinBlockSizeChart',
         component: () => import('../views/Chart.vue'),
