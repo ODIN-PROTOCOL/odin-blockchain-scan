@@ -1,508 +1,376 @@
 <template>
-  <div class="container">
-    <div class="block-item">
-      <div class="block-item__title">
-        <BackButton :current-router="router" />
-        <h1 class="block-name">Transaction</h1>
-        <CopyText
-          v-if="transaction?.hash"
-          :text="transaction?.hash"
-          :className="'block-id'"
-          :title="transaction?.hash"
-          :displayText="transaction?.hash"
-        />
+  <div class="app__main-view transactions-item">
+    <div class="app__main-view-title-wrapper">
+      <BackButton text="Transactions" />
+      <h2 class="app__main-view-title transactions-item__title">Transaction</h2>
+      <div class="transactions-item__subtitle-wrapper" v-if="tx">
+        <span class="app__main-view-subtitle transactions-item__subtitle">
+          {{ tx.hash }}
+        </span>
+        <CopyButton class="mg-l8" :text="tx.hash" />
       </div>
-      <div class="block-chars">
-        <h2 class="block-title">Transaction details</h2>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                The date and time at which a transaction is validated.
-              </span>
-              Time
-            </div>
-          </div>
-          <div class="info-value">
-            <span>{{ convertToTxTime(transaction?.time) }}</span>
-          </div>
+    </div>
+
+    <span class="app__main-view-subtitle">Transaction details</span>
+    <div class="transactions-item__table mg-b32">
+      <div class="transactions-item__table-row">
+        <div class="transactions-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="transactions-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.time }}
+          </span>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                The status of the transaction. A Status code indicating if the
-                top-level call succeeded or failed.
-              </span>
-              Status
-            </div>
-          </div>
-          <div class="info-value text-blue">
-            <div
-              class="status"
-              :class="transaction?.status === 0 ? 'success' : 'failed'"
-            >
-              {{ transaction?.status === 0 ? 'Success' : 'Failed' }}
-            </div>
-          </div>
+        <span class="transactions-item__table-row-title">Time</span>
+        <span class="transactions-item__table-row-value">
+          {{ txTime }}
+        </span>
+      </div>
+      <div class="transactions-item__table-row">
+        <div class="transactions-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="transactions-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.status }}
+          </span>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                The number of the block in which the transaction was recorded.
-                Block confirmation indicate how many blocks since the
-                transaction are validated.
-              </span>
-              Block
-            </div>
-          </div>
-          <div class="info-value">
-            <router-link :to="`/blocks/${transaction?.block}`">
-              {{ transaction?.block }}
-            </router-link>
-          </div>
+        <span class="transactions-item__table-row-title">Status</span>
+        <div class="transactions-item__table-row-value">
+          <span
+            class="transactions-item__table-row-status"
+            :class="
+              txStatus === TX_STATUSES.SUCCESS
+                ? 'transactions-item__table-row-status_success'
+                : 'transactions-item__table-row-status_failed'
+            "
+          >
+            {{ txStatus === TX_STATUSES.SUCCESS ? 'Success' : 'Failed' }}
+          </span>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                The sending party of the transaction (could be from a contract
-                address).
-              </span>
-              Sender
-            </div>
-          </div>
-          <div class="info-value">
-            <router-link :to="`/account/${transaction?.sender}`">
-              {{ transaction?.sender }}
-            </router-link>
-          </div>
+      </div>
+      <div class="transactions-item__table-row">
+        <div class="transactions-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="transactions-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.block }}
+          </span>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                The receiving party of the transaction (could be a contract
-                address).
-              </span>
-              Gas (used/wanted)
-            </div>
-          </div>
-          <div class="info-value">
-            <span>{{ transUsed }}/{{ transWanted }}</span>
-          </div>
+        <span class="transactions-item__table-row-title">BLock</span>
+        <TitledLink
+          v-if="tx?.block"
+          :to="`/blocks/${tx?.block}`"
+          class="transactions-item__table-row-value transactions-item__table-row-link"
+          :text="tx?.block"
+        />
+        <span v-else class="transactions-item__table-row-value">-</span>
+      </div>
+      <div class="transactions-item__table-row">
+        <div class="transactions-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="transactions-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.gas }}
+          </span>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                Amount paid to the validator for validation of the transaction.
-              </span>
-              Fee
-            </div>
-          </div>
-          <div class="info-value">
-            {{ transaction?.fee }}
-          </div>
+        <span class="transactions-item__table-row-title">
+          Gas (used/wanted)
+        </span>
+        <span class="transactions-item__table-row-value">
+          {{ txUsed }} / {{ txWanted }}
+        </span>
+      </div>
+      <div class="transactions-item__table-row">
+        <div class="transactions-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="transactions-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.fee }}
+          </span>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                Amount paid to the validator for validation of the transaction.
-              </span>
-              Memo
-            </div>
-          </div>
-          <div class="info-value">
-            <span>{{ transMemo ? transMemo : 'No Memo' }}</span>
-          </div>
+        <span class="transactions-item__table-row-title">Fee</span>
+        <span class="transactions-item__table-row-value">{{ tx?.fee }}</span>
+      </div>
+      <div class="transactions-item__table-row">
+        <div class="transactions-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="transactions-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.memo }}
+          </span>
         </div>
-        <div class="data-sources__table-row app-table__row">
-          <div class="info-key">
-            <div class="info-key__inner">
-              <img src="~@/assets/icons/info.svg" alt="info" />
-              <span class="tooltip">
-                The amount being transacted in ODIN and fiat value.
-              </span>
-              Total
-            </div>
-          </div>
-          <div class="info-value">
-            <span>{{ transaction?.amount }}</span>
-          </div>
+        <span class="transactions-item__table-row-title">Memo</span>
+        <span class="transactions-item__table-row-value">{{ txMemo }}</span>
+      </div>
+      <div class="transactions-item__table-row">
+        <div class="transactions-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="transactions-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.total }}
+          </span>
         </div>
-        <div class="transactions-messages mg-t32">
-          <h2 class="block-title mg-b16">Messages</h2>
-          <div class="transactions-messages__container">
-            <h3>
-              {{ transaction?.type }}
-            </h3>
-            <div class="data-sources__table-row app-table__row">
-              <div class="info-key">
-                <div class="info-key__inner">
-                  <img src="~@/assets/icons/info.svg" alt="info" />
-                  <span class="tooltip"> Text </span>
-                  From
-                </div>
-              </div>
-              <div class="info-value">
-                <router-link :to="`/account/${transaction?.sender}`">
-                  {{ transaction?.sender }}
-                </router-link>
-              </div>
-            </div>
-            <div class="data-sources__table-row app-table__row">
-              <div class="info-key">
-                <div class="info-key__inner">
-                  <img src="~@/assets/icons/info.svg" alt="info" />
-                  <span class="tooltip"> Text </span>
-                  To
-                </div>
-              </div>
-              <div class="info-value">
-                <router-link :to="`/account/${transaction?.receiver}`">
-                  {{ transaction?.receiver }}
-                </router-link>
-              </div>
-            </div>
-            <div class="data-sources__table-row app-table__row">
-              <div class="info-key">
-                <div class="info-key__inner">
-                  <img src="~@/assets/icons/info.svg" alt="info" />
-                  <span class="tooltip"> Text </span>
-                  Amount
-                </div>
-              </div>
-              <div class="info-value">
-                <span>{{ transaction?.amount }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <span class="transactions-item__table-row-title">Total</span>
+        <span class="transactions-item__table-row-value">{{ tx?.amount }}</span>
+      </div>
+    </div>
+
+    <p class="app__main-view-subtitle mg-b24">Messages</p>
+    <div class="transactions-item__message" v-if="tx">
+      <span class="transactions-item__message-title">{{ tx.type }}</span>
+      <div class="transactions-item__message-row" v-if="tx.sender">
+        <span class="transactions-item__message-row-title">From</span>
+        <TitledLink
+          :to="`/account/${tx.sender}`"
+          class="transactions-item__message-row-value transactions-item__message-row-link"
+          :text="tx.sender"
+        />
+        <CopyButton class="mg-l8" :text="tx.sender" />
+      </div>
+      <div class="transactions-item__message-row" v-if="tx.receiver">
+        <span class="transactions-item__message-row-title">To</span>
+        <TitledLink
+          :to="`/account/${tx.receiver}`"
+          class="transactions-item__message-row-value transactions-item__message-row-link"
+          :text="tx.receiver"
+        />
+        <CopyButton class="mg-l8" :text="tx.receiver" />
+      </div>
+      <div class="transactions-item__message-row">
+        <span class="transactions-item__message-row-title">Amount</span>
+        <span class="transactions-item__message-row-value">
+          {{ tx.amount }}
+        </span>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, onMounted, defineComponent } from 'vue'
-import {
-  RouteLocationNormalizedLoaded,
-  Router,
-  useRoute,
-  useRouter,
-} from 'vue-router'
-import { routerBack } from '@/router'
+import { defineComponent, onMounted, ref } from 'vue'
+import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
-import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc/build/dates'
-import { adjustedData } from '@/helpers/Types'
-import { convertToTxTime } from '@/helpers/dates'
-import { copyValue, prepareTransaction } from '@/helpers/helpers'
 import { getDecodeTx } from '@/helpers/decodeMessage'
-import CopyText from '@/components/CopyText.vue'
+import { handleError } from '@/helpers/errors'
+import { adjustedData } from '@/helpers/Types'
+import { prepareTransaction } from '@/helpers/helpers'
+import { convertToTxTime } from '@/helpers/dates'
 import BackButton from '@/components/BackButton.vue'
+import CopyButton from '@/components/CopyButton.vue'
+import TitledLink from '@/components/TitledLink.vue'
+
+const TOOLTIP_INFO = {
+  time: 'The date and time at which a transaction is validated.',
+  status:
+    'The status of the transaction. A Status code indicating if the top-level call succeeded or failed.',
+  block:
+    'The number of the block in which the transaction was recorded. Block confirmation indicate how many blocks since the transaction are validated.',
+  gas: 'The receiving party of the transaction (could be a contract address).',
+  fee: 'Amount paid to the validator for validation of the transaction.',
+  memo: 'Amount paid to the validator for validation of the transaction.',
+  total: 'The amount being transacted in ODIN and fiat value.',
+}
+
+enum TX_STATUSES {
+  SUCCESS,
+  FAILED,
+}
 
 export default defineComponent({
-  name: 'TransactionsItem',
-  components: { CopyText, BackButton },
+  components: { BackButton, CopyButton, TitledLink },
   setup() {
-    const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
 
-    const transMemo = ref<string | undefined>()
-    const transUsed = ref<number>()
-    const transWanted = ref<number>()
-    const transTime = ref<ReadonlyDateWithNanoseconds>()
-    const transaction = ref<adjustedData>()
+    const tx = ref<adjustedData>()
+    const txTime = ref('-')
+    const txStatus = ref()
+    const txMemo = ref()
+    const txUsed = ref()
+    const txWanted = ref()
 
-    const getTransaction = async (): Promise<void> => {
-      const { txs } = await callers.getTxSearch({
-        query: `tx.height = ${route.params.height}`,
-      })
+    const getTransactions = async () => {
+      try {
+        const { txs } = await callers.getTxSearch({
+          query: `tx.height = ${route.params.height}`,
+        })
+        const preparedTx = await prepareTransaction(txs)
+        const decodedTx = getDecodeTx(txs[0].tx)
 
-      const { blockMetas } = await callers.getBlockchain(
-        Number(route.params.height),
-        Number(route.params.height)
-      )
-      transTime.value = blockMetas[0].header.time
-      const decodedTx = getDecodeTx(txs[0].tx)
-      await prepareTransaction(txs).then((tx) => {
-        transaction.value = { ...tx[0], status: txs[0].result.code }
-      })
-      transMemo.value = decodedTx?.body?.memo
-      const {
-        data: {
-          result: {
-            tx_result: { gas_wanted, gas_used },
+        tx.value = preparedTx[0]
+        txTime.value = convertToTxTime(String(tx.value.time))
+        txStatus.value = txs[0].result.code
+          ? TX_STATUSES.FAILED
+          : TX_STATUSES.SUCCESS
+        txMemo.value = decodedTx.body?.memo ? decodedTx.body?.memo : '<No Memo>'
+
+        const {
+          data: {
+            result: {
+              tx_result: { gas_wanted, gas_used },
+            },
           },
-        },
-      } = await callers.getTxForTxDetailsPage(transaction.value?.hash as string)
+        } = await callers.getTxForTxDetailsPage(String(tx.value.hash))
 
-      transWanted.value = gas_wanted
-      transUsed.value = gas_used
+        txWanted.value = gas_wanted
+        txUsed.value = gas_used
+      } catch (error) {
+        handleError(error as Error)
+      }
     }
 
-    onMounted(async (): Promise<void> => {
-      await getTransaction()
+    onMounted(async () => {
+      await getTransactions()
     })
-
     return {
-      transaction,
-      route,
-      router,
-      transMemo,
-      transWanted,
-      transUsed,
-      transTime,
-      convertToTxTime,
-      routerBack,
-      copyValue,
+      TOOLTIP_INFO,
+      TX_STATUSES,
+      tx,
+      txTime,
+      txStatus,
+      txMemo,
+      txUsed,
+      txWanted,
     }
   },
 })
 </script>
+
 <style lang="scss" scoped>
-h2,
-h3 {
-  font-weight: 400;
-}
-
-a {
-  color: var(--clr__action);
-  text-decoration: none;
-}
-
-.block {
-  &-item {
-    padding: 2.6rem 3.3rem;
-
-    &__title {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      font-weight: 400;
-
-      & > * {
-        margin-right: 20px;
-      }
-    }
-
-    @media screen and (max-width: 992px) {
-      padding: 1.6rem;
-    }
+.transactions-item {
+  &__title {
+    margin: 0 1.6rem 0 2rem;
   }
 
-  &-name {
-    font-weight: 400;
-    font-size: 32px;
-
-    @media screen and (max-width: 600px) {
-      font-size: 28px;
-    }
-  }
-
-  &-row {
+  &__subtitle-wrapper {
     display: flex;
-    padding-bottom: 1.6rem;
-    padding-top: 1.6rem;
-    // border-bottom: 1px solid #cce4ff;
-    border-bottom: 1px solid var(--clr-input-border);
-
-    &__title {
-      max-width: 209px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-
-      img {
-        display: block;
-        margin-right: 9px;
-      }
-    }
+    max-width: 80%;
   }
 
-  &-chars {
-    padding-top: 1.9rem;
-
-    .app-table__row {
-      display: grid;
-      grid-template-columns: 207px 1fr;
-      padding: 1.6rem 0 1.6rem;
-
-      @media screen and (max-width: 600px) {
-        grid-template-columns: 150px 1fr;
-      }
-    }
+  &__subtitle {
+    @include ellipsis();
   }
 
-  &-back {
-    min-width: 16px;
-  }
-}
-
-.info {
-  &-value {
+  &__table-row {
     display: flex;
+    padding: 1.6rem 0;
+    border-bottom: 0.1rem solid var(--clr__input-border);
     align-items: center;
-
-    @media screen and (max-width: 992px) {
-      span {
-        max-width: 250px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-
-    @media screen and (max-width: 500px) {
-      span {
-        max-width: 150px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
   }
 
-  &-key {
-    display: flex;
-    width: 207px;
-    align-items: center;
-
-    img {
-      display: block;
-      margin-right: 9px;
-      cursor: pointer;
-    }
-
-    div {
-      position: relative;
-      display: flex;
-    }
-
-    @media screen and (max-width: 600px) {
-      width: 150px;
-
-      img {
-        display: none;
-      }
-    }
-  }
-}
-
-.text-blue {
-  color: var(--clr__action);
-}
-
-.copy-button {
-  display: block;
-  margin-left: 10px;
-  width: 13px;
-  height: 15px;
-
-  &__wrapper {
+  &__table-row-info {
     position: relative;
+    cursor: pointer;
+    margin-right: 0.9rem;
 
-    @media screen and (max-width: 1800px) {
-      .tooltip {
-        left: auto;
-        right: -10px;
-        bottom: 25px;
-
-        &:before {
-          right: 9px;
-          left: auto;
-          top: 50px;
-        }
+    &:hover {
+      .transactions-item__table-row-tooltip {
+        display: block;
       }
     }
   }
-}
 
-.info-key__inner img:hover + .tooltip,
-.copy-button:hover + .tooltip {
-  opacity: 1;
-}
-
-.tooltip {
-  opacity: 0;
-  position: absolute;
-  left: -29px;
-  bottom: 25px;
-  transition: all 0.15s ease;
-  border-radius: 10px;
-  white-space: nowrap;
-  background: var(--clr__tooltip-new);
-  padding: 12px 24px;
-  color: #fff;
-  pointer-events: none;
-  z-index: 1;
-
-  &:before {
-    content: '';
-    position: absolute;
-    left: 35px;
-    top: 51px;
-    border-top: 10px solid var(--clr__tooltip-new);
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-    transform: translateY(-50%);
-  }
-
-  @media screen and (max-width: 992px) {
-    max-width: 90vw;
-    min-width: 50vw;
-    white-space: break-spaces;
-  }
-
-  @media screen and (max-width: 600px) {
+  &__table-row-tooltip {
     display: none;
+    position: absolute;
+    bottom: 130%;
+    left: -50%;
+    min-width: 30rem;
+    padding: 1.2rem 2.4rem;
+    background: var(--clr__tooltip-bg);
+    border-radius: 0.8rem;
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.6rem;
+    color: var(--clr__tooltip-text);
+
+    &:before {
+      content: '';
+      display: block;
+      width: 0.6rem;
+      height: 0.6rem;
+      position: absolute;
+      bottom: -0.3rem;
+      left: 1.6rem;
+      transform: translateX(-50%) rotate(45deg);
+      background: var(--clr__tooltip-bg);
+    }
+  }
+
+  &__table-row-title {
+    min-width: 14.5rem;
+    margin-right: 2.4rem;
+  }
+
+  &__table-row-value {
+    font-size: 1.4rem;
+    @include ellipsis();
+  }
+
+  &__table-row-link,
+  &__message-row-link {
+    text-decoration: none;
+    color: var(--clr__action);
+  }
+
+  &__table-row-status {
+    display: block;
+    width: 10rem;
+    height: 2.4rem;
+    background: var(--clr__muted-bg);
+    border-radius: 0.4rem;
+    color: var(--clr__text-on-action);
+    text-align: center;
+    line-height: 2.4rem;
+
+    &_success {
+      background: var(--clr__status-success);
+    }
+
+    &_failed {
+      background: var(--clr__status-error);
+    }
+  }
+
+  &__message {
+    border: 0.1rem solid var(--clr__action);
+    border-radius: 0.8rem;
+    padding: 3.2rem 2.4rem;
+  }
+
+  &__message-title {
+    display: inline-block;
+    font-size: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  &__message-row {
+    @extend .transactions-item__table-row;
+    border: none;
+  }
+
+  &__message-row-title {
+    @extend .transactions-item__table-row-title;
+  }
+
+  &__message-row-value {
+    @extend .transactions-item__table-row-value;
   }
 }
 
-.transactions-messages {
-  &__container {
-    border: 1px solid var(--clr__action);
-    border-radius: 8px;
-    padding: 3.2rem 2.4rem;
-
-    .app-table__row {
-      border: none;
+@include respond-to(medium) {
+  .transactions-item {
+    &__subtitle-wrapper {
+      max-width: 75%;
     }
   }
 }
 
-.status {
-  width: 100px;
-  height: 24px;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@include respond-to(tablet) {
+  .transactions-item {
+    &__title {
+      margin: 0.8rem 0 0.4rem 0;
+    }
 
-  &.success {
-    background: #00d097;
-  }
+    &__subtitle-wrapper {
+      max-width: 100%;
+    }
 
-  &.failed {
-    background: #f65160;
-  }
-}
-
-.info-key__inner .tooltip {
-  &:before {
-    left: 27px;
+    &__table-row-info {
+      display: none;
+    }
   }
 }
 </style>

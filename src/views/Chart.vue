@@ -1,12 +1,12 @@
 <template>
-  <div class="container">
-    <div class="view-main__title-wrapper">
+  <div class="app__main-view chart">
+    <div class="app__main-view-title-wrapper">
       <BackButton :current-router="router" :text="'Charts & Stats'" />
-      <h2 class="view-main__title">{{ chartPageTitle }}</h2>
+      <h2 class="app__main-view-title chart__title">{{ chartPageTitle }}</h2>
     </div>
 
-    <div class="view-main__sort-wrapper">
-      <span class="view-main__y-axis">{{ yAxisTitle }}</span>
+    <div class="chart__sort-wrapper">
+      <span class="chart__y-axis">{{ yAxisTitle }}</span>
 
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin"
@@ -112,7 +112,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-main {
+.chart {
   &__title {
     margin: 0 1.6rem 0 2rem;
   }
@@ -132,7 +132,7 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .view-main {
+  .chart {
     &__title {
       margin: 0.8rem 0 0.4rem 0;
     }

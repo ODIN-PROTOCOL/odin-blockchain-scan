@@ -1,11 +1,12 @@
-.app-btn {
+.app__btn {
   display: inline-block;
   font-size: 2rem;
   background: var(--clr__action);
+  white-space: nowrap;
   color: var(--clr__text-on-action);
-  border: 1px solid transparent; // to sync position with the 2nd variant
+  border: 0.1rem solid transparent; // to sync position with the 2nd variant
   border-radius: 0.4rem;
-  padding: 0.8rem 1.6rem;
+  padding: 1.2rem 1.6rem;
 
   @include transition(background);
 
@@ -42,35 +43,6 @@
     color: var(--clr__text-on-action);
     border: 1px solid transparent;
     background: var(--clr__btn-disabled);
-  }
-}
-.app-btn-login {
-  display: flex;
-  flex-shrink: 0;
-  font-size: 2rem;
-  background: var(--clr__action);
-  color: var(--clr__text-on-action);
-  border: 1px solid transparent; // to sync position with the 2nd variant
-  border-radius: 0.4rem;
-  padding: 1.2rem 2.4rem;
-  @include transition(background);
-  &:disabled {
-    background: var(--clr__action-disabled);
-  }
-}
-
-.app-btn-2nd {
-  display: inline-block;
-  font-size: 2rem;
-  color: var(--clr__action);
-  border: 1px solid currentColor;
-  border-radius: 0.4rem;
-  padding: 0.8rem 1.6rem;
-
-  @include transition(border-color);
-
-  &:disabled {
-    color: var(--clr__action-disabled);
   }
 }
 

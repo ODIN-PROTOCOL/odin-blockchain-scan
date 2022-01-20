@@ -1,25 +1,26 @@
 <template>
   <template v-if="isAppReady">
-    <section class="main-section">
+    <section class="app__main-section">
       <template v-if="isLoggedIn">
-        <header class="view-header">
-          <div class="header-wrapper">
-            <router-link to="/">
-              <img
-                class="logo"
-                src="~@/assets/brand/odin-logo-black.png"
-                alt="Logo"
+        <header class="app__header" :class="{ app__header_mobile: isOpen }">
+          <div class="app__container">
+            <div class="app__header-inner">
+              <router-link to="/">
+                <img
+                  class="app__header-logo"
+                  src="~@/assets/brand/odin-logo-black.png"
+                  alt="Logo"
+                />
+              </router-link>
+              <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
+              <BurgerMenu
+                class="app__header-burger-menu"
+                :isOpen="isOpen"
+                @click="burgerMenuHandler($event)"
               />
-            </router-link>
-            <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
-            <BurgerMenu
-              class="burger-menu"
-              :isOpen="isOpen"
-              @click="burgerMenuHandler($event)"
-            />
-            <!-- <UserWidget class="fx-sae" /> -->
+            </div>
+            <SearchBar />
           </div>
-          <SearchBar />
         </header>
       </template>
 
@@ -31,7 +32,7 @@
     </section>
     <Footer />
   </template>
-  <div class="dialogs-container" ref="dialogsContainerRef"></div>
+  <div class="app__dialogs-container" ref="dialogsContainerRef"></div>
   <notifications width="100%" />
 </template>
 
@@ -39,8 +40,6 @@
 import '@invisiburu/vue-picker/dist/vue-picker.min.css'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { dialogs } from '@/helpers/dialogs'
-// import { useAuthorization } from '@/composables/useAuthorization'
-// import UserWidget from '@/components/UserWidget.vue'
 import Nav from '@/components/Nav.vue'
 import BurgerMenu from '@/components/BurgerMenu.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
@@ -78,7 +77,6 @@ export default defineComponent({
     return {
       isAppReady,
       dialogsContainerRef,
-      // isLoggedIn: useAuthorization().isLoggedIn,
       isLoggedIn: true,
       isOpen,
       burgerMenuHandler,
@@ -105,31 +103,5 @@ export default defineComponent({
   width: 100%;
   @include flex-container;
   justify-content: space-between;
-}
-
-
-
-.logo {
-  width: 90px;
-}
-
-.main-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.burger-menu {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .header-wrapper {
-    gap: 0.4rem;
-  }
-  .burger-menu {
-    display: flex;
-    flex-shrink: 0;
-  }
 }
 </style>

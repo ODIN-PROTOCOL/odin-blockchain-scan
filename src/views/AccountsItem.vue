@@ -1,32 +1,36 @@
 <template>
-  <div class="view-main">
-    <div class="view-main__title-wrapper">
+  <div class="app__main-view accounts-item">
+    <div class="app__main-view-title-wrapper">
       <BackButton text="Top accounts" />
-      <h2 class="view-main__title">Account</h2>
-      <CopyText
-        :text="route.params.hash"
-        :title="route.params.hash"
-        :displayText="route.params.hash"
-        :class-name="'block-id'"
-      />
-    </div>
-
-    <div class="view-main__stats-wrapper mg-b32">
-      <div class="view-main__stats">
-        <div class="view-main__stats-row">
-          <span class="view-main__stats-title">GEO Balance:</span>
-          <span class="view-main__stats-amount">{{ geoBalance }} GEO</span>
-        </div>
-        <div class="view-main__stats-row">
-          <span class="view-main__stats-title">ODIN Balance:</span>
-          <span class="view-main__stats-amount">{{ odinBalance }} ODIN</span>
-        </div>
+      <h2 class="app__main-view-title accounts-item__title">Account</h2>
+      <div
+        class="app__main-view-subtitle-wrapper accounts-item__subtitle-wrapper"
+      >
+        <p class="app__main-view-subtitle fs-cut">
+          {{ route.params.hash }}
+        </p>
+        <CopyButton class="mg-l8" :text="String(route.params.hash)" />
       </div>
     </div>
 
-    <h1 class="view-main__subtitle mg-b32">
+    <div class="accounts-item__stats mg-b32">
+      <div class="accounts-item__stats-row">
+        <span class="accounts-item__stats-title">GEO Balance:</span>
+        <span class="accounts-item__stats-amount" :title="displayedGeoBalance">
+          {{ displayedGeoBalance }}
+        </span>
+      </div>
+      <div class="accounts-item__stats-row">
+        <span class="accounts-item__stats-title">ODIN Balance:</span>
+        <span class="accounts-item__stats-amount" :title="displayedOdinBalance">
+          {{ displayedOdinBalance }}
+        </span>
+      </div>
+    </div>
+
+    <h1 class="app__main-view-subtitle mg-b32">
       <span>Transactions</span>
-      <small v-if="totalTxCount">{{ totalTxCount }}</small>
+      <small class="mg-l8" v-if="totalTxCount">({{ totalTxCount }})</small>
     </h1>
 
     <div class="app-table">
@@ -128,7 +132,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, defineComponent } from 'vue'
+import { ref, onMounted, defineComponent, computed } from 'vue'
 import {
   RouteLocationNormalizedLoaded,
   Router,
@@ -144,11 +148,11 @@ import { Bech32 } from '@cosmjs/encoding'
 import { bigMath } from '@/helpers/bigMath'
 import { handleError } from '@/helpers/errors'
 import BackButton from '@/components/BackButton.vue'
-import CopyText from '@/components/CopyText.vue'
+import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
 
 export default defineComponent({
-  components: { BackButton, TitledLink, CopyText },
+  components: { BackButton, TitledLink, CopyButton },
   setup() {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
@@ -157,6 +161,13 @@ export default defineComponent({
     const odinBalance = ref<string>()
     const transactions = ref()
     const totalTxCount = ref<number>()
+
+    const displayedGeoBalance = computed(() =>
+      geoBalance.value ? `${geoBalance.value} GEO` : '0 GEO'
+    )
+    const displayedOdinBalance = computed(() =>
+      odinBalance.value ? `${odinBalance.value} ODIN` : '0 ODIN'
+    )
 
     const getTotalAmount = async (
       validatorAddress: string,
@@ -192,8 +203,8 @@ export default defineComponent({
 
     return {
       route,
-      geoBalance,
-      odinBalance,
+      displayedGeoBalance,
+      displayedOdinBalance,
       routerBack,
       router,
       copyValue,
@@ -206,12 +217,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-main {
+.accounts-item {
   &__title {
     margin: 0 1.6rem 0 2rem;
   }
 
-  &__stats-wrapper {
+  &__subtitle-wrapper {
+    display: flex;
+  }
+
+  &__stats {
     border: 0.1rem solid var(--clr__action);
     border-radius: 0.8rem;
     padding: 3.2rem 2.4rem;
@@ -238,13 +253,22 @@ export default defineComponent({
     font-weight: 600;
     font-size: 1.6rem;
     margin-left: 2.4rem;
+    @include ellipsis();
   }
 }
 
 @include respond-to(tablet) {
-  .view-main {
+  .accounts-item {
     &__title {
       margin: 0.8rem 0 0.4rem 0;
+    }
+
+    &__subtitle-wrapper {
+      width: 100%;
+    }
+
+    &__stats {
+      width: 100%;
     }
   }
 }
