@@ -50,12 +50,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/BlocksItem.vue'),
   },
   {
-    path: '/transactions/:height?',
+    path: '/transactions',
     name: 'Transactions',
     component: () => import('../views/Transactions.vue'),
   },
   {
-    path: '/transactions/:height/:trans',
+    path: '/transactions/:hash',
     name: 'TransactionsItem',
     component: () => import('../views/TransactionsItem.vue'),
   },

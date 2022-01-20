@@ -25,13 +25,9 @@
                 <template #validator>
                   <span>Validator:</span>
                   <TitledLink
-                    :to="`/validators/${toHexFunc(
-                      item.header.validatorsHash
-                    ).toUpperCase()}`"
-                    class="app-table__cell-txt"
-                    :text="`${cropText(
-                      toHexFunc(item.header.validatorsHash).toUpperCase()
-                    )}`"
+                    :to="`/validators/${item.validator}`"
+                    class="app-table__cell-txt app-table__link"
+                    :text="`${cropText(item.validator)}`"
                   />
                 </template>
                 <template #transactions>
@@ -54,10 +50,12 @@
                 <template #label> Tx </template>
                 <template #name>
                   <TitledLink
+                    v-if="item.hash"
                     class="app-table__cell-txt"
-                    :to="`/transactions/${item.block}/${item.hash}`"
-                    :text="item.hash ? cropText(`0x${item.hash}`) : 'No info'"
+                    :to="`/transactions/${item.hash}`"
+                    :text="cropText(`0x${item.hash}`)"
                   />
+                  <span v-else>No info</span>
                 </template>
                 <template #time>
                   {{ diffDays(toDay, getDay(item.time)) }}
@@ -65,18 +63,22 @@
                 <template #from>
                   <span>From:</span>
                   <TitledLink
+                    v-if="item.sender"
                     :to="`/account/${item.sender}`"
-                    class="app-table__cell-txt"
-                    :text="item.sender ? cropText(item.sender) : 'No info'"
+                    class="app-table__cell-txt app-table__link"
+                    :text="cropText(item.sender)"
                   />
+                  <span v-else>No info</span>
                 </template>
                 <template #to>
-                  <span> To: </span>
+                  <span>To:</span>
                   <TitledLink
-                    class="app-table__cell-txt"
+                    v-if="item.receiver"
+                    class="app-table__cell-txt app-table__link"
                     :to="`/account/${item.receiver}`"
-                    :text="item.receiver ? cropText(item.receiver) : 'No info'"
+                    :text="cropText(item.receiver)"
                   />
+                  <span v-else>No info</span>
                 </template>
               </LatestListItem>
             </template>
@@ -101,7 +103,7 @@ import TitledLink from '@/components/TitledLink.vue'
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
 import { adjustedData, blocksWithTotalTxInterface } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
-import { BlockResponse } from '@cosmjs/tendermint-rpc'
+import { Bech32 } from '@cosmjs/encoding'
 
 export default defineComponent({
   name: 'Latest',
@@ -113,9 +115,8 @@ export default defineComponent({
       try {
         await getLatestBlocks()
         await getLatestTransactions()
-      } catch (e) {
-        console.error(e.message)
-        handleError(e)
+      } catch (error) {
+        handleError(error as Error)
       }
     })
 
@@ -135,12 +136,11 @@ export default defineComponent({
           {
             ...b,
             total_tx: blockData.block.txs.length,
+            validator: Bech32.encode('odinvaloper', b.header.proposerAddress),
           },
         ]
       }
       latestBlocks.value = tempA
-
-      console.debug('latestBlocks.value', latestBlocks.value)
 
       lastHeight.value = reqLastHeight
     }

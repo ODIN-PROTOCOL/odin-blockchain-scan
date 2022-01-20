@@ -53,9 +53,9 @@
           <div class="app-table__cell">
             <span class="app-table__title">Transaction hash</span>
             <TitledLink
-              v-if="item.hash && item.block"
-              :to="`/transactions/${item.block}/${item.hash}`"
-              class="app-table__cell-txt"
+              v-if="item.hash"
+              :to="`/transactions/${item.hash}`"
+              class="app-table__cell-txt app-table__link"
               :text="`0x${item.hash}`"
             />
             <span class="app-table__cell-txt" v-else> - </span>
@@ -72,7 +72,7 @@
             <span v-if="item.block" class="app-table__cell-txt">
               <TitledLink
                 :to="`/blocks/${item.block}`"
-                class="app-table__cell-txt"
+                class="app-table__cell-txt app-table__link"
                 :text="item.block"
               />
             </span>
@@ -92,18 +92,18 @@
             <TitledLink
               v-if="item.sender"
               :to="item.sender"
-              class="app-table__cell-txt"
-              :text="`0x${item.sender}`"
+              class="app-table__cell-txt app-table__link"
+              :text="item.sender"
             />
             <span class="app-table__cell-txt" v-else> - </span>
           </div>
           <div class="app-table__cell">
             <span class="app-table__title">Reciever</span>
             <TitledLink
-              v-if="item.receiver !== ''"
+              v-if="item.receiver"
               :to="item.receiver"
-              class="app-table__cell-txt"
-              :text="`0x${item.receiver}`"
+              class="app-table__cell-txt app-table__link"
+              :text="item.receiver"
             />
             <span class="app-table__cell-txt" v-else> - </span>
           </div>

@@ -151,6 +151,7 @@ import { convertToTxTime } from '@/helpers/dates'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
+import { fromHex } from '@cosmjs/encoding'
 
 const TOOLTIP_INFO = {
   time: 'The date and time at which a transaction is validated.',
@@ -183,15 +184,16 @@ export default defineComponent({
 
     const getTransactions = async () => {
       try {
-        const { txs } = await callers.getTxSearch({
-          query: `tx.height = ${route.params.height}`,
+        const resp = await callers.getTx({
+          hash: fromHex(String(route.params.hash)),
         })
-        const preparedTx = await prepareTransaction(txs)
-        const decodedTx = getDecodeTx(txs[0].tx)
+
+        const preparedTx = await prepareTransaction([resp])
+        const decodedTx = getDecodeTx(resp.tx)
 
         tx.value = preparedTx[0]
         txTime.value = convertToTxTime(String(tx.value.time))
-        txStatus.value = txs[0].result.code
+        txStatus.value = resp.result.code
           ? TX_STATUSES.FAILED
           : TX_STATUSES.SUCCESS
         txMemo.value = decodedTx.body?.memo ? decodedTx.body?.memo : '<No Memo>'

@@ -3,7 +3,7 @@
     <div class="app-table__cell">
       <span class="app-table__title">Transaction hash</span>
       <TitledLink
-        :to="`/transactions/${transition.block}/${transition.hash}`"
+        :to="`/transactions/${transition.hash}`"
         class="app-table__cell-txt app-table__link"
         :text="'0x' + transition.hash"
       />

@@ -103,6 +103,7 @@ export type adjustedData = {
 
 export interface blocksWithTotalTxInterface extends BlockMeta {
   total_tx: string | number
+  validator: string
 }
 
 export type externalTooltipType = {
