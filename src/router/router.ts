@@ -46,16 +46,16 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/blocks/:id',
-    name: 'BlockItem',
-    component: () => import('../views/BlockItem.vue'),
+    name: 'BlocksItem',
+    component: () => import('../views/BlocksItem.vue'),
   },
   {
-    path: '/transactions/:height?',
+    path: '/transactions',
     name: 'Transactions',
     component: () => import('../views/Transactions.vue'),
   },
   {
-    path: '/transactions/:height/:trans',
+    path: '/transactions/:hash',
     name: 'TransactionsItem',
     component: () => import('../views/TransactionsItem.vue'),
   },
@@ -75,9 +75,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/ValidatorItem.vue'),
   },
   {
-    path: '/tokemonics',
-    name: 'Tokemonics',
-    component: () => import('../views/Tokemonics.vue'),
+    path: '/tokenomics',
+    name: 'Tokenomics',
+    component: () => import('../views/Tokenomics.vue'),
   },
   // TODO: create view for this pages
   {
@@ -139,7 +139,7 @@ const routes: Array<RouteRecordRaw> = [
         props: chartPagesProps.averageTransactionFeeChart,
       },
     ],
-    component: () => import('../views/ChartPage.vue')
+    component: () => import('../views/ChartPage.vue'),
   },
 ]
 

@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <div class="container">
+    <div class="app__container">
       <div class="footer__inner">
         <div class="footer__logo">
           <a href="/">

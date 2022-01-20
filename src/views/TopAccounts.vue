@@ -1,13 +1,13 @@
 <template>
-  <div class="container">
-    <div class="view-main__title-wrapper">
-      <h2 class="view-main__title">Top accounts</h2>
+  <div class="app__main-view top-accounts">
+    <div class="app__main-view-title-wrapper">
+      <h2 class="app__main-view-title">Top accounts</h2>
     </div>
-    <div class="view-main__sort-wrapper">
-      <p class="view-main__sort-info" v-if="accounts?.length">
+    <div class="top-accounts__sort-wrapper">
+      <p class="top-accounts__sort-info" v-if="accounts?.length">
         {{ accounts.length }} accounts found
       </p>
-      <div class="view-main__sort-field">
+      <div class="top-accounts__sort-field">
         <span>Sort By</span>
         <VuePicker
           class="app-form__field-input app-filter app-filter--coin"
@@ -175,7 +175,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.view-main {
+.top-accounts {
   &__sort-wrapper {
     display: flex;
     justify-content: space-between;
@@ -190,7 +190,7 @@ export default defineComponent({
 }
 
 @include respond-to(small) {
-  .view-main {
+  .top-accounts {
     &__sort-wrapper {
       flex-direction: column;
       align-items: flex-start;

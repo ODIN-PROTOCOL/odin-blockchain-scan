@@ -20,6 +20,10 @@ import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc/build/dates'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { adjustedData } from '@/helpers/Types'
+import { MsgCreateClient, MsgUpdateClient } from 'cosmjs-types/ibc/core/client/v1/tx'
+import { MsgConnectionOpenInit } from 'cosmjs-types/ibc/core/connection/v1/tx'
+import { MsgChannelOpenInit } from 'cosmjs-types/ibc/core/channel/v1/tx'
+import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx'
 
 export const getDecodeTx = (tx: TxResponse['tx']): Tx => Tx.decode(tx)
 
@@ -77,6 +81,21 @@ export function humanizeMessageType(type: string): string {
     case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
       return 'Withdraw delegator reward'
 
+    case '/ibc.core.client.v1.MsgCreateClient':
+      return 'Create IBC Client'
+
+    case '/ibc.core.connection.v1.MsgConnectionOpenInit':
+      return 'Connection Open Init'
+
+    case '/ibc.core.client.v1.MsgUpdateClient':
+      return 'Update IBC Client'
+
+    case '/ibc.core.channel.v1.MsgChannelOpenInit':
+      return 'Chanel Open Init'
+
+    case '/ibc.applications.transfer.v1.MsgTransfer':
+      return 'IBC Transfer'
+
     default:
       throw new ReferenceError(`Unknown type ${type}`)
   }
@@ -98,7 +117,12 @@ function decodeMessage(obj: {
   | MsgCreateOracleScript
   | MsgCreateDataSource
   | MsgRequestData
-  | MsgReportData {
+  | MsgReportData
+  | MsgCreateClient
+  | MsgConnectionOpenInit
+  | MsgUpdateClient
+  | MsgChannelOpenInit
+  | MsgTransfer {
   switch (obj.typeUrl) {
     case '/mint.MsgWithdrawCoinsToAccFromTreasury':
       return MsgWithdrawCoinsToAccFromTreasury.decode(obj.value)
@@ -141,6 +165,21 @@ function decodeMessage(obj: {
 
     case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
       return MsgWithdrawDelegatorReward.decode(obj.value)
+
+    case '/ibc.core.client.v1.MsgCreateClient':
+      return MsgCreateClient.decode(obj.value)
+
+    case '/ibc.core.connection.v1.MsgConnectionOpenInit':
+      return MsgConnectionOpenInit.decode(obj.value)
+
+    case '/ibc.core.client.v1.MsgUpdateClient':
+      return MsgUpdateClient.decode(obj.value)
+
+    case '/ibc.core.channel.v1.MsgChannelOpenInit':
+      return MsgChannelOpenInit.decode(obj.value)
+
+    case '/ibc.applications.transfer.v1.MsgTransfer':
+      return MsgTransfer.decode(obj.value)
 
     default:
       throw new ReferenceError(`Unknown type ${obj.typeUrl}`)

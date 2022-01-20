@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="app__container">
     <h1>ODIN&GEO</h1>
     <BlockView
       v-for="coin in CoinBlocksData"

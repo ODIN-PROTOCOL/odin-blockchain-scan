@@ -1,13 +1,15 @@
 <template>
-  <div class="view-main">
-    <div class="view-main__title-wrapper">
+  <div class="app__main-view block-validators-chart">
+    <div class="app__main-view-title-wrapper">
       <BackButton :text="'Charts & Stats'" />
-      <h2 class="view-main__title">Block Validators Chart</h2>
+      <h2 class="app__main-view-title block-validators-chart__title">
+        Block Validators Chart
+      </h2>
     </div>
 
-    <div class="view-main__sort-wrapper mg-b32">
+    <div class="block-validators-chart__sort-wrapper mg-b32">
       <VuePicker
-        class="app-form__field-input app-filter app-filter--coin"
+        class="app-form__field-input app-filter app-filter--coin block-validators-chart__filter"
         name="filter"
         v-model="sortingValue"
         :isDisabled="isLoading"
@@ -35,7 +37,7 @@
     />
 
     <div class="app-table">
-      <div class="app-table__head">
+      <div class="app-table__head block-validators-chart__head">
         <span>Rank</span>
         <span>Address</span>
         <span>Blocks</span>
@@ -44,7 +46,7 @@
       <template v-if="validators">
         <div>
           <div
-            class="app-table__row"
+            class="app-table__row block-validators-chart__row"
             v-for="(item, idx) in validators"
             :key="item.validatorAddress"
           >
@@ -173,7 +175,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-main {
+.block-validators-chart {
   &__title {
     margin: 0 1.6rem 0 2rem;
   }
@@ -184,8 +186,8 @@ export default defineComponent({
   }
 }
 
-.app-table__head,
-.app-table__row {
+.block-validators-chart__head,
+.block-validators-chart__row {
   grid:
     auto /
     minmax(3rem, 0.5fr)
@@ -195,17 +197,17 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .view-main {
+  .block-validators-chart {
     &__title {
       margin: 0.8rem 0 0.4rem 0;
     }
   }
 
-  .app-table__row {
+  .block-validators-chart__row {
     grid: none;
   }
 
-  .app-filter {
+  .block-validators-chart__filter {
     width: 100%;
     padding: 0;
   }

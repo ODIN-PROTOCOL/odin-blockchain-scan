@@ -45,8 +45,7 @@ export default defineComponent({
   justify-content: center;
 
   li {
-    background: #fff;
-    border: 0.1rem solid var(--clr__action);
+    background: var(--clr__main-bg);
     border-radius: 0.4rem;
     margin: 0 0.4rem;
     min-width: 2.6rem;
@@ -56,20 +55,24 @@ export default defineComponent({
   button {
     height: 100%;
     width: 100%;
-    border: none;
     margin: 0;
     padding: 1rem;
+    border: 0.1rem solid var(--clr__action);
   }
 
   .Page {
     color: var(--clr__action);
 
     &:hover {
-      border: none;
+      border: 0.1rem solid var(--clr__action);
     }
   }
   .Page-active {
     color: var(--clr__text-on-action);
+  }
+
+  .PaginationControl {
+    border: 0.1rem solid var(--clr__action);
   }
 
   .PaginationControl .Control.Control-active {

@@ -1,12 +1,12 @@
 <template>
-  <div class="container">
-    <div class="view-main__title-wrapper">
-      <h2 class="view-main__title">Transactions</h2>
+  <div class="app__main-view">
+    <div class="app__main-view-title-wrapper">
+      <h2 class="app__main-view-title">Transactions</h2>
     </div>
-    <div class="mg-b16 mg-t16" v-if="filteredTransactions?.length">
+    <div class="mg-b16 mg-t16" v-if="transactions?.length">
       <p>{{ totalTransactions }} transactions found</p>
     </div>
-    <template v-if="filteredTransactions?.length">
+    <template v-if="transactions?.length">
       <div class="app-table">
         <div class="app-table__head">
           <span> Transaction hash </span>
@@ -19,7 +19,7 @@
           <span> Transaction Fee </span>
         </div>
         <TransitionLine
-          v-for="(item, index) in filteredTransactions"
+          v-for="(item, index) in transactions"
           :key="index"
           :transition="item"
         />
@@ -51,51 +51,32 @@ export default defineComponent({
   setup() {
     const ITEMS_PER_PAGE = 5
     const transactions = ref()
-    const filteredTransactions = ref()
     const page = ref<number>(1)
     const totalPages = ref<number>()
     const totalTransactions = ref<number>()
-    let lastHeight = 500
 
     const getTransactions = async () => {
       try {
-        const { txs } = await callers.getTxSearch({
-          query: `tx.height >= ${lastHeight - 10}`,
-          per_page: 100,
+        const { txs, totalCount } = await callers.getTxSearch({
+          query: `tx.height >= 0`,
+          page: page.value,
+          per_page: ITEMS_PER_PAGE,
         })
 
         transactions.value = await prepareTransaction(txs)
-
-        totalTransactions.value = transactions.value.length
-        totalPages.value = Math.ceil(transactions.value.length / ITEMS_PER_PAGE)
-
-        await filterTransactions(page.value)
-      } catch (e) {
-        handleError(e as Error)
+        totalTransactions.value = totalCount
+        totalPages.value = Math.ceil(totalCount / ITEMS_PER_PAGE)
+      } catch (error) {
+        handleError(error as Error)
       }
     }
 
-    const filterTransactions = async (newPage: number): Promise<void> => {
-      let tempArr = transactions.value
-      if (newPage === 1) {
-        filteredTransactions.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
-      } else {
-        filteredTransactions.value = tempArr?.slice(
-          (newPage - 1) * ITEMS_PER_PAGE,
-          (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-        )
-      }
-
-      console.debug('filteredTransactions.value', filteredTransactions.value)
-      page.value = newPage
+    const updateHandler = async () => {
+      await getTransactions()
     }
 
-    const updateHandler = (num: number) => {
-      filterTransactions(num)
-    }
-
-    onMounted(() => {
-      getTransactions()
+    onMounted(async () => {
+      await getTransactions()
     })
 
     return {
@@ -103,8 +84,6 @@ export default defineComponent({
       page,
       totalPages,
       totalTransactions,
-      filteredTransactions,
-      filterTransactions,
       updateHandler,
     }
   },

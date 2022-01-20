@@ -35,9 +35,10 @@ export default defineComponent({
   &__wrapper {
     display: flex;
     align-items: center;
+    min-width: 1.6rem;
   }
 
-  @media screen and (max-width: 768px) {
+  @include respond-to(tablet) {
     display: none;
   }
 
@@ -45,7 +46,7 @@ export default defineComponent({
     display: none;
     color: var(--clr__action);
 
-    @media screen and (max-width: 768px) {
+    @include respond-to(tablet) {
       display: flex;
       align-items: center;
     }

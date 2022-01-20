@@ -1,49 +1,48 @@
 <template>
-  <div class="container">
-    <div class="view-main__title-wrapper">
-      <h2 class="view-main__title">Charts & Stats</h2>
+  <div class="app__main-view charts-stats">
+    <div class="app__main-view-title-wrapper">
+      <h2 class="app__main-view-title">Charts & Stats</h2>
     </div>
-    <div class="view-main__charts-section mg-b40">
+    <div class="charts-stats__charts-section mg-b40">
       <!-- TODO unhide when market data chart will be ready -->
-      <!-- <div class="view-main__charts-wrapper">
-        <h3 class="view-main__charts-title mg-b24">Market Data</h3>
-        <div class="view-main__charts-item">
+      <!-- <div class="charts-stats__charts-wrapper">
+        <h3 class="charts-stats__charts-title mg-b24">Market Data</h3>
+        <div class="charts-stats__charts-item">
           <img
             :src="require('/src/assets/imgs/marketBarChart.png')"
             alt="chart"
           />
-          <span class="view-main__charts-item-title">
+          <span class="charts-stats__charts-item-title">
             Total Supply & Market Cap Chart
           </span>
         </div>
       </div> -->
 
-      <div class="view-main__charts-wrapper">
-        <h3 class="view-main__charts-title mg-b24">Statistics</h3>
+      <div class="charts-stats__charts-wrapper">
+        <h3 class="charts-stats__charts-title mg-b24">Statistics</h3>
         <div
-          class="view-main__charts-item"
+          class="charts-stats__charts-item"
           @click="redirectToChartPage('validators')"
         >
           <img
             :src="require('/src/assets/imgs/doughnutChart.png')"
             alt="chart"
           />
-          <span class="view-main__charts-item-title">
+          <span class="charts-stats__charts-item-title">
             Block Validators Chart
           </span>
         </div>
       </div>
     </div>
-
-    <div class="view-main__charts-section">
-      <div class="view-main__charts-wrapper">
-        <h3 class="view-main__charts-title mg-b24">Blockchain Data</h3>
-        <table class="view-main__charts-table">
+    <div class="charts-stats__charts-section">
+      <div class="charts-stats__charts-wrapper">
+        <h3 class="charts-stats__charts-title mg-b24">Blockchain Data</h3>
+        <table class="charts-stats__charts-table">
           <tbody>
             <tr v-for="(chartRow, idx) in blockchainData" :key="idx">
               <td v-for="item in chartRow" :key="item.title">
                 <div
-                  class="view-main__charts-item"
+                  class="charts-stats__charts-item"
                   @click="redirectToChartPage(item.chartPageUrl)"
                 >
                   <img
@@ -52,7 +51,7 @@
                     "
                     alt="chart"
                   />
-                  <span class="view-main__charts-item-title">
+                  <span class="charts-stats__charts-item-title">
                     {{ item.title }}
                   </span>
                 </div>
@@ -115,11 +114,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-main {
+.charts-stats {
   &__charts-section {
     display: flex;
     gap: 2.4rem;
-
     & > * {
       flex: 1;
     }
@@ -146,7 +144,7 @@ export default defineComponent({
 
     td {
       width: 33.3333%;
-      border: 1px solid var(--clr__table-border);
+      border: 0.1rem solid var(--clr__table-border);
     }
   }
 
@@ -160,7 +158,7 @@ export default defineComponent({
     cursor: pointer;
 
     &:hover {
-      background-color: #ecf5ff;
+      background-color: var(--clr__table-row-hover);
     }
   }
 
@@ -172,7 +170,7 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .view-main {
+  .charts-stats {
     &__charts-section {
       flex-direction: column;
     }
@@ -181,18 +179,25 @@ export default defineComponent({
       tr {
         display: flex;
         flex-direction: column;
-
-        &:last-child {
-          td:last-child {
-            border-bottom: none;
-          }
-        }
       }
 
-      td {
-        width: 100%;
-        border: none;
-        border-bottom: 0.1rem solid var(--clr__table-border);
+      &__charts-table {
+        tr {
+          display: flex;
+          flex-direction: column;
+
+          &:last-child {
+            td:last-child {
+              border-bottom: none;
+            }
+          }
+        }
+
+        td {
+          width: 100%;
+          border: none;
+          border-bottom: 0.1rem solid var(--clr__table-border);
+        }
       }
     }
   }

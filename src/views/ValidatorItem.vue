@@ -1,10 +1,13 @@
 <template>
-  <div class="validator container">
-    <div class="view-main__title-wrapper">
+  <div class="app__main-view validator-item">
+    <div class="app__main-view-title-wrapper">
       <BackButton :text="'Validators'" />
-      <h2 class="view-main__title">Validator</h2>
-      <div class="view-main__subtitle-wrapper" v-if="validator">
-        <p class="view-main__subtitle fs-cut">
+      <h2 class="app__main-view-title validator-item__title">Validator</h2>
+      <div
+        class="app__main-view-subtitle-wrapper validator-item__subtitle-wrapper"
+        v-if="validator"
+      >
+        <p class="app__main-view-subtitle fs-cut">
           {{ validator.operatorAddress }}
         </p>
         <CopyButton class="mg-l8" :text="String(validator.operatorAddress)" />
@@ -143,7 +146,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-main {
+.validator-item {
   &__title {
     margin: 0 1.6rem 0 2rem;
   }
@@ -154,7 +157,7 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .view-main {
+  .validator-item {
     &__title {
       margin: 0.8rem 0 0.4rem 0;
     }

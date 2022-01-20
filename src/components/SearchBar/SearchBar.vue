@@ -99,7 +99,7 @@ export default defineComponent({
   setup: function () {
     const filters = ref<Array<string>>([
       'All Filters',
-      'Blocks',
+      'Block',
       'Transaction',
       'Account Address',
     ])
@@ -222,7 +222,8 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .search {
-  margin: 0 10.3rem 2.5rem 10.3rem;
+  padding: 1.2rem 0 2.4rem;
+
   &__input-wrapper {
     width: 39.6rem;
     position: relative;
@@ -252,16 +253,6 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    @media screen and (max-width: 600px) {
-      padding: 0 1.6rem;
-    }
-  }
-  @media (max-width: 768px) {
-    margin: 0;
-    padding: 0 1rem 2.5rem 1rem;
-    &__row {
-      padding: 0;
-    }
   }
 }
 

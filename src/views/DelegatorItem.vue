@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="app__container">
     <div class="block-item">
       <div class="block-item__title">
         <button class="block-back" @click.prevent="routerBack(router)">

@@ -8,7 +8,7 @@
       <span class="app-table__title">Address</span>
       <TitledLink
         :to="`/account/${account.address}`"
-        class="app-table__cell-txt"
+        class="app-table__cell-txt app-table__link"
         :text="account.address"
       />
     </div>

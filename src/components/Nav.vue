@@ -1,8 +1,8 @@
 <template>
-  <div class="nav" :class="{ 'nav-mob': isOpen }">
+  <div class="nav" :class="{ nav_mobile: isOpen }">
     <div class="nav__wrap-cont">
       <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
-      <LinksDropdown :list="TokemonicList" @redirect="changeRoute" />
+      <LinksDropdown :list="TokenomicList" @redirect="changeRoute" />
       <LinksDropdown :list="ResourceList" @redirect="changeRoute" />
     </div>
     <UserWidget />
@@ -51,12 +51,12 @@ export default defineComponent({
         },
       ],
     }
-    const TokemonicList: LinkList = {
-      name: 'Tokemonics',
+    const TokenomicList: LinkList = {
+      name: 'Tokenomics',
       links: [
         {
-          to: 'Tokemonics',
-          text: 'Tokemonics overview',
+          to: 'Tokenomics',
+          text: 'Tokenomics overview',
         },
         // TODO: return hide date when pages be done
         // {
@@ -79,7 +79,51 @@ export default defineComponent({
       emit('changeRoute')
     }
 
-    return { BlockchainList, TokemonicList, ResourceList, changeRoute }
+    return { BlockchainList, TokenomicList, ResourceList, changeRoute }
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.nav {
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  &__wrap-cont {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+    gap: 2.4rem;
+  }
+}
+
+@include respond-to(tablet) {
+  .nav {
+    display: none;
+    background: #fff;
+    width: 100%;
+    z-index: 1;
+    height: calc(100vh - 8.4rem);
+    padding: 2.4rem 1.6rem;
+    border-top: 0.1rem solid var(--clr__table-border);
+
+    &__wrap-cont {
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 2.4rem;
+    }
+
+    &_mobile {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 8.4rem;
+      left: 0;
+      overflow-y: auto;
+    }
+  }
+}
+</style>

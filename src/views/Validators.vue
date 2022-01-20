@@ -1,10 +1,10 @@
 <template>
   <div
-    class="validators container load-fog"
+    class="app__main-view validators load-fog"
     :class="{ 'load-fog_show': isLoading && validators?.length }"
   >
-    <div class="view-main__title-wrapper">
-      <h2 class="view-main__title">All Validators</h2>
+    <div class="app__main-view-title-wrapper">
+      <h2 class="app__main-view-title">All Validators</h2>
     </div>
 
     <template v-if="validatorsCount">
