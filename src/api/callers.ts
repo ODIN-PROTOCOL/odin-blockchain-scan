@@ -220,6 +220,9 @@ const makeCallers = () => {
     getValidatorsBlockStats: querier(
       (qc) => qc.telemetry.unverified.topValidators
     ),
+    getInfoPools: () => {
+      return axios.get(`${API_CONFIG.telemetryUrl}/telemetry/blocks/info_pools`)
+    },
   }
 }
 

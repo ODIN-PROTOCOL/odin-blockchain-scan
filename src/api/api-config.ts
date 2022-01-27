@@ -9,3 +9,9 @@ export const API_CONFIG = {
   hdDeviation: stringToPath(process.env.VUE_APP_DEVIATION as string),
   telemetryUrl: process.env.VUE_APP_TELEMETRY_URL as string,
 }
+
+export enum COINS_LIST {
+  LOKI = 'loki',
+  ODIN = 'odin',
+  GEO = 'geo',
+}

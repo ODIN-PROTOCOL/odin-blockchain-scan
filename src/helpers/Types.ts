@@ -3,7 +3,6 @@ import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
 import { Chart, ChartType, TooltipModel } from 'chart.js'
-import { number } from '@/composables/useForm/validators'
 
 export type Link = {
   to?: string
@@ -144,14 +143,34 @@ export type formatedTelemetryDataForCharts = {
 }
 
 export type SimpleDoughnutChartAdditionalInfo = {
-  count: number;
-  percent: number;
-  title: string;
-  denom: string;
+  count: number
+  percent: number
+  title: string
+  denom: string
 }
 
 export type ExtendedDoughnutChartAdditionalInfo = {
-  validatorAddress: string;
-  Blocks: number;
-  'Stake percentage': string;
+  validatorAddress: string
+  Blocks: number
+  'Stake percentage': string
+}
+
+export type PreparedPoolsData = {
+  balances: string
+  community: string
+  treasury: string
+  data_provider: string
+  total_supply: string
+}
+
+export enum POOLS_IDS {
+  COMMUNITY = 'community_pool',
+  TREASURY = 'treasury_pool',
+  DATA_PROVIDERS = 'data_providers_pool',
+}
+
+export type POOL = {
+  id: POOLS_IDS
+  type: string
+  attributes: { coins: Coin[] }
 }
