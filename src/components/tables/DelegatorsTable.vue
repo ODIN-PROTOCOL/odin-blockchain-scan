@@ -1,17 +1,17 @@
 <template>
-  <div>
+  <div class="delegators-table">
     <div class="app-table">
-      <div class="app-table__head">
+      <div class="app-table__head delegators-table__table-head">
         <span>Delegator</span>
-        <span>Balance</span>
         <span>Stake</span>
+        <!-- <span>Stake</span> -->
       </div>
       <div class="app-table__body">
         <template v-if="delegators.length">
           <div
             v-for="item in filteredDelegators"
             :key="item.delegation.delegatorAddress"
-            class="app-table__row"
+            class="app-table__row delegators-table__table-row"
           >
             <div class="app-table__cell">
               <span class="app-table__title">Delegator</span>
@@ -21,17 +21,24 @@
               />
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Balance</span>
-              <span class="app-table__cell-txt">
-                {{ $fCoin(item.balance.amount, item.balance.denom) }}
-              </span>
-            </div>
-            <div class="app-table__cell">
               <span class="app-table__title">Stake</span>
               <span class="app-table__cell-txt">
-                {{ $fCoin(item.delegation.shares, item.balance.denom) }}
+                {{
+                  $convertLokiToOdin(item.balance.amount, { withDenom: true })
+                }}
               </span>
             </div>
+            <!-- <div class="app-table__cell">
+              <span class="app-table__title">Stake</span>
+              <span class="app-table__cell-txt">
+                {{
+                  $convertLokiToOdin(item.delegation.shares, {
+                    withDenom: true,
+                    withPrecise: true,
+                  })
+                }}
+              </span>
+            </div> -->
           </div>
         </template>
         <template v-else>
@@ -76,6 +83,7 @@ export default defineComponent({
 
     const filterDelegators = (newPage: number) => {
       let tempArr = _delegators.value
+      console.log(_delegators.value)
 
       if (newPage === 1) {
         filteredDelegators.value = tempArr.slice(0, newPage * ITEMS_PER_PAGE)
@@ -109,4 +117,22 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.delegators-table {
+  &__table-head,
+  &__table-row {
+    grid:
+      auto /
+      minmax(8rem, 4fr)
+      minmax(8rem, 2fr);
+  }
+}
+
+@include respond-to(tablet) {
+  .delegators-table {
+    &__table-row {
+      grid: none;
+    }
+  }
+}
+</style>

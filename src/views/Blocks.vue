@@ -25,14 +25,7 @@
           </div>
           <div class="app-table__cell">
             <span class="app-table__title">Date and time</span>
-            <div>
-              <div>
-                {{ convertToTime(item.header.time) }}
-              </div>
-              <div>
-                {{ convertToDate(item.header.time) }}
-              </div>
-            </div>
+            <span>{{ $fDate(item.header.time) }}</span>
           </div>
           <div class="app-table__cell">
             <span class="app-table__title">Transactions</span>

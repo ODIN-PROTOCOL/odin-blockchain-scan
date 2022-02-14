@@ -49,7 +49,7 @@ export default defineComponent({
   name: 'transactions',
   components: { TransitionLine, Pagination },
   setup() {
-    const ITEMS_PER_PAGE = 5
+    const ITEMS_PER_PAGE = 25
     const transactions = ref()
     const page = ref<number>(1)
     const totalPages = ref<number>()

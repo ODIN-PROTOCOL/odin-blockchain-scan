@@ -1,4 +1,5 @@
 import { callers } from '@/api/callers'
+import { bigMath } from './bigMath'
 import { ValidatorDecoded } from './validatorDecoders'
 
 export const isOracleValidator = async (
@@ -8,11 +9,23 @@ export const isOracleValidator = async (
   return response.reporter.length ? true : false
 }
 
+const _sortValidatorsByDelegated = (
+  validators: ValidatorDecoded[]
+): ValidatorDecoded[] => {
+  return validators.sort((a, b) => {
+    return (
+      Number(bigMath.fromPrecise(b.delegatorShares)) -
+      Number(bigMath.fromPrecise(a.delegatorShares))
+    )
+  })
+}
+
 export const getTransformedValidators = async (
   validators: ValidatorDecoded[]
 ): Promise<ValidatorDecoded[]> => {
-  return await Promise.all(
-    validators.map(async (item, idx) => {
+  const _validators = _sortValidatorsByDelegated(validators)
+  const transformedValidators = await Promise.all(
+    _validators.map(async (item, idx) => {
       return {
         ...item,
         rank: idx + 1,
@@ -20,4 +33,6 @@ export const getTransformedValidators = async (
       }
     })
   )
+
+  return transformedValidators
 }

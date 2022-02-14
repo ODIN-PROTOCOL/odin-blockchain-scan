@@ -4,7 +4,9 @@ import {
   cropAddress,
   formatCoin,
   formatDate,
+  getPrecisePercents,
   preciseAsPercents,
+  getPercentOutOfNumber,
 } from './helpers/formatters'
 import Notifications from '@kyvg/vue3-notification'
 import { api } from './api/api'
@@ -18,7 +20,7 @@ import {
   translateTallyShort,
   translateVote,
 } from './helpers/translators'
-
+import { convertLokiToOdin } from './helpers/converters'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { VuePicker, VuePickerOption } from '@invisiburu/vue-picker'
@@ -45,15 +47,19 @@ async function _main() {
   app.config.globalProperties.$cropAddress = cropAddress
   app.config.globalProperties.$fCoin = formatCoin
   app.config.globalProperties.$preciseAsPercents = preciseAsPercents
+  app.config.globalProperties.$getPrecisePercents = getPrecisePercents
+  app.config.globalProperties.$getPercentOutOfNumber = getPercentOutOfNumber
   app.config.globalProperties.$fNum = bigMath.format
   app.config.globalProperties.$fDate = formatDate
   app.config.globalProperties.$tRequestStatus = translateRequestStatus
   app.config.globalProperties.$tProposalStatus = translateProposalStatus
-  app.config.globalProperties.$tProposalStatusDated = translateProposalStatusDated
+  app.config.globalProperties.$tProposalStatusDated =
+    translateProposalStatusDated
   app.config.globalProperties.$tTally = translateTally
   app.config.globalProperties.$tTallyShort = translateTallyShort
   app.config.globalProperties.$tVote = translateVote
   app.config.globalProperties.$tBondStatus = translateBondStatus
+  app.config.globalProperties.$convertLokiToOdin = convertLokiToOdin
   app.use(router)
   app.use(Notifications)
 

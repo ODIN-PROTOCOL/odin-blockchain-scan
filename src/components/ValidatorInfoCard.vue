@@ -15,14 +15,19 @@
       </div>
       <div class="info-card__row">
         <span class="info-card__title">Delegated</span>
-        <span class="info-card__txt" :title="$fCoin(validator.tokens, 'loki')">
-          {{ $fCoin(validator.tokens, 'loki') }}
+        <span
+          class="info-card__txt"
+          :title="$convertLokiToOdin(validator.tokens, { withDenom: true })"
+        >
+          {{ $convertLokiToOdin(validator.tokens, { withDenom: true }) }}
         </span>
       </div>
       <div class="info-card__row">
         <span class="info-card__title">Delegator shares</span>
         <span class="info-card__txt">
-          {{ $preciseAsPercents(validator.delegatorShares) }}
+          {{
+            $getPercentOutOfNumber(validator.delegatorShares, validator.tokens)
+          }}
         </span>
       </div>
     </div>
@@ -30,28 +35,26 @@
       <div class="info-card__row">
         <span class="info-card__title">Rate</span>
         <span class="info-card__txt">
-          {{ $preciseAsPercents(validator.commission.commissionRates.rate) }}
+          {{ $getPrecisePercents(validator.commission.commissionRates.rate) }}
         </span>
       </div>
       <div class="info-card__row">
         <span class="info-card__title">Max rate</span>
         <span class="info-card__txt">
-          {{ $preciseAsPercents(validator.commission.commissionRates.maxRate) }}
+          {{
+            $getPrecisePercents(validator.commission.commissionRates.maxRate)
+          }}
         </span>
       </div>
       <div class="info-card__row">
         <span class="info-card__title">Max change rate</span>
         <span class="info-card__txt">
           {{
-            $preciseAsPercents(
+            $getPrecisePercents(
               validator.commission.commissionRates.maxChangeRate
             )
           }}
         </span>
-      </div>
-      <div class="info-card__row">
-        <span class="info-card__title">Operator</span>
-        <span class="info-card__txt">{{ validator.operatorAddress }}</span>
       </div>
     </div>
     <div class="info-card__item">
