@@ -116,7 +116,11 @@ const makeCallers = () => {
         }
       })
     ),
-
+    getValidatorByConsensusKey: cacheAnswers((validatorHash: string) => {
+      return axios.get(
+        `${API_CONFIG.api}telemetry/validator_by_cons_addr/${validatorHash}`
+      )
+    }),
     validatorDelegate: broadcaster<MsgDelegate>(
       '/cosmos.staking.v1beta1.MsgDelegate',
       MsgDelegate
