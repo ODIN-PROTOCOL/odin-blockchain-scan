@@ -79,11 +79,10 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Tokenomics',
     component: () => import('../views/Tokenomics.vue'),
   },
-  // TODO: create view for this pages
   {
     path: '/odin-geo',
     name: 'odin&geo',
-    component: () => import('../views/Odin-geo.vue'),
+    component: () => import('../views/OdinGeo.vue'),
   },
   {
     path: '/delegators/:hash/',

@@ -1,8 +1,13 @@
 import { MsgWithdrawCoinsToAccFromTreasury } from '@provider/codec/mint/tx'
-import { MsgSubmitProposal, MsgVote } from '@provider/codec/cosmos/gov/v1beta1/tx'
 import {
+  MsgSubmitProposal,
+  MsgVote,
+} from '@provider/codec/cosmos/gov/v1beta1/tx'
+import {
+  MsgBeginRedelegate,
   MsgCreateValidator,
   MsgDelegate,
+  MsgEditValidator,
   MsgUndelegate,
 } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx'
 import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
@@ -14,16 +19,23 @@ import {
   MsgReportData,
   MsgRequestData,
 } from '@provider/codec/oracle/v1/tx'
-import { MsgWithdrawDelegatorReward } from '@cosmjs/stargate/build/codec/cosmos/distribution/v1beta1/tx'
+import {
+  MsgWithdrawDelegatorReward,
+  MsgWithdrawValidatorCommission,
+} from '@cosmjs/stargate/build/codec/cosmos/distribution/v1beta1/tx'
 import { callers } from '@/api/callers'
 import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
 import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc/build/dates'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { adjustedData } from '@/helpers/Types'
-import { MsgCreateClient, MsgUpdateClient } from 'cosmjs-types/ibc/core/client/v1/tx'
+import {
+  MsgCreateClient,
+  MsgUpdateClient,
+} from 'cosmjs-types/ibc/core/client/v1/tx'
 import { MsgConnectionOpenInit } from 'cosmjs-types/ibc/core/connection/v1/tx'
 import { MsgChannelOpenInit } from 'cosmjs-types/ibc/core/channel/v1/tx'
 import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx'
+import { MsgUnjail } from 'cosmjs-types/cosmos/slashing/v1beta1/tx'
 
 export const getDecodeTx = (tx: TxResponse['tx']): Tx => Tx.decode(tx)
 
@@ -60,6 +72,12 @@ export function humanizeMessageType(type: string): string {
     case '/cosmos.staking.v1beta1.MsgUndelegate':
       return 'Undelegate'
 
+    case '/cosmos.staking.v1beta1.MsgEditValidator':
+      return 'Edit Validator'
+
+    case '/cosmos.staking.v1beta1.MsgBeginRedelegate':
+      return 'Begin Redelegate'
+
     case '/oracle.v1.MsgActivate':
       return 'Activate'
 
@@ -80,6 +98,12 @@ export function humanizeMessageType(type: string): string {
 
     case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
       return 'Withdraw delegator reward'
+
+    case '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission':
+      return 'Withdraw validator commission'
+
+    case '/cosmos.slashing.v1beta1.MsgUnjail':
+      return 'Unjail'
 
     case '/ibc.core.client.v1.MsgCreateClient':
       return 'Create IBC Client'
@@ -107,8 +131,10 @@ function decodeMessage(obj: {
 }):
   | MsgWithdrawCoinsToAccFromTreasury
   | MsgCreateValidator
+  | MsgEditValidator
   | MsgDelegate
   | MsgUndelegate
+  | MsgBeginRedelegate
   | MsgSend
   | MsgVote
   | MsgSubmitProposal
@@ -122,7 +148,9 @@ function decodeMessage(obj: {
   | MsgConnectionOpenInit
   | MsgUpdateClient
   | MsgChannelOpenInit
-  | MsgTransfer {
+  | MsgTransfer
+  | MsgWithdrawValidatorCommission
+  | MsgUnjail {
   switch (obj.typeUrl) {
     case '/mint.MsgWithdrawCoinsToAccFromTreasury':
       return MsgWithdrawCoinsToAccFromTreasury.decode(obj.value)
@@ -145,6 +173,12 @@ function decodeMessage(obj: {
     case '/cosmos.bank.v1beta1.MsgSend':
       return MsgSend.decode(obj.value)
 
+    case '/cosmos.staking.v1beta1.MsgEditValidator':
+      return MsgEditValidator.decode(obj.value)
+
+    case '/cosmos.staking.v1beta1.MsgBeginRedelegate':
+      return MsgBeginRedelegate.decode(obj.value)
+
     case '/oracle.v1.MsgActivate':
       return MsgActivate.decode(obj.value)
 
@@ -165,6 +199,12 @@ function decodeMessage(obj: {
 
     case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
       return MsgWithdrawDelegatorReward.decode(obj.value)
+
+    case '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission':
+      return MsgWithdrawValidatorCommission.decode(obj.value)
+
+    case '/cosmos.slashing.v1beta1.MsgUnjail':
+      return MsgUnjail.decode(obj.value)
 
     case '/ibc.core.client.v1.MsgCreateClient':
       return MsgCreateClient.decode(obj.value)
@@ -202,9 +242,9 @@ export async function getDateFromMessage(
   if ('amount' in message) {
     if (typeof message.amount === 'object') {
       if ('denom' in message.amount && 'amount' in message.amount) {
-        adjustedData.amount = `${message.amount?.amount} ${message.amount?.denom}`
+        adjustedData.amount = message.amount?.amount
       } else {
-        adjustedData.amount = `${message.amount[0]?.amount} ${message.amount[0]?.denom}`
+        adjustedData.amount = message.amount[0]?.amount
       }
     }
   }

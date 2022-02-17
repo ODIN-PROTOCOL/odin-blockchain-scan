@@ -24,14 +24,7 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Date and time</span>
-      <div>
-        <div>
-          {{ convertToTime(transition.time) }}
-        </div>
-        <div>
-          {{ convertToDate(transition.time) }}
-        </div>
-      </div>
+      <span>{{ $fDate(transition.time) }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Sender</span>

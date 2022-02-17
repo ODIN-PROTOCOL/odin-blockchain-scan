@@ -19,19 +19,31 @@
     </Tabs>
 
     <div class="app-table">
-      <div class="app-table__head">
-        <span>Rank</span>
-        <span>Validator</span>
-        <span>Delegator Share</span>
-        <span>Commission</span>
-        <span>Oracle Status</span>
+      <div class="app-table__head validators__table-head">
+        <span class="validators__table-head-item">Rank</span>
+        <span class="validators__table-head-item">Validator</span>
+        <span
+          class="validators__table-head-item validators__table-head-item_end"
+        >
+          Delegator Share
+        </span>
+        <span
+          class="validators__table-head-item validators__table-head-item_end"
+        >
+          Commission
+        </span>
+        <span
+          class="validators__table-head-item validators__table-head-item_center"
+        >
+          Oracle Status
+        </span>
       </div>
       <div>
         <template v-if="validators?.length">
           <div
             v-for="item in filteredValidators"
             :key="item.operatorAddress"
-            class="app-table__row"
+            class="app-table__row validators__table-row"
           >
             <div class="app-table__cell">
               <span class="app-table__title">Rank</span>
@@ -45,17 +57,24 @@
                 :to="`/validators/${item.operatorAddress}`"
               />
             </div>
-            <div class="app-table__cell">
+            <div class="app-table__cell validators__table-cell_end">
               <span class="app-table__title">Delegator Share</span>
-              <span>{{ $preciseAsPercents(item.delegatorShares) }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__title">Commission</span>
               <span>
-                {{ $preciseAsPercents(item.commission.commissionRates.rate) }}
+                {{
+                  $convertLokiToOdin(item.delegatorShares, {
+                    withDenom: true,
+                    withPrecise: true,
+                  })
+                }}
               </span>
             </div>
-            <div class="app-table__cell">
+            <div class="app-table__cell validators__table-cell_end">
+              <span class="app-table__title">Commission</span>
+              <span>
+                {{ $getPrecisePercents(item.commission.commissionRates.rate) }}
+              </span>
+            </div>
+            <div class="app-table__cell validators__table-cell_center">
               <span class="app-table__title">Oracle Status</span>
               <StatusIcon
                 :status="item.isOracleValidator ? 'success' : 'error'"
@@ -101,7 +120,7 @@ export default defineComponent({
   components: { Tabs, Tab, TitledLink, StatusIcon, Pagination },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const ITEMS_PER_PAGE = 6
+    const ITEMS_PER_PAGE = 25
     const currentPage = ref(1)
     const totalPages = ref()
     const validatorsStatus = ref('Active')
@@ -137,7 +156,9 @@ export default defineComponent({
         validatorsCount.value =
           activeValidators.length + inactiveValidators.length
         filteredValidatorsCount.value = validators.value.length
-        totalPages.value = Math.ceil(validatorsCount.value / ITEMS_PER_PAGE)
+        totalPages.value = Math.ceil(
+          filteredValidatorsCount.value / ITEMS_PER_PAGE
+        )
         filterValidators(currentPage.value)
       } catch (error) {
         handleError(error as Error)
@@ -175,6 +196,9 @@ export default defineComponent({
         }
 
         filteredValidatorsCount.value = validators.value.length
+        totalPages.value = Math.ceil(
+          filteredValidatorsCount.value / ITEMS_PER_PAGE
+        )
         currentPage.value = 1
         filterValidators(currentPage.value)
       }
@@ -202,28 +226,59 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.validators__count-info {
-  margin-bottom: 3.2rem;
-}
+.validators {
+  &__count-info {
+    margin-bottom: 3.2rem;
+  }
 
-.app-table__head,
-.app-table__row {
-  grid:
-    auto /
-    minmax(3rem, 1fr)
-    minmax(8rem, 4fr)
-    minmax(8rem, 4fr)
-    minmax(8rem, 4fr)
-    minmax(8rem, 4fr);
+  &__table-cell {
+    &_center {
+      justify-content: center;
+    }
+    &_end {
+      justify-content: flex-end;
+    }
+  }
+
+  &__table-head-item {
+    &_center {
+      text-align: center;
+    }
+    &_end {
+      text-align: end;
+    }
+  }
+
+  &__table-head,
+  &__table-row {
+    grid:
+      auto /
+      minmax(3rem, 1fr)
+      minmax(8rem, 4fr)
+      minmax(8rem, 4fr)
+      minmax(8rem, 4fr)
+      minmax(8rem, 4fr);
+  }
 }
 
 @include respond-to(tablet) {
-  .app-table__row {
-    grid: none;
-  }
+  .validators {
+    &__count-info {
+      margin-bottom: 0;
+    }
 
-  .validators__count-info {
-    margin-bottom: 0;
+    &__table-cell {
+      &_center {
+        justify-content: flex-start;
+      }
+      &_end {
+        justify-content: flex-start;
+      }
+    }
+
+    &__table-row {
+      grid: none;
+    }
   }
 }
 </style>

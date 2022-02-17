@@ -60,9 +60,20 @@
           </span>
         </div>
         <span class="blocks-item__table-row-title">Block`s transactions</span>
-        <span class="blocks-item__table-row-value">
-          {{ blocksTransactions }}
-        </span>
+        <div class="blocks-item__table-row-values">
+          <template v-if="blocksTransactions?.length">
+            <TitledLink
+              v-for="item in blocksTransactions"
+              :key="item.hash"
+              :to="`/transactions/${item.hash}`"
+              class="blocks-item__table-row-value blocks-item__table-row-link"
+              :text="item.hash"
+            />
+          </template>
+          <template v-else>
+            <span>-</span>
+          </template>
+        </div>
       </div>
       <div class="blocks-item__table-row">
         <div class="blocks-item__table-row-info">
@@ -93,6 +104,7 @@ import { formatDate } from '@/helpers/formatters'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
+import { prepareTransaction } from '@/helpers/helpers'
 
 const TOOLTIP_INFO = {
   blockHeight: `Also known as Block Number. The block height,
@@ -102,7 +114,7 @@ const TOOLTIP_INFO = {
   blockParentHash:
     'The hash of the block from which this block was generated, also known as its parent block.',
   timestamp: 'The date and time at which a block is validated.',
-  blocksTransactions: 'The number of transactions in the block.',
+  blocksTransactions: 'List of transactions in the block.',
   blockCreator:
     'Validator who successfully included the block onto the blockchain.',
   blockSize: 'The block size is actually determined by the block`s gas limit.',
@@ -117,7 +129,7 @@ export default defineComponent({
     const blockHash = ref('-')
     const blockParentHash = ref('-')
     const blockTimestamp = ref()
-    const blocksTransactions = ref('-')
+    const blocksTransactions = ref()
     const blockCreator = ref('-')
 
     const getBlock = async () => {
@@ -127,11 +139,15 @@ export default defineComponent({
         blockParentHash.value =
           '0x' + toHex(blockInfo.value.block.header.lastBlockId.hash)
         blockTimestamp.value = formatDate(blockInfo.value.block.header.time)
-        blocksTransactions.value = blockInfo.value.block.txs.length
         blockCreator.value = Bech32.encode(
           'odinvaloper',
           blockInfo.value.block.header.proposerAddress
         )
+
+        const { txs } = await callers.getTxSearch({
+          query: `tx.height = ${Number(route.params.id)}`,
+        })
+        blocksTransactions.value = await prepareTransaction(txs)
       } catch (error) {
         handleError(error as Error)
       }
@@ -163,12 +179,15 @@ export default defineComponent({
 
   &__table-row {
     display: flex;
+    align-items: flex-start;
     padding: 1.6rem 0;
     border-bottom: 0.1rem solid var(--clr__input-border);
-    align-items: center;
   }
 
   &__table-row-info {
+    display: flex;
+    align-items: center;
+    height: 2.3rem;
     position: relative;
     cursor: pointer;
     margin-right: 0.9rem;
@@ -209,12 +228,23 @@ export default defineComponent({
 
   &__table-row-title {
     min-width: 14.5rem;
+    line-height: 2.3rem;
     margin-right: 2.4rem;
   }
 
   &__table-row-value {
     font-size: 1.4rem;
     @include ellipsis();
+  }
+
+  &__table-row-values {
+    display: flex;
+    flex-direction: column;
+    @include ellipsis();
+
+    & > *:not(:last-child) {
+      margin-bottom: 0.8rem;
+    }
   }
 
   &__table-row-link {

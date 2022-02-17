@@ -68,6 +68,11 @@ export function preciseAsPercents(amount: string): string {
   return `${percents}%` // TODO: translate
 }
 
+export function getPrecisePercents(amount: string): string {
+  const percents = bigMath.fromPrecise(bigMath.multiply(amount, 100))
+  return `${percents}%`
+}
+
 export function formatCoin(coin: Coin, abbr?: boolean): string
 export function formatCoin(
   amount: NumLike,
@@ -147,4 +152,14 @@ function _tryInsertToday(input: Date | number, format: string): string {
   // TODO: currently matches only en format
   const dayTokenRe = /M{1,}\s?d[od]?,/
   return format.replace(dayTokenRe, relDay)
+}
+
+export function getPercentOutOfNumber(
+  number: string,
+  ofNumber: string
+): string {
+  const percent = bigMath.fromPrecise(
+    bigMath.multiply(bigMath.divide(number, ofNumber), 100)
+  )
+  return `${percent}%`
 }

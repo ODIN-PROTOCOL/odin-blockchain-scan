@@ -58,11 +58,10 @@ export default defineComponent({
           to: 'Tokenomics',
           text: 'Tokenomics overview',
         },
-        // TODO: return hide date when pages be done
-        // {
-        //   to: 'odin&geo',
-        //   text: 'Odin & Geo',
-        // },
+        {
+          to: 'odin&geo',
+          text: 'ODIN&GEO',
+        },
       ],
     }
     const ResourceList: LinkList = {
