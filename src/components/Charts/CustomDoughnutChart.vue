@@ -62,7 +62,7 @@ const SIMPLE_CHART_OPTIONS = {
       enabled: false,
     },
   },
-  }
+}
 const SIMPLE_CHART_COLORS = ['#007BFF', '#66B0FF']
 const EXTENDED_CHART_COLORS = [
   '#FDC748',
@@ -92,7 +92,7 @@ export default defineComponent({
         | ExtendedDoughnutChartAdditionalInfo[]
       >,
       default: () => [],
-    }
+    },
   },
   setup: function (props) {
     const { type, chartDataset, additionalInfo } = toRefs(props)

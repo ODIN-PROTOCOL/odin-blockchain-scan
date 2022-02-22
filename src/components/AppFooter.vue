@@ -1,8 +1,8 @@
 <template>
-  <footer class="footer">
+  <footer class="app-footer">
     <div class="app__container">
-      <div class="footer__inner">
-        <div class="footer__logo">
+      <div class="app-footer__inner">
+        <div class="app-footer__logo">
           <a href="/">
             <img
               class="logo"
@@ -12,13 +12,13 @@
             />
           </a>
         </div>
-        <nav class="footer__nav">
-          <a class="footer__nav-item" href="">About us</a>
-          <a class="footer__nav-item" href="">Contact us</a>
-          <a class="footer__nav-item" href="">Terms of service</a>
-          <a class="footer__nav-item" href="">Developer APIs</a>
-          <a class="footer__nav-item" href="">Knowledge base</a>
-          <a class="footer__nav-item" href="">Network status</a>
+        <nav class="app-footer__nav">
+          <a class="app-footer__nav-item" href="">About us</a>
+          <a class="app-footer__nav-item" href="">Contact us</a>
+          <a class="app-footer__nav-item" href="">Terms of service</a>
+          <a class="app-footer__nav-item" href="">Developer APIs</a>
+          <a class="app-footer__nav-item" href="">Knowledge base</a>
+          <a class="app-footer__nav-item" href="">Network status</a>
         </nav>
       </div>
     </div>
@@ -29,12 +29,12 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Footer',
+  name: 'AppFooter',
 })
 </script>
 
 <style scoped lang="scss">
-.footer {
+.app-footer {
   background: var(--clr__tooltip-bg);
   margin-top: 6.4rem;
 
@@ -62,7 +62,7 @@ export default defineComponent({
 }
 
 @include respond-to(small) {
-  .footer {
+  .app-footer {
     margin-top: 4rem;
 
     &__inner {
@@ -72,7 +72,7 @@ export default defineComponent({
 }
 
 @include respond-to(992px) {
-  .footer {
+  .app-footer {
     &__inner {
       flex-direction: column;
       align-items: flex-start;

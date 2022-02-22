@@ -37,12 +37,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../views/Home.vue'),
+    component: () => import('../views/HomeView.vue'),
   },
   {
     path: '/blocks',
     name: 'Blocks',
-    component: () => import('../views/Blocks.vue'),
+    component: () => import('../views/BlocksList.vue'),
   },
   {
     path: '/blocks/:id',
@@ -52,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/transactions',
     name: 'Transactions',
-    component: () => import('../views/Transactions.vue'),
+    component: () => import('../views/TransactionsView.vue'),
   },
   {
     path: '/transactions/:hash',
@@ -67,7 +67,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/validators',
     name: 'Validators',
-    component: () => import('../views/Validators.vue'),
+    component: () => import('../views/ValidatorsView.vue'),
   },
   {
     path: '/validators/:address',
@@ -77,7 +77,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/tokenomics',
     name: 'Tokenomics',
-    component: () => import('../views/Tokenomics.vue'),
+    component: () => import('../views/TokenomicsView.vue'),
   },
   {
     path: '/odin-geo',
@@ -116,25 +116,25 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'average-odin-block-size',
         name: 'AverageOdinBlockSizeChart',
-        component: () => import('../views/Chart.vue'),
+        component: () => import('../views/ChartView.vue'),
         props: chartPagesProps.averageOdinBlockSizeChart,
       },
       {
         path: 'average-block-time',
         name: 'AverageBlockTimeChart',
-        component: () => import('../views/Chart.vue'),
+        component: () => import('../views/ChartView.vue'),
         props: chartPagesProps.averageBlockTimeChart,
       },
       {
         path: 'daily-transactions-volume',
         name: 'DailyTransactionsVolumeChart',
-        component: () => import('../views/Chart.vue'),
+        component: () => import('../views/ChartView.vue'),
         props: chartPagesProps.dailyTransactionsVolumeChart,
       },
       {
         path: 'average-transactions-fee',
         name: 'AverageTransactionFeeChart',
-        component: () => import('../views/Chart.vue'),
+        component: () => import('../views/ChartView.vue'),
         props: chartPagesProps.averageTransactionFeeChart,
       },
     ],

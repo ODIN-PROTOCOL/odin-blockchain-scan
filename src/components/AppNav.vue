@@ -1,6 +1,6 @@
 <template>
-  <div class="nav" :class="{ nav_mobile: isOpen }">
-    <div class="nav__wrap-cont">
+  <div class="app-nav" :class="{ nav_mobile: isOpen }">
+    <div class="app-nav__wrap-cont">
       <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
       <LinksDropdown :list="TokenomicList" @redirect="changeRoute" />
       <LinksDropdown :list="ResourceList" @redirect="changeRoute" />
@@ -16,7 +16,7 @@ import UserWidget from '@/components/UserWidget.vue'
 import { LinkList } from '@/helpers/Types'
 
 export default defineComponent({
-  name: 'Nav',
+  name: 'AppNav',
   components: {
     LinksDropdown,
     UserWidget,
@@ -84,7 +84,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.nav {
+.app-nav {
   display: flex;
   width: 100%;
   align-items: center;
@@ -99,7 +99,7 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .nav {
+  .app-nav {
     display: none;
     background: #fff;
     width: 100%;

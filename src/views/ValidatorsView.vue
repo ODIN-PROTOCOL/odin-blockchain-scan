@@ -1,6 +1,6 @@
 <template>
   <div
-    class="app__main-view validators load-fog"
+    class="app__main-view validators-view load-fog"
     :class="{ 'load-fog_show': isLoading && validators?.length }"
   >
     <div class="app__main-view-title-wrapper">
@@ -8,32 +8,32 @@
     </div>
 
     <template v-if="validatorsCount">
-      <div class="validators__count-info">
+      <div class="validators-view__count-info">
         <p>{{ validatorsCount }} validators found</p>
       </div>
     </template>
 
-    <Tabs @changeTab="tabHandler($event)">
-      <Tab title="Active" />
-      <Tab title="Inactive" />
-    </Tabs>
+    <AppTabs @changeTab="tabHandler($event)">
+      <AppTab title="Active" />
+      <AppTab title="Inactive" />
+    </AppTabs>
 
     <div class="app-table">
-      <div class="app-table__head validators__table-head">
-        <span class="validators__table-head-item">Rank</span>
-        <span class="validators__table-head-item">Validator</span>
+      <div class="app-table__head validators-view__table-head">
+        <span class="validators-view__table-head-item">Rank</span>
+        <span class="validators-view__table-head-item">Validator</span>
         <span
-          class="validators__table-head-item validators__table-head-item_end"
+          class="validators-view__table-head-item validators-view__table-head-item_end"
         >
           Delegator Share
         </span>
         <span
-          class="validators__table-head-item validators__table-head-item_end"
+          class="validators-view__table-head-item validators-view__table-head-item_end"
         >
           Commission
         </span>
         <span
-          class="validators__table-head-item validators__table-head-item_center"
+          class="validators-view__table-head-item validators-view__table-head-item_center"
         >
           Oracle Status
         </span>
@@ -43,7 +43,7 @@
           <div
             v-for="item in filteredValidators"
             :key="item.operatorAddress"
-            class="app-table__row validators__table-row"
+            class="app-table__row validators-view__table-row"
           >
             <div class="app-table__cell">
               <span class="app-table__title">Rank</span>
@@ -57,7 +57,7 @@
                 :to="`/validators/${item.operatorAddress}`"
               />
             </div>
-            <div class="app-table__cell validators__table-cell_end">
+            <div class="app-table__cell validators-view__table-cell_end">
               <span class="app-table__title">Delegator Share</span>
               <span>
                 {{
@@ -68,13 +68,13 @@
                 }}
               </span>
             </div>
-            <div class="app-table__cell validators__table-cell_end">
+            <div class="app-table__cell validators-view__table-cell_end">
               <span class="app-table__title">Commission</span>
               <span>
                 {{ $getPrecisePercents(item.commission.commissionRates.rate) }}
               </span>
             </div>
-            <div class="app-table__cell validators__table-cell_center">
+            <div class="app-table__cell validators-view__table-cell_center">
               <span class="app-table__title">Oracle Status</span>
               <StatusIcon
                 :status="item.isOracleValidator ? 'success' : 'error'"
@@ -92,7 +92,7 @@
     </div>
 
     <template v-if="filteredValidatorsCount > ITEMS_PER_PAGE">
-      <Pagination
+      <AppPagination
         class="mg-t32"
         v-model="currentPage"
         :pages="totalPages"
@@ -108,16 +108,16 @@ import { callers } from '@/api/callers'
 import { handleError } from '@/helpers/errors'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
-import Tabs from '@/components/tabs/Tabs.vue'
-import Tab from '@/components/tabs/Tab.vue'
+import AppTabs from '@/components/tabs/AppTabs.vue'
+import AppTab from '@/components/tabs/AppTab.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import StatusIcon from '@/components/StatusIcon.vue'
-import Pagination from '@/components/Pagination/Pagination.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { getTransformedValidators } from '@/helpers/validatorsHelpers'
 
 export default defineComponent({
-  name: 'Validators',
-  components: { Tabs, Tab, TitledLink, StatusIcon, Pagination },
+  name: 'ValidatorsView',
+  components: { AppTabs, AppTab, TitledLink, StatusIcon, AppPagination },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const ITEMS_PER_PAGE = 25
@@ -226,7 +226,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.validators {
+.validators-view {
   &__count-info {
     margin-bottom: 3.2rem;
   }
@@ -262,7 +262,7 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .validators {
+  .validators-view {
     &__count-info {
       margin-bottom: 0;
     }

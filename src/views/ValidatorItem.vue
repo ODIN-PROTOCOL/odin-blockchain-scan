@@ -17,23 +17,23 @@
     <template v-if="validator">
       <ValidatorInfoCard :validator="validator" />
 
-      <Tabs>
-        <Tab title="Oracle Reports">
+      <AppTabs>
+        <AppTab title="Oracle Reports">
           <template v-if="reports">
             <OracleReportsTable :reports="reports" />
           </template>
-        </Tab>
-        <Tab title="Delegators">
+        </AppTab>
+        <AppTab title="Delegators">
           <template v-if="delegators">
             <DelegatorsTable :delegators="delegators" />
           </template>
-        </Tab>
-        <Tab title="Proposed Blocks">
+        </AppTab>
+        <AppTab title="Proposed Blocks">
           <template v-if="blocks">
             <ProposedBlocksTable :blocks="blocks" />
           </template>
-        </Tab>
-      </Tabs>
+        </AppTab>
+      </AppTabs>
     </template>
     <template v-else>
       <p>Validator not found!</p>
@@ -48,8 +48,8 @@ import { callers } from '@/api/callers'
 import { Bech32 } from '@cosmjs/encoding'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
-import Tabs from '@/components/tabs/Tabs.vue'
-import Tab from '@/components/tabs/Tab.vue'
+import AppTabs from '@/components/tabs/AppTabs.vue'
+import AppTab from '@/components/tabs/AppTab.vue'
 import ValidatorInfoCard from '@/components/ValidatorInfoCard.vue'
 import OracleReportsTable from '@/components/tables/OracleReportsTable.vue'
 import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
@@ -62,8 +62,8 @@ export default defineComponent({
   components: {
     BackButton,
     CopyButton,
-    Tabs,
-    Tab,
+    AppTabs,
+    AppTab,
     ValidatorInfoCard,
     OracleReportsTable,
     DelegatorsTable,

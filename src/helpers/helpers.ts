@@ -112,23 +112,24 @@ export const getHash = (str: Uint8Array): string => {
   return toHexFunc(str).toUpperCase()
 }
 
-const _randomColors = (size: number, name: string): Array<string> => {
-  if (localStorage.getItem(name)) {
-    return JSON.parse(localStorage.getItem(name) as string)
-  }
-  const colors: Array<string> = []
-  let prevColor = 0
-  for (let i = 0; i < (size >= 50 ? size : 50); i++) {
-    let h = Math.random() * 360
-    if (Math.abs(h - prevColor) <= 15) {
-      h += 25
-    }
-    colors.push(`hsl(${h.toFixed()}, 60%, 60%)`)
-    prevColor = h
-  }
-  localStorage.setItem(name, JSON.stringify(colors))
-  return colors
-}
+// TODO: remove unused
+// const _randomColors = (size: number, name: string): Array<string> => {
+//   if (localStorage.getItem(name)) {
+//     return JSON.parse(localStorage.getItem(name) as string)
+//   }
+//   const colors: Array<string> = []
+//   let prevColor = 0
+//   for (let i = 0; i < (size >= 50 ? size : 50); i++) {
+//     let h = Math.random() * 360
+//     if (Math.abs(h - prevColor) <= 15) {
+//       h += 25
+//     }
+//     colors.push(`hsl(${h.toFixed()}, 60%, 60%)`)
+//     prevColor = h
+//   }
+//   localStorage.setItem(name, JSON.stringify(colors))
+//   return colors
+// }
 
 export const allowedTxCount = async (
   txs: readonly TxResponse[]

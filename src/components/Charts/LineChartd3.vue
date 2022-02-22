@@ -11,64 +11,9 @@
   </div>
 </template>
 
-<style lang="scss">
-.chart-wrapper {
-  width: 100%;
-  height: 45.9rem;
-}
-
-.domain,
-.tick line {
-  color: transparent;
-}
-.tick text {
-  font-size: 1.2rem;
-}
-.y.axis-grid .tick line {
-  color: #cce4ff;
-}
-.y.axis-grid > .domain {
-  display: none;
-}
-.tooltip {
-  position: absolute;
-  z-index: 2;
-  background: rgb(5, 63, 125);
-  border-radius: 3px;
-  color: white;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.1s ease 0s;
-  padding: 6px;
-  &__sub {
-    display: inline-block;
-    color: rgba(255, 255, 255, 0.6);
-    padding-right: 8px;
-  }
-  &__title {
-    font-size: 1.6rem;
-    font-weight: 700;
-  }
-  &__body {
-    display: flex;
-    justify-content: space-between;
-  }
-  &__arrow {
-    position: absolute;
-    background: transparent;
-    width: 10px;
-    height: 10px;
-    border-top: 10px solid transparent;
-    border-right: 10px solid rgb(5, 63, 125);
-    border-bottom: 10px solid transparent;
-    top: calc(100% - 5px);
-    left: calc(50% - 5px);
-    transform: rotate(270deg);
-  }
-}
-</style>
-
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { defineComponent, ref, watch, onMounted } from 'vue'
 import { marginType } from '@/helpers/Types'
 import {
@@ -315,3 +260,60 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss">
+.chart-wrapper {
+  width: 100%;
+  height: 45.9rem;
+}
+
+.domain,
+.tick line {
+  color: transparent;
+}
+.tick text {
+  font-size: 1.2rem;
+}
+.y.axis-grid .tick line {
+  color: #cce4ff;
+}
+.y.axis-grid > .domain {
+  display: none;
+}
+.tooltip {
+  position: absolute;
+  z-index: 2;
+  background: rgb(5, 63, 125);
+  border-radius: 3px;
+  color: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.1s ease 0s;
+  padding: 6px;
+  &__sub {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.6);
+    padding-right: 8px;
+  }
+  &__title {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  &__body {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__arrow {
+    position: absolute;
+    background: transparent;
+    width: 10px;
+    height: 10px;
+    border-top: 10px solid transparent;
+    border-right: 10px solid rgb(5, 63, 125);
+    border-bottom: 10px solid transparent;
+    top: calc(100% - 5px);
+    left: calc(50% - 5px);
+    transform: rotate(270deg);
+  }
+}
+</style>

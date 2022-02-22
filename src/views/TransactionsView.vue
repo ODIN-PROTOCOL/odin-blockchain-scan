@@ -24,7 +24,7 @@
           :transition="item"
         />
       </div>
-      <Pagination
+      <AppPagination
         class="mg-t32"
         v-model="page"
         :pages="totalPages"
@@ -43,11 +43,11 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { handleError } from '@/helpers/errors'
 import { prepareTransaction } from '@/helpers/helpers'
 import TransitionLine from '@/components/TransitionLine.vue'
-import Pagination from '@/components/Pagination/Pagination.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
 
 export default defineComponent({
-  name: 'transactions',
-  components: { TransitionLine, Pagination },
+  name: 'TransactionsView',
+  components: { TransitionLine, AppPagination },
   setup() {
     const ITEMS_PER_PAGE = 25
     const transactions = ref()

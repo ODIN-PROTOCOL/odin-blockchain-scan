@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   telemetryDataForCharts,
   formatedTelemetryDataForCharts,
@@ -16,7 +18,7 @@ export const getChartOptions = (datasetUnit: string, labels: string[]) => {
         beginAtZero: true,
         ticks: {
           count: 6,
-        }
+        },
       },
       xAxis: {
         grid: {
@@ -26,9 +28,9 @@ export const getChartOptions = (datasetUnit: string, labels: string[]) => {
           maxTicksLimit: 10,
           callback: (value) => {
             return _getShortLabelDate(labels[value])
-          }
-        }
-      }
+          },
+        },
+      },
     },
     interaction: {
       intersect: false,
@@ -58,15 +60,15 @@ export const createExternalTooltip = (
     let tooltipArrow = tooltipEl?.querySelector(
       '.chartjs-tooltip__arrow'
     ) as HTMLElement
-  
+
     // Create element on first render
     if (!tooltipEl) {
       tooltipEl = _createTooltip()
       tooltipArrow = _createTooltipArrow(tooltipEl)
     }
-  
+
     _setTooltipArrowPosition(tooltipEl, tooltipModel)
-  
+
     // Set Text
     if (tooltipModel.body) {
       let innerHtml = ''
@@ -79,15 +81,15 @@ export const createExternalTooltip = (
         innerHtml += _setTooltipTitles(tooltipModel)
         innerHtml += _setTooltipBody(tooltipModel, datasetUnit)
       }
-  
+
       const divRoot = tooltipEl.querySelector('div')
       if (divRoot) {
         divRoot.innerHTML = innerHtml
       }
     }
-  
+
     _toggleTooltipDisplay(tooltipEl, tooltipModel)
-  
+
     _setTooltipAndArrowOnChart(ctx.chart, tooltipModel, tooltipEl, tooltipArrow)
   }
 }
@@ -105,7 +107,7 @@ const _createTooltipArrow = (tooltip: HTMLElement): HTMLElement => {
   const tooltipArrow = document.createElement('span')
   tooltipArrow.className = 'chartjs-tooltip__arrow'
   tooltip.appendChild(tooltipArrow)
-  
+
   return tooltipArrow
 }
 
@@ -219,7 +221,7 @@ const _getShortLabelDate = (date: string) => {
   const dateObj = new Date(date)
   const month = dateObj.toLocaleString('en', { month: 'short' })
   const day = dateObj.getDate()
-  
+
   return `${month}. ${day}`
 }
 

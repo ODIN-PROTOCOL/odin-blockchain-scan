@@ -1,17 +1,17 @@
 <template>
   <div class="app__container">
     <InfoPanel />
-    <Latest />
+    <LatestStats />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Latest from '@/components/LatestList/Latest.vue'
+import LatestStats from '@/components/LatestList/LatestStats.vue'
 import InfoPanel from '@/components/InfoPanel/InfoPanel.vue'
 
 export default defineComponent({
-  name: 'Home',
-  components: { Latest, InfoPanel },
+  name: 'HomeView',
+  components: { LatestStats, InfoPanel },
 })
 </script>

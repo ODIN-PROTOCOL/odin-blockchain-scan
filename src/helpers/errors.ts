@@ -1,13 +1,22 @@
 import { OdinApiBroadcastError } from '@/api/api'
 import { notifyError } from './notifications'
 
-export function handleError(error: Error): void {
+type ErrorLike = Pick<Error, 'message'>
+
+export function handleError(error: Error | ErrorLike | unknown): void {
   if (error instanceof OdinApiBroadcastError) {
     _handleBroadcastError(error)
   } else {
     console.error(error)
-    notifyError(error.message)
+    if (isErrorLike(error)) {
+      notifyError(error.message)
+    }
   }
+}
+
+export function isErrorLike(value: unknown): value is ErrorLike {
+  if (!value || typeof value !== 'object') return false
+  return 'message' in value
 }
 
 function _handleBroadcastError(error: OdinApiBroadcastError): void {

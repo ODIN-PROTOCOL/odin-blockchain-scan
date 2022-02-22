@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination-wrapper">
+  <div class="app-pagination">
     <VPagination
       v-model="page"
       :pages="pages"
@@ -17,7 +17,7 @@ import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 import VPagination from '@hennge/vue3-pagination'
 
 export default defineComponent({
-  name: 'pagination',
+  name: 'AppPagination',
   components: { VPagination },
   emits: ['update:modelValue'],
   props: {
@@ -40,7 +40,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.pagination-wrapper {
+.app-pagination {
   display: flex;
   justify-content: center;
 

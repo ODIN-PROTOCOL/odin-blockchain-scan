@@ -1,6 +1,6 @@
 <template>
-  <div class="tabs">
-    <ul class="tabs__header">
+  <div class="app-tabs">
+    <ul class="app-tabs__header">
       <li
         v-for="title in tabTitles"
         :key="title"
@@ -18,7 +18,7 @@
 import { defineComponent, ref, provide } from 'vue'
 
 export default defineComponent({
-  name: 'Tabs',
+  name: 'AppTabs',
   emits: ['changeTab'],
   setup: function (props, { slots, emit }) {
     const tabTitles = ref(
@@ -46,7 +46,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.tabs {
+.app-tabs {
   &__header {
     display: flex;
     padding: 0;

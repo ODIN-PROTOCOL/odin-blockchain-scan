@@ -106,7 +106,7 @@ import { handleError } from '@/helpers/errors'
 import { Bech32 } from '@cosmjs/encoding'
 
 export default defineComponent({
-  name: 'Latest',
+  name: 'LatestStats',
   components: { LatestList, LatestListItem, TitledLink },
   setup: function () {
     const toDay = ref<Date>(new Date())

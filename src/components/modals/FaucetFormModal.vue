@@ -46,7 +46,7 @@
 import { defineComponent, ref } from 'vue'
 import { callers } from '@/api/callers'
 import { DialogHandler, dialogs } from '@/helpers/dialogs'
-import { handleError } from '@/helpers/errors'
+import { handleError, isErrorLike } from '@/helpers/errors'
 import { preventIf } from '@/helpers/functions'
 import { notifySuccess } from '@/helpers/notifications'
 import { useForm, validators } from '@/composables/useForm'
@@ -75,6 +75,11 @@ const FaucetFormModal = defineComponent({
         onSubmit()
         notifySuccess('Faucet request created')
       } catch (error) {
+        if (!isErrorLike(error)) {
+          console.warn('FaucetFormModal: Cannot decode error!')
+          return
+        }
+
         const indTime = error.message.indexOf('time')
         const errorStr = error.message.slice(10, indTime - 3)
         const timeStr = error.message.slice(indTime + 6, -1)
@@ -94,7 +99,6 @@ const FaucetFormModal = defineComponent({
         )
 
         handleError(newError)
-        // handleError(error)
       }
       isLoading.value = false
     }
