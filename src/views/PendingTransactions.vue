@@ -61,7 +61,7 @@
 import { callers } from '@/api/callers'
 import PendingTransactionLine from '@/components/PendingTransactionLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
-import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
+import { Tx } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import { useRoute } from 'vue-router'
 import { toHex } from '@cosmjs/encoding'
 import { fromBase64 } from '@cosmjs/encoding'

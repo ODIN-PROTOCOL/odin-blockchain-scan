@@ -17,7 +17,7 @@ import {
   MsgCreateValidator,
   MsgDelegate,
   MsgUndelegate,
-} from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx'
+} from 'cosmjs-types/cosmos/staking/v1beta1/tx'
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 import axios from 'axios'
 
@@ -72,15 +72,15 @@ const makeCallers = () => {
 
     getAllBalances: querier((qc) => () => {
       const myAddress = wallet.account.address
-      return qc.bank.unverified.allBalances(myAddress)
+      return qc.bank.allBalances(myAddress)
     }),
     getBalances: querier((qc) => () => {
       const myAddress = wallet.account.address
       return qc.bank.balance(myAddress, 'loki')
     }),
-    getUnverifiedBalances: querier((qc) => qc.bank.unverified.balance),
-    getUnverifiedTotalSupply: querier((qc) => qc.bank.unverified.totalSupply),
-    getUnverifiedSupplyOff: querier((qc) => qc.bank.unverified.supplyOf),
+    getUnverifiedBalances: querier((qc) => qc.bank.balance),
+    getUnverifiedTotalSupply: querier((qc) => qc.bank.totalSupply),
+    getUnverifiedSupplyOff: querier((qc) => qc.bank.supplyOf),
 
     createExchange: broadcaster<MsgExchange>(
       '/coinswap.MsgExchange',
@@ -109,7 +109,7 @@ const makeCallers = () => {
       MsgCreateValidator
     ),
     getValidators: querier((qc) =>
-      mapResponse(qc.staking.unverified.validators, (response) => {
+      mapResponse(qc.staking.validators, (response) => {
         return {
           ...response,
           validators: decodeValidators(response.validators),
@@ -129,7 +129,7 @@ const makeCallers = () => {
       '/cosmos.staking.v1beta1.MsgUndelegate',
       MsgUndelegate
     ),
-    getDelegations: querier((qc) => qc.staking.unverified.validatorDelegations),
+    getDelegations: querier((qc) => qc.staking.validatorDelegations),
 
     faucetRequest: (req: { denom: string }) => {
       return sendPost(`${API_CONFIG.faucet}/request`, {
@@ -145,10 +145,8 @@ const makeCallers = () => {
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
-    getValidator: querier((qc) => qc.staking.unverified.validator),
-    getValidatorDelegations: querier(
-      (qc) => qc.staking.unverified.validatorDelegations
-    ),
+    getValidator: querier((qc) => qc.staking.validator),
+    getValidatorDelegations: querier((qc) => qc.staking.validatorDelegations),
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
     getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
     getTxSearch: cacheAnswers(tmQuerier((tc) => tc.txSearch.bind(tc))),

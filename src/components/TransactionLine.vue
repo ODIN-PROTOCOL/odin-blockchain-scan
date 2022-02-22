@@ -63,8 +63,8 @@ import { ref, onMounted, defineComponent, toRef, watch } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { toHexFunc } from '@/helpers/helpers'
 import { callers } from '@/api/callers'
-import { Tx } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx'
-import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
+import { Tx } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 
 export default defineComponent({
   name: 'TransactionLine',

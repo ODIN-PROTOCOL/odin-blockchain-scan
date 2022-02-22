@@ -3,7 +3,7 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 import { OdinWallet } from './wallet'
 import {
   BankExtension,
-  BroadcastTxResponse,
+  DeliverTxResponse,
   QueryClient,
   setupBankExtension,
   setupStakingExtension,
@@ -77,9 +77,9 @@ class Api {
   makeBroadcastCaller<T>(
     typeUrl: string,
     type: GeneratedType
-  ): (msg: T) => Promise<BroadcastTxResponse> {
+  ): (msg: T) => Promise<DeliverTxResponse> {
     this._stargateRegistry.register(typeUrl, type)
-    return (msg: T): Promise<BroadcastTxResponse> => {
+    return (msg: T): Promise<DeliverTxResponse> => {
       return this._signAndBroadcast([{ typeUrl, value: msg }])
     }
   }
@@ -117,7 +117,7 @@ class Api {
 
   private async _signAndBroadcast(
     messages: EncodeObject[]
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<DeliverTxResponse> {
     const res = await this._stargate.signAndBroadcast(
       this._wallet.account.address,
       messages,

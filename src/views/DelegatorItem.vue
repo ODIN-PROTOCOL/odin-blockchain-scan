@@ -152,9 +152,9 @@ export default defineComponent({
         setupIbcExtension
       )
 
-      console.log(
-        client.staking.unverified.validator(String(route.params.hash))
-      )
+      // console.log(
+      //   client.staking.unverified.validator(String(route.params.hash))
+      // )
 
       // response.validator(+route.params.id).then((res) => {
       //   validatorInfo.value = res
