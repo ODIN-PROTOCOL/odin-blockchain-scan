@@ -116,10 +116,10 @@ export default defineComponent({
     > => {
       try {
         const tx = await callers.getTx({
-          hash: fromHex(searchedText.value as string)
+          hash: fromHex(searchedText.value as string),
         })
         return (await makeTransactionListFormatted([
-          tx
+          tx,
         ] as Array<TxResponse>)) as Array<TransactionListFormatted>
       } catch {
         return []

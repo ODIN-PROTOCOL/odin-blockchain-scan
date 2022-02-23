@@ -1,16 +1,16 @@
 <template>
-  <div class="app__main-view tokenomics">
+  <div class="app__main-view tokenomics-view">
     <div class="app__main-view-title-wrapper">
       <h2 class="app__main-view-title">Tokenomics overview</h2>
     </div>
-    <div class="tokenomics__content">
-      <div class="tokenomics__content-nav">
+    <div class="tokenomics-view__content">
+      <div class="tokenomics-view__content-nav">
         <button
           @click="changeTab(COINS.ODIN)"
-          class="tokenomics__content-nav-item"
+          class="tokenomics-view__content-nav-item"
           :class="
             activeToken === COINS.ODIN
-              ? 'tokenomics__content-nav-item_active'
+              ? 'tokenomics-view__content-nav-item_active'
               : ''
           "
         >
@@ -18,26 +18,26 @@
         </button>
         <button
           @click="changeTab(COINS.GEO)"
-          class="tokenomics__content-nav-item"
+          class="tokenomics-view__content-nav-item"
           :class="
             activeToken === COINS.GEO
-              ? 'tokenomics__content-nav-item_active'
+              ? 'tokenomics-view__content-nav-item_active'
               : ''
           "
         >
           GEO
         </button>
       </div>
-      <div class="tokenomics__info">
-        <div class="tokenomics__info-table-wrapper">
-          <article class="tokenomics__info-table">
+      <div class="tokenomics-view__info">
+        <div class="tokenomics-view__info-table-wrapper">
+          <article class="tokenomics-view__info-table">
             <div
-              class="tokenomics__info-table-row"
+              class="tokenomics-view__info-table-row"
               v-for="(value, key) in activeTokenInfo"
               :key="key"
             >
-              <div class="tokenomics__info-table-key">{{ key }}</div>
-              <div class="tokenomics__info-table-values">
+              <div class="tokenomics-view__info-table-key">{{ key }}</div>
+              <div class="tokenomics-view__info-table-values">
                 <span v-for="(item, idx) in value" :key="idx">
                   {{ item }}
                 </span>
@@ -47,15 +47,15 @@
 
           <button
             @click="downloadPaper"
-            class="app__btn tokenomics__info-table-btn"
+            class="app__btn tokenomics-view__info-table-btn"
           >
             Download Tokenomics Paper
           </button>
         </div>
 
-        <div class="tokenomics__info-scheme">
+        <div class="tokenomics-view__info-scheme">
           <img
-            class="tokenomics__info-scheme-img"
+            class="tokenomics-view__info-scheme-img"
             src="~@/assets/tokemonics.jpg"
             alt="tokemonics scheme"
           />
@@ -74,7 +74,7 @@ enum COINS {
 }
 
 export default defineComponent({
-  name: 'Tokenomics',
+  name: 'TokenomicsView',
   setup() {
     const activeToken = ref(COINS.ODIN)
     const activeTokenInfo = computed(() => {
@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.tokenomics {
+.tokenomics-view {
   &__content-nav {
     margin-bottom: 2.4rem;
   }
@@ -184,7 +184,7 @@ export default defineComponent({
 }
 
 @include respond-to(medium) {
-  .tokenomics {
+  .tokenomics-view {
     &__info {
       flex-direction: column;
       gap: 4rem;
@@ -205,7 +205,7 @@ export default defineComponent({
 }
 
 @include respond-to(x-small) {
-  .tokenomics {
+  .tokenomics-view {
     &__info-table-btn {
       width: 100%;
     }

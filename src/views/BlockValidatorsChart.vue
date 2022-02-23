@@ -149,7 +149,7 @@ export default defineComponent({
         return {
           validatorAddress: item.validatorAddress,
           Blocks: Number(item.blocksCount),
-          'Stake percentage': item.stakePercentage
+          'Stake percentage': item.stakePercentage,
         }
       })
       chartData.value = { data: tempDataArr }

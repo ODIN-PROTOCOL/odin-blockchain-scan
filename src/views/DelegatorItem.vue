@@ -102,7 +102,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, defineComponent } from 'vue'
+import { ref, defineComponent } from 'vue'
 import {
   RouteLocationNormalizedLoaded,
   Router,
@@ -115,18 +115,18 @@ import { routerBack } from '@/router'
 import TitledLink from '@/components/TitledLink.vue'
 // import { Bech32 } from '@cosmjs/encoding'
 
-import {
-  QueryClient,
-  setupAuthExtension,
-  setupBankExtension,
-  setupDistributionExtension,
-  setupStakingExtension,
-  setupIbcExtension,
-} from '@cosmjs/stargate'
+// import {
+//   QueryClient,
+//   setupAuthExtension,
+//   setupBankExtension,
+//   setupDistributionExtension,
+//   setupStakingExtension,
+//   setupIbcExtension,
+// } from '@cosmjs/stargate'
 
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
+// import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 
-import { API_CONFIG } from '@/api/api-config'
+// import { API_CONFIG } from '@/api/api-config'
 
 import { convertDate, copyValue } from '@/helpers/helpers'
 
@@ -140,34 +140,35 @@ export default defineComponent({
     const delegatorBalance = ref()
     const delegatorStake = ref()
 
-    const getValidator = async (): Promise<void> => {
-      // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
+    // TODO: remove unused
+    // const getValidator = async (): Promise<void> => {
+    //   // const validatorAddress = Bech32.encode('odin', Bech32.decode(route.params.hash).data)
 
-      const client = QueryClient.withExtensions(
-        await Tendermint34Client.connect(API_CONFIG.rpc),
-        setupAuthExtension,
-        setupBankExtension,
-        setupDistributionExtension,
-        setupStakingExtension,
-        setupIbcExtension
-      )
+    //   const client = QueryClient.withExtensions(
+    //     await Tendermint34Client.connect(API_CONFIG.rpc),
+    //     setupAuthExtension,
+    //     setupBankExtension,
+    //     setupDistributionExtension,
+    //     setupStakingExtension,
+    //     setupIbcExtension
+    //   )
 
-      console.log(
-        client.staking.unverified.validator(String(route.params.hash))
-      )
+    //   // console.log(
+    //   //   client.staking.unverified.validator(String(route.params.hash))
+    //   // )
 
-      // response.validator(+route.params.id).then((res) => {
-      //   validatorInfo.value = res
-      //   validatorHash.value = getHash(validatorInfo.value.validatorId.hash)
-      //   validatorParentHash.value = getHash(
-      //     validatorInfo.value.validator.header.lastValidatorId.hash
-      //   )
-      // })
-    }
+    //   // response.validator(+route.params.id).then((res) => {
+    //   //   validatorInfo.value = res
+    //   //   validatorHash.value = getHash(validatorInfo.value.validatorId.hash)
+    //   //   validatorParentHash.value = getHash(
+    //   //     validatorInfo.value.validator.header.lastValidatorId.hash
+    //   //   )
+    //   // })
+    // }
 
-    onMounted(async () => {
-      await getValidator()
-    })
+    // onMounted(async () => {
+    //   await getValidator()
+    // })
 
     return {
       router,
@@ -183,7 +184,6 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-
 .block {
   &-item {
     padding: 2.6rem 3.3rem;

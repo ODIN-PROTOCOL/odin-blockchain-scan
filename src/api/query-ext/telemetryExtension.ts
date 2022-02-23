@@ -1,6 +1,6 @@
 import Long from 'long'
 
-import { QueryClient, createRpc } from '@cosmjs/stargate'
+import { QueryClient, createProtobufRpcClient } from '@cosmjs/stargate'
 import {
   QueryAvgBlockSizeRequest,
   QueryAvgBlockSizeResponse,
@@ -72,7 +72,7 @@ export interface TelemetryExt {
 }
 
 export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
-  const rpc = createRpc(base)
+  const rpc = createProtobufRpcClient(base)
   const queryService = new QueryClientImpl(rpc)
   return {
     telemetry: {

@@ -94,7 +94,7 @@
 
 <script lang="ts">
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
-import { DelegationResponse } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking'
+import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
 import { defineComponent, PropType } from 'vue'
 import CopyText from './CopyText.vue'
 import TitledLink from '@/components/TitledLink.vue'

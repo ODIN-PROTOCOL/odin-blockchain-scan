@@ -12,7 +12,7 @@
                   alt="Logo"
                 />
               </router-link>
-              <Nav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
+              <AppNav :isOpen="isOpen" @changeRoute="changeRoute($event)" />
               <BurgerMenu
                 class="app__header-burger-menu"
                 :isOpen="isOpen"
@@ -30,7 +30,7 @@
         </transition>
       </router-view>
     </section>
-    <Footer />
+    <AppFooter />
   </template>
   <div class="app__dialogs-container" ref="dialogsContainerRef"></div>
   <notifications width="100%" />
@@ -40,14 +40,14 @@
 import '@invisiburu/vue-picker/dist/vue-picker.min.css'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { dialogs } from '@/helpers/dialogs'
-import Nav from '@/components/Nav.vue'
+import AppNav from '@/components/AppNav.vue'
 import BurgerMenu from '@/components/BurgerMenu.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
-import Footer from '@/components/Footer.vue'
+import AppFooter from '@/components/AppFooter.vue'
 
 export default defineComponent({
   name: 'App',
-  components: { Nav, SearchBar, Footer, BurgerMenu },
+  components: { AppNav, SearchBar, AppFooter, BurgerMenu },
   setup() {
     const _readyStates = ref({
       dialogs: false,

@@ -40,9 +40,7 @@
                     You Balance (ODIN)
                   </label>
                   <input
-                    class="
-                      app-form__field-input app-form__field-input--disabled
-                    "
+                    class="app-form__field-input app-form__field-input--disabled"
                     type="text"
                     v-model="odinBalanceOnProvider"
                     disabled
@@ -55,9 +53,7 @@
                     }})
                   </label>
                   <input
-                    class="
-                      app-form__field-input app-form__field-input--disabled
-                    "
+                    class="app-form__field-input app-form__field-input--disabled"
                     type="text"
                     :value="maxWithdrawalPerTime.amount"
                     disabled
@@ -79,9 +75,7 @@
                     Expected amount (LOKI)
                   </label>
                   <input
-                    class="
-                      app-form__field-input app-form__field-input--disabled
-                    "
+                    class="app-form__field-input app-form__field-input--disabled"
                     type="text"
                     :value="expectedAmount"
                     disabled

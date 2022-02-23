@@ -8,7 +8,7 @@
 import { defineComponent, inject } from 'vue'
 
 export default defineComponent({
-  name: 'Tab',
+  name: 'AppTab',
   props: ['title'],
   setup: function () {
     const selectedTitle = inject('selectedTitle')

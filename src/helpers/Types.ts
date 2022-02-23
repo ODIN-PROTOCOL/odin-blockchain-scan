@@ -15,17 +15,6 @@ export type LinkList = {
   links: Array<Link>
 }
 
-export type ChartDataSetsType = {
-  backgroundColor: Array<string> | readonly string[]
-  borderColor: Array<string> | readonly string[]
-  borderWidth: string | number
-  hoverBorderWidth?: string | number
-  borderJoinStyle: string
-  borderCapStyle: string
-  tension: number
-  borderSkipped: boolean
-  data: Array<string | number | any>
-}
 export type ChartLabelsType = {
   validatorAddress: string
   blocksCounter: string | number
@@ -34,11 +23,6 @@ export type ChartLabelsType = {
   date: string
   volume: string | number
   txs: string | number
-}
-export type ChartDataType = {
-  labels: Array<Partial<ChartLabelsType> | string | Date>
-  datasets: Array<ChartDataSetsType>
-  options?: any
 }
 
 export type CoingeckoCoinsType = {

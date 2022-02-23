@@ -40,7 +40,7 @@
             />
           </div>
         </div>
-        <Pagination
+        <AppPagination
           class="mg-t32"
           v-model="currentPage"
           :pages="totalPages"
@@ -63,12 +63,12 @@ import TitledLink from '@/components/TitledLink.vue'
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { convertToTime, convertToDate } from '@/helpers/dates'
 import { prepareBlocks } from '@/helpers/blocksHelper'
-import Pagination from '@/components/Pagination/Pagination.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { handleError } from '@/helpers/errors'
 
 export default defineComponent({
-  name: 'blocks',
-  components: { TitledLink, Pagination },
+  name: 'BlocksList',
+  components: { TitledLink, AppPagination },
   setup() {
     const blocks = ref()
     const ITEMS_PER_PAGE = 20

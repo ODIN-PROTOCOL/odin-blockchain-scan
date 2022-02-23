@@ -48,6 +48,6 @@ export default defineComponent({
     })
 
     return { barRef, barChartProps }
-  }
+  },
 })
 </script>

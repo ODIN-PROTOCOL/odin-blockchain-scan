@@ -74,7 +74,7 @@ import ModalBase from './ModalBase.vue'
 import CopyText from '@/components/CopyText.vue'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { useBalances } from '@/composables/useBalances'
-import { DelegationResponse } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking'
+import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
 
 const UndelegateFormDialog = defineComponent({
   props: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="app__main-view chart">
+  <div class="app__main-view chart-view">
     <div class="app__main-view-title-wrapper">
       <BackButton :current-router="router" :text="'Charts & Stats'" />
       <h2 class="app__main-view-title chart__title">{{ chartPageTitle }}</h2>
@@ -57,7 +57,7 @@ import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import BackButton from '@/components/BackButton.vue'
 
 export default defineComponent({
-  name: 'chart',
+  name: 'ChartView',
   components: { CustomBarChart, CustomLineChart, BackButton },
   props: {
     chartPageTitle: { type: String, required: true },
@@ -112,7 +112,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chart {
+.chart-view {
   &__title {
     margin: 0 1.6rem 0 2rem;
   }
@@ -132,7 +132,7 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .chart {
+  .chart-view {
     &__title {
       margin: 0.8rem 0 0.4rem 0;
     }

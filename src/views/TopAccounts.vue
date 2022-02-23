@@ -50,7 +50,7 @@
           :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
         />
       </div>
-      <Pagination
+      <AppPagination
         class="mg-t32"
         v-model="currentPage"
         :pages="totalPages"
@@ -67,19 +67,19 @@
 import { callers } from '@/api/callers'
 import AccountsLine from '@/components/AccountsLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
-import { Pagination as PaginationClass } from '@/api/query-ext/telemetryExtension'
-import { Coin } from '@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin'
+import { Pagination } from '@/api/query-ext/telemetryExtension'
+import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
 import { getTopAccountList } from '@/helpers/Accounts'
 import { allowedTxCount } from '@/helpers/helpers'
-import Pagination from '@/components/Pagination/Pagination.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
 
 export default defineComponent({
   name: 'top-accounts',
-  components: { Pagination, AccountsLine },
+  components: { AppPagination, AccountsLine },
   setup() {
     const ITEMS_PER_PAGE = 5
-    const pagination: PaginationClass = new PaginationClass(0, 100, true, true)
+    const pagination: Pagination = new Pagination(0, 100, true, true)
 
     const accounts = ref<Array<TempBalanceType>>()
     const filteredAccounts = ref<Array<TempBalanceType>>()

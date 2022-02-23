@@ -57,7 +57,7 @@
 <script>
 import { ref, onMounted, defineComponent, toRef, watch } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { MsgSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx'
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { toHexFunc } from '@/helpers/helpers'
 
 export default defineComponent({

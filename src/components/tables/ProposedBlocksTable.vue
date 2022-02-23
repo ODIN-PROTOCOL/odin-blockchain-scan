@@ -39,7 +39,7 @@
     </div>
 
     <template v-if="blocksCount > ITEMS_PER_PAGE">
-      <Pagination
+      <AppPagination
         class="mg-t32"
         v-model="currentPage"
         :pages="totalPages"
@@ -53,10 +53,10 @@
 import { defineComponent, onMounted, toRef, ref, computed } from 'vue'
 import { toHexFunc } from '@/helpers/helpers'
 import TitledLink from '@/components/TitledLink.vue'
-import Pagination from '@/components/Pagination/Pagination.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
 
 export default defineComponent({
-  components: { TitledLink, Pagination },
+  components: { TitledLink, AppPagination },
   props: {
     blocks: { type: Array, required: true },
   },
