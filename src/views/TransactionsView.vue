@@ -61,6 +61,7 @@ export default defineComponent({
           query: `tx.height >= 0`,
           page: page.value,
           per_page: ITEMS_PER_PAGE,
+          order_by: 'desc',
         })
 
         transactions.value = await prepareTransaction(txs)
