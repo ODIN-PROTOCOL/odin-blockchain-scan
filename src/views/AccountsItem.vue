@@ -33,102 +33,36 @@
       <small class="mg-l8" v-if="totalTxCount">({{ totalTxCount }})</small>
     </h1>
 
-    <div class="app-table">
-      <div class="app-table__head">
-        <span> Transaction hash </span>
-        <span> Type </span>
-        <span> Block </span>
-        <span> Date and time </span>
-        <span> Sender </span>
-        <span> Receiver </span>
-        <span> Amount </span>
-        <span> Transaction fee </span>
-      </div>
-      <template v-if="transactions?.length">
-        <div
+    <template v-if="transactions?.length">
+      <div class="app-table">
+        <div class="app-table__head">
+          <span> Transaction hash </span>
+          <span> Type </span>
+          <span> Block </span>
+          <span> Date and time </span>
+          <span> Sender </span>
+          <span> Receiver </span>
+          <span> Amount </span>
+          <span> Transaction Fee </span>
+        </div>
+        <TransitionLine
           v-for="(item, index) in transactions"
           :key="index"
-          class="app-table__row"
-        >
-          <div class="app-table__cell">
-            <span class="app-table__title">Transaction hash</span>
-            <TitledLink
-              v-if="item.hash"
-              :to="`/transactions/${item.hash}`"
-              class="app-table__cell-txt app-table__link"
-              :text="`0x${item.hash}`"
-            />
-            <span class="app-table__cell-txt" v-else> - </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__title">Type</span>
-            <span v-if="item.type" :title="item.type">
-              {{ item.type }}
-            </span>
-            <span class="app-table__cell-txt" v-else> - </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__title">Block</span>
-            <span v-if="item.block" class="app-table__cell-txt">
-              <TitledLink
-                :to="`/blocks/${item.block}`"
-                class="app-table__cell-txt app-table__link"
-                :text="item.block"
-              />
-            </span>
-            <span class="app-table__cell-txt" v-else> - </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__title">Date and time</span>
-            <div v-if="item.time">
-              <div class="info-value">
-                {{ convertToTxTime(item.time) }}
-              </div>
-            </div>
-            <span class="app-table__cell-txt" v-else> - </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__title">Sender</span>
-            <TitledLink
-              v-if="item.sender"
-              :to="item.sender"
-              class="app-table__cell-txt app-table__link"
-              :text="item.sender"
-            />
-            <span class="app-table__cell-txt" v-else> - </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__title">Reciever</span>
-            <TitledLink
-              v-if="item.receiver"
-              :to="item.receiver"
-              class="app-table__cell-txt app-table__link"
-              :text="item.receiver"
-            />
-            <span class="app-table__cell-txt" v-else> - </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__title">Amount</span>
-            <span v-if="item.amount">
-              {{ item.amount }}
-            </span>
-            <span class="app-table__cell-txt" v-else> - </span>
-          </div>
-          <div class="app-table__cell">
-            <span class="app-table__title">Transaction fee</span>
-            <span class="app-table__cell-txt" v-if="item.fee">
-              {{ item.fee }}
-            </span>
-            <span class="app-table__cell-txt" v-else>-</span>
-          </div>
-        </div>
-      </template>
-      <template v-else>
-        <div class="app-table__row">
-          <p class="app-table__empty-stub">No items yet</p>
-        </div>
-      </template>
-    </div>
+          :transition="item"
+        />
+      </div>
+      <AppPagination
+        class="mg-t32"
+        v-model="page"
+        :pages="totalPages"
+        @update:modelValue="updateHandler"
+      />
+    </template>
+    <template v-else>
+      <div class="app-table__row">
+        <p class="app-table__empty-stub">No items yet</p>
+      </div>
+    </template>
   </div>
 </template>
 <script lang="ts">
@@ -149,18 +83,22 @@ import { bigMath } from '@/helpers/bigMath'
 import { handleError } from '@/helpers/errors'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
-import TitledLink from '@/components/TitledLink.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
+import TransitionLine from '@/components/TransitionLine.vue'
 
 export default defineComponent({
-  components: { BackButton, TitledLink, CopyButton },
+  components: { BackButton, CopyButton, AppPagination, TransitionLine },
   setup() {
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
-
     const geoBalance = ref<string>()
     const odinBalance = ref<string>()
     const transactions = ref()
     const totalTxCount = ref<number>()
+
+    const page = ref<number>(1)
+    const totalPages = ref<number>()
+    const ITEMS_PER_PAGE = 5
 
     const displayedGeoBalance = computed(() =>
       geoBalance.value ? `${geoBalance.value} GEO` : '0 GEO'
@@ -184,14 +122,18 @@ export default defineComponent({
           Bech32.decode(route.params.hash as string).data
         )
 
-        const { txs } = await callers.getTxSearch({
+        const { txs, totalCount } = await callers.getTxSearch({
           query: `message.sender='${validatorAddress}'`,
+          page: page.value,
+          per_page: ITEMS_PER_PAGE,
+          order_by: 'desc',
         })
 
         geoBalance.value = await getTotalAmount(validatorAddress, 'minigeo')
         odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
         transactions.value = await prepareTransaction(txs)
-        totalTxCount.value = transactions.value.length
+        totalTxCount.value = totalCount
+        totalPages.value = Math.ceil(totalCount / ITEMS_PER_PAGE)
       } catch (e) {
         handleError(e as Error)
       }
@@ -200,6 +142,9 @@ export default defineComponent({
     onMounted(() => {
       getValidator()
     })
+    const updateHandler = async () => {
+      await getValidator()
+    }
 
     return {
       route,
@@ -211,6 +156,9 @@ export default defineComponent({
       convertToTxTime,
       transactions,
       totalTxCount,
+      page,
+      totalPages,
+      updateHandler,
     }
   },
 })
