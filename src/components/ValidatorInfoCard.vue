@@ -2,6 +2,12 @@
   <div class="info-card mg-b40">
     <div class="info-card__item">
       <div class="info-card__row">
+        <span class="info-card__title">Moniker</span>
+        <span class="info-card__txt">
+          {{ validator.description.moniker }}
+        </span>
+      </div>
+      <div class="info-card__row">
         <span class="info-card__title">Status</span>
         <span class="info-card__txt">
           {{ $tBondStatus(validator.status) }}
