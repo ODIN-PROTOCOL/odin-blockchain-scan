@@ -7,7 +7,10 @@ export const API_CONFIG = {
   exBridge: process.env.VUE_APP_EX_BRIDGE_URL as string,
   exBridgeFee: process.env.VUE_APP_EX_BRIDGE_FEE as string,
   hdDeviation: stringToPath(process.env.VUE_APP_DEVIATION as string),
-  telemetryUrl: process.env.VUE_APP_TELEMETRY_URL as string,
+  telemetryUrl: (process.env.VUE_APP_TELEMETRY_URL || '').replace(
+    /\/$/,
+    ''
+  ) as string,
 }
 
 export enum COINS_LIST {

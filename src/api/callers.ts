@@ -177,7 +177,7 @@ const makeCallers = () => {
     getParams: querier((qc) => qc.mint.unverified.params),
     getTxVolumePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
-        `${API_CONFIG.telemetryUrl}telemetry/blocks/txVolumePerDays`,
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/txVolumePerDays`,
         {
           params: {
             start_time: (startTime.getTime() / 1000).toFixed(),
@@ -188,7 +188,7 @@ const makeCallers = () => {
     },
     getAvgSizePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
-        `${API_CONFIG.telemetryUrl}telemetry/blocks/avgSizePerDays`,
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgSizePerDays`,
         {
           params: {
             start_time: (startTime.getTime() / 1000).toFixed(),
@@ -199,7 +199,7 @@ const makeCallers = () => {
     },
     getAvgTimePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
-        `${API_CONFIG.telemetryUrl}telemetry/blocks/avgTimePerDays`,
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTimePerDays`,
         {
           params: {
             start_time: (startTime.getTime() / 1000).toFixed(),
@@ -210,7 +210,7 @@ const makeCallers = () => {
     },
     getAvgTxFeePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(
-        `${API_CONFIG.telemetryUrl}telemetry/blocks/avgTxFeePerDays`,
+        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTxFeePerDays`,
         {
           params: {
             start_time: (startTime.getTime() / 1000).toFixed(),
@@ -223,7 +223,7 @@ const makeCallers = () => {
       (qc) => qc.telemetry.unverified.topValidators
     ),
     getInfoPools: () => {
-      return axios.get(`${API_CONFIG.telemetryUrl}telemetry/blocks/info_pools`)
+      return axios.get(`${API_CONFIG.telemetryUrl}/telemetry/blocks/info_pools`)
     },
   }
 }
