@@ -11,6 +11,7 @@ import {
   MsgUndelegate,
 } from 'cosmjs-types/cosmos/staking/v1beta1/tx'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
+import { MsgCreateVestingAccount } from 'cosmjs-types/cosmos/vesting/v1beta1/tx.js'
 import {
   MsgActivate,
   MsgAddReporter,
@@ -120,6 +121,9 @@ export function humanizeMessageType(type: string): string {
     case '/ibc.applications.transfer.v1.MsgTransfer':
       return 'IBC Transfer'
 
+    case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
+      return 'Create Vesting Account'
+
     default:
       throw new ReferenceError(`Unknown type ${type}`)
   }
@@ -150,7 +154,8 @@ function decodeMessage(obj: {
   | MsgChannelOpenInit
   | MsgTransfer
   | MsgWithdrawValidatorCommission
-  | MsgUnjail {
+  | MsgUnjail
+  | MsgCreateVestingAccount {
   switch (obj.typeUrl) {
     case '/mint.MsgWithdrawCoinsToAccFromTreasury':
       return MsgWithdrawCoinsToAccFromTreasury.decode(obj.value)
@@ -220,6 +225,9 @@ function decodeMessage(obj: {
 
     case '/ibc.applications.transfer.v1.MsgTransfer':
       return MsgTransfer.decode(obj.value)
+
+    case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
+      return MsgCreateVestingAccount.decode(obj.value)
 
     default:
       throw new ReferenceError(`Unknown type ${obj.typeUrl}`)
