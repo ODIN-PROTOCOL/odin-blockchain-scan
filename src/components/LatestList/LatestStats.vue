@@ -4,7 +4,7 @@
       <div class="latest__wrapper">
         <LatestList :header="latestBlocksHeader">
           <transition-group name="fade" mode="out-in">
-            <template v-if="latestBlocks.length">
+            <template v-if="latestBlocks">
               <LatestListItem
                 v-for="item in latestBlocks"
                 :key="item.blockId.hash"
@@ -31,7 +31,7 @@
                   />
                 </template>
                 <template #transactions>
-                  <span>{{ item.total_tx }} transactions</span>
+                  <span>{{ item.txs }} transactions</span>
                 </template>
               </LatestListItem>
             </template>
@@ -101,9 +101,9 @@ import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
-import { adjustedData, blocksWithTotalTxInterface } from '@/helpers/Types'
+import { adjustedData } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
-import { Bech32 } from '@cosmjs/encoding'
+import { prepareBlocks } from '@/helpers/blocksHelper'
 
 export default defineComponent({
   name: 'LatestStats',
@@ -120,7 +120,7 @@ export default defineComponent({
       }
     })
 
-    let latestBlocks = ref<Array<blocksWithTotalTxInterface> | null>([])
+    let latestBlocks = ref()
     let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
     let totalCount = ref<number>()
@@ -128,31 +128,19 @@ export default defineComponent({
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
         await callers.getBlockchain()
-      let tempA: Array<blocksWithTotalTxInterface> = []
-      for (let b of [...blockMetas].slice(0, 5)) {
-        const blockData = await callers.getBlock(b?.header?.height as number)
-        tempA = [
-          ...tempA,
-          {
-            ...b,
-            total_tx: blockData.block.txs.length,
-            validator: Bech32.encode('odinvaloper', b.header.proposerAddress),
-          },
-        ]
-      }
-      latestBlocks.value = tempA
-
+      const blocks = await prepareBlocks(blockMetas.slice(0, 5))
+      latestBlocks.value = blocks
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
       const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
         query: `tx.height >= 0`,
+        per_page: 5,
+        order_by: 'desc',
       })
 
       if (txs) {
-        latestTransactions.value = await prepareTransaction(txs).then((pt) =>
-          pt.slice(0, 5)
-        )
+        latestTransactions.value = await prepareTransaction(txs)
       }
 
       console.debug('latestTransactions', latestTransactions.value)

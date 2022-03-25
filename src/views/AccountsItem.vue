@@ -123,7 +123,7 @@ export default defineComponent({
         )
 
         const { txs, totalCount } = await callers.getTxSearch({
-          query: `message.sender='${validatorAddress}'`,
+          query: `message.sender='${route.params.hash}'`,
           page: page.value,
           per_page: ITEMS_PER_PAGE,
           order_by: 'desc',

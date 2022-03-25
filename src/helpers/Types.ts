@@ -38,7 +38,7 @@ export type CoingeckoCoinsType = {
 }
 
 export type SearchResultType = {
-  blocks?: Array<searchBlocksInterface>
+  blocks?: Array<BlockResponse>
   transactions?: Array<TransactionListFormatted>
   accounts?: Array<TempSearchAccountInfoType>
 }

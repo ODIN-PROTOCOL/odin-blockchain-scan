@@ -2,19 +2,20 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/transactions/${result.transHeight}/${result.transHash}`"
+      :to="`/transactions/${result.transHash}`"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Tx</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
-            :to="`/transactions/${result.transHeight}/${result.transHash}`"
+            :to="`/transactions/${result.transHash}`"
             :text="
               result.transHash ? cropText(`0x${result.transHash}`) : 'No info'
             "
           />
         </div>
+
         <div class="search__dropdown--item-time">
           {{ diffDays(toDay, getDay(result?.transTime)) }}
         </div>
@@ -23,24 +24,22 @@
         <div class="search__dropdown--item-validator">
           From:
           <TitledLink
+            v-if="result.transSender"
             class="app-table__cell-txt"
-            :text="
-              result.transSender
-                ? cropText(`0x${result.transSender}`)
-                : 'No info'
-            "
+            :to="`/account/${result.transSender}`"
+            :text="cropText(`0x${result.transSender}`)"
           />
+          <span v-else>No info</span>
         </div>
         <div class="search__dropdown--item-validator">
           <span> To: </span>
           <TitledLink
+            v-if="result.transReceiver"
             class="app-table__cell-txt"
-            :text="
-              result.transReceiver
-                ? cropText(`0x${result.transReceiver}`)
-                : 'No info'
-            "
+            :to="`/account/${result.transReceiver}`"
+            :text="cropText(`0x${result.transReceiver}`)"
           />
+          <span v-else>No info</span>
         </div>
       </div>
     </router-link>
