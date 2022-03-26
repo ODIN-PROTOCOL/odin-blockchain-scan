@@ -2,6 +2,13 @@ import { callers } from '@/api/callers'
 import { bigMath } from './bigMath'
 import { ValidatorDecoded } from './validatorDecoders'
 
+export const isActiveValidator = async (
+  validatorAddress: string
+): Promise<boolean> => {
+  const response = await callers.getValidatorStatus(validatorAddress)
+  return response.status?.isActive ? true : false
+}
+
 export const isOracleValidator = async (
   validatorAddress: string
 ): Promise<boolean> => {

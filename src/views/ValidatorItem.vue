@@ -30,7 +30,7 @@
         </AppTab>
         <AppTab title="Proposed Blocks">
           <template v-if="blocks">
-            <ProposedBlocksTable :blocks="blocks" />
+            <ProposedBlocksTable :proposerAddress="validator.operatorAddress" />
           </template>
         </AppTab>
       </AppTabs>

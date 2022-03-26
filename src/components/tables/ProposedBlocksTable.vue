@@ -10,23 +10,31 @@
         <template v-if="blocks.length">
           <div
             v-for="item in filteredBlocks"
-            :key="toHexFunc(item.blockId.hash)"
+            :key="item.attributes.block_height"
             class="app-table__row"
           >
             <div class="app-table__cell">
               <span class="app-table__title">Block</span>
-              <TitledLink
+              <a
                 class="app-table__cell-txt app-table__link"
-                :text="toHexFunc(item.blockId.hash)"
-              />
+                :href="`/blocks/${item.attributes.block_height}`"
+              >
+                {{ item.attributes.block_height }}
+              </a>
             </div>
             <div class="app-table__cell">
               <span class="app-table__title">Date and time</span>
-              <span>{{ $fDate(item.header.time) }}</span>
+              <span>{{
+                $fDate(
+                  new Date(item.attributes.block_time * 1000),
+                  'HH:mm dd.MM.yy'
+                )
+              }}</span>
             </div>
             <div class="app-table__cell">
               <span class="app-table__title">Transactions</span>
-              <span>{{ item.total_tx }}</span>
+              <!-- TODO get block tx count -->
+              <span>-</span>
             </div>
           </div>
         </template>
@@ -39,8 +47,8 @@
     </div>
 
     <template v-if="blocksCount > ITEMS_PER_PAGE">
-      <AppPagination
-        class="mg-t32"
+      <Pagination
+        class="mg-t32 mg-b32"
         v-model="currentPage"
         :pages="totalPages"
         @update:modelValue="paginationHandler"
@@ -50,29 +58,44 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, toRef, ref, computed } from 'vue'
-import { toHexFunc } from '@/helpers/helpers'
-import TitledLink from '@/components/TitledLink.vue'
-import AppPagination from '@/components/AppPagination/AppPagination.vue'
+import { defineComponent, onMounted, ref } from 'vue'
+import { toHex } from '@cosmjs/encoding'
+import { API_CONFIG } from '@/api/api-config'
+import Pagination from '@/components/AppPagination/AppPagination.vue'
+import { callers } from '@/api/callers'
 
 export default defineComponent({
-  components: { TitledLink, AppPagination },
+  components: { Pagination },
   props: {
-    blocks: { type: Array, required: true },
+    proposerAddress: { type: String, required: true },
   },
   setup: function (props) {
     const ITEMS_PER_PAGE = 5
     const currentPage = ref(1)
+    const totalPages = ref(0)
+    const blocks = ref([])
     const blocksCount = ref()
     const filteredBlocks = ref()
-    const totalPages = computed(() =>
-      Math.ceil(blocksCount.value / ITEMS_PER_PAGE)
-    )
 
-    const _blocks = toRef(props, 'blocks')
+    const getProposedBlocks = async () => {
+      const response = await callers.getProposedBlocks(props.proposerAddress)
+      const _blocks = await response.json()
 
+      blocks.value = _blocks.data
+        ? _blocks.data.sort(
+            (
+              a: { attributes: { block_height: number } },
+              b: { attributes: { block_height: number } }
+            ) => b.attributes.block_height - a.attributes.block_height
+          )
+        : []
+
+      blocksCount.value = blocks.value.length
+      totalPages.value = Math.ceil(blocksCount.value / ITEMS_PER_PAGE)
+      filterBlocks(currentPage.value)
+    }
     const filterBlocks = (newPage: number) => {
-      let tempArr = _blocks.value
+      let tempArr = blocks.value
 
       if (newPage === 1) {
         filteredBlocks.value = tempArr.slice(0, newPage * ITEMS_PER_PAGE)
@@ -89,19 +112,20 @@ export default defineComponent({
       filterBlocks(num)
     }
 
-    onMounted(() => {
-      filterBlocks(currentPage.value)
-      blocksCount.value = _blocks.value.length
+    onMounted(async () => {
+      await getProposedBlocks()
     })
 
     return {
+      API_CONFIG,
       ITEMS_PER_PAGE,
-      blocksCount,
       currentPage,
       totalPages,
+      blocks,
+      blocksCount,
       filteredBlocks,
       paginationHandler,
-      toHexFunc,
+      toHex,
     }
   },
 })
