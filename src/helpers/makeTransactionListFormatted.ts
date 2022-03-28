@@ -5,6 +5,7 @@ import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getTotalTx = (
   decodedTx: Tx
 ): { transReceiver: string; totalTx: number } | undefined => {

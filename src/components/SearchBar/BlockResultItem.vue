@@ -1,20 +1,20 @@
 <template>
-  <template v-if="blockInfo">
+  <template v-if="block">
     <router-link
       class="search__dropdown--item"
-      :to="`/blocks/${blockInfo?.header?.height}`"
+      :to="`/blocks/${block?.header?.height}`"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Bk</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
-            :text="blockInfo?.header?.height"
-            :to="`/blocks/${blockInfo?.header?.height}`"
+            :text="block?.header?.height"
+            :to="`/blocks/${block?.header?.height}`"
           />
         </div>
         <div class="search__dropdown--item-time">
-          {{ diffDays(toDay, getDay(blockInfo?.header?.time)) }}
+          {{ diffDays(today, getDay(block?.header?.time)) }}
         </div>
       </div>
       <div class="search__dropdown--item-right">
@@ -22,13 +22,13 @@
           Validator:
 
           <TitledLink
-            :to="`/validators/${blockInfo.validator}`"
+            :to="`/validators/${block.validator}`"
             class="app-table__cell-txt"
-            :text="cropText(blockInfo.validator)"
+            :text="cropText(block.validator)"
           />
         </div>
         <div class="search__dropdown--item-transactions">
-          {{ blockInfo.txs }} transactions
+          {{ block.txs }} transactions
         </div>
       </div>
     </router-link>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
 
@@ -45,14 +45,14 @@ export default defineComponent({
   components: { TitledLink },
   props: { result: { type: Object, required: true } },
   setup(props) {
-    const blockInfo = computed(() => {
+    const block = computed(() => {
       return props?.result
     })
-    const toDay = ref<Date>(new Date())
+    const today = new Date()
 
     return {
-      blockInfo,
-      toDay,
+      block,
+      today,
       diffDays,
       cropText,
       getDay,

@@ -82,7 +82,11 @@ import { fromHex } from '@cosmjs/encoding'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
-import { SearchResultType, TempSearchAccountInfoType } from '@/helpers/Types'
+import {
+  SearchResultType,
+  TempSearchAccountInfoType,
+  TransformedBlocks,
+} from '@/helpers/Types'
 import {
   makeTransactionListFormatted,
   TransactionListFormatted,
@@ -145,14 +149,13 @@ export default defineComponent({
       }
     }
 
-    const getBlock = async (): Promise<Array<any>> => {
+    const getBlock = async (): Promise<Array<TransformedBlocks>> => {
       try {
         const { blockMetas } = await callers.getBlockchain(
           Number(searchedText.value),
           Number(searchedText.value)
         )
-        const blocks = await prepareBlocks(blockMetas)
-        return blocks
+        return await prepareBlocks(blockMetas)
       } catch {
         return []
       }

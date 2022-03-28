@@ -1,11 +1,7 @@
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
+import { TransformedBlocks } from '@/helpers/Types'
 import { toHex } from '@cosmjs/encoding'
 import { callers } from '@/api/callers'
-
-interface TransformedBlocks extends BlockMeta {
-  validator: string
-  txs: number
-}
 
 export const prepareBlocks = async (
   blocks: readonly BlockMeta[]

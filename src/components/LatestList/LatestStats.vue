@@ -101,7 +101,7 @@ import LatestList from '@/components/LatestList/LatestList.vue'
 import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
-import { adjustedData } from '@/helpers/Types'
+import { adjustedData, TransformedBlocks } from '@/helpers/Types'
 import { handleError } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 
@@ -120,7 +120,9 @@ export default defineComponent({
       }
     })
 
-    let latestBlocks = ref()
+    // let latestBlocks = ref()
+    let latestBlocks = ref<Array<TransformedBlocks> | null>([])
+
     let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
     let totalCount = ref<number>()
@@ -128,8 +130,7 @@ export default defineComponent({
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
         await callers.getBlockchain()
-      const blocks = await prepareBlocks(blockMetas.slice(0, 5))
-      latestBlocks.value = blocks
+      latestBlocks.value = await prepareBlocks(blockMetas.slice(0, 5))
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
