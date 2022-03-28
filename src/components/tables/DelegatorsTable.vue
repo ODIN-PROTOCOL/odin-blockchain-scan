@@ -83,7 +83,6 @@ export default defineComponent({
 
     const filterDelegators = (newPage: number) => {
       let tempArr = _delegators.value
-      console.log(_delegators.value)
 
       if (newPage === 1) {
         filteredDelegators.value = tempArr.slice(0, newPage * ITEMS_PER_PAGE)

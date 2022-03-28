@@ -71,7 +71,7 @@ import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
 import { getTopAccountList } from '@/helpers/Accounts'
-import { allowedTxCount } from '@/helpers/helpers'
+
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 
 export default defineComponent({
@@ -107,7 +107,7 @@ export default defineComponent({
         const { txs } = await callers.getTxSearch({
           query: `message.sender='${a.address}'`,
         })
-        a.total_tx = await allowedTxCount(txs)
+        a.total_tx = txs?.length || 0
       }
       totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
       sortingValue.value = 'geo'

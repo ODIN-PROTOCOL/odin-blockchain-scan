@@ -1,32 +1,34 @@
 <template>
-  <template v-if="result">
+  <template v-if="block">
     <router-link
       class="search__dropdown--item"
-      :to="`/blocks/${result?.block?.header?.height}`"
+      :to="`/blocks/${block?.header?.height}`"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Bk</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
-            :text="result?.block?.header?.height"
+            :text="block?.header?.height"
+            :to="`/blocks/${block?.header?.height}`"
           />
         </div>
         <div class="search__dropdown--item-time">
-          {{ diffDays(toDay, getDay(result?.block?.header?.time)) }}
+          {{ diffDays(today, getDay(block?.header?.time)) }}
         </div>
       </div>
       <div class="search__dropdown--item-right">
         <div class="search__dropdown--item-validator">
           Validator:
+
           <TitledLink
-            :to="`/transactions/${result?.block?.header?.height}`"
+            :to="`/validators/${block.validator}`"
             class="app-table__cell-txt"
-            :text="cropValidatorHash"
+            :text="cropText(block.validator)"
           />
         </div>
         <div class="search__dropdown--item-transactions">
-          {{ result.total_tx }} transactions
+          {{ block.txs }} transactions
         </div>
       </div>
     </router-link>
@@ -34,8 +36,7 @@
 </template>
 
 <script lang="ts">
-import { toHexFunc } from '@/helpers/helpers'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
 
@@ -44,14 +45,18 @@ export default defineComponent({
   components: { TitledLink },
   props: { result: { type: Object, required: true } },
   setup(props) {
-    const toDay = ref<Date>(new Date())
-    const cropValidatorHash = computed(() => {
-      return cropText(
-        toHexFunc(props.result.block.header.validatorsHash).toUpperCase()
-      )
+    const block = computed(() => {
+      return props?.result
     })
+    const today = new Date()
 
-    return { toDay, cropValidatorHash, diffDays, cropText, getDay, toHexFunc }
+    return {
+      block,
+      today,
+      diffDays,
+      cropText,
+      getDay,
+    }
   },
 })
 </script>

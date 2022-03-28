@@ -99,7 +99,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
 import { handleError } from '@/helpers/errors'
-import { Bech32, toHex } from '@cosmjs/encoding'
+import { toHex } from '@cosmjs/encoding'
 import { formatDate } from '@/helpers/formatters'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
@@ -139,10 +139,12 @@ export default defineComponent({
         blockParentHash.value =
           '0x' + toHex(blockInfo.value.block.header.lastBlockId.hash)
         blockTimestamp.value = formatDate(blockInfo.value.block.header.time)
-        blockCreator.value = Bech32.encode(
-          'odinvaloper',
-          blockInfo.value.block.header.proposerAddress
+
+        const validatorData = await callers.getValidatorByConsensusKey(
+          toHex(blockInfo.value.block.header.proposerAddress)
         )
+
+        blockCreator.value = validatorData.data.result.result.operator_address
 
         const { txs } = await callers.getTxSearch({
           query: `tx.height = ${Number(route.params.id)}`,

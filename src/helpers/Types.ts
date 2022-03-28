@@ -38,7 +38,7 @@ export type CoingeckoCoinsType = {
 }
 
 export type SearchResultType = {
-  blocks?: Array<searchBlocksInterface>
+  blocks?: Array<TransformedBlocks>
   transactions?: Array<TransactionListFormatted>
   accounts?: Array<TempSearchAccountInfoType>
 }
@@ -87,6 +87,10 @@ export type adjustedData = {
 export interface blocksWithTotalTxInterface extends BlockMeta {
   total_tx: string | number
   validator: string
+}
+export interface TransformedBlocks extends BlockMeta {
+  validator: string
+  txs: number
 }
 
 export type externalTooltipType = {

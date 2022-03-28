@@ -1,11 +1,11 @@
 import { Tx } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import { toHex } from '@cosmjs/encoding'
-import { callers } from '@/api/callers'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
-import { ReadonlyDateWithNanoseconds } from '@cosmjs/tendermint-rpc'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
+import { getDateFromMessage } from '@/helpers/decodeMessage'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getTotalTx = (
   decodedTx: Tx
 ): { transReceiver: string; totalTx: number } | undefined => {
@@ -27,13 +27,13 @@ const getTotalTx = (
 
 export interface TransactionListFormatted {
   readonly transHeight: number
-  readonly transSender: string
-  readonly transTime: string | Date | ReadonlyDateWithNanoseconds
+  readonly transSender: string | undefined
+  readonly transTime: string | Date | null | undefined
   readonly transFeeList: Coin[] | undefined
   readonly transHash: Uint8Array | string
   readonly transStatus: string
   readonly transMessagesList: string
-  readonly transAmount: number | undefined
+  readonly transAmount: string | undefined
   readonly transReceiver: string | undefined
   readonly transitionT: number
 }
@@ -45,24 +45,17 @@ export async function makeTransactionListFormatted(
 
   for (const el of arr) {
     const decodedTx = Tx.decode(el.tx)
-    const ttx: { transReceiver: string; totalTx: number } | undefined =
-      getTotalTx(decodedTx)
+    const { receiver, sender, amount, time } = await getDateFromMessage(el)
     tempArr.push({
       transHeight: el.height,
-      transSender: toHex(
-        <Uint8Array>decodedTx?.authInfo?.signerInfos[0]?.publicKey?.value
-      ).toUpperCase(),
-      transTime: await callers
-        .getBlockchain(+el.height, +el.height)
-        .then((res) => {
-          return res.blockMetas[0].header.time
-        }),
+      transSender: sender,
+      transTime: time,
       transFeeList: decodedTx.authInfo?.fee?.amount,
       transHash: toHex(el.hash).toUpperCase(),
       transStatus: el.result.code === 0 ? 'Success' : 'Failed',
       transMessagesList: '',
-      transAmount: ttx?.totalTx,
-      transReceiver: ttx?.transReceiver,
+      transAmount: amount,
+      transReceiver: receiver,
       transitionT: el.height,
     })
   }

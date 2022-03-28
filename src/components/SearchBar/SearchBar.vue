@@ -34,7 +34,7 @@
                 <BlockResultItem
                   v-for="block in result.blocks"
                   :result="block"
-                  :key="block.block.header.height"
+                  :key="block.header.height"
                 />
               </template>
               <template v-if="result.transactions?.length !== 0">
@@ -83,15 +83,16 @@ import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
 import {
-  searchBlocksInterface,
   SearchResultType,
   TempSearchAccountInfoType,
+  TransformedBlocks,
 } from '@/helpers/Types'
 import {
   makeTransactionListFormatted,
   TransactionListFormatted,
 } from '@/helpers/makeTransactionListFormatted'
 import { handleError } from '@/helpers/errors'
+import { prepareBlocks } from '@/helpers/blocksHelper'
 
 export default defineComponent({
   name: 'SearchBar',
@@ -148,16 +149,13 @@ export default defineComponent({
       }
     }
 
-    const getBlock = async (): Promise<Array<searchBlocksInterface>> => {
+    const getBlock = async (): Promise<Array<TransformedBlocks>> => {
       try {
-        let block: searchBlocksInterface = await callers.getBlock(
+        const { blockMetas } = await callers.getBlockchain(
+          Number(searchedText.value),
           Number(searchedText.value)
         )
-        block = {
-          ...block,
-          total_tx: block.block?.txs?.length as number,
-        }
-        return [block]
+        return await prepareBlocks(blockMetas)
       } catch {
         return []
       }
