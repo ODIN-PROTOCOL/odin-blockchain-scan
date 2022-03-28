@@ -120,7 +120,6 @@ export default defineComponent({
       }
     })
 
-    // let latestBlocks = ref()
     let latestBlocks = ref<Array<TransformedBlocks> | null>([])
 
     let latestTransactions = ref<Array<adjustedData> | null>([])
