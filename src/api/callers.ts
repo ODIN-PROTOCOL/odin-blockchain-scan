@@ -225,9 +225,13 @@ const makeCallers = () => {
     getInfoPools: () => {
       return axios.get(`${API_CONFIG.telemetryUrl}/telemetry/blocks/info_pools`)
     },
-    getProposedBlocks: (proposer: string) => {
+    getProposedBlocks: (
+      proposer: string,
+      page_number: number,
+      page_limit: number
+    ) => {
       return sendGet(
-        `${API_CONFIG.telemetryUrl}/telemetry/validator/${proposer}/transactions`
+        `${API_CONFIG.telemetryUrl}/telemetry/validator/${proposer}/transactions?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=desc`
       )
     },
   }
