@@ -7,7 +7,7 @@
       </h2>
     </div>
 
-    <div class="block-validators-chart__sort-wrapper mg-b32">
+    <!-- <div class="block-validators-chart__sort-wrapper mg-b32">
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin block-validators-chart__filter"
         name="filter"
@@ -27,7 +27,7 @@
           </div>
         </template>
       </VuePicker>
-    </div>
+    </div> -->
 
     <CustomDoughnutChart
       class="mg-b40"
@@ -123,17 +123,21 @@ export default defineComponent({
     ]
 
     const getChartData = async () => {
-      const endDate = new Date()
-      const startDate = new Date()
-      startDate.setDate(startDate.getDate() - Number(sortingValue.value))
+      // Wait add request parameter
+
+      // const endDate = new Date()
+      // const startDate = new Date()
+      // startDate.setDate(startDate.getDate() - Number(sortingValue.value))
       isLoading.value = true
       try {
-        // TODO check the request when the telemetry is ready, data is temporarily not returned
-        const { topValidators } = await callers.getValidatorsBlockStats({
-          startDate,
-          endDate,
+        const topValidators = await callers.getValidatorsBlock()
+        validators.value = topValidators.data.map((item) => {
+          return {
+            validatorAddress: item.operator_address,
+            blocksCount: Number(item.validated_blocks),
+            stakePercentage: Number(item.tokens).toFixed(2),
+          }
         })
-        validators.value = topValidators
         _prepareAdditionalData(validators.value)
       } catch (error) {
         handleError(error as Error)
@@ -141,10 +145,12 @@ export default defineComponent({
       isLoading.value = false
     }
 
-    const _prepareAdditionalData = (validatorsArr: ValidatorBlockStats[]) => {
+    const _prepareAdditionalData = (
+      validatorsArr: ValidatorBlockStats[] | undefined
+    ) => {
       let tempDataArr: number[] = []
 
-      additionalData.value = validatorsArr.map((item: ValidatorBlockStats) => {
+      additionalData.value = validatorsArr?.map((item: ValidatorBlockStats) => {
         tempDataArr.push(Number(item.blocksCount))
         return {
           validatorAddress: item.validatorAddress,

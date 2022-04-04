@@ -234,6 +234,11 @@ const makeCallers = () => {
         `${API_CONFIG.telemetryUrl}/telemetry/validator/${proposer}/transactions?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=desc`
       )
     },
+    getValidatorsBlock: () => {
+      return axios.get(
+        `${API_CONFIG.telemetryUrl}/telemetry/validators?sort=tokens`
+      )
+    },
   }
 }
 
