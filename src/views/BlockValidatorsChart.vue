@@ -59,7 +59,7 @@
               <TitledLink
                 :to="`/validators/${item.validatorAddress}`"
                 :text="item.validatorAddress"
-                class="app-table-cell-txt"
+                class="app-table-cell-txt app-table__link"
               />
             </div>
             <div class="app-table__cell">
@@ -151,11 +151,11 @@ export default defineComponent({
       let tempDataArr: number[] = []
 
       additionalData.value = validatorsArr?.map((item: ValidatorBlockStats) => {
-        tempDataArr.push(Number(item.blocksCount))
+        tempDataArr.push(Number(item.stakePercentage))
         return {
           validatorAddress: item.validatorAddress,
           Blocks: Number(item.blocksCount),
-          'Stake percentage': item.stakePercentage,
+          'Stake percentage': item.stakePercentage + '%',
         }
       })
       chartData.value = { data: tempDataArr }
