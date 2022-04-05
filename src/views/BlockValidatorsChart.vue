@@ -6,36 +6,12 @@
         Block Validators Chart
       </h2>
     </div>
-
-    <div class="block-validators-chart__sort-wrapper mg-b32">
-      <VuePicker
-        class="app-form__field-input app-filter app-filter--coin block-validators-chart__filter"
-        name="filter"
-        v-model="sortingValue"
-        :isDisabled="isLoading"
-      >
-        <template #dropdownInner>
-          <div class="app-filter__dropdown-inner">
-            <VuePickerOption
-              v-for="{ text, value } in sortingDaysForChart"
-              :key="text"
-              :value="value"
-              :text="text"
-            >
-              {{ text }}
-            </VuePickerOption>
-          </div>
-        </template>
-      </VuePicker>
-    </div>
-
     <CustomDoughnutChart
       class="mg-b40"
       :type="DoughnutChartType.EXTENDED"
       :chartDataset="chartData"
       :additionalInfo="additionalData"
     />
-
     <div class="app-table">
       <div class="app-table__head block-validators-chart__head">
         <span>Rank</span>
@@ -59,7 +35,7 @@
               <TitledLink
                 :to="`/validators/${item.validatorAddress}`"
                 :text="item.validatorAddress"
-                class="app-table-cell-txt"
+                class="app-table-cell-txt app-table__link"
               />
             </div>
             <div class="app-table__cell">
@@ -68,7 +44,7 @@
             </div>
             <div class="app-table__cell">
               <span class="app-table__title">Stake percentage</span>
-              <span>{{ item.stakePercentage }}</span>
+              <span>{{ item.stakePercentage }} %</span>
             </div>
           </div>
         </div>
@@ -84,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { handleError } from '@/helpers/errors'
 import BackButton from '@/components/BackButton.vue'
 import { callers } from '@/api/callers'
@@ -104,36 +80,20 @@ export default defineComponent({
   setup: function () {
     const isLoading = ref<boolean>(false)
     const validators = ref<ValidatorBlockStats[]>()
-    const sortingValue = ref<string>('1')
     const chartData = ref()
     const additionalData = ref<ExtendedDoughnutChartAdditionalInfo[]>()
-    const sortingDaysForChart: Array<{ text: string; value: string }> = [
-      {
-        text: 'Last 24 hours',
-        value: '1',
-      },
-      {
-        text: 'Last 7 days',
-        value: '7',
-      },
-      {
-        text: 'Last 14 days',
-        value: '14',
-      },
-    ]
 
     const getChartData = async () => {
-      const endDate = new Date()
-      const startDate = new Date()
-      startDate.setDate(startDate.getDate() - Number(sortingValue.value))
       isLoading.value = true
       try {
-        // TODO check the request when the telemetry is ready, data is temporarily not returned
-        const { topValidators } = await callers.getValidatorsBlockStats({
-          startDate,
-          endDate,
+        const topValidators = await callers.getValidatorsBlock()
+        validators.value = topValidators.data.map((item) => {
+          return {
+            validatorAddress: item.operator_address,
+            blocksCount: Number(item.validated_blocks),
+            stakePercentage: Number(item.tokens).toFixed(2),
+          }
         })
-        validators.value = topValidators
         _prepareAdditionalData(validators.value)
       } catch (error) {
         handleError(error as Error)
@@ -141,21 +101,21 @@ export default defineComponent({
       isLoading.value = false
     }
 
-    const _prepareAdditionalData = (validatorsArr: ValidatorBlockStats[]) => {
+    const _prepareAdditionalData = (
+      validatorsArr: ValidatorBlockStats[] | undefined
+    ) => {
       let tempDataArr: number[] = []
 
-      additionalData.value = validatorsArr.map((item: ValidatorBlockStats) => {
-        tempDataArr.push(Number(item.blocksCount))
+      additionalData.value = validatorsArr?.map((item: ValidatorBlockStats) => {
+        tempDataArr.push(Number(item.stakePercentage))
         return {
           validatorAddress: item.validatorAddress,
           Blocks: Number(item.blocksCount),
-          'Stake percentage': item.stakePercentage,
+          'Stake percentage': item.stakePercentage + '%',
         }
       })
       chartData.value = { data: tempDataArr }
     }
-
-    watch(sortingValue, async (): Promise<void> => await getChartData())
 
     onMounted(async () => {
       await getChartData()
@@ -166,8 +126,6 @@ export default defineComponent({
       chartData,
       additionalData,
       validators,
-      sortingDaysForChart,
-      sortingValue,
       isLoading,
     }
   },

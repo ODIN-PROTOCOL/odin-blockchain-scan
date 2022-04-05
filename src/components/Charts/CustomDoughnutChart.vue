@@ -98,7 +98,9 @@ export default defineComponent({
     const { type, chartDataset, additionalInfo } = toRefs(props)
     const doughnutRef = ref()
     const totalBlocks = computed(() => {
-      return chartDataset.value.data.reduce((prev, curr) => prev + curr, 0)
+      return additionalInfo.value
+        ?.map((item) => item?.Blocks)
+        ?.reduce((prev, curr) => prev + curr, 0)
     })
 
     const chartColors = computed(() => {
