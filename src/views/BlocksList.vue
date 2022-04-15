@@ -72,7 +72,11 @@ export default defineComponent({
   setup() {
     const blocks = ref()
     const ITEMS_PER_PAGE = 20
-    const MIN_POSSIBLE_BLOCK_HEIGHT = 2
+    // mainnet
+    // const MIN_POSSIBLE_BLOCK_HEIGHT = 360309
+
+    // testnet
+    const MIN_POSSIBLE_BLOCK_HEIGHT = 0
     const currentPage = ref<number>(1)
     const totalPages = ref<number>()
 
@@ -90,7 +94,11 @@ export default defineComponent({
       try {
         const { lastHeight, blockMetas } = await callers.getBlockchain()
         lastBlockHeight.value = lastHeight
-        totalPages.value = Math.ceil(lastHeight / ITEMS_PER_PAGE)
+        console.log(lastHeight)
+
+        totalPages.value = Math.ceil(
+          (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE
+        )
         blocks.value = await prepareBlocks(blockMetas)
 
         maxHeight.value = lastHeight
@@ -108,7 +116,9 @@ export default defineComponent({
         )
 
         lastBlockHeight.value = lastHeight
-        totalPages.value = Math.ceil(lastHeight / ITEMS_PER_PAGE)
+        totalPages.value = Math.ceil(
+          (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE
+        )
         blocks.value = await prepareBlocks(blockMetas)
       } catch (error) {
         handleError(error as Error)

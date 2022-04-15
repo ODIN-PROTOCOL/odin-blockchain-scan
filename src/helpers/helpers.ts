@@ -153,8 +153,8 @@ export const prepareTransaction = async (
         time: time ? time : null,
         sender: sender ? sender : '',
         receiver: receiver ? receiver : '',
-        amount: amount ? amount : '-',
-        fee: fee ? fee : '-',
+        amount: amount ? amount + ' LOKI' : '-',
+        fee: fee ? fee + ' LOKI' : '-',
       },
     ]
   }

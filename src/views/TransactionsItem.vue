@@ -53,7 +53,7 @@
             {{ TOOLTIP_INFO.block }}
           </span>
         </div>
-        <span class="transactions-item__table-row-title">BLock</span>
+        <span class="transactions-item__table-row-title">Block</span>
         <TitledLink
           v-if="tx?.block"
           :to="`/blocks/${tx?.block}`"
