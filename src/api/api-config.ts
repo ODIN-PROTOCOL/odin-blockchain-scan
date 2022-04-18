@@ -18,3 +18,6 @@ export enum COINS_LIST {
   ODIN = 'odin',
   GEO = 'geo',
 }
+export const START_VALUE = {
+  minHeight: process.env.VUE_APP_MIN_POSSIBLE_BLOCK_HEIGHT as string,
+}

@@ -65,6 +65,7 @@ import { convertToTime, convertToDate } from '@/helpers/dates'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { handleError } from '@/helpers/errors'
+import { START_VALUE } from '@/api/api-config'
 
 export default defineComponent({
   name: 'BlocksList',
@@ -72,11 +73,7 @@ export default defineComponent({
   setup() {
     const blocks = ref()
     const ITEMS_PER_PAGE = 20
-    // mainnet
-    // const MIN_POSSIBLE_BLOCK_HEIGHT = 360309
-
-    // testnet
-    const MIN_POSSIBLE_BLOCK_HEIGHT = 0
+    const MIN_POSSIBLE_BLOCK_HEIGHT = Number(START_VALUE.minHeight)
     const currentPage = ref<number>(1)
     const totalPages = ref<number>()
 
@@ -94,8 +91,6 @@ export default defineComponent({
       try {
         const { lastHeight, blockMetas } = await callers.getBlockchain()
         lastBlockHeight.value = lastHeight
-        console.log(lastHeight)
-
         totalPages.value = Math.ceil(
           (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE
         )

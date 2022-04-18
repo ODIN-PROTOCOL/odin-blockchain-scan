@@ -1,13 +1,6 @@
 <template>
   <div class="app-pagination">
-    <VPagination
-      v-model="page"
-      :pages="pages"
-      :range-size="rangeSize"
-      :active-color="activeColor"
-      :hideFirstButton="hideFirstButton"
-      :hideLastButton="hideLastButton"
-    />
+    <VPagination v-model="page" :pages="pages" />
   </div>
 </template>
 
@@ -22,10 +15,6 @@ export default defineComponent({
   props: {
     modelValue: { type: Number, required: true },
     pages: { type: Number, required: true },
-    rangeSize: { type: Number, default: 1 },
-    activeColor: { type: String, default: '#007bff' },
-    hideFirstButton: { type: Boolean, default: true },
-    hideLastButton: { type: Boolean, default: true },
   },
   setup(props, { emit }) {
     const page = computed({

@@ -101,7 +101,7 @@ export default defineComponent({
     const filters = ref<Array<string>>([
       'All Filters',
       'Block',
-      'Transaction',
+      'Tx hash',
       'Account Address',
     ])
 
