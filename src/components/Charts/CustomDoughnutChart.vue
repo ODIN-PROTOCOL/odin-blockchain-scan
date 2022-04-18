@@ -104,14 +104,14 @@ export default defineComponent({
     })
 
     const chartColors = computed(() => {
-      if (!chartDataset.value.data.length) return DEFAULT_CHART_COLORS
+      if (!chartDataset.value.data?.length) return DEFAULT_CHART_COLORS
       return type.value === DoughnutChartType.SIMPLE
         ? SIMPLE_CHART_COLORS
         : EXTENDED_CHART_COLORS
     })
 
     const options = computed(() => {
-      if (!chartDataset.value.data.length) return SIMPLE_CHART_OPTIONS
+      if (!chartDataset.value.data?.length) return SIMPLE_CHART_OPTIONS
       return type.value === DoughnutChartType.SIMPLE
         ? SIMPLE_CHART_OPTIONS
         : {
@@ -141,7 +141,7 @@ export default defineComponent({
     const chartData = computed(() => ({
       datasets: [
         {
-          data: chartDataset.value.data.length
+          data: chartDataset.value.data?.length
             ? chartDataset.value.data
             : DEFAULT_CHART_DATA,
           backgroundColor: chartColors.value,

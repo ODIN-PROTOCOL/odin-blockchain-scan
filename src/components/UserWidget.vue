@@ -28,6 +28,15 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.user-widget {
+  &__btn {
+    width: 10.5rem;
+    height: 4.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
 @include respond-to(tablet) {
   .user-widget {
     width: 100%;

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-nav" :class="{ nav_mobile: isOpen }">
+  <div class="app-nav" :class="{ ['app-nav_mobile']: isOpen }">
     <div class="app-nav__wrap-cont">
       <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
       <LinksDropdown :list="TokenomicList" @redirect="changeRoute" />
@@ -33,10 +33,6 @@ export default defineComponent({
           to: 'Transactions',
           text: 'Transactions',
         },
-        // {
-        //   to: 'PendingTransactions',
-        //   text: 'Pending Transactions',
-        // },
         {
           to: 'Blocks',
           text: 'Blocks',
