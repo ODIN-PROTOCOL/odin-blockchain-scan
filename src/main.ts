@@ -29,9 +29,13 @@ async function _main() {
   try {
     await api.init()
   } catch (error) {
-    _renderInitError('Initialization failed!')
+    const appModule = await import(
+      /* webpackChunkName: "app-entry" */ '@/views/ErrorView.vue'
+    )
+    const app = createApp(appModule.default)
+    app.mount('#app')
     console.error(error)
-    return null
+    return app
   }
 
   // Session should be restored before first router guard executed
@@ -68,24 +72,6 @@ async function _main() {
 
   app.mount('#app')
   return app
-}
-
-function _renderInitError(msg: string) {
-  const appNode = document.querySelector('#app')
-  if (!appNode) return
-
-  const cont = document.createElement('div')
-  cont.classList.add('error-cont')
-
-  const p = document.createElement('p')
-  p.classList.add('error-msg')
-  p.innerText = msg
-  cont.appendChild(p)
-
-  while (appNode.firstChild) {
-    appNode.removeChild(appNode.firstChild)
-  }
-  appNode.appendChild(cont)
 }
 
 let app: App<Element>
