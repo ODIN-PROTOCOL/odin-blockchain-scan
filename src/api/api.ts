@@ -2,6 +2,8 @@ import { API_CONFIG } from './api-config'
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 import { OdinWallet } from './wallet'
 import {
+  setupIbcExtension,
+  IbcExtension,
   BankExtension,
   DeliverTxResponse,
   QueryClient,
@@ -43,7 +45,8 @@ type OdinQueryClient = QueryClient &
   OracleExt &
   BankExtension &
   StakingExtension &
-  TelemetryExt
+  TelemetryExt &
+  IbcExtension
 
 class Api {
   private _query: OdinQueryClient = stub('Query not initialized!')
@@ -111,7 +114,8 @@ class Api {
       setupOracleExt,
       setupStakingExtension,
       setupBankExtension,
-      setupTelemetryExtension
+      setupTelemetryExtension,
+      setupIbcExtension
     )
   }
 
