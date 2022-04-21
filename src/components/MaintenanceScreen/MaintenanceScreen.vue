@@ -1,40 +1,53 @@
 <template>
-  <div class="error">
-    <div class="error-icon">
-      <GearIcon />
+  <div class="maintenance-screen">
+    <div class="maintenance-screen__elements">
+      <GearElement />
       <div class="screwdriver-wrapper">
-        <ScrewdriverIcon />
+        <ScrewdriverElement />
       </div>
       <div class="wrench-wrapper">
-        <WrenchIcon />
+        <WrenchElement />
       </div>
-      <div class="screw-wrapper screw-wrapper-1">
-        <ScrewIcon />
+      <div class="screw-wrapper screw-wrapper_1">
+        <ScrewElement />
       </div>
-      <div class="screw-wrapper screw-wrapper-2">
-        <ScrewIcon />
+      <div class="screw-wrapper screw-wrapper_2">
+        <ScrewElement />
       </div>
-      <div class="screw-wrapper screw-wrapper-3">
-        <ScrewIcon />
+      <div class="screw-wrapper screw-wrapper_3">
+        <ScrewElement />
       </div>
-      <BoltIcon />
+      <BoltElement />
     </div>
-    <div class="error__title">Sorry! We're under maintenance</div>
-    <div class="error__msg">Hang on till we get the error fixed</div>
-    <div class="error__msg">You may refresh the page or try again later</div>
+    <div class="maintenance-screen__title">Sorry! We're under maintenance</div>
+    <div class="maintenance-screen__info">
+      <span class="maintenance-screen__info-msg"
+        >Hang on till we get the error fixed</span
+      >
+      <span class="maintenance-screen__info-msg"
+        >You may refresh the page or try again later</span
+      >
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import GearIcon from '@/components/icons/GearIcon.vue'
-import ScrewdriverIcon from '@/components/icons/ScrewdriverIcon.vue'
-import WrenchIcon from '@/components/icons/WrenchIcon.vue'
-import ScrewIcon from '@/components/icons/ScrewIcon.vue'
-import BoltIcon from '@/components/icons/BoltIcon.vue'
+import BoltElement from '@/components/MaintenanceScreen/AnimationElement/BoltElement.vue'
+import ScrewElement from '@/components/MaintenanceScreen/AnimationElement/ScrewElement.vue'
+import WrenchElement from '@/components/MaintenanceScreen/AnimationElement/WrenchElement.vue'
+import ScrewdriverElement from '@/components/MaintenanceScreen/AnimationElement/ScrewdriverElement.vue'
+import GearElement from '@/components/MaintenanceScreen/AnimationElement/GearElement.vue'
+
 export default defineComponent({
-  name: 'HomeView',
-  components: { GearIcon, ScrewdriverIcon, WrenchIcon, ScrewIcon, BoltIcon },
+  name: 'MaintenanceScreenView',
+  components: {
+    GearElement,
+    ScrewdriverElement,
+    WrenchElement,
+    ScrewElement,
+    BoltElement,
+  },
 })
 </script>
 
@@ -49,23 +62,39 @@ html {
   height: 90vh;
   display: flex;
   flex-direction: column;
-  flex: 1;
   justify-content: space-between;
+  flex: auto;
 }
-.error {
+.maintenance-screen {
   font-family: 'SF Display', Helvetica, Arial, sans-serif;
   text-align: center;
   opacity: 0.9;
   position: relative;
-  top: 20%;
-
-  &-icon {
+  top: 18%;
+  &__info {
+    display: flex;
+    flex-direction: column;
+  }
+  &__title {
+    font-size: 3.2rem;
+    font-weight: 400;
+    line-height: 4.8rem;
+    color: var(--clr__action);
+    margin-bottom: 2rem;
+  }
+  &__info-msg {
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 2.4rem;
+    color: var(--clr__text);
+  }
+  &__elements {
     width: 39.6rem;
     height: 33.8rem;
     position: relative;
     display: flex;
     margin: 2rem auto;
-    .gear-icon,
+    .gear-element,
     .screwdriver-wrapper,
     .wrench-wrapper {
       position: absolute;
@@ -75,7 +104,7 @@ html {
       left: 0;
       margin: auto;
     }
-    .gear-icon {
+    .gear-element {
       animation: 16s infinite rotation linear;
     }
     .screwdriver-wrapper {
@@ -86,7 +115,7 @@ html {
       opacity: 0;
       transform: translate3d(8rem, 8rem, 0);
 
-      animation: 0.4s forwards screwdriver-wrapper;
+      animation: 1.3s forwards screwdriver-wrapper;
 
       & > svg {
         transform: rotateZ(-45deg);
@@ -100,13 +129,13 @@ html {
       opacity: 0;
       transform: translate3d(-8rem, 8rem, 0);
 
-      animation: 0.4s forwards wrench-wrapper;
+      animation: 1.3s forwards wrench-wrapper;
 
       & > svg {
         transform: rotateZ(45deg);
       }
     }
-    .bolt-icon {
+    .bolt-element {
       position: absolute;
       bottom: 1rem;
       right: 0;
@@ -118,17 +147,17 @@ html {
       aspect-ratio: 1;
       animation: infinite 7s ease-in-out floating;
 
-      & > svg {
-        width: 100%;
-      }
+      // & > svg {
+      //   width: 100%;
+      // }
 
-      &-1 {
+      &_1 {
         top: 0;
         left: 0;
         right: 0;
         padding-left: 4.8rem;
       }
-      &-2 {
+      &_2 {
         top: 0;
         bottom: 0;
         left: 0;
@@ -136,7 +165,7 @@ html {
         animation-delay: -7s;
         animation-duration: 12s;
       }
-      &-3 {
+      &_3 {
         top: 0;
         bottom: 0;
         right: 0;
@@ -145,19 +174,6 @@ html {
         animation-duration: 10s;
       }
     }
-  }
-  &__title {
-    font-size: 3.2rem;
-    font-weight: 400;
-    line-height: 4.8rem;
-    color: var(--clr__action);
-    margin-bottom: 2rem;
-  }
-  &__msg {
-    font-size: 2rem;
-    font-weight: 400;
-    line-height: 2.4rem;
-    color: var(--clr__text);
   }
 }
 
@@ -207,49 +223,49 @@ html {
   }
 }
 @include respond-to(small) {
-  .error {
-    top: 20%;
+  .maintenance-screen {
+    top: 15%;
     &__title {
       font-size: 2rem;
       line-height: 3rem;
       margin-bottom: 1rem;
     }
-    &__msg {
+    &__info-msg {
       font-size: 1.6rem;
       line-height: 2.4rem;
     }
-    &-icon {
+    &__elements {
       width: 24rem;
       height: 22rem;
       margin: 2rem auto;
-      .wrench-icon {
+      .wrench-element {
         height: 16rem;
       }
-      .screwdriver-icon {
+      .screwdriver-element {
         height: 16rem;
       }
-      .gear-icon {
+      .gear-element {
         width: 12rem;
         height: 12rem;
       }
-      .screw-icon {
+      .screw-element {
         width: 2rem;
         height: 2rem;
       }
-      .bolt-icon {
+      .bolt-element {
         right: 2rem;
         width: 2rem;
         height: 2rem;
       }
       .screw-wrapper {
-        &-1 {
+        &_1 {
           top: 2.5rem;
         }
-        &-2 {
+        &_2 {
           left: 2.5rem;
           top: 1rem;
         }
-        &-3 {
+        &_3 {
           top: 12.5rem;
           right: 1.5rem;
         }

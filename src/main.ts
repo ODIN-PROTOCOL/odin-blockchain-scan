@@ -30,7 +30,7 @@ async function _main() {
     await api.init()
   } catch (error) {
     const appModule = await import(
-      /* webpackChunkName: "app-entry" */ '@/views/ErrorView.vue'
+      /* webpackChunkName: "maintenance-screen" */ '@/components/MaintenanceScreen/MaintenanceScreen.vue'
     )
     const app = createApp(appModule.default)
     app.mount('#app')

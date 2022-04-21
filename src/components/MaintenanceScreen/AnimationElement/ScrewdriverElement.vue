@@ -1,6 +1,6 @@
 <template>
   <svg
-    class="screwdriver-icon"
+    class="screwdriver-element"
     :class="className"
     :width="width"
     :height="height"
@@ -43,7 +43,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ArrowIcon',
+  name: 'ScrewdriverElement',
   props: {
     className: { type: String },
     width: { type: [Number, String], default: 48 },

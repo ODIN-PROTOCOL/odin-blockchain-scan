@@ -1,6 +1,6 @@
 <template>
   <svg
-    class="gear-icon"
+    class="gear-element"
     :class="className"
     :width="width"
     :height="height"
@@ -28,7 +28,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ArrowIcon',
+  name: 'GearElement',
   props: {
     className: { type: String },
     width: { type: [Number, String], default: 220 },
