@@ -1,5 +1,6 @@
 <template>
   <svg
+    class="screw-icon"
     :class="className"
     :width="width"
     :height="height"

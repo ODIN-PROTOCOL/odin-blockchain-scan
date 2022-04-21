@@ -1,23 +1,23 @@
 <template>
   <div class="error">
     <div class="error-icon">
-      <GearIcon class="gear" />
+      <GearIcon />
       <div class="screwdriver-wrapper">
-        <ScrewdriverIcon class="screwdriver" />
+        <ScrewdriverIcon />
       </div>
       <div class="wrench-wrapper">
-        <WrenchIcon class="wrench" />
+        <WrenchIcon />
       </div>
-      <div class="screw screw-1">
+      <div class="screw-wrapper screw-wrapper-1">
         <ScrewIcon />
       </div>
-      <div class="screw screw-2">
+      <div class="screw-wrapper screw-wrapper-2">
         <ScrewIcon />
       </div>
-      <div class="screw screw-3">
+      <div class="screw-wrapper screw-wrapper-3">
         <ScrewIcon />
       </div>
-      <BoltIcon class="bolt" />
+      <BoltIcon />
     </div>
     <div class="error__title">Sorry! We're under maintenance</div>
     <div class="error__msg">Hang on till we get the error fixed</div>
@@ -65,7 +65,7 @@ html {
     position: relative;
     display: flex;
     margin: 2rem auto;
-    .gear,
+    .gear-icon,
     .screwdriver-wrapper,
     .wrench-wrapper {
       position: absolute;
@@ -75,7 +75,7 @@ html {
       left: 0;
       margin: auto;
     }
-    .gear {
+    .gear-icon {
       animation: 16s infinite rotation linear;
     }
     .screwdriver-wrapper {
@@ -106,12 +106,12 @@ html {
         transform: rotateZ(45deg);
       }
     }
-    .bolt {
+    .bolt-icon {
       position: absolute;
       bottom: 1rem;
       right: 0;
     }
-    .screw {
+    .screw-wrapper {
       position: absolute;
       margin: auto;
       width: 4rem;
@@ -151,7 +151,7 @@ html {
     font-weight: 400;
     line-height: 4.8rem;
     color: var(--clr__action);
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
   &__msg {
     font-size: 2rem;
@@ -208,41 +208,50 @@ html {
 }
 @include respond-to(small) {
   .error {
-    top: 15%;
+    top: 20%;
     &__title {
-      font-size: 2.6rem;
-      line-height: 3.2rem;
+      font-size: 2rem;
+      line-height: 3rem;
+      margin-bottom: 1rem;
     }
     &__msg {
-      font-size: 2rem;
-      line-height: 2.6rem;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
     }
     &-icon {
-      width: 26rem;
-      height: 24rem;
-      .wrench {
-        height: 24rem;
+      width: 24rem;
+      height: 22rem;
+      margin: 2rem auto;
+      .wrench-icon {
+        height: 16rem;
       }
-      .screwdriver {
-        height: 24rem;
+      .screwdriver-icon {
+        height: 16rem;
       }
-      .gear {
-        width: 20rem;
-        height: 18rem;
+      .gear-icon {
+        width: 12rem;
+        height: 12rem;
       }
-      .bolt {
-        bottom: 1rem;
-        right: -2rem;
+      .screw-icon {
+        width: 2rem;
+        height: 2rem;
       }
-      .screw {
+      .bolt-icon {
+        right: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+      .screw-wrapper {
         &-1 {
-          top: -1.5rem;
+          top: 2.5rem;
         }
         &-2 {
-          left: -1rem;
+          left: 2.5rem;
+          top: 1rem;
         }
         &-3 {
-          right: -1.5rem;
+          top: 12.5rem;
+          right: 1.5rem;
         }
       }
     }

@@ -1,5 +1,6 @@
 <template>
   <svg
+    class="wrench-icon"
     :class="className"
     :width="width"
     :height="height"

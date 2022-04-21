@@ -1,5 +1,6 @@
 <template>
   <svg
+    class="bolt-icon"
     :class="className"
     :width="width"
     :height="height"

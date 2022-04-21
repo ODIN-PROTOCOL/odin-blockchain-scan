@@ -1,5 +1,6 @@
 <template>
   <svg
+    class="gear-icon"
     :class="className"
     :width="width"
     :height="height"
