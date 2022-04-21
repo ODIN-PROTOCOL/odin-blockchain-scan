@@ -141,7 +141,9 @@ const makeCallers = () => {
     getOracleProvidersPool: cacheAnswers(
       querier((qc) => qc.oracle.unverified.dataProvidersPool)
     ),
-
+    getChannel: querier((qc) => qc.ibc.channel.allChannels),
+    getConnections: querier((qc) => qc.ibc.connection.allConnections),
+    getClientState: querier((qc) => qc.ibc.client.state),
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },

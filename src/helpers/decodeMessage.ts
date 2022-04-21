@@ -2,6 +2,7 @@ import { MsgWithdrawCoinsToAccFromTreasury } from '@provider/codec/mint/tx'
 import {
   MsgSubmitProposal,
   MsgVote,
+  MsgDeposit,
 } from '@provider/codec/cosmos/gov/v1beta1/tx'
 import {
   MsgBeginRedelegate,
@@ -56,6 +57,9 @@ export function humanizeMessageType(type: string): string {
 
     case '/cosmos.MsgVote':
       return 'Vote'
+
+    case '/cosmos.gov.v1beta1.MsgDeposit':
+      return 'Deposit'
 
     case '/cosmos.gov.v1beta1.MsgVote':
       return 'Vote'
@@ -149,6 +153,7 @@ function decodeMessage(obj: {
   | MsgBeginRedelegate
   | MsgSend
   | MsgVote
+  | MsgDeposit
   | MsgSubmitProposal
   | MsgAddReporter
   | MsgActivate
@@ -181,6 +186,9 @@ function decodeMessage(obj: {
 
     case '/cosmos.gov.v1beta1.MsgVote':
       return MsgVote.decode(obj.value)
+
+    case '/cosmos.gov.v1beta1.MsgDeposit':
+      return MsgDeposit.decode(obj.value)
 
     case '/cosmos.gov.v1beta1.MsgSubmitProposal':
       return MsgSubmitProposal.decode(obj.value)
@@ -447,6 +455,11 @@ export async function getDateFromMessage(
   if (adjustedData.type === 'Activate') {
     if ('validator' in message) {
       adjustedData.receiver = message.validator
+    }
+  }
+  if (adjustedData.type === 'Deposit') {
+    if ('depositor' in message) {
+      adjustedData.receiver = message.depositor
     }
   }
 

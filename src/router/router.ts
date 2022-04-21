@@ -105,6 +105,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Charts-stats.vue'),
   },
   {
+    path: '/ibc',
+    name: 'IBC',
+    component: () => import('../views/IbcView.vue'),
+  },
+  {
     path: '/charts-stats/charts',
     name: 'charts',
     children: [

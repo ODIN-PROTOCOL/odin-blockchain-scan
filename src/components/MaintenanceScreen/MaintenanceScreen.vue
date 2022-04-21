@@ -89,8 +89,8 @@ html {
     color: var(--clr__text);
   }
   &__elements {
-    width: 39.6rem;
-    height: 33.8rem;
+    width: 29.6rem;
+    height: 20.8rem;
     position: relative;
     display: flex;
     margin: 2rem auto;
@@ -106,6 +106,22 @@ html {
     }
     .gear-element {
       animation: 16s infinite rotation linear;
+      width: 11.8rem;
+      height: 9.8rem;
+    }
+    .wrench-element {
+      height: 16rem;
+    }
+    .screwdriver-element {
+      height: 16rem;
+    }
+    .screw-element {
+      width: 2rem;
+      height: 2rem;
+    }
+    .bolt-element {
+      width: 2rem;
+      height: 2rem;
     }
     .screwdriver-wrapper {
       display: flex;
@@ -138,7 +154,7 @@ html {
     .bolt-element {
       position: absolute;
       bottom: 1rem;
-      right: 0;
+      right: 2rem;
     }
     .screw-wrapper {
       position: absolute;
@@ -147,29 +163,25 @@ html {
       aspect-ratio: 1;
       animation: infinite 7s ease-in-out floating;
 
-      // & > svg {
-      //   width: 100%;
-      // }
-
       &_1 {
-        top: 0;
+        top: 2rem;
         left: 0;
         right: 0;
-        padding-left: 4.8rem;
+        // padding-left: 4.8rem;
       }
       &_2 {
-        top: 0;
+        top: 1rem;
         bottom: 0;
         left: 0;
-        padding-top: 4.8rem;
+        // padding-top: 4.8rem;
         animation-delay: -7s;
         animation-duration: 12s;
       }
       &_3 {
-        top: 0;
+        top: 2rem;
         bottom: 0;
-        right: 0;
-        padding-bottom: 4.8rem;
+        right: 3rem;
+        // padding-bottom: 4.8rem;
         animation-delay: -4s;
         animation-duration: 10s;
       }

@@ -4,6 +4,14 @@
       <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
       <LinksDropdown :list="TokenomicList" @redirect="changeRoute" />
       <LinksDropdown :list="ResourceList" @redirect="changeRoute" />
+      <router-link
+        @click="changeRoute"
+        class="app-nav__link"
+        data-text="IBCs"
+        :to="{ name: 'IBC' }"
+      >
+        <span>IBCs</span>
+      </router-link>
     </div>
     <UserWidget />
   </div>
@@ -92,6 +100,39 @@ export default defineComponent({
     align-items: center;
     gap: 2.4rem;
   }
+  &__link {
+    display: grid;
+    grid-template-columns: 100%;
+    text-decoration: none;
+    white-space: nowrap;
+    color: inherit;
+    font-weight: 400;
+    line-height: 2.4rem;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--clr__action);
+    }
+
+    &::before {
+      content: attr(data-text);
+      font-weight: 900;
+      opacity: 0;
+      grid-column: 1;
+      grid-row: 1;
+    }
+    > span {
+      text-align: center;
+      grid-column: 1;
+      grid-row: 1;
+      transition: color 0.5s ease, font-weight 0.5s ease;
+    }
+    &.router-link-exact-active > span {
+      font-weight: bold;
+      color: var(--clr__action);
+    }
+  }
 }
 
 @include respond-to(tablet) {
@@ -108,6 +149,22 @@ export default defineComponent({
       flex-direction: column;
       gap: 0;
       margin-bottom: 2.4rem;
+    }
+    &__link {
+      width: 100%;
+      padding: 2.4rem 1.2rem;
+      border-bottom: 0.1rem solid #ced4da;
+      > span {
+        text-align: left;
+      }
+
+      &:hover {
+        background: rgba(204, 228, 255, 0.4);
+      }
+
+      &:first-child {
+        padding: 2.4rem 1.2rem;
+      }
     }
 
     &_mobile {
