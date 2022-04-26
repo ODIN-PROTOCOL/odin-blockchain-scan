@@ -55,4 +55,9 @@
   --clr__status-pending: #{$clr-status-pending};
   --clr__status-error: #{$clr-status-error};
   --clr__status-progress: #{$clr-status-progress};
+
+  // Panel
+  --clr__panel-box-shadow: #{$clr-panel-box-shadow};
+  --clr__panel-main-background: #{$clr-panel-main-background};
+  --clr__panel-second-background: #{$clr-panel-second-background};
 }

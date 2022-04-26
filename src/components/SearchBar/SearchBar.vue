@@ -25,6 +25,7 @@
           class="filter-search"
           placeholder="Searching by account address, block, Tx hash"
           v-model="searchedText"
+          @keydown.enter="searchBy()"
         />
 
         <template v-if="searchResult">

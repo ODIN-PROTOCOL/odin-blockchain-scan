@@ -5,6 +5,7 @@ import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
 import { bigMath } from '@/helpers/bigMath'
 import { AnyFn, Unpacked } from '@/shared-types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
+import { convertLokiToOdin } from '@/helpers/converters'
 
 export const sortingDaysForChart = [
   {
@@ -144,6 +145,8 @@ export const prepareTransaction = async (
   for (const tx of txs) {
     const { receiver, sender, type, amount, time, fee } =
       await getDateFromMessage(tx)
+    const odinAmount = Number(convertLokiToOdin(amount)) + ' ODIN'
+    const odinFee = Number(convertLokiToOdin(fee)) + ' ODIN'
     tempArr = [
       ...tempArr,
       {
@@ -153,8 +156,8 @@ export const prepareTransaction = async (
         time: time ? time : null,
         sender: sender ? sender : '',
         receiver: receiver ? receiver : '',
-        amount: amount ? amount + ' LOKI' : '-',
-        fee: fee ? fee + ' LOKI' : '-',
+        amount: amount ? odinAmount : '-',
+        fee: fee ? odinFee : '-',
       },
     ]
   }

@@ -23,5 +23,40 @@ export default defineComponent({
   },
 })
 </script>
+<style lang="scss" scoped>
+.info-panel {
+  &__col {
+    display: grid;
+    grid: auto/ repeat(4, 1fr);
+    gap: 2rem;
+  }
+  &__row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3.2rem 2.4rem;
+    padding-right: 0;
+    height: 14rem;
+    background: linear-gradient(
+      180deg,
+      var(--clr__panel-main-background) 0%,
+      var(--clr__panel-second-background) 100%
+    );
+    box-shadow: 0 0.4rem 0.8rem var(--clr__panel-box-shadow);
+    border-radius: 0.8rem;
+  }
+}
 
-<style scoped></style>
+@include respond-to(tablet) {
+  .info-panel {
+    &__col {
+      grid: auto/ repeat(2, 1fr);
+    }
+    &__row {
+      padding: 2rem 1.6rem;
+      height: 10rem;
+    }
+  }
+}
+</style>
