@@ -29,7 +29,7 @@
       <span class="app-table__title">ODIN token percentage</span>
       <div>
         <span v-if="accountGeoPercentage">{{ accountGeoPercentage }}%</span>
-        <span v-else>No info</span>
+        <span v-else>-</span>
       </div>
     </div>
     <div class="app-table__cell">
@@ -87,14 +87,16 @@ export default defineComponent({
     })
 
     const accountGeoPercentage = computed(() => {
-      return bigMath
-        .multiply(
-          bigMath.divide(props.account.geoBalance, props.totalGeo, {
-            decimals: 8,
-          }),
-          100
-        )
-        .toString()
+      return props.totalGeo
+        ? bigMath
+            .multiply(
+              bigMath.divide(props.account.geoBalance, props.totalGeo, {
+                decimals: 8,
+              }),
+              100
+            )
+            .toString()
+        : ''
     })
     return {
       accountGeoPercentage,

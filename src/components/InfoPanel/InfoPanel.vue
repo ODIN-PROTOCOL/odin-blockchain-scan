@@ -1,22 +1,25 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div class="info-panel" v-if="priceData && transactionData">
-      <InfoPanelCol :key="'priceData'" :infoPanelRows="priceData" />
-      <InfoPanelCol :key="'transactionData'" :infoPanelRows="transactionData" />
-      <div class="info-panel__chart">
-        <div class="info-panel__title">Transactions history statistics</div>
-        <CustomLineChart
-          v-if="chartData"
-          :chartDataset="chartData"
-          :datasetLabel="'Transactions'"
-        />
-        <span v-else class="info-panel__empty-chart">
-          Insufficient data to visualize
-        </span>
+    <div>
+      <div class="info-panel" v-if="totalData">
+        <InfoPanelCol :infoPanelRows="totalData" />
+        <div class="info-panel__chart border">
+          <div class="info-panel__chart-title">
+            Transactions history statistics
+          </div>
+          <CustomLineChart
+            v-if="chartData"
+            :chartDataset="chartData"
+            :datasetLabel="'Transactions'"
+          />
+          <span v-else class="info-panel__empty-chart">
+            Insufficient data to visualize
+          </span>
+        </div>
       </div>
-    </div>
-    <div v-else class="info-panel">
-      <span class="info-panel__empty">Waiting to receive data</span>
+      <div v-else class="info-panel border">
+        <span class="info-panel__empty">Waiting to receive data</span>
+      </div>
     </div>
   </transition>
 </template>
@@ -36,11 +39,9 @@ export default defineComponent({
   components: { InfoPanelCol, CustomLineChart },
   setup() {
     const CHART_DATA_PERIOD = 7
-    const priceData = ref<Array<Link> | null>()
-    const transactionData = ref<Array<Link> | null>()
     const transactionCount = ref<number>()
     const chartData = ref()
-
+    const totalData = ref<Array<Link> | null>()
     const getTotalTxNumber = async () => {
       try {
         const { totalCount } = await callers.getTxSearch({
@@ -91,20 +92,17 @@ export default defineComponent({
         `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
       )) as CoingeckoCoinsType
 
-      transactionData.value = [
+      totalData.value = [
+        { title: odinName, text: `$${odinUSD}` },
+        { title: geoDBName, text: `$${geoDBUSD}` },
         {
-          title: 'Total number of transactions',
+          title: 'Transactions',
           text: `${transactionCount.value || 'Insufficient data'}`,
         },
         {
           title: 'Market CAP',
           text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
         },
-      ]
-
-      priceData.value = [
-        { title: odinName, text: `$${odinUSD}` },
-        { title: geoDBName, text: `$${geoDBUSD}` },
       ]
     }
 
@@ -119,8 +117,7 @@ export default defineComponent({
     })
 
     return {
-      transactionData,
-      priceData,
+      totalData,
       chartData,
     }
   },
@@ -128,6 +125,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.border {
+  padding: 3.2rem 2.4rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid var(--clr__action);
+  width: 100%;
+  margin-bottom: 3.2rem;
+}
 .info-panel {
   &__empty {
     grid-column-start: 1;
@@ -154,27 +158,23 @@ export default defineComponent({
       }
     }
   }
-  display: grid;
-  grid: auto/ repeat(2, 1fr) 2fr;
-  padding: 3.2rem 2.4rem;
-  border-radius: 0.8rem;
-  border: 0.1rem solid var(--clr__action);
-  width: 100%;
-  margin-bottom: 3.2rem;
+  &__chart-title {
+    margin-bottom: 1.53rem;
+    font-size: 2.4rem;
+    font-weight: 400;
+  }
   &__title {
     margin-bottom: 1.53rem;
-    font-size: 1.4rem;
-    font-weight: 300;
+    font-size: 1.6rem;
+    font-weight: 400;
   }
   &__text {
     font-weight: 600;
-    font-size: 1.6rem;
-    line-height: 2.4rem;
+    font-size: 2.4rem;
+    line-height: 3.2rem;
   }
-  &__row {
-    &:not(&:last-child) {
-      margin-bottom: 3.2rem;
-    }
+  &__col {
+    margin-bottom: 3.2rem;
   }
   &__chart {
     canvas {
@@ -182,10 +182,12 @@ export default defineComponent({
     }
   }
   @media (max-width: 768px) {
-    grid: auto / repeat(2, 1fr);
-    gap: 2.4rem;
     &__title {
       margin-bottom: 0.8rem;
+    }
+    &__text {
+      font-size: 2rem;
+      line-height: 2.4rem;
     }
     &__chart {
       grid-column: 1/-1;
