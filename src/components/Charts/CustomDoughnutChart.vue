@@ -139,6 +139,7 @@ export default defineComponent({
     })
 
     const chartData = computed(() => ({
+      labels: [],
       datasets: [
         {
           data: chartDataset.value.data?.length
