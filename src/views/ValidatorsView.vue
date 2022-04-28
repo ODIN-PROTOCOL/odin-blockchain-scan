@@ -121,7 +121,7 @@ export default defineComponent({
   components: { AppTabs, AppTab, TitledLink, StatusIcon, AppPagination },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const ITEMS_PER_PAGE = 25
+    const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
     const totalPages = ref()
     const validatorsStatus = ref('Active')

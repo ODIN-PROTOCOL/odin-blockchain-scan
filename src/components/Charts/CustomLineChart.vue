@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LineChart ref="lineRef" v-bind="lineChartProps" />
+    <LineChart class="line-chart" ref="lineRef" v-bind="lineChartProps" />
   </div>
 </template>
 
@@ -55,4 +55,8 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.line-chart {
+  min-height: 10rem;
+}
+</style>

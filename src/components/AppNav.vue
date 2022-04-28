@@ -2,7 +2,6 @@
   <div class="app-nav" :class="{ ['app-nav_mobile']: isOpen }">
     <div class="app-nav__wrap-cont">
       <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
-      <LinksDropdown :list="TokenomicList" @redirect="changeRoute" />
       <LinksDropdown :list="ResourceList" @redirect="changeRoute" />
       <router-link
         @click="changeRoute"
@@ -55,19 +54,7 @@ export default defineComponent({
         },
       ],
     }
-    const TokenomicList: LinkList = {
-      name: 'Tokenomics',
-      links: [
-        {
-          to: 'Tokenomics',
-          text: 'Tokenomics overview',
-        },
-        {
-          to: 'odin&geo',
-          text: 'ODIN&GEO',
-        },
-      ],
-    }
+
     const ResourceList: LinkList = {
       name: 'Resources',
       links: [
@@ -82,7 +69,7 @@ export default defineComponent({
       emit('changeRoute')
     }
 
-    return { BlockchainList, TokenomicList, ResourceList, changeRoute }
+    return { BlockchainList, ResourceList, changeRoute }
   },
 })
 </script>

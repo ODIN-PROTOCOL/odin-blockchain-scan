@@ -94,11 +94,11 @@ export default defineComponent({
     const geoBalance = ref<string>()
     const odinBalance = ref<string>()
     const transactions = ref()
-    const totalTxCount = ref<number>()
+    const totalTxCount = ref<number>(0)
 
     const page = ref<number>(1)
     const totalPages = ref<number>()
-    const ITEMS_PER_PAGE = 5
+    const ITEMS_PER_PAGE = 50
 
     const displayedGeoBalance = computed(() =>
       geoBalance.value ? `${geoBalance.value} GEO` : '0 GEO'

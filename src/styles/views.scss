@@ -35,7 +35,6 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 5.4rem;
     position: relative;
     @include respond-to(tablet) {
       width: 100%;
@@ -46,6 +45,8 @@
 
   &__header-logo {
     width: 9rem;
+    height: 3.4rem;
+    margin-right: 5.4rem;
   }
 
   &__header-burger-menu {

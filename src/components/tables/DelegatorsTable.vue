@@ -71,7 +71,7 @@ export default defineComponent({
     delegators: { type: Array, required: true },
   },
   setup: function (props) {
-    const ITEMS_PER_PAGE = 5
+    const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
     const delegatorsCount = ref()
     const filteredDelegators = ref()

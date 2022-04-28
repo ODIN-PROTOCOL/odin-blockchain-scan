@@ -29,7 +29,7 @@ const chartPagesProps = {
     chartType: 'line',
     getDataMethodName: 'getAvgTxFeePerDays',
     datasetLabel: 'Average Transaction Fee',
-    yAxisTitle: 'Average Transaction Fee (in LOKI)',
+    yAxisTitle: 'Average Transaction Fee',
   },
 }
 
@@ -74,16 +74,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ValidatorItem',
     component: () => import('../views/ValidatorItem.vue'),
   },
-  {
-    path: '/tokenomics',
-    name: 'Tokenomics',
-    component: () => import('../views/TokenomicsView.vue'),
-  },
-  {
-    path: '/odin-geo',
-    name: 'odin&geo',
-    component: () => import('../views/OdinGeo.vue'),
-  },
+
   {
     path: '/delegators/:hash/',
     name: 'DelegatorItem',

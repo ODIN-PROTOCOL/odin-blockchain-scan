@@ -27,7 +27,7 @@
                   <TitledLink
                     :to="`/validators/${item.validator}`"
                     class="app-table__cell-txt app-table__link"
-                    :text="`${cropText(item.validator)}`"
+                    :text="`${item.validator}`"
                   />
                 </template>
                 <template #transactions>
@@ -66,7 +66,7 @@
                     v-if="item.sender"
                     :to="`/account/${item.sender}`"
                     class="app-table__cell-txt app-table__link"
-                    :text="cropText(item.sender)"
+                    :text="item.sender"
                   />
                   <span v-else>No info</span>
                 </template>
@@ -76,7 +76,7 @@
                     v-if="item.receiver"
                     class="app-table__cell-txt app-table__link"
                     :to="`/account/${item.receiver}`"
-                    :text="cropText(item.receiver)"
+                    :text="item.receiver"
                   />
                   <span v-else>No info</span>
                 </template>
@@ -124,7 +124,6 @@ export default defineComponent({
 
     let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
-    let totalCount = ref<number>()
 
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
@@ -133,8 +132,9 @@ export default defineComponent({
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
-      const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
+      const { txs } = await callers.getTxSearch({
         query: `tx.height >= 0`,
+        page: 1,
         per_page: 5,
         order_by: 'desc',
       })
@@ -142,9 +142,6 @@ export default defineComponent({
       if (txs) {
         latestTransactions.value = await prepareTransaction(txs)
       }
-
-      console.debug('latestTransactions', latestTransactions.value)
-      totalCount.value = reqTotalCount
     }
 
     let latestBlocksHeader = {

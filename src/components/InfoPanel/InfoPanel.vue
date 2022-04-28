@@ -47,6 +47,7 @@ export default defineComponent({
         const { totalCount } = await callers.getTxSearch({
           query: 'tx.height >= 0',
           per_page: 1,
+          page: 1,
         })
         transactionCount.value = totalCount
       } catch (error) {
@@ -164,7 +165,7 @@ export default defineComponent({
     font-weight: 400;
   }
   &__title {
-    margin-bottom: 1.53rem;
+    margin-bottom: 0.5rem;
     font-size: 1.6rem;
     font-weight: 400;
   }
@@ -182,9 +183,6 @@ export default defineComponent({
     }
   }
   @media (max-width: 768px) {
-    &__title {
-      margin-bottom: 0.8rem;
-    }
     &__text {
       font-size: 2rem;
       line-height: 2.4rem;

@@ -36,8 +36,7 @@ export default defineComponent({
     align-items: flex-start;
     justify-content: center;
     padding: 3.2rem 2.4rem;
-    padding-right: 0;
-    height: 14rem;
+    max-height: 14rem;
     background: linear-gradient(
       180deg,
       var(--clr__panel-main-background) 0%,
@@ -52,6 +51,17 @@ export default defineComponent({
   .info-panel {
     &__col {
       grid: auto/ repeat(2, 1fr);
+    }
+    &__row {
+      padding: 2rem 1.6rem;
+      height: 10rem;
+    }
+  }
+}
+@include respond-to(small) {
+  .info-panel {
+    &__col {
+      gap: 1.5rem;
     }
     &__row {
       padding: 2rem 1.6rem;

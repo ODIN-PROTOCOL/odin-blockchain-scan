@@ -5,7 +5,7 @@
     @submit.prevent
   >
     <div class="app-form__field">
-      <label class="app-form__field-lbl fs-wb"> Deposit (LOKI) </label>
+      <label class="app-form__field-lbl fs-wb"> Deposit </label>
       <input
         class="app-form__field-input"
         name="deposit-amount"

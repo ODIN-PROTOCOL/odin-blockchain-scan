@@ -179,25 +179,18 @@ export default defineComponent({
       tr {
         display: flex;
         flex-direction: column;
-      }
 
-      &__charts-table {
-        tr {
-          display: flex;
-          flex-direction: column;
-
-          &:last-child {
-            td:last-child {
-              border-bottom: none;
-            }
+        &:last-child {
+          td:last-child {
+            border-bottom: none;
           }
         }
+      }
 
-        td {
-          width: 100%;
-          border: none;
-          border-bottom: 0.1rem solid var(--clr__table-border);
-        }
+      td {
+        width: 100%;
+        border: none;
+        border-bottom: 0.1rem solid var(--clr__table-border);
       }
     }
   }

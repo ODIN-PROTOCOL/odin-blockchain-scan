@@ -37,7 +37,9 @@ export default defineComponent({
 <style lang="scss">
 .latest-list-item {
   display: grid;
-  grid: auto/ repeat(2, minmax(9.3rem, 1fr));
+  grid:
+    auto/ minmax(12rem, 0.5fr)
+    minmax(7rem, 1fr);
   padding-bottom: 2.4rem;
   border-bottom: 0.1px solid var(--clr__input-border);
   gap: 2.4rem;
@@ -87,13 +89,11 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-end;
     gap: 0.8rem;
   }
   &__validator,
   &__to {
     display: flex;
-    justify-content: flex-end;
     gap: 0.8rem;
     width: 100%;
   }
@@ -110,7 +110,9 @@ export default defineComponent({
   }
 
   @media (max-width: 768px) {
-    grid: auto/ repeat(2, 1fr);
+    grid:
+      auto/ minmax(9.5rem, 0.5fr)
+      minmax(8rem, 1fr);
     align-items: flex-start;
     &__left {
       grid-template-columns: 1fr;
