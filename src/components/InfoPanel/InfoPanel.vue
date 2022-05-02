@@ -2,7 +2,7 @@
   <transition name="fade" mode="out-in">
     <div>
       <div class="info-panel" v-if="totalData">
-        <InfoPanelCol :infoPanelRows="totalData" />
+        <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
         <div class="info-panel__chart border">
           <div class="info-panel__chart-title">
             Transactions history statistics
@@ -32,11 +32,11 @@ import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { getAPIDate } from '@/helpers/requests'
 import { handleError } from '@/helpers/errors'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
-import InfoPanelCol from '@/components/InfoPanel/InfoPanelCol.vue'
+import InfoPanelData from '@/components/InfoPanel/InfoPanelData.vue'
 
 export default defineComponent({
   name: 'InfoPanel',
-  components: { InfoPanelCol, CustomLineChart },
+  components: { InfoPanelData, CustomLineChart },
   setup() {
     const CHART_DATA_PERIOD = 7
     const transactionCount = ref<number>()
@@ -133,63 +133,52 @@ export default defineComponent({
   width: 100%;
   margin-bottom: 3.2rem;
 }
-.info-panel {
-  &__empty {
-    grid-column-start: 1;
-    grid-column-end: -1;
-    color: var(--clr__input-border);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3.2rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    &-chart {
-      color: var(--clr__input-border);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 3.4rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      height: 100%;
-      @media (max-width: 48rem) {
-        text-align: center;
-        font-size: 2.4rem;
-      }
-    }
-  }
-  &__chart-title {
-    margin-bottom: 1.53rem;
+.info-panel__data {
+  margin-bottom: 3.2rem;
+}
+.info-panel__empty {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  color: var(--clr__input-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.info-panel__empty-chart {
+  color: var(--clr__input-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.4rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  height: 100%;
+  @media (max-width: 48rem) {
+    text-align: center;
     font-size: 2.4rem;
-    font-weight: 400;
   }
-  &__title {
-    margin-bottom: 0.5rem;
-    font-size: 1.6rem;
-    font-weight: 400;
+}
+.info-panel__chart-title {
+  margin-bottom: 1.53rem;
+  font-size: 2.4rem;
+  font-weight: 400;
+}
+.info-panel__chart {
+  canvas {
+    height: 19.5rem;
   }
-  &__text {
-    font-weight: 600;
-    font-size: 2.4rem;
-    line-height: 3.2rem;
+}
+
+@include respond-to(tablet) {
+  .info-panel__text {
+    font-size: 2rem;
+    line-height: 2.4rem;
   }
-  &__col {
-    margin-bottom: 3.2rem;
-  }
-  &__chart {
-    canvas {
-      height: 19.5rem;
-    }
-  }
-  @media (max-width: 768px) {
-    &__text {
-      font-size: 2rem;
-      line-height: 2.4rem;
-    }
-    &__chart {
-      grid-column: 1/-1;
-    }
+  .info-panel__chart {
+    grid-column: 1/-1;
   }
 }
 </style>

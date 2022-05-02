@@ -74,13 +74,15 @@ export default defineComponent({
     const router: Router = useRouter()
     const chartData = ref()
     const isLoading = ref<boolean>(false)
-    const sortingValue = ref<string>('1')
+    const sortingValue = ref<string>(sortingDaysForChart.lastWeek.value)
 
     const getChartData = async () => {
       const endDate = new Date()
       const startDate = new Date()
-      if (sortingValue.value === '1') {
-        startDate.setDate(startDate.getDate() - 7)
+      if (sortingValue.value === sortingDaysForChart.lastDay.value) {
+        startDate.setDate(
+          startDate.getDate() - Number(sortingDaysForChart.lastWeek.value)
+        )
       } else startDate.setDate(startDate.getDate() - Number(sortingValue.value))
 
       isLoading.value = true
@@ -89,7 +91,7 @@ export default defineComponent({
           startDate,
           endDate
         )
-        if (sortingValue.value === '1') {
+        if (sortingValue.value === sortingDaysForChart.lastDay.value) {
           chartData.value = formatDataForCharts(data.slice(6))
         } else chartData.value = formatDataForCharts(data)
       } catch (error) {

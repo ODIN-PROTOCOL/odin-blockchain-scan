@@ -149,21 +149,17 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-.blocks-list {
-  &__table-head,
-  &__table-row {
-    grid:
-      auto /
-      minmax(3rem, 0.5fr) minmax(10rem, 0.5fr) minmax(8rem, 0.5fr) minmax(8rem, 2fr);
-  }
+.blocks-list__table-head,
+.blocks-list__table-row {
+  grid:
+    auto /
+    minmax(3rem, 0.5fr) minmax(10rem, 0.5fr) minmax(8rem, 0.5fr) minmax(8rem, 2fr);
 }
 
 @include respond-to(tablet) {
-  .blocks-list {
-    &__table-head,
-    &__table-row {
-      grid: none;
-    }
+  .blocks-list__table-head,
+  .blocks-list__table-row {
+    grid: none;
   }
 }
 </style>

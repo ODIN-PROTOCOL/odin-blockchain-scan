@@ -1,5 +1,5 @@
 <template>
-  <div class="app-table__row top-accounts__table-row">
+  <div class="accounts-line app-table__row">
     <div class="app-table__cell">
       <span class="app-table__title">Rank</span>
       <span>{{ rank }}</span>
@@ -16,14 +16,14 @@
       <span class="app-table__title">ODIN balance</span>
       <span>{{ odinBalance }}</span>
     </div>
-    <div class="app-table__cell top-accounts__table-cell">
+    <div class="app-table__cell">
       <span class="app-table__title">ODIN token percentage</span>
       <div>
         <span v-if="accountOdinPercentage">{{ accountOdinPercentage }}%</span>
         <span v-else>-</span>
       </div>
     </div>
-    <div class="app-table__cell top-accounts__table-cell">
+    <div class="app-table__cell">
       <span class="app-table__title">Transaction count</span>
       <div>
         <span v-if="account.total_tx">
@@ -77,3 +77,19 @@ export default defineComponent({
   },
 })
 </script>
+<style scoped lang="scss">
+.accounts-line {
+  grid:
+    auto /
+    minmax(2rem, 0.5fr)
+    minmax(8rem, 5fr)
+    minmax(8rem, 2fr)
+    minmax(8rem, 2fr)
+    minmax(8rem, 1.5fr);
+}
+@include respond-to(tablet) {
+  .accounts-line {
+    grid: none;
+  }
+}
+</style>

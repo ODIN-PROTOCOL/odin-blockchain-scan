@@ -115,46 +115,36 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.top-accounts {
-  &__sort-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3.2rem;
-  }
-
-  &__sort-field {
-    display: flex;
-    align-items: center;
-  }
-  &__table-head,
-  &__table-row {
-    grid:
-      auto /
-      minmax(2rem, 0.5fr)
-      minmax(8rem, 5fr)
-      minmax(8rem, 2fr)
-      minmax(8rem, 2fr)
-      minmax(8rem, 1.5fr);
-  }
+.top-accounts__sort-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3.2rem;
+}
+.top-accounts__sort-field {
+  display: flex;
+  align-items: center;
+}
+.top-accounts__table-head {
+  grid:
+    auto /
+    minmax(2rem, 0.5fr)
+    minmax(8rem, 5fr)
+    minmax(8rem, 2fr)
+    minmax(8rem, 2fr)
+    minmax(8rem, 1.5fr);
 }
 @include respond-to(tablet) {
-  .top-accounts {
-    &__table-head,
-    &__table-row {
-      grid: none;
-    }
+  .top-accounts__table-head {
+    grid: none;
   }
 }
 @include respond-to(small) {
-  .top-accounts {
-    &__sort-wrapper {
-      flex-direction: column;
-      align-items: flex-start;
-
-      & > p {
-        margin-bottom: 3.2rem;
-      }
+  .top-accounts__sort-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    & > p {
+      margin-bottom: 3.2rem;
     }
   }
 }
