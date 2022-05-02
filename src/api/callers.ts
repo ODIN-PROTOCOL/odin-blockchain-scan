@@ -241,6 +241,11 @@ const makeCallers = () => {
         `${API_CONFIG.telemetryUrl}/telemetry/validators?sort=tokens`
       )
     },
+    getBlockSize: (height: number) => {
+      return axios.get(
+        `${API_CONFIG.telemetryUrl}/telemetry/block_size/${height}`
+      )
+    },
   }
 }
 

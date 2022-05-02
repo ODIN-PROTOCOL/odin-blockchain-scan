@@ -90,6 +90,18 @@
         />
         <CopyButton class="mg-l8" :text="String(blockCreator)" />
       </div>
+      <div class="blocks-item__table-row">
+        <div class="blocks-item__table-row-info">
+          <img src="~@/assets/icons/info.svg" alt="info" />
+          <span class="blocks-item__table-row-tooltip">
+            {{ TOOLTIP_INFO.blockSize }}
+          </span>
+        </div>
+        <span class="blocks-item__table-row-title">Block size</span>
+        <span class="blocks-item__table-row-value"
+          >{{ blockSize || 0 }} bytes</span
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -131,7 +143,7 @@ export default defineComponent({
     const blockTimestamp = ref()
     const blocksTransactions = ref()
     const blockCreator = ref('-')
-
+    const blockSize = ref()
     const getBlock = async () => {
       try {
         blockInfo.value = await callers.getBlock(Number(route.params.id))
@@ -139,7 +151,8 @@ export default defineComponent({
         blockParentHash.value =
           '0x' + toHex(blockInfo.value.block.header.lastBlockId.hash)
         blockTimestamp.value = formatDate(blockInfo.value.block.header.time)
-
+        const res = await callers.getBlockSize(Number(route.params.id))
+        blockSize.value = res?.data?.block?.BlockSize
         const validatorData = await callers.getValidatorByConsensusKey(
           toHex(blockInfo.value.block.header.proposerAddress)
         )
@@ -168,6 +181,7 @@ export default defineComponent({
       blockTimestamp,
       blocksTransactions,
       blockCreator,
+      blockSize,
     }
   },
 })
