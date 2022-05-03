@@ -60,11 +60,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/TransactionsItem.vue'),
   },
   {
-    path: '/pending_transactions',
-    name: 'PendingTransactions',
-    component: () => import('../views/PendingTransactions.vue'),
-  },
-  {
     path: '/validators',
     name: 'Validators',
     component: () => import('../views/ValidatorsView.vue'),
@@ -74,14 +69,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ValidatorItem',
     component: () => import('../views/ValidatorItem.vue'),
   },
-
   {
-    path: '/delegators/:hash/',
-    name: 'DelegatorItem',
-    component: () => import('../views/DelegatorItem.vue'),
-  },
-  {
-    path: '/top_accounts/',
+    path: '/top-accounts/',
     name: 'TopAccounts',
     component: () => import('../views/TopAccounts.vue'),
   },

@@ -61,13 +61,6 @@ export function diffDays(dateLeft: Date, dateRight: Date): string {
   return `${differenceInSeconds(dateLeft, dateRight)} secs ago`
 }
 
-export function preciseAsPercents(amount: string): string {
-  const percents = bigMath
-    .format(bigMath.fromPrecise(amount), { decimals: 2 })
-    .replace(/.00$/, '')
-  return `${percents}%` // TODO: translate
-}
-
 export function getPrecisePercents(amount: string): string {
   const percents = bigMath.fromPrecise(bigMath.multiply(amount, 100))
   return `${percents}%`

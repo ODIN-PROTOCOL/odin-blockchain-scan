@@ -4,7 +4,7 @@
       class="pagination__control"
       :class="{ ['pagination__control_active']: isPrevControlsActive }"
     >
-      <ArrowIcon
+      <PaginationArrowIcon
         class="pagination__control-arrow rotate-left"
         :width="6"
         :height="10"
@@ -30,7 +30,7 @@
       class="pagination__control"
       :class="{ ['pagination__control_active']: isNextControlsActive }"
     >
-      <ArrowIcon
+      <PaginationArrowIcon
         class="pagination__control-arrow rotate-right"
         :width="6"
         :height="10"
@@ -43,12 +43,12 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import ArrowIcon from '@/assets/icons/ArrowIcon.vue'
+import PaginationArrowIcon from '@/components/icons/PaginationArrowIcon.vue'
 
 export default defineComponent({
   name: 'VPagination',
   components: {
-    ArrowIcon,
+    PaginationArrowIcon,
   },
   props: {
     pages: {
