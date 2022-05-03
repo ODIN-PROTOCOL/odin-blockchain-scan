@@ -38,8 +38,8 @@
             class="transactions-item__table-row-status"
             :class="
               txStatus === TX_STATUSES.SUCCESS
-                ? 'transactions-item__table-row-status_success'
-                : 'transactions-item__table-row-status_failed'
+                ? 'transactions-item__table-row-status--success'
+                : 'transactions-item__table-row-status--failed'
             "
           >
             {{ txStatus === TX_STATUSES.SUCCESS ? 'Success' : 'Failed' }}
@@ -231,148 +231,141 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.transactions-item {
-  &__title {
-    margin: 0 1.6rem 0 2rem;
-  }
+.transactions-item__title {
+  margin: 0 1.6rem 0 2rem;
+}
 
-  &__subtitle-wrapper {
-    display: flex;
-    max-width: 80%;
-  }
+.transactions-item__subtitle-wrapper {
+  display: flex;
+  max-width: 80%;
+}
 
-  &__subtitle {
-    @include ellipsis();
-  }
+.transactions-item__subtitle {
+  @include ellipsis();
+}
 
-  &__table-row {
-    display: flex;
-    padding: 1.6rem 0;
-    border-bottom: 0.1rem solid var(--clr__input-border);
-    align-items: center;
-  }
+.transactions-item__table-row {
+  display: flex;
+  padding: 1.6rem 0;
+  border-bottom: 0.1rem solid var(--clr__input-border);
+  align-items: center;
+}
 
-  &__table-row-info {
-    position: relative;
-    cursor: pointer;
-    margin-right: 0.9rem;
+.transactions-item__table-row-info {
+  position: relative;
+  cursor: pointer;
+  margin-right: 0.9rem;
 
-    &:hover {
-      .transactions-item__table-row-tooltip {
-        display: block;
-      }
-    }
-  }
-
-  &__table-row-tooltip {
-    display: none;
-    position: absolute;
-    bottom: 130%;
-    left: -50%;
-    min-width: 30rem;
-    padding: 1.2rem 2.4rem;
-    background: var(--clr__tooltip-bg);
-    border-radius: 0.8rem;
-    font-size: 1.6rem;
-    font-weight: 400;
-    line-height: 1.6rem;
-    color: var(--clr__tooltip-text);
-
-    &:before {
-      content: '';
+  &:hover {
+    .transactions-item__table-row-tooltip {
       display: block;
-      width: 0.6rem;
-      height: 0.6rem;
-      position: absolute;
-      bottom: -0.3rem;
-      left: 1.6rem;
-      transform: translateX(-50%) rotate(45deg);
-      background: var(--clr__tooltip-bg);
     }
-  }
-
-  &__table-row-title {
-    min-width: 14.5rem;
-    margin-right: 2.4rem;
-  }
-
-  &__table-row-value {
-    font-size: 1.4rem;
-    @include ellipsis();
-  }
-
-  &__table-row-link,
-  &__message-row-link {
-    text-decoration: none;
-    color: var(--clr__action);
-  }
-
-  &__table-row-status {
-    display: block;
-    width: 10rem;
-    height: 2.4rem;
-    background: var(--clr__muted-bg);
-    border-radius: 0.4rem;
-    color: var(--clr__text-on-action);
-    text-align: center;
-    line-height: 2.4rem;
-
-    &_success {
-      background: var(--clr__status-success);
-    }
-
-    &_failed {
-      background: var(--clr__status-error);
-    }
-  }
-
-  &__message {
-    border: 0.1rem solid var(--clr__action);
-    border-radius: 0.8rem;
-    padding: 3.2rem 2.4rem;
-  }
-
-  &__message-title {
-    display: inline-block;
-    font-size: 2rem;
-    margin-bottom: 4rem;
-  }
-
-  &__message-row {
-    @extend .transactions-item__table-row;
-    border: none;
-  }
-
-  &__message-row-title {
-    @extend .transactions-item__table-row-title;
-  }
-
-  &__message-row-value {
-    @extend .transactions-item__table-row-value;
   }
 }
 
+.transactions-item__table-row-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 130%;
+  left: -50%;
+  min-width: 30rem;
+  padding: 1.2rem 2.4rem;
+  background: var(--clr__tooltip-bg);
+  border-radius: 0.8rem;
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.6rem;
+  color: var(--clr__tooltip-text);
+
+  &:before {
+    content: '';
+    display: block;
+    width: 0.6rem;
+    height: 0.6rem;
+    position: absolute;
+    bottom: -0.3rem;
+    left: 1.6rem;
+    transform: translateX(-50%) rotate(45deg);
+    background: var(--clr__tooltip-bg);
+  }
+}
+
+.transactions-item__table-row-title {
+  min-width: 14.5rem;
+  margin-right: 2.4rem;
+}
+
+.transactions-item__table-row-value {
+  font-size: 1.4rem;
+  @include ellipsis();
+}
+
+.transactions-item__table-row-link,
+.transactions-item__message-row-link {
+  text-decoration: none;
+  color: var(--clr__action);
+}
+
+.transactions-item__table-row-status {
+  display: block;
+  width: 10rem;
+  height: 2.4rem;
+  background: var(--clr__muted-bg);
+  border-radius: 0.4rem;
+  color: var(--clr__text-on-action);
+  text-align: center;
+  line-height: 2.4rem;
+}
+.transactions-item__table-row-status--success {
+  background: var(--clr__status-success);
+}
+
+.transactions-item__table-row-status--failed {
+  background: var(--clr__status-error);
+}
+
+.transactions-item__message {
+  border: 0.1rem solid var(--clr__action);
+  border-radius: 0.8rem;
+  padding: 3.2rem 2.4rem;
+}
+
+.transactions-item__message-title {
+  display: inline-block;
+  font-size: 2rem;
+  margin-bottom: 4rem;
+}
+
+.transactions-item__message-row {
+  @extend .transactions-item__table-row;
+  border: none;
+}
+
+.transactions-item__message-row-title {
+  @extend .transactions-item__table-row-title;
+}
+
+.transactions-item__message-row-value {
+  @extend .transactions-item__table-row-value;
+}
+
 @include respond-to(medium) {
-  .transactions-item {
-    &__subtitle-wrapper {
-      max-width: 75%;
-    }
+  .transactions-item__subtitle-wrapper {
+    max-width: 75%;
   }
 }
 
 @include respond-to(tablet) {
-  .transactions-item {
-    &__title {
-      margin: 0.8rem 0 0.4rem 0;
-    }
+  .transactions-item__title {
+    margin: 0.8rem 0 0.4rem 0;
+  }
 
-    &__subtitle-wrapper {
-      max-width: 100%;
-    }
+  .transactions-item__subtitle-wrapper {
+    max-width: 100%;
+  }
 
-    &__table-row-info {
-      display: none;
-    }
+  .transactions-item__table-row-info {
+    display: none;
   }
 }
 </style>

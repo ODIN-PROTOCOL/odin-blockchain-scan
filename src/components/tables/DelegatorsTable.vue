@@ -117,21 +117,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.delegators-table {
-  &__table-head,
-  &__table-row {
-    grid:
-      auto /
-      minmax(8rem, 4fr)
-      minmax(8rem, 2fr);
-  }
+.delegators-table__table-head,
+.delegators-table__table-row {
+  grid:
+    auto /
+    minmax(8rem, 4fr)
+    minmax(8rem, 2fr);
 }
 
 @include respond-to(tablet) {
-  .delegators-table {
-    &__table-row {
-      grid: none;
-    }
+  .delegators-table__table-row {
+    grid: none;
   }
 }
 </style>

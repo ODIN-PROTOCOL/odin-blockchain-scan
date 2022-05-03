@@ -119,40 +119,35 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chart-view {
-  &__title {
-    margin: 0 1.6rem 0 2rem;
-  }
+.chart-view__title {
+  margin: 0 1.6rem 0 2rem;
+}
 
-  &__sort-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2.4rem;
-    width: 100%;
-  }
+.chart-view__sort-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.4rem;
+  width: 100%;
+}
 
-  &__y-axis {
-    font-size: 1.4rem;
-    width: 8rem;
-    font-weight: 300;
-  }
+.chart-view__y-axis {
+  font-size: 1.4rem;
+  width: 8rem;
+  font-weight: 300;
 }
 
 @include respond-to(tablet) {
-  .chart-view {
-    &__title {
-      margin: 0.8rem 1rem 0.4rem;
-    }
+  .chart-view__title {
+    margin: 0.8rem 1rem 0.4rem;
+  }
 
-    &__sort-wrapper {
-      flex-direction: column-reverse;
-      gap: 3.2rem;
-
-      .app-filter {
-        width: 100%;
-        padding: 0;
-      }
+  .chart-view__sort-wrapper {
+    flex-direction: column-reverse;
+    gap: 3.2rem;
+    .app-filter {
+      width: 100%;
+      padding: 0;
     }
   }
 }

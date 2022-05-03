@@ -93,7 +93,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/charts-stats',
     name: 'Chart&Stats',
-    component: () => import('../views/Charts-stats.vue'),
+    component: () => import('../views/ChartsStats.vue'),
   },
   {
     path: '/ibc',

@@ -188,96 +188,92 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.blocks-item {
-  &__title {
-    margin: 0 1.6rem 0 2rem;
-  }
+.blocks-item__title {
+  margin: 0 1.6rem 0 2rem;
+}
 
-  &__table-row {
-    display: flex;
-    align-items: flex-start;
-    padding: 1.6rem 0;
-    border-bottom: 0.1rem solid var(--clr__input-border);
-  }
+.blocks-item__table-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 1.6rem 0;
+  border-bottom: 0.1rem solid var(--clr__input-border);
+}
 
-  &__table-row-info {
-    display: flex;
-    align-items: center;
-    height: 2.3rem;
-    position: relative;
-    cursor: pointer;
-    margin-right: 0.9rem;
+.blocks-item__table-row-info {
+  display: flex;
+  align-items: center;
+  height: 2.3rem;
+  position: relative;
+  cursor: pointer;
+  margin-right: 0.9rem;
 
-    &:hover {
-      .blocks-item__table-row-tooltip {
-        display: block;
-      }
-    }
-  }
-
-  &__table-row-tooltip {
-    display: none;
-    position: absolute;
-    bottom: 130%;
-    left: -50%;
-    min-width: 30rem;
-    padding: 1.2rem 2.4rem;
-    background: var(--clr__tooltip-bg);
-    border-radius: 0.8rem;
-    font-size: 1.6rem;
-    font-weight: 400;
-    line-height: 1.6rem;
-    color: var(--clr__tooltip-text);
-
-    &:before {
-      content: '';
+  &:hover {
+    .blocks-item__table-row-tooltip {
       display: block;
-      width: 0.6rem;
-      height: 0.6rem;
-      position: absolute;
-      bottom: -0.3rem;
-      left: 1.6rem;
-      transform: translateX(-50%) rotate(45deg);
-      background: var(--clr__tooltip-bg);
     }
-  }
-
-  &__table-row-title {
-    min-width: 14.5rem;
-    line-height: 2.3rem;
-    margin-right: 2.4rem;
-  }
-
-  &__table-row-value {
-    font-size: 1.4rem;
-    @include ellipsis();
-  }
-
-  &__table-row-values {
-    display: flex;
-    flex-direction: column;
-    @include ellipsis();
-
-    & > *:not(:last-child) {
-      margin-bottom: 0.8rem;
-    }
-  }
-
-  &__table-row-link {
-    text-decoration: none;
-    color: var(--clr__action);
   }
 }
 
-@include respond-to(tablet) {
-  .blocks-item {
-    &__title {
-      margin: 0.8rem 0 0.4rem 0;
-    }
+.blocks-item__table-row-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 130%;
+  left: -50%;
+  min-width: 30rem;
+  padding: 1.2rem 2.4rem;
+  background: var(--clr__tooltip-bg);
+  border-radius: 0.8rem;
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.6rem;
+  color: var(--clr__tooltip-text);
 
-    &__table-row-info {
-      display: none;
-    }
+  &:before {
+    content: '';
+    display: block;
+    width: 0.6rem;
+    height: 0.6rem;
+    position: absolute;
+    bottom: -0.3rem;
+    left: 1.6rem;
+    transform: translateX(-50%) rotate(45deg);
+    background: var(--clr__tooltip-bg);
+  }
+}
+
+.blocks-item__table-row-title {
+  min-width: 14.5rem;
+  line-height: 2.3rem;
+  margin-right: 2.4rem;
+}
+
+.blocks-item__table-row-value {
+  font-size: 1.4rem;
+  @include ellipsis();
+}
+
+.blocks-item__table-row-values {
+  display: flex;
+  flex-direction: column;
+  @include ellipsis();
+
+  & > *:not(:last-child) {
+    margin-bottom: 0.8rem;
+  }
+}
+
+.blocks-item__table-row-link {
+  text-decoration: none;
+  color: var(--clr__action);
+}
+
+@include respond-to(tablet) {
+  .blocks-item__title {
+    margin: 0.8rem 0 0.4rem 0;
+  }
+
+  .blocks-item__table-row-info {
+    display: none;
   }
 }
 </style>

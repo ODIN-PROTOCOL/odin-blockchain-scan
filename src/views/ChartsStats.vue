@@ -114,84 +114,80 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.charts-stats {
-  &__charts-section {
-    display: flex;
-    gap: 2.4rem;
-    & > * {
-      flex: 1;
-    }
-  }
-
-  &__charts-wrapper {
-    display: flex;
-    flex-direction: column;
-    padding: 3.2rem 2.4rem;
-    border: 0.1rem solid var(--clr__action);
-    border-radius: 0.8rem;
-  }
-
-  &__charts-title {
-    font-size: 2.4rem;
-    font-weight: 400;
-    line-height: 3.2rem;
-  }
-
-  &__charts-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-style: hidden;
-
-    td {
-      width: 33.3333%;
-      border: 0.1rem solid var(--clr__table-border);
-    }
-  }
-
-  &__charts-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    flex-grow: 1;
-    padding: 3.3rem;
-    cursor: pointer;
-
-    &:hover {
-      background-color: var(--clr__table-row-hover);
-    }
-  }
-
-  &__charts-item-title {
-    font-weight: 600;
-    margin-top: 2.4rem;
-    text-align: center;
+.charts-stats__charts-section {
+  display: flex;
+  gap: 2.4rem;
+  & > * {
+    flex: 1;
   }
 }
 
+.charts-stats__charts-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 3.2rem 2.4rem;
+  border: 0.1rem solid var(--clr__action);
+  border-radius: 0.8rem;
+}
+
+.charts-stats__charts-title {
+  font-size: 2.4rem;
+  font-weight: 400;
+  line-height: 3.2rem;
+}
+
+.charts-stats__charts-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-style: hidden;
+
+  td {
+    width: 33.3333%;
+    border: 0.1rem solid var(--clr__table-border);
+  }
+}
+
+.charts-stats__charts-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  flex-grow: 1;
+  padding: 3.3rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--clr__table-row-hover);
+  }
+}
+
+.charts-stats__charts-item-title {
+  font-weight: 600;
+  margin-top: 2.4rem;
+  text-align: center;
+}
+
 @include respond-to(tablet) {
-  .charts-stats {
-    &__charts-section {
+  .charts-stats__charts-section {
+    flex-direction: column;
+  }
+
+  .charts-stats__charts-table {
+    tr {
+      display: flex;
       flex-direction: column;
-    }
 
-    &__charts-table {
-      tr {
-        display: flex;
-        flex-direction: column;
-
-        &:last-child {
-          td:last-child {
-            border-bottom: none;
-          }
+      &:last-child {
+        td:last-child {
+          border-bottom: none;
         }
       }
+    }
 
-      td {
-        width: 100%;
-        border: none;
-        border-bottom: 0.1rem solid var(--clr__table-border);
-      }
+    td {
+      width: 100%;
+      border: none;
+      border-bottom: 0.1rem solid var(--clr__table-border);
     }
   }
 }

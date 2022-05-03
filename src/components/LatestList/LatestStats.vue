@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in" appear>
-    <div class="latest">
-      <div class="latest__wrapper">
+    <div class="latest-stats">
+      <div class="latest-stats__wrapper">
         <LatestList :header="latestBlocksHeader">
           <transition-group name="fade" mode="out-in">
             <template v-if="latestBlocks">
@@ -35,8 +35,8 @@
                 </template>
               </LatestListItem>
             </template>
-            <div class="latest-list-item" v-else>
-              <span class="latest-list-item__empty"> no item </span>
+            <div class="latest-stats__list-item" v-else>
+              <span class="latest-stats__list-item--empty"> no item </span>
             </div>
           </transition-group>
         </LatestList>
@@ -82,8 +82,8 @@
                 </template>
               </LatestListItem>
             </template>
-            <div class="latest-list-item" v-else>
-              <span class="latest-list-item__empty"> no item </span>
+            <div class="latest-stats__list-item" v-else>
+              <span class="latest-stats__list-item--empty"> no item </span>
             </div>
           </transition-group>
         </LatestList>
@@ -171,28 +171,27 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.latest {
-  &-list-item {
-    &__empty {
-      grid-column-start: 1;
-      grid-column-end: -1;
-      color: var(--clr__input-border);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 3.2rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-  }
-  &__wrapper {
-    display: grid;
-    align-items: flex-start;
-    gap: 2.4rem;
-    grid-template-columns: 1fr 1fr;
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
+.latest-stats__list-item--empty {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  color: var(--clr__input-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.latest-stats__wrapper {
+  display: grid;
+  align-items: flex-start;
+  gap: 2.4rem;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 768px) {
+  .latest-stats__wrapper {
+    grid-template-columns: 1fr;
   }
 }
 </style>

@@ -165,59 +165,55 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.accounts-item {
-  &__title {
-    margin: 0 1.6rem 0 2rem;
-  }
+.accounts-item__title {
+  margin: 0 1.6rem 0 2rem;
+}
 
-  &__subtitle-wrapper {
-    display: flex;
-  }
+.accounts-item__subtitle-wrapper {
+  display: flex;
+}
 
-  &__stats {
-    border: 0.1rem solid var(--clr__action);
-    border-radius: 0.8rem;
-    padding: 3.2rem 2.4rem;
-    display: inline-block;
-  }
+.accounts-item__stats {
+  border: 0.1rem solid var(--clr__action);
+  border-radius: 0.8rem;
+  padding: 3.2rem 2.4rem;
+  display: inline-block;
+}
 
-  &__stats-row {
-    display: grid;
-    grid-template-columns: 10rem 1fr;
-    align-items: center;
+.accounts-item__stats-row {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  align-items: center;
 
-    &:not(:last-child) {
-      margin-bottom: 2.4rem;
-    }
-  }
-
-  &__stats-title {
-    font-size: 1.6rem;
-    width: 10rem;
-    display: inline-block;
-  }
-
-  &__stats-amount {
-    font-weight: 600;
-    font-size: 1.6rem;
-    margin-left: 2.4rem;
-    @include ellipsis();
+  &:not(:last-child) {
+    margin-bottom: 2.4rem;
   }
 }
 
+.accounts-item__stats-title {
+  font-size: 1.6rem;
+  width: 10rem;
+  display: inline-block;
+}
+
+.accounts-item__stats-amount {
+  font-weight: 600;
+  font-size: 1.6rem;
+  margin-left: 2.4rem;
+  @include ellipsis();
+}
+
 @include respond-to(tablet) {
-  .accounts-item {
-    &__title {
-      margin: 0.8rem 0 0.4rem 0;
-    }
+  .accounts-item__title {
+    margin: 0.8rem 0 0.4rem 0;
+  }
 
-    &__subtitle-wrapper {
-      width: 100%;
-    }
+  .accounts-item__subtitle-wrapper {
+    width: 100%;
+  }
 
-    &__stats {
-      width: 100%;
-    }
+  .accounts-item__stats {
+    width: 100%;
   }
 }
 </style>
