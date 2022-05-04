@@ -133,15 +133,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.block-validators-chart {
-  &__title {
-    margin: 0 1.6rem 0 2rem;
-  }
+.block-validators-chart__title {
+  margin: 0 1.6rem 0 2rem;
+}
 
-  &__sort-wrapper {
-    display: flex;
-    justify-content: flex-end;
-  }
+.block-validators-chart__sort-wrapper {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .block-validators-chart__head,
@@ -155,10 +153,8 @@ export default defineComponent({
 }
 
 @include respond-to(tablet) {
-  .block-validators-chart {
-    &__title {
-      margin: 0.8rem 0 0.4rem 0;
-    }
+  .block-validators-chart__title {
+    margin: 0.8rem 0 0.4rem 0;
   }
 
   .block-validators-chart__row {

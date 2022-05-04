@@ -146,25 +146,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.validator-item {
-  &__title {
-    margin: 0 1.6rem 0 2rem;
-  }
+.validator-item__title {
+  margin: 0 1.6rem 0 2rem;
+}
 
-  &__subtitle-wrapper {
-    display: flex;
-  }
+.validator-item__subtitle-wrapper {
+  display: flex;
 }
 
 @include respond-to(tablet) {
-  .validator-item {
-    &__title {
-      margin: 0.8rem 0 0.4rem 0;
-    }
+  .validator-item__title {
+    margin: 0.8rem 0 0.4rem 0;
+  }
 
-    &__subtitle-wrapper {
-      width: 100%;
-    }
+  .validator-item__subtitle-wrapper {
+    width: 100%;
   }
 }
 </style>
