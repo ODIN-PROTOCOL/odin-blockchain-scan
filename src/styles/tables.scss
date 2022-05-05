@@ -21,7 +21,7 @@
   &__row {
     align-items: flex-start;
     padding: 3.2rem 0 2rem;
-    border-bottom: 1px solid var(--clr__table-border);
+    border-bottom: 0.1rem solid var(--clr__table-border);
   }
 
   &__cell {
@@ -57,7 +57,7 @@
 
     &__title {
       display: inline-block;
-      min-width: 150px;
+      min-width: 15rem;
       margin-right: 2.4rem;
       font-weight: 300;
     }
