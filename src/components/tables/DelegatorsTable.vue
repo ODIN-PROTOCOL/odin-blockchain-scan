@@ -71,7 +71,7 @@ export default defineComponent({
     delegators: { type: Array, required: true },
   },
   setup: function (props) {
-    const ITEMS_PER_PAGE = 5
+    const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
     const delegatorsCount = ref()
     const filteredDelegators = ref()
@@ -117,21 +117,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.delegators-table {
-  &__table-head,
-  &__table-row {
-    grid:
-      auto /
-      minmax(8rem, 4fr)
-      minmax(8rem, 2fr);
-  }
+.delegators-table__table-head,
+.delegators-table__table-row {
+  grid:
+    auto /
+    minmax(8rem, 4fr)
+    minmax(8rem, 2fr);
 }
 
 @include respond-to(tablet) {
-  .delegators-table {
-    &__table-row {
-      grid: none;
-    }
+  .delegators-table__table-row {
+    grid: none;
   }
 }
 </style>

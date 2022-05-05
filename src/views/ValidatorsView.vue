@@ -23,17 +23,17 @@
         <span class="validators-view__table-head-item">Rank</span>
         <span class="validators-view__table-head-item">Validator</span>
         <span
-          class="validators-view__table-head-item validators-view__table-head-item_end"
+          class="validators-view__table-head-item validators-view__table-head-item--end"
         >
           Delegator Share
         </span>
         <span
-          class="validators-view__table-head-item validators-view__table-head-item_end"
+          class="validators-view__table-head-item validators-view__table-head-item--end"
         >
           Commission
         </span>
         <span
-          class="validators-view__table-head-item validators-view__table-head-item_center"
+          class="validators-view__table-head-item validators-view__table-head-item--center"
         >
           Oracle Status
         </span>
@@ -57,7 +57,7 @@
                 :to="`/validators/${item.operatorAddress}`"
               />
             </div>
-            <div class="app-table__cell validators-view__table-cell_end">
+            <div class="app-table__cell validators-view__table-cell--end">
               <span class="app-table__title">Delegator Share</span>
               <span>
                 {{
@@ -68,13 +68,13 @@
                 }}
               </span>
             </div>
-            <div class="app-table__cell validators-view__table-cell_end">
+            <div class="app-table__cell validators-view__table-cell--end">
               <span class="app-table__title">Commission</span>
               <span>
                 {{ $getPrecisePercents(item.commission.commissionRates.rate) }}
               </span>
             </div>
-            <div class="app-table__cell validators-view__table-cell_center">
+            <div class="app-table__cell validators-view__table-cell--center">
               <span class="app-table__title">Oracle Status</span>
               <StatusIcon :status="item.isActive ? 'success' : 'error'" />
             </div>
@@ -121,7 +121,7 @@ export default defineComponent({
   components: { AppTabs, AppTab, TitledLink, StatusIcon, AppPagination },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const ITEMS_PER_PAGE = 25
+    const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
     const totalPages = ref()
     const validatorsStatus = ref('Active')
@@ -244,59 +244,49 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.validators-view {
-  &__count-info {
-    margin-bottom: 3.2rem;
-  }
+.validators-view__count-info {
+  margin-bottom: 3.2rem;
+}
 
-  &__table-cell {
-    &_center {
-      justify-content: center;
-    }
-    &_end {
-      justify-content: flex-end;
-    }
-  }
+.validators-view__table-cell--center {
+  justify-content: center;
+}
+.validators-view__table-cell--end {
+  justify-content: flex-end;
+}
 
-  &__table-head-item {
-    &_center {
-      text-align: center;
-    }
-    &_end {
-      text-align: end;
-    }
-  }
+.validators-view__table-head-item--center {
+  text-align: center;
+}
+.validators-view__table-head-item--end {
+  text-align: end;
+}
 
-  &__table-head,
-  &__table-row {
-    grid:
-      auto /
-      minmax(3rem, 1fr)
-      minmax(8rem, 4fr)
-      minmax(8rem, 4fr)
-      minmax(8rem, 4fr)
-      minmax(8rem, 4fr);
-  }
+.validators-view__table-head,
+.validators-view__table-row {
+  grid:
+    auto /
+    minmax(3rem, 1fr)
+    minmax(8rem, 4fr)
+    minmax(8rem, 4fr)
+    minmax(8rem, 4fr)
+    minmax(8rem, 4fr);
 }
 
 @include respond-to(tablet) {
-  .validators-view {
-    &__count-info {
-      margin-bottom: 0;
-    }
+  .validators-view__count-info {
+    margin-bottom: 0;
+  }
 
-    &__table-cell {
-      &_center {
-        justify-content: flex-start;
-      }
-      &_end {
-        justify-content: flex-start;
-      }
-    }
+  .validators-view__table-cell--center {
+    justify-content: flex-start;
+  }
+  .validators-view__table-cell--end {
+    justify-content: flex-start;
+  }
 
-    &__table-row {
-      grid: none;
-    }
+  .validators-view__table-row {
+    grid: none;
   }
 }
 </style>

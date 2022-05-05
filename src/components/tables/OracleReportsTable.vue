@@ -62,7 +62,7 @@ export default defineComponent({
     reports: { type: Array, required: true },
   },
   setup: function (props) {
-    const ITEMS_PER_PAGE = 5
+    const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
     const reportsCount = ref()
     const filteredReports = ref()

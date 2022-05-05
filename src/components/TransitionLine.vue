@@ -24,7 +24,7 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Date and time</span>
-      <span>{{ $fDate(transition.time) }}</span>
+      <span>{{ $fDate(transition.time, 'HH:mm dd.MM.yy') }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Sender</span>

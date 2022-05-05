@@ -38,6 +38,7 @@ export default defineComponent({
           hoverBackgroundColor: '#007BFF',
           borderRadius: 8,
           tension: 0.4,
+          maxBarThickness: 170,
         },
       ],
     }))

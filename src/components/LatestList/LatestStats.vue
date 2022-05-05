@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in" appear>
-    <div class="latest">
-      <div class="latest__wrapper">
+    <div class="latest-stats">
+      <div class="latest-stats__wrapper">
         <LatestList :header="latestBlocksHeader">
           <transition-group name="fade" mode="out-in">
             <template v-if="latestBlocks">
@@ -27,7 +27,7 @@
                   <TitledLink
                     :to="`/validators/${item.validator}`"
                     class="app-table__cell-txt app-table__link"
-                    :text="`${cropText(item.validator)}`"
+                    :text="`${item.validator}`"
                   />
                 </template>
                 <template #transactions>
@@ -35,8 +35,8 @@
                 </template>
               </LatestListItem>
             </template>
-            <div class="latest-list-item" v-else>
-              <span class="latest-list-item__empty"> no item </span>
+            <div class="latest-stats__list-item" v-else>
+              <span class="latest-stats__list-item--empty"> no item </span>
             </div>
           </transition-group>
         </LatestList>
@@ -66,7 +66,7 @@
                     v-if="item.sender"
                     :to="`/account/${item.sender}`"
                     class="app-table__cell-txt app-table__link"
-                    :text="cropText(item.sender)"
+                    :text="item.sender"
                   />
                   <span v-else>No info</span>
                 </template>
@@ -76,14 +76,14 @@
                     v-if="item.receiver"
                     class="app-table__cell-txt app-table__link"
                     :to="`/account/${item.receiver}`"
-                    :text="cropText(item.receiver)"
+                    :text="item.receiver"
                   />
                   <span v-else>No info</span>
                 </template>
               </LatestListItem>
             </template>
-            <div class="latest-list-item" v-else>
-              <span class="latest-list-item__empty"> no item </span>
+            <div class="latest-stats__list-item" v-else>
+              <span class="latest-stats__list-item--empty"> no item </span>
             </div>
           </transition-group>
         </LatestList>
@@ -124,7 +124,6 @@ export default defineComponent({
 
     let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
-    let totalCount = ref<number>()
 
     const getLatestBlocks = async (): Promise<void> => {
       const { blockMetas, lastHeight: reqLastHeight } =
@@ -133,8 +132,9 @@ export default defineComponent({
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
-      const { totalCount: reqTotalCount, txs } = await callers.getTxSearch({
+      const { txs } = await callers.getTxSearch({
         query: `tx.height >= 0`,
+        page: 1,
         per_page: 5,
         order_by: 'desc',
       })
@@ -142,9 +142,6 @@ export default defineComponent({
       if (txs) {
         latestTransactions.value = await prepareTransaction(txs)
       }
-
-      console.debug('latestTransactions', latestTransactions.value)
-      totalCount.value = reqTotalCount
     }
 
     let latestBlocksHeader = {
@@ -174,28 +171,27 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.latest {
-  &-list-item {
-    &__empty {
-      grid-column-start: 1;
-      grid-column-end: -1;
-      color: var(--clr__input-border);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 3.2rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-  }
-  &__wrapper {
-    display: grid;
-    align-items: flex-start;
-    gap: 2.4rem;
-    grid-template-columns: 1fr 1fr;
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
+.latest-stats__list-item--empty {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  color: var(--clr__input-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.latest-stats__wrapper {
+  display: grid;
+  align-items: flex-start;
+  gap: 2.4rem;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 768px) {
+  .latest-stats__wrapper {
+    grid-template-columns: 1fr;
   }
 }
 </style>

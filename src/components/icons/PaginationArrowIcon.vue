@@ -1,6 +1,5 @@
 <template>
   <svg
-    class="nav__dropdown-wrapper-arrow"
     :class="className"
     :width="width"
     :height="height"
@@ -18,7 +17,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ArrowIcon',
+  name: 'PaginationArrowIcon',
   props: {
     className: { type: String },
     width: { type: [Number, String], default: 24 },

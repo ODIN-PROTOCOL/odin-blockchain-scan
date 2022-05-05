@@ -2,11 +2,13 @@
   <div class="app__main-view chart-view">
     <div class="app__main-view-title-wrapper">
       <BackButton :current-router="router" :text="'Charts & Stats'" />
-      <h2 class="app__main-view-title chart__title">{{ chartPageTitle }}</h2>
+      <h2 class="app__main-view-title chart-view__title">
+        {{ chartPageTitle }}
+      </h2>
     </div>
 
-    <div class="chart__sort-wrapper">
-      <span class="chart__y-axis">{{ yAxisTitle }}</span>
+    <div class="chart-view__sort-wrapper">
+      <span class="chart-view__y-axis">{{ yAxisTitle }}</span>
 
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin"
@@ -72,12 +74,16 @@ export default defineComponent({
     const router: Router = useRouter()
     const chartData = ref()
     const isLoading = ref<boolean>(false)
-    const sortingValue = ref<string>('1')
+    const sortingValue = ref<string>(sortingDaysForChart.lastWeek.value)
 
     const getChartData = async () => {
       const endDate = new Date()
       const startDate = new Date()
-      startDate.setDate(startDate.getDate() - Number(sortingValue.value))
+      if (sortingValue.value === sortingDaysForChart.lastDay.value) {
+        startDate.setDate(
+          startDate.getDate() - Number(sortingDaysForChart.lastWeek.value)
+        )
+      } else startDate.setDate(startDate.getDate() - Number(sortingValue.value))
 
       isLoading.value = true
       try {
@@ -85,8 +91,9 @@ export default defineComponent({
           startDate,
           endDate
         )
-
-        chartData.value = formatDataForCharts(data)
+        if (sortingValue.value === sortingDaysForChart.lastDay.value) {
+          chartData.value = formatDataForCharts(data.slice(6))
+        } else chartData.value = formatDataForCharts(data)
       } catch (error) {
         handleError(error as Error)
       } finally {
@@ -112,39 +119,35 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chart-view {
-  &__title {
-    margin: 0 1.6rem 0 2rem;
-  }
+.chart-view__title {
+  margin: 0 1.6rem 0 2rem;
+}
 
-  &__sort-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2.4rem;
-    width: 100%;
-  }
+.chart-view__sort-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.4rem;
+  width: 100%;
+}
 
-  &__y-axis {
-    font-size: 1.4rem;
-    width: 8rem;
-  }
+.chart-view__y-axis {
+  font-size: 1.4rem;
+  width: 8rem;
+  font-weight: 300;
 }
 
 @include respond-to(tablet) {
-  .chart-view {
-    &__title {
-      margin: 0.8rem 0 0.4rem 0;
-    }
+  .chart-view__title {
+    margin: 0.8rem 1rem 0.4rem;
+  }
 
-    &__sort-wrapper {
-      flex-direction: column-reverse;
-      gap: 3.2rem;
-
-      .app-filter {
-        width: 100%;
-        padding: 0;
-      }
+  .chart-view__sort-wrapper {
+    flex-direction: column-reverse;
+    gap: 3.2rem;
+    .app-filter {
+      width: 100%;
+      padding: 0;
     }
   }
 }

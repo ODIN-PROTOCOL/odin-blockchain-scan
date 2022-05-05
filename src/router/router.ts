@@ -29,7 +29,7 @@ const chartPagesProps = {
     chartType: 'line',
     getDataMethodName: 'getAvgTxFeePerDays',
     datasetLabel: 'Average Transaction Fee',
-    yAxisTitle: 'Average Transaction Fee (in LOKI)',
+    yAxisTitle: 'Average Transaction Fee',
   },
 }
 
@@ -60,11 +60,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/TransactionsItem.vue'),
   },
   {
-    path: '/pending_transactions',
-    name: 'PendingTransactions',
-    component: () => import('../views/PendingTransactions.vue'),
-  },
-  {
     path: '/validators',
     name: 'Validators',
     component: () => import('../views/ValidatorsView.vue'),
@@ -75,22 +70,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/ValidatorItem.vue'),
   },
   {
-    path: '/tokenomics',
-    name: 'Tokenomics',
-    component: () => import('../views/TokenomicsView.vue'),
-  },
-  {
-    path: '/odin-geo',
-    name: 'odin&geo',
-    component: () => import('../views/OdinGeo.vue'),
-  },
-  {
-    path: '/delegators/:hash/',
-    name: 'DelegatorItem',
-    component: () => import('../views/DelegatorItem.vue'),
-  },
-  {
-    path: '/top_accounts/',
+    path: '/top-accounts/',
     name: 'TopAccounts',
     component: () => import('../views/TopAccounts.vue'),
   },
@@ -102,7 +82,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/charts-stats',
     name: 'Chart&Stats',
-    component: () => import('../views/Charts-stats.vue'),
+    component: () => import('../views/ChartsStats.vue'),
   },
   {
     path: '/ibc',

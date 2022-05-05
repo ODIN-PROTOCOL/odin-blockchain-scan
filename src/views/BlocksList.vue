@@ -6,15 +6,19 @@
 
     <p class="mg-b16 mg-t16">{{ blocksCount }} blocks found</p>
 
-    <div class="app-table">
-      <div class="app-table__head">
+    <div class="app-table blocks-list__table">
+      <div class="app-table__head blocks-list__table-head">
         <span> Block </span>
         <span> Date and time </span>
         <span> Transactions </span>
         <span> Validator </span>
       </div>
       <template v-if="blocks?.length">
-        <div v-for="item in blocks" :key="item.id" class="app-table__row">
+        <div
+          v-for="item in blocks"
+          :key="item.id"
+          class="app-table__row blocks-list__table-row"
+        >
           <div class="app-table__cell">
             <span class="app-table__title">Block</span>
             <TitledLink
@@ -25,7 +29,7 @@
           </div>
           <div class="app-table__cell">
             <span class="app-table__title">Date and time</span>
-            <span>{{ $fDate(item.header.time) }}</span>
+            <span>{{ $fDate(item.header.time, 'HH:mm dd.MM.yy') }}</span>
           </div>
           <div class="app-table__cell">
             <span class="app-table__title">Transactions</span>
@@ -95,7 +99,6 @@ export default defineComponent({
           (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE
         )
         blocks.value = await prepareBlocks(blockMetas)
-
         maxHeight.value = lastHeight
         minHeight.value = lastHeight - ITEMS_PER_PAGE
       } catch (error) {
@@ -145,3 +148,18 @@ export default defineComponent({
   },
 })
 </script>
+<style lang="scss" scoped>
+.blocks-list__table-head,
+.blocks-list__table-row {
+  grid:
+    auto /
+    minmax(3rem, 0.5fr) minmax(10rem, 0.5fr) minmax(8rem, 0.5fr) minmax(8rem, 2fr);
+}
+
+@include respond-to(tablet) {
+  .blocks-list__table-head,
+  .blocks-list__table-row {
+    grid: none;
+  }
+}
+</style>

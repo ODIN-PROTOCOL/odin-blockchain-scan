@@ -9,6 +9,7 @@ export enum DoughnutChartType {
   SIMPLE,
   EXTENDED,
 }
+import { bigMath } from './bigMath'
 
 export const getChartOptions = (datasetUnit: string, labels: string[]) => {
   return {
@@ -238,8 +239,14 @@ export const formatDataForCharts = (
   data.forEach(({ date, ...rest }: telemetryDataForCharts) => {
     labels.push(date)
     if (rest.fee) {
-      const amount = Number(rest.fee[0]?.amount) || 0
-      values.push(amount)
+      if (rest.fee[0]?.denom === 'loki') {
+        const amount =
+          Number(bigMath.multiply(rest.fee[0]?.amount, 0.000001)) || 0
+        values.push(amount)
+      } else {
+        const amount = Number(rest.fee[0]?.amount) || 0
+        values.push(amount)
+      }
     } else {
       values.push(Object.values(rest)[0])
     }
