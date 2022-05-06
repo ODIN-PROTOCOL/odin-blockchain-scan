@@ -18,15 +18,17 @@
           :class="{ ['app-nav__switch-item--active']: isMainnet }"
           class="app-nav__switch-item"
           :disabled="isMainnet"
-          @click="goTo()"
+          :href="START_VALUE.mainnetScan"
+          target="_blank"
         >
           mainnet
         </a>
         <a
           :class="{ ['app-nav__switch-item--active']: !isMainnet }"
           class="app-nav__switch-item"
-          @click="goTo()"
           :disabled="!isMainnet"
+          :href="START_VALUE.testnetScan"
+          target="_blank"
         >
           testnet
         </a>
@@ -93,15 +95,14 @@ export default defineComponent({
     const isMainnet = computed(() => {
       return START_VALUE.server === 'mainnet'
     })
-    const goTo = () => {
-      if (!isMainnet.value) {
-        window.open(START_VALUE.mainnetScan, '_blank', 'noopener')
-      } else {
-        window.open(START_VALUE.testnetScan, '_blank', 'noopener')
-      }
-    }
 
-    return { BlockchainList, ResourceList, changeRoute, goTo, isMainnet }
+    return {
+      BlockchainList,
+      ResourceList,
+      changeRoute,
+      isMainnet,
+      START_VALUE,
+    }
   },
 })
 </script>
