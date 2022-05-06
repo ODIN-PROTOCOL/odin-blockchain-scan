@@ -65,7 +65,6 @@ export type CoinBlocksDataType = {
 
 export type TempBalanceType = {
   address: string
-  geoBalance: number
   odinBalance: number
   total_tx?: number
 }

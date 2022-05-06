@@ -69,6 +69,7 @@ export default defineComponent({
         totalCurrency.value.find((el) => el.denom === 'loki')?.amount
       )
       accounts.value = await getTopAccountList(pagination)
+      accounts.value.sort((a, b) => b.odinBalance - a.odinBalance)
       for (const a of accounts.value) {
         const { txs } = await callers.getTxSearch({
           query: `message.sender='${a.address}'`,
