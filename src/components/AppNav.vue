@@ -14,24 +14,22 @@
         </router-link>
       </div>
       <div class="app-nav__switch">
-        <button
-          type="button"
+        <a
           :class="{ ['app-nav__switch-item--active']: isMainnet }"
           class="app-nav__switch-item"
-          @click="goTo()"
           :disabled="isMainnet"
+          @click="goTo()"
         >
           mainnet
-        </button>
-        <button
-          type="button"
+        </a>
+        <a
           :class="{ ['app-nav__switch-item--active']: !isMainnet }"
           class="app-nav__switch-item"
           @click="goTo()"
           :disabled="!isMainnet"
         >
           testnet
-        </button>
+        </a>
       </div>
     </div>
     <UserWidget class="app-nav__user-widget" />
@@ -97,9 +95,9 @@ export default defineComponent({
     })
     const goTo = () => {
       if (!isMainnet.value) {
-        window.location.href = START_VALUE.mainnetScan
+        window.open(START_VALUE.mainnetScan, '_blank', 'noopener')
       } else {
-        window.location.href = START_VALUE.testnetScan
+        window.open(START_VALUE.testnetScan, '_blank', 'noopener')
       }
     }
 
@@ -135,8 +133,11 @@ export default defineComponent({
   height: 2.4rem;
   text-decoration: none;
   color: var(--clr__nav-switch-color);
+  cursor: pointer;
 
   &--active {
+    pointer-events: none;
+    cursor: default;
     background: var(--clr__btn-normal);
     border-radius: 3.2rem;
     color: var(--clr__main-bg);
