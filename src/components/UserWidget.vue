@@ -1,49 +1,35 @@
 <template>
-  <div class="user-widget fx-row">
-    <button
-      class="app__btn user-widget__btn"
-      type="button"
-      @click="logInAndLeave()"
-    >
-      <span>Sign in</span>
-    </button>
-  </div>
+  <a class="user-widget app__btn" :href="START_VALUE.walletLink">
+    Stake ODIN
+  </a>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import router from '@/router'
+import { START_VALUE } from '@/api/api-config'
 
 export default defineComponent({
   name: 'UserWidget',
   setup() {
-    const logInAndLeave = () => {
-      // auth.logOut()
-      router.push('/')
-    }
-
-    return { logInAndLeave }
+    return { START_VALUE }
   },
 })
 </script>
 
 <style scoped lang="scss">
 .user-widget {
-  &__btn {
-    width: 10.5rem;
-    height: 4.8rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  width: 12.7rem;
+  height: 3.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+  text-decoration: none;
 }
 @include respond-to(tablet) {
   .user-widget {
     width: 100%;
-
-    &__btn {
-      width: 100%;
-    }
   }
 }
 </style>
