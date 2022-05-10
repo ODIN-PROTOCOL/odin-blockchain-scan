@@ -125,6 +125,26 @@ const makeCallers = () => {
         `${API_CONFIG.telemetryUrl}/telemetry/block_size/${height}`
       )
     },
+    getTxSearchFromTelemetry: (
+      page_number: number,
+      page_limit: number,
+      page_order: string
+    ) => {
+      return sendGet(
+        `${API_CONFIG.telemetryUrl}/telemetry/txs?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}`
+      )
+    },
+    getAccountTx: (
+      page_number: number,
+      page_limit: number,
+      owner: string,
+      page_order: string,
+      tx_type: string
+    ) => {
+      return sendGet(
+        `${API_CONFIG.telemetryUrl}/telemetry/account_txs/${owner}?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&type=${tx_type}`
+      )
+    },
   }
 }
 

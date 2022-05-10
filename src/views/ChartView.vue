@@ -11,13 +11,13 @@
       <span class="chart-view__y-axis">{{ yAxisTitle }}</span>
 
       <VuePicker
-        class="app-form__field-input app-filter app-filter--coin"
+        class="app-form__field-input app-filter app-filter--coin _vue-picker"
         name="filter"
         v-model="sortingValue"
         :isDisabled="isLoading"
       >
         <template #dropdownInner>
-          <div class="app-filter__dropdown-inner">
+          <div class="_vue-picker__dropdown-custom">
             <VuePickerOption
               v-for="{ text, value } in sortingDaysForChart"
               :key="text"
