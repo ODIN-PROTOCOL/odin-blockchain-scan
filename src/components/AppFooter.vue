@@ -14,54 +14,33 @@
         </div>
         <nav class="app-footer__nav">
           <div class="app-footer__nav-text">
-            <a class="app-footer__nav-text-item" href="https://odinprotocol.io/"
+            <a class="app-footer__nav-text-item" :href="START_VALUE.infoOdin"
               >About us</a
             >
-            <a
-              class="app-footer__nav-text-item"
-              href="https://geodb.gitbook.io/odin-protocol/getting-started"
+            <a class="app-footer__nav-text-item" :href="START_VALUE.docs"
               >Docs</a
             >
-            <a
-              class="app-footer__nav-text-item"
-              href="http://mainnet.odinprotocol.io/"
+            <a class="app-footer__nav-text-item" :href="START_VALUE.mainnetWeb"
               >Mainnet</a
             >
-            <a
-              class="app-footer__nav-text-item"
-              href="https://scan.odinprotocol.io/"
+            <a class="app-footer__nav-text-item" :href="START_VALUE.mainnetScan"
               >ODIN Explorer</a
             >
           </div>
           <div class="app-footer__nav-img">
-            <a
-              class="app-footer__nav-img-item"
-              href="https://github.com/ODIN-PROTOCOL"
-            >
+            <a class="app-footer__nav-img-item" :href="START_VALUE.gitHub">
               <img src="@/assets/icons/gitHub.svg" alt="gitHub" />
             </a>
-            <a
-              class="app-footer__nav-img-item"
-              href="https://twitter.com/odinprotocol"
-            >
+            <a class="app-footer__nav-img-item" :href="START_VALUE.twitter">
               <img src="@/assets/icons/twitter.svg" alt="twitter" />
             </a>
-            <a
-              class="app-footer__nav-img-item"
-              href="https://discord.gg/cUXKyRq"
-            >
+            <a class="app-footer__nav-img-item" :href="START_VALUE.discord">
               <img src="@/assets/icons/discord.svg" alt="discord" />
             </a>
-            <a
-              class="app-footer__nav-img-item"
-              href="https://www.reddit.com/r/OdinProtocol"
-            >
+            <a class="app-footer__nav-img-item" :href="START_VALUE.reddit">
               <img src="@/assets/icons/reddit.svg" alt="reddit" />
             </a>
-            <a
-              class="app-footer__nav-img-item"
-              href="https://odinprotocol.medium.com/"
-            >
+            <a class="app-footer__nav-img-item" :href="START_VALUE.medium">
               <img src="@/assets/icons/medium.svg" alt="medium" />
             </a>
           </div>
@@ -73,9 +52,13 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { START_VALUE } from '@/api/api-config'
 
 export default defineComponent({
   name: 'AppFooter',
+  setup() {
+    return { START_VALUE }
+  },
 })
 </script>
 
