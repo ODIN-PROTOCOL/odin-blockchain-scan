@@ -2,12 +2,12 @@
   <div class="search">
     <div class="search__row">
       <VuePicker
-        class="app-form__field-input app-filter app-filter--rounding-left"
+        class="app-form__field-input app-filter app-filter--rounding-left _vue-picker"
         name="filter"
         v-model="activeFilter"
       >
         <template #dropdownInner>
-          <div class="app-filter__dropdown-inner">
+          <div class="_vue-picker__dropdown-custom">
             <VuePickerOption
               v-for="(filter, index) in filters"
               :key="index"

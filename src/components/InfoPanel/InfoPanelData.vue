@@ -45,7 +45,7 @@ export default defineComponent({
   border-radius: 0.8rem;
 }
 .info-panel-data__title {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   font-size: 1.6rem;
   font-weight: 400;
 }

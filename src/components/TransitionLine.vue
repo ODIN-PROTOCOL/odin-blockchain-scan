@@ -3,15 +3,15 @@
     <div class="app-table__cell">
       <span class="app-table__title">Transaction hash</span>
       <TitledLink
-        :to="`/transactions/${transition.hash}`"
+        :to="`/transactions/${transition.tx_hash}`"
         class="app-table__cell-txt app-table__link"
-        :text="'0x' + transition.hash"
+        :text="transition.tx_hash"
       />
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Type</span>
-      <span class="app-table__cell-txt" :title="transition.type">
-        {{ transition.type }}
+      <span class="app-table__cell-txt" :title="type">
+        {{ type }}
       </span>
     </div>
     <div class="app-table__cell">
@@ -24,7 +24,7 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Date and time</span>
-      <span>{{ $fDate(transition.time, 'HH:mm dd.MM.yy') }}</span>
+      <span>{{ $fDate(transition.timestamp * 1000, 'HH:mm dd.MM.yy') }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Sender</span>
@@ -48,12 +48,14 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Amount</span>
-      <span class="app-table__cell-txt">{{ transition.amount }}</span>
+      <span class="app-table__cell-txt" :title="odinAmount">{{
+        odinAmount
+      }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Transaction Fee</span>
-      <span class="app-table__cell-txt">
-        {{ transition.fee }}
+      <span class="app-table__cell-txt" :title="odinFee">
+        {{ odinFee }}
       </span>
     </div>
   </div>
@@ -61,7 +63,9 @@
 <script type="ts">
 import { defineComponent } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { convertToTime, convertToDate } from '@/helpers/dates'
+
+import { humanizeMessageType } from '@/helpers/decodeMessage'
+import { convertLokiToOdin } from '@/helpers/converters'
 
 export default defineComponent({
   name: 'TransitionLine',
@@ -72,10 +76,18 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
+    const fee = props.transition.fee.split('loki')[0]
+    const amount = props.transition.amount.split('loki')[0]
+
+    const odinAmount = amount ? Number(convertLokiToOdin(amount))  + " ODIN" : '-'
+    const odinFee = fee ?  Number(convertLokiToOdin(fee)) + " ODIN" : '-'
+    const type = humanizeMessageType('/' + props.transition.type)
     return {
-      convertToTime,
-      convertToDate,
+      humanizeMessageType,
+      odinFee,
+      odinAmount,
+      type
     }
   },
 })
