@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-content" v-show="title == selectedTitle">
+  <div class="tab-content" v-show="title === selectedTitle">
     <slot />
   </div>
 </template>
@@ -9,7 +9,7 @@ import { defineComponent, inject } from 'vue'
 
 export default defineComponent({
   name: 'AppTab',
-  props: ['title'],
+  props: { title: { type: String, requred: true } },
   setup: function () {
     const selectedTitle = inject('selectedTitle')
 
