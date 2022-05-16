@@ -67,7 +67,7 @@
               :key="item.hash"
               :to="`/transactions/${item.hash}`"
               class="blocks-item__table-row-value blocks-item__table-row-link"
-              :text="item.hash"
+              :text="'0x' + item.hash"
             />
           </template>
           <template v-else>
@@ -158,11 +158,10 @@ export default defineComponent({
         )
 
         blockCreator.value = validatorData.data.result.result.operator_address
-
-        const { txs } = await callers.getTxSearch({
-          query: `tx.height = ${Number(route.params.id)}`,
-        })
-        blocksTransactions.value = await prepareTransaction(txs)
+        const { data } = await callers
+          .getTxSearchFromTelemetry(0, 30, 'desc', Number(route.params.id))
+          .then((resp) => resp.json())
+        blocksTransactions.value = await prepareTransaction(data)
       } catch (error) {
         handleError(error as Error)
       }

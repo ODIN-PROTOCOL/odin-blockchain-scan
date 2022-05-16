@@ -1,5 +1,8 @@
 <template>
-  <div class="app__main-view top-accounts">
+  <div
+    class="app__main-view top-accounts"
+    :class="{ 'load-fog_show': isLoading && transactions?.length }"
+  >
     <div class="app__main-view-title-wrapper">
       <h2 class="app__main-view-title">Top accounts</h2>
     </div>
@@ -8,34 +11,36 @@
         {{ accounts.length }} accounts found
       </p>
     </div>
-    <template v-if="filteredAccounts?.length">
-      <div class="app-table top-accounts__table">
-        <div class="app-table__head top-accounts__table-head">
-          <span> Rank </span>
-          <span> Address </span>
-          <span> ODIN balance </span>
-          <span> ODIN token percentage </span>
-          <span> Transaction count </span>
-        </div>
+    <div class="app-table top-accounts__table">
+      <div class="app-table__head top-accounts__table-head">
+        <span> Rank </span>
+        <span> Address </span>
+        <span> ODIN balance </span>
+        <span> ODIN token percentage </span>
+        <span> Transaction count </span>
+      </div>
+      <template v-if="accounts?.length">
         <AccountsLine
           v-for="(item, index) in filteredAccounts"
           :key="index"
           :account="item"
-          :totalOdin="totalOdin"
           :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
         />
-      </div>
-      <AppPagination
-        v-if="accounts.length > ITEMS_PER_PAGE"
-        class="mg-t32"
-        v-model="currentPage"
-        :pages="totalPages"
-        @update:modelValue="filterAccounts"
-      />
-    </template>
-    <template v-else>
-      <div class="empty">Waiting to receive data</div>
-    </template>
+      </template>
+      <template v-else>
+        <div>
+          <p v-if="isLoading" class="empty mg-t32">Waiting to receive data</p>
+          <p v-else class="empty mg-t32">No items yet</p>
+        </div>
+      </template>
+    </div>
+    <AppPagination
+      v-if="accounts.length > ITEMS_PER_PAGE"
+      class="mg-t32"
+      v-model="currentPage"
+      :pages="totalPages"
+      @update:modelValue="filterAccounts"
+    />
   </div>
 </template>
 
@@ -43,45 +48,32 @@
 import { callers } from '@/api/callers'
 import AccountsLine from '@/components/AccountsLine.vue'
 import { defineComponent, ref, onMounted } from 'vue'
-import { Pagination } from '@/api/query-ext/telemetryExtension'
-import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin'
 import { TempBalanceType } from '@/helpers/Types'
-import { getTopAccountList } from '@/helpers/Accounts'
-
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
 export default defineComponent({
-  name: 'top-accounts',
+  name: 'TopAccounts',
   components: { AppPagination, AccountsLine },
   setup() {
+    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const ITEMS_PER_PAGE = 20
-    const pagination: Pagination = new Pagination(0, 100, true, true)
-    const accounts = ref<Array<TempBalanceType>>()
-    const filteredAccounts = ref<Array<TempBalanceType>>()
+    const accounts = ref<Array<TempBalanceType>>([])
+    const filteredAccounts = ref<Array<TempBalanceType>>([])
     const currentPage = ref<number>(1)
-    const totalPages = ref<number>()
-    const totalOdin = ref<number>(0)
-    const totalCurrency = ref<Array<Coin> | null>(null)
+    const totalPages = ref<number>(0)
     const getAccounts = async (): Promise<void> => {
-      totalCurrency.value =
-        (await callers.getUnverifiedTotalSupply()) as Array<Coin>
-      totalOdin.value = Number(
-        totalCurrency.value.find((el) => el.denom === 'loki')?.amount
-      )
-      accounts.value = await getTopAccountList(pagination)
-      accounts.value.sort((a, b) => b.odinBalance - a.odinBalance)
-      for (const a of accounts.value) {
-        const { txs } = await callers.getTxSearch({
-          query: `message.sender='${a.address}'`,
-        })
-        a.total_tx = txs?.length || 0
-      }
-      totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
+      lockLoading
       try {
+        accounts.value = await callers
+          .getTopAccounts()
+          .then((resp) => resp.json())
+        totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
         await filterAccounts(currentPage.value)
       } catch (err) {
         console.error(err)
       }
+      releaseLoading
     }
 
     const filterAccounts = async (newPage: number): Promise<void> => {
@@ -107,9 +99,8 @@ export default defineComponent({
       totalPages,
       currentPage,
       filteredAccounts,
-      filterAccounts,
       accounts,
-      totalOdin,
+      isLoading,
     }
   },
 })

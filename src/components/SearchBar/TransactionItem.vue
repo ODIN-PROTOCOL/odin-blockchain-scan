@@ -2,42 +2,40 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/transactions/${result.transHash}`"
+      :to="`/transactions/${result.hash}`"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Tx</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
-            :to="`/transactions/${result.transHash}`"
-            :text="
-              result.transHash ? cropText(`0x${result.transHash}`) : 'No info'
-            "
+            :to="`/transactions/${result.hash}`"
+            :text="result.hash ? cropText(`0x${result.hash}`) : 'No info'"
           />
         </div>
 
         <div class="search__dropdown--item-time">
-          {{ diffDays(toDay, getDay(result?.transTime)) }}
+          {{ result?.time }}
         </div>
       </div>
       <div class="search__dropdown--item-right">
         <div class="search__dropdown--item-validator">
           From:
           <TitledLink
-            v-if="result.transSender"
+            v-if="result.sender"
             class="app-table__cell-txt"
-            :to="`/account/${result.transSender}`"
-            :text="cropText(`0x${result.transSender}`)"
+            :to="`/account/${result.sender}`"
+            :text="cropText(`${result.sender}`)"
           />
           <span v-else>No info</span>
         </div>
         <div class="search__dropdown--item-validator">
           <span> To: </span>
           <TitledLink
-            v-if="result.transReceiver"
+            v-if="result.receiver"
             class="app-table__cell-txt"
-            :to="`/account/${result.transReceiver}`"
-            :text="cropText(`0x${result.transReceiver}`)"
+            :to="`/account/${result.receiver}`"
+            :text="cropText(`${result.receiver}`)"
           />
           <span v-else>No info</span>
         </div>

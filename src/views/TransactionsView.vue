@@ -21,7 +21,7 @@
         <span> Transaction Fee </span>
       </div>
       <template v-if="transactions?.length">
-        <TransitionLine
+        <TxLine
           v-for="(item, index) in transactions"
           :key="index"
           :transition="item"
@@ -50,35 +50,30 @@ import { callers } from '@/api/callers'
 import { defineComponent, ref, onMounted } from 'vue'
 import { handleError } from '@/helpers/errors'
 import { prepareTransaction } from '@/helpers/helpers'
-import TransitionLine from '@/components/TransitionLine.vue'
+import TxLine from '@/components/TxLine.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
-
 export default defineComponent({
   name: 'TransactionsView',
-  components: { TransitionLine, AppPagination },
+  components: { TxLine, AppPagination },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
-    const ITEMS_PER_PAGE = 50
+    const ITEMS_PER_PAGE = 20
     const transactions = ref()
     const page = ref<number>(1)
     const totalPages = ref<number>(0)
     const totalTransactions = ref<number>(0)
-
     const getTransactions = async () => {
       lockLoading()
       try {
-        const { txs, totalCount } = await callers.getTxSearch({
-          query: `tx.height >= 0`,
-          page: page.value,
-          per_page: ITEMS_PER_PAGE,
-          order_by: 'desc',
-        })
+        const { data, total_count } = await callers
+          .getTxSearchFromTelemetry(page.value - 1, ITEMS_PER_PAGE, 'desc')
+          .then((resp) => resp.json())
 
-        transactions.value = await prepareTransaction(txs)
-        totalTransactions.value = totalCount
-        totalPages.value = Math.ceil(totalCount / ITEMS_PER_PAGE)
+        transactions.value = await prepareTransaction(data)
+        totalTransactions.value = total_count
+        totalPages.value = Math.ceil(totalTransactions.value / ITEMS_PER_PAGE)
       } catch (error) {
         handleError(error as Error)
       }

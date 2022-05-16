@@ -76,10 +76,10 @@
         </div>
         <div class="app-table__body">
           <template v-if="transactions?.length">
-            <TransitionLine
+            <AccountTxLine
               v-for="(item, index) in transactions"
               :key="index"
-              :transition="item.attributes"
+              :tx="item.attributes"
             />
           </template>
           <template v-else>
@@ -125,11 +125,11 @@ import { handleError } from '@/helpers/errors'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
-import TransitionLine from '@/components/TransitionLine.vue'
+import AccountTxLine from '@/components/AccountTxLine.vue'
 import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
 
 export default defineComponent({
-  components: { BackButton, CopyButton, AppPagination, TransitionLine },
+  components: { BackButton, CopyButton, AppPagination, AccountTxLine },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const router: Router = useRouter()
@@ -171,7 +171,7 @@ export default defineComponent({
             currentPage.value - 1,
             50,
             validatorAddress,
-            'asc',
+            'desc',
             sortingValue.value
           )
           .then((resp) => resp.json())

@@ -22,13 +22,9 @@
       <div class="app-table__head validators-view__table-head">
         <span class="validators-view__table-head-item">Rank</span>
         <span class="validators-view__table-head-item">Validator</span>
+        <span class="validators-view__table-head-item"> Delegator Share </span>
         <span
-          class="validators-view__table-head-item validators-view__table-head-item--end"
-        >
-          Delegator Share
-        </span>
-        <span
-          class="validators-view__table-head-item validators-view__table-head-item--end"
+          class="validators-view__table-head-item validators-view__table-head-item--center"
         >
           Commission
         </span>
@@ -37,6 +33,7 @@
         >
           Oracle Status
         </span>
+        <span class="validators-view__table-head-item"> Uptime </span>
       </div>
       <div>
         <template v-if="validators?.length">
@@ -57,9 +54,9 @@
                 :to="`/validators/${item.operatorAddress}`"
               />
             </div>
-            <div class="app-table__cell validators-view__table-cell--end">
+            <div class="app-table__cell">
               <span class="app-table__title">Delegator Share</span>
-              <span>
+              <span :title="$convertLokiToOdin(item.delegatorShares)">
                 {{
                   $convertLokiToOdin(item.delegatorShares, {
                     withDenom: true,
@@ -68,7 +65,7 @@
                 }}
               </span>
             </div>
-            <div class="app-table__cell validators-view__table-cell--end">
+            <div class="app-table__cell validators-view__table-cell--center">
               <span class="app-table__title">Commission</span>
               <span>
                 {{ $getPrecisePercents(item.commission.commissionRates.rate) }}
@@ -78,12 +75,23 @@
               <span class="app-table__title">Oracle Status</span>
               <StatusIcon :status="item.isActive ? 'success' : 'error'" />
             </div>
+            <div class="app-table__cell">
+              <span class="app-table__title">Uptime</span>
+              <ProgressbarTool
+                v-if="item.uptimeInfo.uptime"
+                :min="0"
+                :max="100"
+                :current="Number(item.uptimeInfo.uptime) || 0"
+                :forValidators="true"
+              />
+              <span v-else>N/A</span>
+            </div>
           </div>
         </template>
         <template v-else>
           <div class="app-table__empty-stub">
-            <p v-if="isLoading">Loading…</p>
-            <p v-else>No items yet</p>
+            <p v-if="isLoading" class="empty mg-t32">Loading…</p>
+            <p v-else class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
@@ -115,10 +123,18 @@ import {
   getTransformedValidators,
   isActiveValidator,
 } from '@/helpers/validatorsHelpers'
+import ProgressbarTool from '@/components/ProgressbarTool.vue'
 
 export default defineComponent({
   name: 'ValidatorsView',
-  components: { AppTabs, AppTab, TitledLink, StatusIcon, AppPagination },
+  components: {
+    AppTabs,
+    AppTab,
+    TitledLink,
+    StatusIcon,
+    AppPagination,
+    ProgressbarTool,
+  },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const ITEMS_PER_PAGE = 50
@@ -139,7 +155,9 @@ export default defineComponent({
         const bonded = await callers.getValidators('BOND_STATUS_BONDED')
         const unbonding = await callers.getValidators('BOND_STATUS_UNBONDING')
         const unbonded = await callers.getValidators('BOND_STATUS_UNBONDED')
-
+        const allUptime = await callers
+          .getValidatorUptime()
+          .then((resp) => resp.json())
         activeValidators = await Promise.all(
           await getTransformedValidators([
             ...bonded.validators,
@@ -149,6 +167,10 @@ export default defineComponent({
               return {
                 ...item,
                 isActive: await isActiveValidator(item.operatorAddress),
+                uptimeInfo: allUptime.find(
+                  (name: { operator_address: string }) =>
+                    name.operator_address === item.operatorAddress
+                ),
               }
             })
           )
@@ -160,6 +182,10 @@ export default defineComponent({
                 return {
                   ...item,
                   isActive: await isActiveValidator(item.operatorAddress),
+                  uptimeInfo: allUptime.find(
+                    (name: { operator_address: string }) =>
+                      name.operator_address === item.operatorAddress
+                  ),
                 }
               })
           )
@@ -264,13 +290,15 @@ export default defineComponent({
 
 .validators-view__table-head,
 .validators-view__table-row {
+  gap: 3.2rem;
   grid:
     auto /
-    minmax(3rem, 1fr)
-    minmax(8rem, 4fr)
-    minmax(8rem, 4fr)
-    minmax(8rem, 4fr)
-    minmax(8rem, 4fr);
+    minmax(2rem, 5rem)
+    minmax(5rem, 2fr)
+    minmax(11rem, 1fr)
+    minmax(8rem, 1fr)
+    minmax(10rem, 1fr)
+    minmax(6rem, 2fr);
 }
 
 @include respond-to(tablet) {

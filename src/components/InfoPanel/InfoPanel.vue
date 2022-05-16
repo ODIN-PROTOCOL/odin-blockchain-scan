@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in">
     <div>
-      <div class="info-panel" v-if="totalData">
+      <div class="info-panel" v-if="totalData || chartData">
         <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
         <div class="info-panel__chart border">
           <div class="info-panel__chart-title">
@@ -26,10 +26,10 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { CoingeckoCoinsType, Link } from '@/helpers/Types'
+import { Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
-import { getAPIDate } from '@/helpers/requests'
+// import { getAPIDate } from '@/helpers/requests'
 import { handleError } from '@/helpers/errors'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import InfoPanelData from '@/components/InfoPanel/InfoPanelData.vue'
@@ -41,15 +41,13 @@ export default defineComponent({
     const CHART_DATA_PERIOD = 7
     const transactionCount = ref<number>()
     const chartData = ref()
-    const totalData = ref<Array<Link> | null>()
+    const totalData = ref<Array<Link> | null>([])
     const getTotalTxNumber = async () => {
       try {
-        const { totalCount } = await callers.getTxSearch({
-          query: 'tx.height >= 0',
-          per_page: 1,
-          page: 1,
-        })
-        transactionCount.value = totalCount
+        const { total_count } = await callers
+          .getTxSearchFromTelemetry(0, 1, 'desc')
+          .then((resp) => resp.json())
+        transactionCount.value = total_count
       } catch (error) {
         handleError(error as Error)
       }
@@ -69,48 +67,48 @@ export default defineComponent({
       }
     }
 
-    const getCoinInfo = async (): Promise<void> => {
-      const {
-        data: {
-          name: odinName,
-          market_data: {
-            current_price: { usd: odinUSD },
-            market_cap: { usd: odinMarketCapUSD },
-          },
-        },
-      } = (await getAPIDate(
-        `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
-      )) as CoingeckoCoinsType
-      const {
-        data: {
-          name: geoDBName,
-          market_data: {
-            current_price: { usd: geoDBUSD },
-            market_cap: { usd: geoDBMarketCapUSD },
-          },
-        },
-      } = (await getAPIDate(
-        `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
-      )) as CoingeckoCoinsType
+    // const getCoinInfo = async (): Promise<void> => {
+    //   const {
+    //     data: {
+    //       name: odinName,
+    //       market_data: {
+    //         current_price: { usd: odinUSD },
+    //         market_cap: { usd: odinMarketCapUSD },
+    //       },
+    //     },
+    //   } = (await getAPIDate(
+    //     `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
+    //   )) as CoingeckoCoinsType
+    //   const {
+    //     data: {
+    //       name: geoDBName,
+    //       market_data: {
+    //         current_price: { usd: geoDBUSD },
+    //         market_cap: { usd: geoDBMarketCapUSD },
+    //       },
+    //     },
+    //   } = (await getAPIDate(
+    //     `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
+    //   )) as CoingeckoCoinsType
 
-      totalData.value = [
-        { title: odinName, text: `$${odinUSD}` },
-        { title: geoDBName, text: `$${geoDBUSD}` },
-        {
-          title: 'Transactions',
-          text: `${transactionCount.value || 'Insufficient data'}`,
-        },
-        {
-          title: 'Market CAP',
-          text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
-        },
-      ]
-    }
+    //   totalData.value = [
+    //     { title: odinName, text: `$${odinUSD}` },
+    //     { title: geoDBName, text: `$${geoDBUSD}` },
+    //     {
+    //       title: 'Transactions',
+    //       text: `${transactionCount.value || 'Insufficient data'}`,
+    //     },
+    //     {
+    //       title: 'Market CAP',
+    //       text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
+    //     },
+    //   ]
+    // }
 
     onMounted(async () => {
       try {
         await getTotalTxNumber()
-        await getCoinInfo()
+        // await getCoinInfo()
         await getLatestTelemetry()
       } catch (error) {
         handleError(error as Error)

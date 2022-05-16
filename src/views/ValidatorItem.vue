@@ -117,11 +117,8 @@ export default defineComponent({
     }
 
     const getReports = async () => {
-      const response = await callers.getTxSearch({
-        query: `tx.height>=0 AND report.validator='${validator.value.operatorAddress}'`,
-      })
       // TODO get the necessary reports from transactions
-      reports.value = response.txs
+      reports.value = []
     }
 
     onMounted(async () => {

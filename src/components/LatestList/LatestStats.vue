@@ -58,7 +58,7 @@
                   <span v-else>No info</span>
                 </template>
                 <template #time>
-                  {{ diffDays(toDay, getDay(item.time)) }}
+                  {{ item.time }}
                 </template>
                 <template #from>
                   <span>From:</span>
@@ -132,16 +132,10 @@ export default defineComponent({
       lastHeight.value = reqLastHeight
     }
     const getLatestTransactions = async (): Promise<void> => {
-      const { txs } = await callers.getTxSearch({
-        query: `tx.height >= 0`,
-        page: 1,
-        per_page: 5,
-        order_by: 'desc',
-      })
-
-      if (txs) {
-        latestTransactions.value = await prepareTransaction(txs)
-      }
+      const { data } = await callers
+        .getTxSearchFromTelemetry(0, 5, 'desc')
+        .then((resp) => resp.json())
+      latestTransactions.value = await prepareTransaction(data)
     }
 
     let latestBlocksHeader = {

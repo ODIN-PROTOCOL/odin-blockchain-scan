@@ -19,7 +19,6 @@
           class="app-nav__switch-item"
           :disabled="isMainnet"
           :href="START_VALUE.mainnetScan"
-          target="_blank"
         >
           mainnet
         </a>
@@ -28,7 +27,6 @@
           class="app-nav__switch-item"
           :disabled="!isMainnet"
           :href="START_VALUE.testnetScan"
-          target="_blank"
         >
           testnet
         </a>
