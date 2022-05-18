@@ -14,8 +14,8 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">ODIN balance</span>
-      <span :title="odinBalance" class="app-table__cell-txt">{{
-        Number(odinBalance).toFixed(2)
+      <span :title="odinBalanceTitle" class="app-table__cell-txt">{{
+        odinBalanceValue
       }}</span>
     </div>
     <div class="app-table__cell">
@@ -54,12 +54,16 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const odinBalance = convertLokiToOdin(props.account.odin_balance)
+    const odinBalanceTitle = convertLokiToOdin(props.account.odin_balance)
+    const odinBalanceValue = convertLokiToOdin(props.account.odin_balance, {
+      withDenom: true,
+    })
     const accountOdinPercentage = Number(props.account.odin_percent).toFixed(2)
 
     return {
       accountOdinPercentage,
-      odinBalance,
+      odinBalanceTitle,
+      odinBalanceValue,
     }
   },
 })
