@@ -79,21 +79,14 @@ export default defineComponent({
     const getChartData = async () => {
       const endDate = new Date()
       const startDate = new Date()
-      if (sortingValue.value === sortingDaysForChart.lastDay.value) {
-        startDate.setDate(
-          startDate.getDate() - Number(sortingDaysForChart.lastWeek.value)
-        )
-      } else startDate.setDate(startDate.getDate() - Number(sortingValue.value))
-
+      startDate.setDate(startDate.getDate() - Number(sortingValue.value))
       isLoading.value = true
       try {
         const { data } = await callers[getDataMethodName.value](
           startDate,
           endDate
         )
-        if (sortingValue.value === sortingDaysForChart.lastDay.value) {
-          chartData.value = formatDataForCharts(data.slice(6))
-        } else chartData.value = formatDataForCharts(data)
+        chartData.value = formatDataForCharts(data)
       } catch (error) {
         handleError(error as Error)
       } finally {
