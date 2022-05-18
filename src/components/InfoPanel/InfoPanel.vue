@@ -26,10 +26,10 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { Link } from '@/helpers/Types'
+import { CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
-// import { getAPIDate } from '@/helpers/requests'
+import { getAPIDate } from '@/helpers/requests'
 import { handleError } from '@/helpers/errors'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import InfoPanelData from '@/components/InfoPanel/InfoPanelData.vue'
@@ -67,47 +67,49 @@ export default defineComponent({
       }
     }
 
-    // const getCoinInfo = async (): Promise<void> => {
-    //   const {
-    //     data: {
-    //       name: odinName,
-    //       market_data: {
-    //         current_price: { usd: odinUSD },
-    //         market_cap: { usd: odinMarketCapUSD },
-    //       },
-    //     },
-    //   } = (await getAPIDate(
-    //     `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
-    //   )) as CoingeckoCoinsType
-    //   const {
-    //     data: {
-    //       name: geoDBName,
-    //       market_data: {
-    //         current_price: { usd: geoDBUSD },
-    //         market_cap: { usd: geoDBMarketCapUSD },
-    //       },
-    //     },
-    //   } = (await getAPIDate(
-    //     `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
-    //   )) as CoingeckoCoinsType
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const getCoinInfo = async (): Promise<void> => {
+      const {
+        data: {
+          name: odinName,
+          market_data: {
+            current_price: { usd: odinUSD },
+            market_cap: { usd: odinMarketCapUSD },
+          },
+        },
+      } = (await getAPIDate(
+        `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
+      )) as CoingeckoCoinsType
+      const {
+        data: {
+          name: geoDBName,
+          market_data: {
+            current_price: { usd: geoDBUSD },
+            market_cap: { usd: geoDBMarketCapUSD },
+          },
+        },
+      } = (await getAPIDate(
+        `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
+      )) as CoingeckoCoinsType
 
-    //   totalData.value = [
-    //     { title: odinName, text: `$${odinUSD}` },
-    //     { title: geoDBName, text: `$${geoDBUSD}` },
-    //     {
-    //       title: 'Transactions',
-    //       text: `${transactionCount.value || 'Insufficient data'}`,
-    //     },
-    //     {
-    //       title: 'Market CAP',
-    //       text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
-    //     },
-    //   ]
-    // }
+      totalData.value = [
+        { title: odinName, text: `$${odinUSD}` },
+        { title: geoDBName, text: `$${geoDBUSD}` },
+        {
+          title: 'Transactions',
+          text: `${transactionCount.value || 'Insufficient data'}`,
+        },
+        {
+          title: 'Market CAP',
+          text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
+        },
+      ]
+    }
 
     onMounted(async () => {
       try {
         await getTotalTxNumber()
+        // Don`t work request
         // await getCoinInfo()
         await getLatestTelemetry()
       } catch (error) {

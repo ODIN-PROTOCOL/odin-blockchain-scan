@@ -519,5 +519,4 @@ export async function getDateFromMessage(
     console.debug(adjustedData.type)
   }
   return adjustedData
-  // } else return []
 }

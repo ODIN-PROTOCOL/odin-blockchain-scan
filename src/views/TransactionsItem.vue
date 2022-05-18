@@ -37,7 +37,7 @@
           <span
             class="transactions-item__table-row-status"
             :class="
-              tx.status === 'Success'
+              tx.status === TX_STATUSES.SUCCESS
                 ? 'transactions-item__table-row-status--success'
                 : 'transactions-item__table-row-status--failed'
             "
@@ -162,9 +162,9 @@ const TOOLTIP_INFO = {
   total: 'The amount being transacted in ODIN and fiat value.',
 }
 
-enum TX_STATUSES {
-  SUCCESS,
-  FAILED,
+const TX_STATUSES = {
+  SUCCESS: 'Success',
+  FAILED: 'Failed',
 }
 
 export default defineComponent({

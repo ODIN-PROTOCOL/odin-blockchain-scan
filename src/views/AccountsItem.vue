@@ -62,42 +62,41 @@
         </div>
       </div>
     </div>
-    <template v-if="transactions?.length">
-      <div class="app-table">
-        <div class="app-table__head">
-          <span> Transaction hash </span>
-          <span> Type </span>
-          <span> Block </span>
-          <span> Date and time </span>
-          <span> Sender </span>
-          <span> Receiver </span>
-          <span> Amount </span>
-          <span> Transaction Fee </span>
-        </div>
-        <div class="app-table__body">
-          <template v-if="transactions?.length">
-            <AccountTxLine
-              v-for="(item, index) in transactions"
-              :key="index"
-              :tx="item.attributes"
-            />
-          </template>
-          <template v-else>
-            <div class="app-table__empty-stub">
-              <p v-if="isLoading">Loading…</p>
-              <p v-else>No items yet</p>
-            </div>
-          </template>
-        </div>
+
+    <div v-if="transactions" class="app-table">
+      <div class="app-table__head">
+        <span> Transaction hash </span>
+        <span> Type </span>
+        <span> Block </span>
+        <span> Date and time </span>
+        <span> Sender </span>
+        <span> Receiver </span>
+        <span> Amount </span>
+        <span> Transaction Fee </span>
       </div>
-      <AppPagination
-        v-if="totalTxCount > ITEMS_PER_PAGE"
-        class="mg-t32"
-        v-model="currentPage"
-        :pages="totalPages"
-        @update:modelValue="updateHandler"
-      />
-    </template>
+      <div class="app-table__body">
+        <template v-if="transactions?.length">
+          <AccountTxLine
+            v-for="(item, index) in transactions"
+            :key="index"
+            :tx="item.attributes"
+          />
+        </template>
+        <template v-else>
+          <div class="app-table__empty-stub">
+            <p v-if="isLoading">Loading…</p>
+            <p v-else>No items yet</p>
+          </div>
+        </template>
+      </div>
+    </div>
+    <AppPagination
+      v-if="totalTxCount > ITEMS_PER_PAGE"
+      class="mg-t32"
+      v-model="currentPage"
+      :pages="totalPages"
+      @update:modelValue="updateHandler"
+    />
     <template v-else>
       <div class="app-table__row">
         <p class="app-table__empty-stub">No items yet</p>
