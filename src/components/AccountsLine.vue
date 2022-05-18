@@ -15,7 +15,7 @@
     <div class="app-table__cell">
       <span class="app-table__title">ODIN balance</span>
       <span :title="odinBalance" class="app-table__cell-txt">{{
-        Number(odinBalance.toFixed(2))
+        Number(odinBalance).toFixed(2)
       }}</span>
     </div>
     <div class="app-table__cell">

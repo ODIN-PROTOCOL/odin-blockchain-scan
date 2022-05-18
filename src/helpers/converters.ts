@@ -17,8 +17,8 @@ const LOKI_MULTIPLIER = 1000000
 export function convertLokiToOdin(
   amount: string | undefined,
   options?: ConverterOptions
-): string | BigNumber {
-  if (!amount) return '- ' + ODIN_DENOM
+): string {
+  if (!amount) return '-'
 
   let res: BigNumber
   if (options && options.withPrecise) {
@@ -30,7 +30,7 @@ export function convertLokiToOdin(
   if (options && options.withDenom) {
     return bigMath.format(res, FORMAT_OPTIONS) + ' ' + ODIN_DENOM
   } else {
-    return res
+    return res + ' ' + ODIN_DENOM
   }
 }
 
@@ -39,4 +39,11 @@ export function convertOdinToLoki(amount: string): number {
   if (isNaN(num)) throw ReferenceError('Invalid number')
 
   return bigMath.multiply(num, LOKI_MULTIPLIER).toNumber()
+}
+
+export function getLokiFromString(value: string | undefined): string {
+  if (!value) {
+    return ''
+  }
+  return value.split('loki')[0]
 }

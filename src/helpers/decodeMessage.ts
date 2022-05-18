@@ -41,8 +41,10 @@ import { MsgConnectionOpenInit } from 'cosmjs-types/ibc/core/connection/v1/tx'
 import { MsgChannelOpenInit } from 'cosmjs-types/ibc/core/channel/v1/tx'
 import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx'
 import { MsgUnjail } from 'cosmjs-types/cosmos/slashing/v1beta1/tx'
-import { fromBase64 } from '/Users/admin/Projects/work projects/odin-blockchain-scan/node_modules/@cosmjs/encoding/build/index'
+import { fromBase64 } from '@cosmjs/encoding'
+
 import { TxTelemetry } from '@/helpers/Types'
+import { getLokiFromString } from '@/helpers/converters'
 
 export const getDecodeTx = (tx: TxResponse['tx']): Tx => Tx.decode(tx)
 
@@ -319,9 +321,9 @@ export async function getDateFromMessage(
           item.value ? new TextDecoder().decode(fromBase64(item.value)) : ''
         )
 
-      adjustedData.amount = amount
-        ?.find((item) => item.includes('loki'))
-        ?.split('loki')[0]
+      adjustedData.amount = getLokiFromString(
+        amount?.find((item) => item.includes('loki'))
+      )
     }
 
     if (adjustedData.type === 'Vote') {

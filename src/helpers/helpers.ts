@@ -130,8 +130,6 @@ export const prepareTransaction = async (
       gasUsed,
       gasWanted,
     } = await getDateFromMessage(tx)
-    const odinAmount = Number(convertLokiToOdin(amount)) + ' ODIN'
-    const odinFee = Number(convertLokiToOdin(fee)) + ' ODIN'
     tempArr = [
       ...tempArr,
       {
@@ -141,8 +139,8 @@ export const prepareTransaction = async (
         time: time ? formatDate(Number(time), 'HH:mm dd.MM.yy') : '-',
         sender: sender ? sender : '',
         receiver: receiver ? receiver : '',
-        amount: amount ? odinAmount : '-',
-        fee: fee ? odinFee : '-',
+        amount: convertLokiToOdin(amount),
+        fee: convertLokiToOdin(fee),
         memo: memo ? memo : '-',
         status: Number(status) > -1 ? 'Success' : 'Failed',
         gasUsed: gasUsed ? gasUsed : '-',
