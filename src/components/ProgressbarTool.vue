@@ -1,7 +1,7 @@
 <template>
   <div class="progressbar-tool">
     <div class="progressbar-tool__info" v-if="isForValidators">
-      <span class="progressbar-tool__info-item">{{ current }} %</span>
+      <span class="progressbar-tool__info-item">{{ progress }} %</span>
     </div>
     <div class="progressbar-tool__info" v-else>
       <span class="progressbar-tool__info-item">Min {{ min }}</span>
@@ -14,8 +14,8 @@
         class="progressbar-tool__thumb"
         :class="
           progress > 60
-            ? 'progressbar-tool__thumb_positive'
-            : 'progressbar-tool__thumb_negative'
+            ? 'progressbar-tool__thumb--positive'
+            : 'progressbar-tool__thumb--negative'
         "
         :style="`width: ${progress}%`"
       ></div>
@@ -27,7 +27,6 @@
 import { defineComponent, toRef, computed } from 'vue'
 
 export default defineComponent({
-  name: 'progressbar-toolTool',
   props: {
     min: { type: Number, required: true },
     max: { type: Number, required: true },
@@ -70,7 +69,7 @@ export default defineComponent({
   width: 100%;
   height: 0.8rem;
   border-radius: 0.4rem;
-  background: var(--clr__progressbar-tool-track);
+  background: var(--clr__progressbar-track);
 }
 
 .progressbar-tool__thumb {
@@ -78,12 +77,12 @@ export default defineComponent({
   height: 100%;
   border-radius: 0.4rem;
 
-  &_positive {
-    background: var(--clr__progressbar-tool-positive);
+  &--positive {
+    background: var(--clr__progressbar-positive);
   }
 
-  &_negative {
-    background: var(--clr__progressbar-tool-negative);
+  &--negative {
+    background: var(--clr__progressbar-negative);
   }
 }
 </style>
