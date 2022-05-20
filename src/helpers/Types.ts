@@ -1,5 +1,4 @@
 import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
-import { TransactionListFormatted } from '@/helpers/makeTransactionListFormatted'
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
 import { Chart, ChartType, TooltipModel } from 'chart.js'
@@ -39,7 +38,7 @@ export type CoingeckoCoinsType = {
 
 export type SearchResultType = {
   blocks?: Array<TransformedBlocks>
-  transactions?: Array<TransactionListFormatted>
+  transactions?: Array<adjustedData>
   accounts?: Array<TempSearchAccountInfoType>
 }
 
@@ -65,8 +64,11 @@ export type CoinBlocksDataType = {
 
 export type TempBalanceType = {
   address: string
-  odinBalance: number
-  total_tx?: number
+  geo_balance: number
+  geo_percent: string
+  odin_balance: number
+  odin_percent: string
+  tx_count: number
 }
 
 export type adjustedData = {
@@ -75,12 +77,15 @@ export type adjustedData = {
   hash?: string
   block?: string | number | undefined
   delegatorAddress?: string
-  time?: Date | string | null
+  time?: string | void | Date
   sender?: string
   receiver?: string
   amount?: string
   fee?: string
   status?: number | string | undefined
+  memo?: string
+  gasWanted?: string | number
+  gasUsed?: string | number
 }
 
 export interface blocksWithTotalTxInterface extends BlockMeta {
@@ -160,4 +165,38 @@ export type POOL = {
   id: POOLS_IDS
   type: string
   attributes: { coins: Coin[] }
+}
+export interface EventTx {
+  readonly type: string
+  readonly attributes?: [{ readonly key: string; readonly value: string }]
+}
+export interface TxData {
+  readonly code: number
+  readonly codeSpace?: string
+  readonly log?: string
+  readonly data?: string | null
+  readonly events: EventTx[]
+  readonly gas_wanted: string
+  readonly gas_used: string
+}
+export interface TxTelemetry {
+  readonly tx: string
+  readonly hash: string
+  readonly height: number
+  readonly index: number
+  readonly tx_result: TxData
+}
+export interface TxSearchTelemetry {
+  readonly txs: readonly TxTelemetry[]
+  readonly totalCount: number
+}
+export type AccountTx = {
+  amount: string
+  block: number
+  fee: string
+  receiver: string
+  sender: string
+  timestamp: number
+  tx_hash: string
+  type: string
 }

@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in">
     <div>
-      <div class="info-panel" v-if="totalData">
+      <div class="info-panel" v-if="totalData || chartData">
         <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
         <div class="info-panel__chart border">
           <div class="info-panel__chart-title">
@@ -41,15 +41,13 @@ export default defineComponent({
     const CHART_DATA_PERIOD = 7
     const transactionCount = ref<number>()
     const chartData = ref()
-    const totalData = ref<Array<Link> | null>()
+    const totalData = ref<Array<Link> | null>([])
     const getTotalTxNumber = async () => {
       try {
-        const { totalCount } = await callers.getTxSearch({
-          query: 'tx.height >= 0',
-          per_page: 1,
-          page: 1,
-        })
-        transactionCount.value = totalCount
+        const { total_count } = await callers
+          .getTxSearchFromTelemetry(0, 1, 'desc')
+          .then((resp) => resp.json())
+        transactionCount.value = total_count
       } catch (error) {
         handleError(error as Error)
       }
@@ -69,6 +67,7 @@ export default defineComponent({
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const getCoinInfo = async (): Promise<void> => {
       const {
         data: {
@@ -110,7 +109,8 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await getTotalTxNumber()
-        await getCoinInfo()
+        // Don`t work request
+        // await getCoinInfo()
         await getLatestTelemetry()
       } catch (error) {
         handleError(error as Error)

@@ -22,7 +22,6 @@ const makeCallers = () => {
       return qc.bank.balance(myAddress, 'loki')
     }),
     getUnverifiedBalances: querier((qc) => qc.bank.balance),
-    getUnverifiedTotalSupply: querier((qc) => qc.bank.totalSupply),
     getRate: querier((qc) => qc.coinswap.unverified.rate),
     getTreasuryPool: cacheAnswers(
       querier((qc) => qc.mint.unverified.treasuryPool)
@@ -50,61 +49,45 @@ const makeCallers = () => {
     getValidatorDelegations: querier((qc) => qc.staking.validatorDelegations),
     getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
     getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
-    getTxSearch: cacheAnswers(tmQuerier((tc) => tc.txSearch.bind(tc))),
     getTx: tmQuerier((tc) => tc.tx.bind(tc)),
     getTxVolume: cacheAnswers(
       querier((qc) => qc.telemetry.unverified.txVolume)
-    ),
-    getTopBalances: cacheAnswers(
-      querier((qc) => qc.telemetry.unverified.topBalances)
     ),
     getValidatorStatus: querier((qc) => qc.oracle.unverified.validator),
     getTxForTxDetailsPage: (hash: string) => {
       return getAPIDate(`${API_CONFIG.rpc}/tx?hash=0x${hash}&prove=true`)
     },
     getTxVolumePerDays: (startTime: Date, endTime: Date) => {
-      return axios.get(
-        `${API_CONFIG.telemetryUrl}/telemetry/blocks/txVolumePerDays`,
-        {
-          params: {
-            start_time: (startTime.getTime() / 1000).toFixed(),
-            end_time: (endTime.getTime() / 1000).toFixed(),
-          },
-        }
-      )
+      return axios.get(`${API_CONFIG.telemetryUrl}/blocks/txVolumePerDays`, {
+        params: {
+          start_time: (startTime.getTime() / 1000).toFixed(),
+          end_time: (endTime.getTime() / 1000).toFixed(),
+        },
+      })
     },
     getAvgSizePerDays: (startTime: Date, endTime: Date) => {
-      return axios.get(
-        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgSizePerDays`,
-        {
-          params: {
-            start_time: (startTime.getTime() / 1000).toFixed(),
-            end_time: (endTime.getTime() / 1000).toFixed(),
-          },
-        }
-      )
+      return axios.get(`${API_CONFIG.telemetryUrl}/blocks/avgSizePerDays`, {
+        params: {
+          start_time: (startTime.getTime() / 1000).toFixed(),
+          end_time: (endTime.getTime() / 1000).toFixed(),
+        },
+      })
     },
     getAvgTimePerDays: (startTime: Date, endTime: Date) => {
-      return axios.get(
-        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTimePerDays`,
-        {
-          params: {
-            start_time: (startTime.getTime() / 1000).toFixed(),
-            end_time: (endTime.getTime() / 1000).toFixed(),
-          },
-        }
-      )
+      return axios.get(`${API_CONFIG.telemetryUrl}/blocks/avgTimePerDays`, {
+        params: {
+          start_time: (startTime.getTime() / 1000).toFixed(),
+          end_time: (endTime.getTime() / 1000).toFixed(),
+        },
+      })
     },
     getAvgTxFeePerDays: (startTime: Date, endTime: Date) => {
-      return axios.get(
-        `${API_CONFIG.telemetryUrl}/telemetry/blocks/avgTxFeePerDays`,
-        {
-          params: {
-            start_time: (startTime.getTime() / 1000).toFixed(),
-            end_time: (endTime.getTime() / 1000).toFixed(),
-          },
-        }
-      )
+      return axios.get(`${API_CONFIG.telemetryUrl}/blocks/avgTxFeePerDays`, {
+        params: {
+          start_time: (startTime.getTime() / 1000).toFixed(),
+          end_time: (endTime.getTime() / 1000).toFixed(),
+        },
+      })
     },
     getProposedBlocks: (
       proposer: string,
@@ -112,26 +95,23 @@ const makeCallers = () => {
       page_limit: number
     ) => {
       return sendGet(
-        `${API_CONFIG.telemetryUrl}/telemetry/validator/${proposer}/transactions?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=desc`
+        `${API_CONFIG.telemetryUrl}/validator/${proposer}/transactions?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=desc`
       )
     },
     getValidatorsBlock: () => {
-      return axios.get(
-        `${API_CONFIG.telemetryUrl}/telemetry/validators?sort=tokens`
-      )
+      return axios.get(`${API_CONFIG.telemetryUrl}/validators?sort=tokens`)
     },
     getBlockSize: (height: number) => {
-      return axios.get(
-        `${API_CONFIG.telemetryUrl}/telemetry/block_size/${height}`
-      )
+      return axios.get(`${API_CONFIG.telemetryUrl}/block_size/${height}`)
     },
     getTxSearchFromTelemetry: (
       page_number: number,
       page_limit: number,
-      page_order: string
+      page_order: string,
+      block = 0
     ) => {
       return sendGet(
-        `${API_CONFIG.telemetryUrl}/telemetry/txs?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}`
+        `${API_CONFIG.telemetryUrl}/txs?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&block=${block}`
       )
     },
     getAccountTx: (
@@ -142,8 +122,14 @@ const makeCallers = () => {
       tx_type: string
     ) => {
       return sendGet(
-        `${API_CONFIG.telemetryUrl}/telemetry/account_txs/${owner}?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&type=${tx_type}`
+        `${API_CONFIG.telemetryUrl}/account_txs/${owner}?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&type=${tx_type}`
       )
+    },
+    getTopAccounts: () => {
+      return sendGet(`${API_CONFIG.telemetryUrl}/accounts?sort=odin_balance`)
+    },
+    getValidatorUptime: () => {
+      return sendGet(`${API_CONFIG.telemetryUrl}/validators`)
     },
   }
 }

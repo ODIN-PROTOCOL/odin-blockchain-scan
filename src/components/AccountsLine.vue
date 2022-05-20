@@ -14,7 +14,9 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">ODIN balance</span>
-      <span>{{ odinBalance }}</span>
+      <span :title="odinBalanceTitle" class="app-table__cell-txt">{{
+        odinBalanceValue
+      }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">ODIN token percentage</span>
@@ -26,8 +28,8 @@
     <div class="app-table__cell">
       <span class="app-table__title">Transaction count</span>
       <div>
-        <span v-if="account.total_tx">
-          {{ account.total_tx }}
+        <span v-if="account.tx_count">
+          {{ account.tx_count }}
         </span>
         <span v-else>0</span>
       </div>
@@ -35,9 +37,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { bigMath } from '@/helpers/bigMath'
+import { convertLokiToOdin } from '@/helpers/converters'
 
 export default defineComponent({
   components: { TitledLink },
@@ -46,33 +48,22 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-    totalOdin: {
-      type: Number,
-      required: true,
-    },
     rank: {
       type: Number,
       required: false,
     },
   },
   setup(props) {
-    const odinBalance = computed(() =>
-      bigMath.bigConvectOdinAndGeo(props.account.odinBalance)
-    )
-    const accountOdinPercentage = computed(() => {
-      return bigMath
-        .multiply(
-          bigMath.divide(props.account.odinBalance, props.totalOdin, {
-            decimals: 3,
-          }),
-          100
-        )
-        .toString()
+    const odinBalanceTitle = convertLokiToOdin(props.account.odin_balance)
+    const odinBalanceValue = convertLokiToOdin(props.account.odin_balance, {
+      withDenom: true,
     })
+    const accountOdinPercentage = Number(props.account.odin_percent).toFixed(2)
 
     return {
       accountOdinPercentage,
-      odinBalance,
+      odinBalanceTitle,
+      odinBalanceValue,
     }
   },
 })

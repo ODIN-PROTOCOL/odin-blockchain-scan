@@ -12,7 +12,7 @@
     </div>
 
     <span class="app__main-view-subtitle">Transaction details</span>
-    <div class="transactions-item__table mg-b32">
+    <div class="transactions-item__table mg-b32" v-if="tx">
       <div class="transactions-item__table-row">
         <div class="transactions-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
@@ -22,7 +22,7 @@
         </div>
         <span class="transactions-item__table-row-title">Time</span>
         <span class="transactions-item__table-row-value">
-          {{ txTime }}
+          {{ tx.time }}
         </span>
       </div>
       <div class="transactions-item__table-row">
@@ -37,12 +37,12 @@
           <span
             class="transactions-item__table-row-status"
             :class="
-              txStatus === TX_STATUSES.SUCCESS
+              tx.status === TX_STATUSES.SUCCESS
                 ? 'transactions-item__table-row-status--success'
                 : 'transactions-item__table-row-status--failed'
             "
           >
-            {{ txStatus === TX_STATUSES.SUCCESS ? 'Success' : 'Failed' }}
+            {{ tx.status }}
           </span>
         </div>
       </div>
@@ -73,7 +73,7 @@
           Gas (used/wanted)
         </span>
         <span class="transactions-item__table-row-value">
-          {{ txUsed }} / {{ txWanted }}
+          {{ tx.gasUsed }} / {{ tx.gasWanted }}
         </span>
       </div>
       <div class="transactions-item__table-row">
@@ -84,7 +84,7 @@
           </span>
         </div>
         <span class="transactions-item__table-row-title">Fee</span>
-        <span class="transactions-item__table-row-value">{{ tx?.fee }}</span>
+        <span class="transactions-item__table-row-value">{{ tx.fee }}</span>
       </div>
       <div class="transactions-item__table-row">
         <div class="transactions-item__table-row-info">
@@ -94,7 +94,7 @@
           </span>
         </div>
         <span class="transactions-item__table-row-title">Memo</span>
-        <span class="transactions-item__table-row-value">{{ txMemo }}</span>
+        <span class="transactions-item__table-row-value">{{ tx.memo }}</span>
       </div>
       <div class="transactions-item__table-row">
         <div class="transactions-item__table-row-info">
@@ -104,7 +104,7 @@
           </span>
         </div>
         <span class="transactions-item__table-row-title">Total</span>
-        <span class="transactions-item__table-row-value">{{ tx?.amount }}</span>
+        <span class="transactions-item__table-row-value">{{ tx.amount }}</span>
       </div>
     </div>
 
@@ -143,15 +143,12 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
-import { getDecodeTx } from '@/helpers/decodeMessage'
 import { handleError } from '@/helpers/errors'
 import { adjustedData } from '@/helpers/Types'
 import { prepareTransaction } from '@/helpers/helpers'
-import { convertToTxTime } from '@/helpers/dates'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { fromHex } from '@cosmjs/encoding'
 
 const TOOLTIP_INFO = {
   time: 'The date and time at which a transaction is validated.',
@@ -165,49 +162,24 @@ const TOOLTIP_INFO = {
   total: 'The amount being transacted in ODIN and fiat value.',
 }
 
-enum TX_STATUSES {
-  SUCCESS,
-  FAILED,
+const TX_STATUSES = {
+  SUCCESS: 'Success',
+  FAILED: 'Failed',
 }
 
 export default defineComponent({
   components: { BackButton, CopyButton, TitledLink },
   setup() {
     const route: RouteLocationNormalizedLoaded = useRoute()
-
     const tx = ref<adjustedData>()
-    const txTime = ref('-')
-    const txStatus = ref()
-    const txMemo = ref()
-    const txUsed = ref()
-    const txWanted = ref()
 
     const getTransactions = async () => {
       try {
-        const resp = await callers.getTx({
-          hash: fromHex(String(route.params.hash)),
-        })
-
-        const preparedTx = await prepareTransaction([resp])
-        const decodedTx = getDecodeTx(resp.tx)
-
+        const res = await callers.getTxForTxDetailsPage(
+          String(route.params.hash)
+        )
+        const preparedTx = await prepareTransaction([res.data.result])
         tx.value = preparedTx[0]
-        txTime.value = convertToTxTime(String(tx.value.time))
-        txStatus.value = resp.result.code
-          ? TX_STATUSES.FAILED
-          : TX_STATUSES.SUCCESS
-        txMemo.value = decodedTx.body?.memo ? decodedTx.body?.memo : '<No Memo>'
-
-        const {
-          data: {
-            result: {
-              tx_result: { gas_wanted, gas_used },
-            },
-          },
-        } = await callers.getTxForTxDetailsPage(String(tx.value.hash))
-
-        txWanted.value = gas_wanted
-        txUsed.value = gas_used
       } catch (error) {
         handleError(error as Error)
       }
@@ -220,11 +192,6 @@ export default defineComponent({
       TOOLTIP_INFO,
       TX_STATUSES,
       tx,
-      txTime,
-      txStatus,
-      txMemo,
-      txUsed,
-      txWanted,
     }
   },
 })

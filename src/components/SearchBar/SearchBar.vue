@@ -77,21 +77,17 @@
 import { defineComponent, ref, watch } from 'vue'
 import { callers } from '@/api/callers'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
-import { TxResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
+import { prepareTransaction } from '@/helpers/helpers'
 import { Router, useRouter } from 'vue-router'
-import { fromHex } from '@cosmjs/encoding'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
 import {
+  adjustedData,
   SearchResultType,
   TempSearchAccountInfoType,
   TransformedBlocks,
 } from '@/helpers/Types'
-import {
-  makeTransactionListFormatted,
-  TransactionListFormatted,
-} from '@/helpers/makeTransactionListFormatted'
 import { handleError } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 
@@ -113,16 +109,12 @@ export default defineComponent({
       searchResult.value = null
     })
 
-    const getTransactions = async (): Promise<
-      Array<TransactionListFormatted>
-    > => {
+    const getTransactions = async (): Promise<Array<adjustedData>> => {
       try {
-        const tx = await callers.getTx({
-          hash: fromHex(searchedText.value as string),
-        })
-        return (await makeTransactionListFormatted([
-          tx,
-        ] as Array<TxResponse>)) as Array<TransactionListFormatted>
+        const res = await callers.getTxForTxDetailsPage(
+          String(searchedText.value)
+        )
+        return await prepareTransaction([res.data.result])
       } catch {
         return []
       }

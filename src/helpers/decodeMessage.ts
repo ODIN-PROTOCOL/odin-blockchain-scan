@@ -26,6 +26,7 @@ import {
 import {
   MsgWithdrawDelegatorReward,
   MsgWithdrawValidatorCommission,
+  MsgFundCommunityPool,
 } from 'cosmjs-types/cosmos/distribution/v1beta1/tx'
 import { callers } from '@/api/callers'
 import { Tx } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
@@ -40,6 +41,10 @@ import { MsgConnectionOpenInit } from 'cosmjs-types/ibc/core/connection/v1/tx'
 import { MsgChannelOpenInit } from 'cosmjs-types/ibc/core/channel/v1/tx'
 import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx'
 import { MsgUnjail } from 'cosmjs-types/cosmos/slashing/v1beta1/tx'
+import { fromBase64 } from '@cosmjs/encoding'
+
+import { TxTelemetry } from '@/helpers/Types'
+import { getLokiFromString } from '@/helpers/converters'
 
 export const getDecodeTx = (tx: TxResponse['tx']): Tx => Tx.decode(tx)
 
@@ -136,12 +141,18 @@ export function humanizeMessageType(type: string): string {
     case '/oracle.v1.MsgEditOracleScript':
       return 'Edit OracleScript'
 
+    case '/mint.MsgMintCoins':
+      return 'Mint Coins'
+
+    case '/cosmos.distribution.v1beta1.MsgFundCommunityPool':
+      return 'Fund Community Pool'
+
     default:
       throw new ReferenceError(`Unknown type ${type}`)
   }
 }
 
-function decodeMessage(obj: {
+export function decodeMessage(obj: {
   typeUrl: string
   value: Uint8Array
 }):
@@ -170,9 +181,13 @@ function decodeMessage(obj: {
   | MsgUnjail
   | MsgCreateVestingAccount
   | MsgEditDataSource
-  | MsgEditOracleScript {
+  | MsgEditOracleScript
+  | MsgFundCommunityPool {
   switch (obj.typeUrl) {
     case '/mint.MsgWithdrawCoinsToAccFromTreasury':
+      return MsgWithdrawCoinsToAccFromTreasury.decode(obj.value)
+
+    case '/mint.MsgMintCoins':
       return MsgWithdrawCoinsToAccFromTreasury.decode(obj.value)
 
     case '/cosmos.staking.v1beta1.MsgCreateValidator':
@@ -253,217 +268,255 @@ function decodeMessage(obj: {
     case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
       return MsgCreateVestingAccount.decode(obj.value)
 
+    case '/cosmos.distribution.v1beta1.MsgFundCommunityPool':
+      return MsgFundCommunityPool.decode(obj.value)
     default:
       throw new ReferenceError(`Unknown type ${obj.typeUrl}`)
   }
 }
 
 export async function getDateFromMessage(
-  tx: TxResponse
+  tx: TxTelemetry
 ): Promise<adjustedData> {
-  const obj = getDecodeTx(tx.tx)?.body?.messages[0] as {
-    typeUrl: string
-    value: Uint8Array
-  }
-  const message = decodeMessage(obj)
   const adjustedData: adjustedData = {
-    type: humanizeMessageType(obj.typeUrl),
+    type: '',
     time: (await getTime(Number(tx.height))) as Date,
-    fee: getDecodeTx(tx.tx)?.authInfo?.fee?.amount[0]?.amount,
+    fee: '',
+    block: tx.height,
+    memo: '',
+    status: 0,
+    gasWanted: '',
+    gasUsed: '',
   }
-  if ('amount' in message) {
-    if (typeof message.amount === 'object') {
-      if ('denom' in message.amount && 'amount' in message.amount) {
-        adjustedData.amount = message.amount?.amount
-      } else {
-        adjustedData.amount = message.amount[0]?.amount
+  if (tx.tx) {
+    const decodedTx = getDecodeTx(fromBase64(tx.tx))
+    const obj = decodedTx?.body?.messages[0] as {
+      typeUrl: string
+      value: Uint8Array
+    }
+    const message = decodeMessage(obj)
+    adjustedData.type = humanizeMessageType(obj.typeUrl)
+    adjustedData.fee = decodedTx?.authInfo?.fee?.amount[0]?.amount
+    adjustedData.memo = decodedTx.body?.memo
+      ? decodedTx.body?.memo
+      : '<No Memo>'
+    adjustedData.status = tx.tx_result.code
+    adjustedData.gasWanted = tx.tx_result.gas_wanted
+    adjustedData.gasUsed = tx.tx_result.gas_used
+
+    if ('amount' in message) {
+      if (typeof message.amount === 'object') {
+        if ('denom' in message.amount && 'amount' in message.amount) {
+          adjustedData.amount = message.amount?.amount
+        } else {
+          adjustedData.amount = message.amount[0]?.amount
+        }
+      }
+    } else {
+      const amount = tx.tx_result.events
+        .find((item) => {
+          adjustedData.type.toLowerCase().includes(item.type.split('_')[0])
+        })
+        ?.attributes?.map((item) =>
+          item.value ? new TextDecoder().decode(fromBase64(item.value)) : ''
+        )
+
+      adjustedData.amount = getLokiFromString(
+        amount?.find((item) => item.includes('loki'))
+      )
+    }
+
+    if (adjustedData.type === 'Vote') {
+      if ('voter' in message) {
+        adjustedData.sender = message?.voter
       }
     }
-  } else {
-    const amount = tx.result.events
-      .find((item) =>
-        adjustedData.type.toLowerCase().includes(item.type.split('_')[0])
-      )
-      ?.attributes.map((item) => new TextDecoder().decode(item.value))
-    adjustedData.amount = amount
-      ?.find((item) => item.includes('loki'))
-      ?.split('loki')[0]
-  }
-  if ('voter' in message) {
-    adjustedData.sender = message?.voter
-  }
-  if (adjustedData.type === 'Delegate') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message?.delegatorAddress
+    if (adjustedData.type === 'Delegate') {
+      if ('delegatorAddress' in message) {
+        adjustedData.sender = message?.delegatorAddress
+      }
+      if ('validatorAddress' in message) {
+        adjustedData.receiver = message?.validatorAddress
+      }
     }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = message?.validatorAddress
+    if (adjustedData.type === 'Undelegate') {
+      if ('delegatorAddress' in message) {
+        adjustedData.sender = message?.delegatorAddress
+      }
+      if ('validatorAddress' in message) {
+        adjustedData.receiver = ''
+      }
     }
-  }
-  if (adjustedData.type === 'Undelegate') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message?.delegatorAddress
+    if (adjustedData.type === 'Send') {
+      if ('fromAddress' in message) {
+        adjustedData.sender = message?.fromAddress
+      }
+      if ('toAddress' in message) {
+        adjustedData.receiver = message?.toAddress
+      }
     }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = ''
+    if (adjustedData.type === 'Withdraw') {
+      if ('sender' in message) {
+        adjustedData.sender = message?.sender
+      }
+      if ('receiver' in message) {
+        adjustedData.receiver = message?.receiver
+      }
     }
-  }
-  if (adjustedData.type === 'Send') {
-    if ('fromAddress' in message) {
-      adjustedData.sender = message?.fromAddress
+    if (adjustedData.type === 'Withdraw delegator reward') {
+      if ('delegatorAddress' in message) {
+        adjustedData.sender = message?.delegatorAddress
+      }
+      if ('validatorAddress' in message) {
+        adjustedData.receiver = message?.validatorAddress
+      }
     }
-    if ('toAddress' in message) {
-      adjustedData.receiver = message?.toAddress
+    if (adjustedData.type === 'Withdraw validator commission') {
+      if ('delegatorAddress' in message) {
+        adjustedData.sender = message?.delegatorAddress
+      }
+      if ('validatorAddress' in message) {
+        adjustedData.receiver = message?.validatorAddress
+      }
     }
-  }
-  if (adjustedData.type === 'Withdraw') {
-    if ('sender' in message) {
-      adjustedData.sender = message?.sender
+    if (adjustedData.type === 'Edit OracleScript') {
+      if ('sender' in message) {
+        adjustedData.sender = message.sender
+      }
     }
-    if ('receiver' in message) {
-      adjustedData.receiver = message?.receiver
+    if (adjustedData.type === 'Edit Data Source') {
+      if ('sender' in message) {
+        adjustedData.sender = message.sender
+      }
     }
-  }
-  if (adjustedData.type === 'Withdraw delegator reward') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message?.delegatorAddress
+    if (adjustedData.type === 'Edit Validator') {
+      if ('delegatorAddress' in message) {
+        adjustedData.sender = message.delegatorAddress
+      }
+      if ('validatorAddress' in message) {
+        adjustedData.receiver = message.validatorAddress
+      }
     }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = message?.validatorAddress
+    if (adjustedData.type === 'Begin Redelegate') {
+      if ('delegatorAddress' in message) {
+        adjustedData.sender = message.delegatorAddress
+      }
+      if ('validatorDstAddress' in message) {
+        adjustedData.receiver = message.validatorDstAddress
+      }
     }
-  }
-  if (adjustedData.type === 'Withdraw validator commission') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message?.delegatorAddress
+    if (adjustedData.type === 'IBC Transfer') {
+      if ('sender' in message) {
+        adjustedData.sender = message.sender
+      }
+      if ('receiver' in message) {
+        adjustedData.receiver = message.receiver
+      }
     }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = message?.validatorAddress
+    if (adjustedData.type === 'Create Validator') {
+      if ('delegatorAddress' in message) {
+        adjustedData.sender = message.delegatorAddress
+      }
+      if ('validatorAddress' in message) {
+        adjustedData.receiver = message.validatorAddress
+      }
     }
-  }
-  if (adjustedData.type === 'Edit OracleScript') {
-    if ('sender' in message) {
-      adjustedData.sender = message.sender
+    if (adjustedData.type === 'Submit Proposal') {
+      if ('proposer' in message) {
+        adjustedData.sender = message.proposer
+      }
+      if ('initialDeposit' in message) {
+        adjustedData.amount = message.initialDeposit[0]?.amount
+      }
     }
-  }
-  if (adjustedData.type === 'Edit Data Source') {
-    if ('sender' in message) {
-      adjustedData.sender = message.sender
+    if (adjustedData.type === 'Report Data') {
+      if ('reporter' in message) {
+        adjustedData.sender = message.reporter
+      }
+      if ('validator' in message) {
+        adjustedData.receiver = message.validator
+      }
     }
-  }
-  if (adjustedData.type === 'Edit Validator') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message.delegatorAddress
+    if (adjustedData.type === 'Request Data') {
+      if ('sender' in message) {
+        adjustedData.sender = message.sender
+      }
+      if ('validator' in message) {
+        adjustedData.receiver = message.validator
+      }
     }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = message.validatorAddress
+    if (adjustedData.type === 'Update IBC Client') {
+      if ('signer' in message) {
+        adjustedData.sender = message.signer
+      }
+      if ('validatorAddress' in message) {
+        adjustedData.receiver = message.validatorAddress
+      }
     }
-  }
-  if (adjustedData.type === 'Begin Redelegate') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message.delegatorAddress
+    if (adjustedData.type === 'Create Oracle Script') {
+      if ('sender' in message) {
+        adjustedData.sender = message.sender
+      }
     }
-    if ('validatorDstAddress' in message) {
-      adjustedData.receiver = message.validatorDstAddress
+    if (adjustedData.type === 'Create Data Source') {
+      if ('sender' in message) {
+        adjustedData.sender = message.sender
+      }
     }
-  }
-  if (adjustedData.type === 'IBC Transfer') {
-    if ('sender' in message) {
-      adjustedData.sender = message.sender
+    if (adjustedData.type === 'Create IBC Client') {
+      if ('signer' in message) {
+        adjustedData.sender = message.signer
+      }
     }
-    if ('receiver' in message) {
-      adjustedData.receiver = message.receiver
+    if (adjustedData.type === 'Connection Open Init') {
+      if ('signer' in message) {
+        adjustedData.sender = message.signer
+      }
     }
-  }
-  if (adjustedData.type === 'Create Validator') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message.delegatorAddress
+    if (adjustedData.type === 'Create Vesting Account') {
+      if ('fromAddress' in message) {
+        adjustedData.sender = message.fromAddress
+      }
+      if ('toAddress' in message) {
+        adjustedData.receiver = message.toAddress
+      }
     }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = message.validatorAddress
+    if (adjustedData.type === 'Unjail') {
+      if ('validatorAddr' in message) {
+        adjustedData.receiver = message.validatorAddr
+      }
     }
-  }
-  if (adjustedData.type === 'Submit Proposal') {
-    if ('delegatorAddress' in message) {
-      adjustedData.sender = message.delegatorAddress
+    if (adjustedData.type === 'Chanel Open Init') {
+      if ('signer' in message) {
+        adjustedData.sender = message.signer
+      }
     }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = message.validatorAddress
+    if (adjustedData.type === 'Activate') {
+      if ('validator' in message) {
+        adjustedData.receiver = message.validator
+      }
     }
-  }
-  if (adjustedData.type === 'Report Data') {
-    if ('reporter' in message) {
-      adjustedData.sender = message.reporter
+    if (adjustedData.type === 'Deposit') {
+      if ('depositor' in message) {
+        adjustedData.receiver = message.depositor
+      }
     }
-    if ('validator' in message) {
-      adjustedData.receiver = message.validator
+    if (adjustedData.type === 'Mint Coins') {
+      if ('sender' in message) {
+        adjustedData.sender = message?.sender
+      }
+      if ('receiver' in message) {
+        adjustedData.receiver = message?.receiver
+      }
     }
-  }
-  if (adjustedData.type === 'Request Data') {
-    if ('sender' in message) {
-      adjustedData.sender = message.sender
-    }
-    if ('validator' in message) {
-      adjustedData.receiver = message.validator
-    }
-  }
-  if (adjustedData.type === 'Update IBC Client') {
-    if ('signer' in message) {
-      adjustedData.sender = message.signer
-    }
-    if ('validatorAddress' in message) {
-      adjustedData.receiver = message.validatorAddress
-    }
-  }
-  if (adjustedData.type === 'Create Oracle Script') {
-    if ('sender' in message) {
-      adjustedData.sender = message.sender
-    }
-  }
-  if (adjustedData.type === 'Create Data Source') {
-    if ('sender' in message) {
-      adjustedData.sender = message.sender
-    }
-  }
-  if (adjustedData.type === 'Create IBC Client') {
-    if ('signer' in message) {
-      adjustedData.sender = message.signer
-    }
-  }
-  if (adjustedData.type === 'Connection Open Init') {
-    if ('signer' in message) {
-      adjustedData.sender = message.signer
-    }
-  }
-  if (adjustedData.type === 'Create Vesting Account') {
-    if ('fromAddress' in message) {
-      adjustedData.sender = message.fromAddress
-    }
-    if ('toAddress' in message) {
-      adjustedData.receiver = message.toAddress
-    }
-  }
-  if (adjustedData.type === 'Unjail') {
-    if ('validatorAddr' in message) {
-      adjustedData.receiver = message.validatorAddr
-    }
-  }
-  if (adjustedData.type === 'Chanel Open Init') {
-    if ('signer' in message) {
-      adjustedData.sender = message.signer
-    }
-  }
-  if (adjustedData.type === 'Activate') {
-    if ('validator' in message) {
-      adjustedData.receiver = message.validator
-    }
-  }
-  if (adjustedData.type === 'Deposit') {
-    if ('depositor' in message) {
-      adjustedData.receiver = message.depositor
-    }
-  }
 
-  console.debug(adjustedData.type)
+    if (adjustedData.type === 'Fund Community Pool') {
+      if ('depositor' in message) {
+        adjustedData.sender = message?.depositor
+      }
+    }
 
+    console.debug(adjustedData.type)
+  }
   return adjustedData
 }

@@ -7,10 +7,7 @@ export const API_CONFIG = {
   exBridge: process.env.VUE_APP_EX_BRIDGE_URL as string,
   exBridgeFee: process.env.VUE_APP_EX_BRIDGE_FEE as string,
   hdDeviation: stringToPath(process.env.VUE_APP_DEVIATION as string),
-  telemetryUrl: (process.env.VUE_APP_TELEMETRY_URL || '').replace(
-    /\/$/,
-    ''
-  ) as string,
+  telemetryUrl: process.env.VUE_APP_TELEMETRY_URL?.slice(0, -1) as string,
 }
 
 export enum COINS_LIST {
@@ -26,7 +23,7 @@ export const START_VALUE = {
   reddit: 'https://www.reddit.com/r/OdinProtocol',
   discord: 'https://discord.gg/cUXKyRq',
   twitter: 'https://twitter.com/odinprotocol',
-  github: 'https://github.com/ODIN-PROTOCOL',
+  gitHub: 'https://github.com/ODIN-PROTOCOL',
   docs: 'https://geodb.gitbook.io/odin-protocol/getting-started',
   mainnetWeb: 'http://mainnet.odinprotocol.io/',
   mainnetScan: 'https://scan.odinprotocol.io/',
