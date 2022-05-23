@@ -79,8 +79,6 @@ export default defineComponent({
   },
   setup(props) {
     const fee = getLokiFromString(props.tx.fee)
-    console.log(fee)
-
     const amount = getLokiFromString(props.tx.amount)
     const odinAmount = convertLokiToOdin(amount)
     const odinFee = convertLokiToOdin(fee)

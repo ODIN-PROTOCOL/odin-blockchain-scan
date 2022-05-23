@@ -1,5 +1,5 @@
 <template>
-  <a class="user-widget app__btn" :href="START_VALUE.walletLink">
+  <a class="user-widget app-btn app-btn--medium" :href="START_VALUE.walletLink">
     Stake ODIN
   </a>
 </template>
@@ -19,7 +19,6 @@ export default defineComponent({
 <style scoped lang="scss">
 .user-widget {
   width: 12.7rem;
-  height: 3.6rem;
   display: flex;
   justify-content: center;
   align-items: center;
