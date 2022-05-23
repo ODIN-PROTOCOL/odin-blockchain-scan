@@ -13,8 +13,8 @@
       </div>
     </div>
     <AccountInfo
-      :displayedGeoBalance="displayedGeoBalance"
-      :displayedOdinBalance="displayedOdinBalance"
+      :displayedGeoBalance="geoBalance"
+      :displayedOdinBalance="odinBalance"
     />
     <div class="accounts-item__subtitle-line">
       <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
@@ -89,7 +89,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, defineComponent, computed, watch } from 'vue'
+import { ref, onMounted, defineComponent, watch } from 'vue'
 import {
   RouteLocationNormalizedLoaded,
   Router,
@@ -124,22 +124,14 @@ export default defineComponent({
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
-    const geoBalance = ref<string>()
-    const odinBalance = ref<string>()
+    const geoBalance = ref<string>('0')
+    const odinBalance = ref<string>('0')
     const transactions = ref()
     const totalTxCount = ref<number>(0)
-
     const currentPage = ref<number>(1)
     const totalPages = ref<number>()
     const ITEMS_PER_PAGE = 50
     const sortingValue = ref(TYPE_TX_SORT.all)
-
-    const displayedGeoBalance = computed(() =>
-      geoBalance.value ? `${geoBalance.value} GEO` : '0 GEO'
-    )
-    const displayedOdinBalance = computed(() =>
-      odinBalance.value ? `${odinBalance.value} ODIN` : '0 ODIN'
-    )
 
     const getTotalAmount = async (
       validatorAddress: string,
@@ -190,8 +182,8 @@ export default defineComponent({
 
     return {
       route,
-      displayedGeoBalance,
-      displayedOdinBalance,
+      geoBalance,
+      odinBalance,
       routerBack,
       router,
       copyValue,
