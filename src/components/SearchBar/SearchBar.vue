@@ -1,6 +1,6 @@
 <template>
-  <div class="search">
-    <div class="search__row">
+  <div class="search-bar">
+    <div class="search-bar__row">
       <VuePicker
         class="app-form__field-input app-filter app-filter--rounding-left _vue-picker"
         name="filter"
@@ -19,17 +19,16 @@
           </div>
         </template>
       </VuePicker>
-      <div class="search__input-wrapper">
+      <div class="search-bar__input-wrapper">
         <input
-          type="search"
-          class="filter-search"
-          placeholder="Searching by account address, block, Tx hash"
+          class="search-bar__input"
+          :placeholder="inputPlaceholder"
           v-model="searchedText"
           @keydown.enter="searchBy()"
         />
 
         <template v-if="searchResult">
-          <div class="search__dropdown">
+          <div class="search-bar__dropdown">
             <template v-for="(result, idx) in searchResult" :key="idx">
               <template v-if="result.blocks?.length !== 0">
                 <BlockResultItem
@@ -59,7 +58,7 @@
                   !result.accounts?.length
                 "
               >
-                <div class="search__dropdown-empty-msg">
+                <div class="search-bar__dropdown-empty-msg">
                   <span>Does not match any result!</span>
                 </div>
               </template>
@@ -67,17 +66,17 @@
           </div>
         </template>
       </div>
-      <button @click.prevent="searchBy" class="search-btn">
+      <button @click.prevent="searchBy" class="search-bar__btn">
         <img src="~@/assets/icons/search.svg" alt="search" />
       </button>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { callers } from '@/api/callers'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
-import { prepareTransaction } from '@/helpers/helpers'
+import { isMobile, prepareTransaction } from '@/helpers/helpers'
 import { Router, useRouter } from 'vue-router'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
@@ -88,7 +87,7 @@ import {
   TempSearchAccountInfoType,
   TransformedBlocks,
 } from '@/helpers/Types'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 
 export default defineComponent({
@@ -99,9 +98,11 @@ export default defineComponent({
       'All Filters',
       'Block',
       'Tx hash',
-      'Account Address',
+      'Account',
     ])
-
+    const inputPlaceholder = computed(() =>
+      isMobile() ? 'Search' : 'Searching by account address, block, Tx hash'
+    )
     const activeFilter = ref<string>(filters.value[0])
     const searchedText = ref<string | null>('')
     const searchResult = ref<Array<SearchResultType> | null>(null)
@@ -171,7 +172,7 @@ export default defineComponent({
             },
           ])
         }
-        if (activeFilter.value === 'Account Address') {
+        if (activeFilter.value === 'Account') {
           return (searchResult.value = [
             {
               accounts: await getAccount(),
@@ -185,9 +186,8 @@ export default defineComponent({
             accounts: await getAccount(),
           },
         ]
-      } catch (e) {
-        console.error((e as Error).message)
-        handleError(e as Error)
+      } catch (error) {
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
         searchResult.value = null
       }
       return null
@@ -207,19 +207,21 @@ export default defineComponent({
       diffDays,
       cropText,
       getDay,
+      inputPlaceholder,
     }
   },
 })
 </script>
 <style lang="scss" scoped>
-.search {
+.search-bar {
   padding: 1.2rem 0 2.4rem;
 
   &__input-wrapper {
     width: 39.6rem;
     position: relative;
+    border-radius: none;
     @media (max-width: 480px) {
-      position: inherit;
+      // position: inherit;
     }
   }
   &__dropdown {
@@ -247,7 +249,7 @@ export default defineComponent({
   }
 }
 
-.filter-search {
+.search-bar__input {
   height: 4.8rem;
   padding: 1.2rem 1.5rem;
   width: 100%;
@@ -259,7 +261,7 @@ export default defineComponent({
     color: var(--clr__text-muted);
   }
 }
-.search-btn {
+.search-bar__btn {
   width: 48px;
   height: 48px;
   display: flex;
@@ -274,6 +276,13 @@ export default defineComponent({
     width: 1.8rem;
     height: 1.8rem;
     display: block;
+  }
+}
+@include respond-to(tablet) {
+  .search-bar__input {
+    &::placeholder {
+      font-size: 1.4rem;
+    }
   }
 }
 </style>

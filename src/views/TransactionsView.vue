@@ -48,7 +48,7 @@
 <script lang="ts">
 import { callers } from '@/api/callers'
 import { defineComponent, ref, onMounted } from 'vue'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareTransaction } from '@/helpers/helpers'
 import TxLine from '@/components/TxLine.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
@@ -75,7 +75,7 @@ export default defineComponent({
         totalTransactions.value = total_count
         totalPages.value = Math.ceil(totalTransactions.value / ITEMS_PER_PAGE)
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
       releaseLoading()
     }

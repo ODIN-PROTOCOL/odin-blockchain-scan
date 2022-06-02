@@ -30,7 +30,7 @@ import { CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { getAPIDate } from '@/helpers/requests'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import InfoPanelData from '@/components/InfoPanel/InfoPanelData.vue'
 
@@ -49,7 +49,7 @@ export default defineComponent({
           .then((resp) => resp.json())
         transactionCount.value = total_count
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     }
 
@@ -63,7 +63,7 @@ export default defineComponent({
 
         chartData.value = formatDataForCharts(data)
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     }
 
@@ -113,7 +113,7 @@ export default defineComponent({
         // await getCoinInfo()
         await getLatestTelemetry()
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     })
 

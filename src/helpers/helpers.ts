@@ -7,6 +7,22 @@ import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { convertLokiToOdin } from '@/helpers/converters'
 import { TxTelemetry } from '@/helpers/Types'
 import { formatDate } from '@/helpers/formatters'
+import { detect } from 'detect-browser'
+
+export function isIos() {
+  const res = detect()
+  return res && res.os === 'iOS'
+}
+
+export function isAndroid() {
+  const res = detect()
+  return res && res.os === 'Android OS'
+}
+
+export function isMobile() {
+  return isAndroid() || isIos()
+}
+
 export const sortingDaysForChart = {
   lastDay: {
     text: 'Last day',

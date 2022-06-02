@@ -232,6 +232,7 @@ export default defineComponent({
     top: 8.4rem;
     left: 0;
     overflow-y: auto;
+    z-index: 10;
   }
 }
 </style>

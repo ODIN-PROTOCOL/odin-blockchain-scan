@@ -143,7 +143,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { adjustedData } from '@/helpers/Types'
 import { prepareTransaction } from '@/helpers/helpers'
 import BackButton from '@/components/BackButton.vue'
@@ -181,7 +181,7 @@ export default defineComponent({
         const preparedTx = await prepareTransaction([res.data.result])
         tx.value = preparedTx[0]
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     }
 

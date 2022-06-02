@@ -56,7 +56,7 @@ import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
 import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
 import { BlockResponse } from '@cosmjs/tendermint-rpc'
 import { blocksWithTotalTxInterface } from '@/helpers/Types'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 
 export default defineComponent({
   components: {
@@ -128,7 +128,7 @@ export default defineComponent({
         await getBlocks()
         await getReports()
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     })
 

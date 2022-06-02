@@ -1,5 +1,9 @@
 <template>
-  <div class="link-dropdown">
+  <div
+    class="link-dropdown"
+    @click="dropdownOpen"
+    :class="{ ['link-dropdown--active']: isDropdownOpen }"
+  >
     <span class="link-dropdown__title-wrapper">
       <span class="link-dropdown__title">{{ list.name }}</span>
       <ArrowIcon class="link-dropdown__arrow" />
@@ -35,7 +39,8 @@
 
 <script lang="ts">
 import ArrowIcon from '@/components/icons/ArrowIcon.vue'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { isMobile } from '@/helpers/helpers'
 
 export default defineComponent({
   name: 'linksDropdown',
@@ -48,7 +53,18 @@ export default defineComponent({
     const isRedirect = () => {
       emit('redirect')
     }
-    return { isRedirect }
+    const isDropdownOpen = ref(false)
+    const dropdownOpen = () => {
+      if (isMobile()) {
+        isDropdownOpen.value = !isDropdownOpen.value
+      }
+    }
+    const onClickOutside = () => {
+      if (isMobile()) {
+        isDropdownOpen.value = false
+      }
+    }
+    return { isRedirect, dropdownOpen, isDropdownOpen, onClickOutside }
   },
 })
 </script>
@@ -103,19 +119,17 @@ export default defineComponent({
   }
 
   &:hover {
-    .link-dropdown {
-      &__title {
-        color: var(--clr__action);
-      }
+    .link-dropdown__title {
+      color: var(--clr__action);
+    }
 
-      &__arrow {
-        fill: var(--clr__action);
-        transform: rotate(180deg);
-      }
+    .link-dropdown__arrow {
+      fill: var(--clr__action);
+      transform: rotate(180deg);
+    }
 
-      &__modal {
-        display: flex;
-      }
+    .link-dropdown__modal {
+      display: flex;
     }
   }
 }
@@ -153,6 +167,18 @@ export default defineComponent({
       &:hover {
         background: inherit;
       }
+    }
+  }
+  .link-dropdown--active {
+    .link-dropdown__title {
+      color: var(--clr__action);
+    }
+    .link-dropdown__arrow {
+      fill: var(--clr__action);
+      transform: rotate(180deg);
+    }
+    .link-dropdown__modal {
+      display: flex;
     }
   }
 }
