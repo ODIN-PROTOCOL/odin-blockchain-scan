@@ -31,6 +31,13 @@ const chartPagesProps = {
     datasetLabel: 'Average Transaction Fee',
     yAxisTitle: 'Average Transaction Fee',
   },
+  averageRequestsChart: {
+    chartPageTitle: 'Total Requests Chart',
+    chartType: 'line',
+    getDataMethodName: 'getRequestsVolumePerDays',
+    datasetLabel: 'Number of request',
+    yAxisTitle: 'Number of requests',
+  },
 }
 
 const routes: Array<RouteRecordRaw> = [
@@ -121,6 +128,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'AverageTransactionFeeChart',
         component: () => import('../views/ChartView.vue'),
         props: chartPagesProps.averageTransactionFeeChart,
+      },
+      {
+        path: 'total-requests-chart',
+        name: 'TotalRequestsChart',
+        component: () => import('../views/ChartView.vue'),
+        props: chartPagesProps.averageRequestsChart,
       },
     ],
     component: () => import('../views/ChartPage.vue'),

@@ -34,7 +34,6 @@
     "lorem-ipsum": "^2.0.3",
     "protobufjs": "^6.10.2",
     "mitt": "^3.0.0",
-    "v-click-outside": "^3.2.0",
     "vue": "^3.0.0",
     "vue-chart-3": "^3.0.3",
     "vue-router": "^4.0.0-0",

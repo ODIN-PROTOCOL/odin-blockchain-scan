@@ -2,8 +2,18 @@
   <div class="app-nav" :class="{ ['app-nav--mobile']: isOpen }">
     <div class="app-nav__wrap">
       <div class="app-nav__page">
-        <LinksDropdown :list="BlockchainList" @redirect="changeRoute" />
-        <LinksDropdown :list="ResourceList" @redirect="changeRoute" />
+        <LinksDropdown
+          @click="openDropdownBlockchain"
+          @redirect="changeRoute"
+          :list="BlockchainList"
+          :isDropdownOpen="isBlockchainDropdownOpen"
+        />
+        <LinksDropdown
+          @click="openDropdownResource"
+          @redirect="changeRoute"
+          :list="ResourceList"
+          :isDropdownOpen="isResourceDropdownOpen"
+        />
         <router-link
           @click="changeRoute"
           class="app-nav__link"
@@ -37,11 +47,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import LinksDropdown from '@/components/LinksDropdown.vue'
 import UserWidget from '@/components/UserWidget.vue'
 import { LinkList } from '@/helpers/Types'
 import { START_VALUE } from '@/api/api-config'
+import { isMobile } from '@/helpers/helpers'
 
 export default defineComponent({
   name: 'AppNav',
@@ -85,9 +96,22 @@ export default defineComponent({
         },
       ],
     }
-
+    const isBlockchainDropdownOpen = ref(false)
+    const isResourceDropdownOpen = ref(false)
     const changeRoute = () => {
       emit('changeRoute')
+    }
+    const openDropdownResource = () => {
+      if (isMobile()) {
+        isResourceDropdownOpen.value = !isResourceDropdownOpen.value
+        isBlockchainDropdownOpen.value = false
+      }
+    }
+    const openDropdownBlockchain = () => {
+      if (isMobile()) {
+        isBlockchainDropdownOpen.value = !isBlockchainDropdownOpen.value
+        isResourceDropdownOpen.value = false
+      }
     }
 
     const isMainnet = computed(() => {
@@ -100,6 +124,10 @@ export default defineComponent({
       changeRoute,
       isMainnet,
       START_VALUE,
+      isBlockchainDropdownOpen,
+      isResourceDropdownOpen,
+      openDropdownBlockchain,
+      openDropdownResource,
     }
   },
 })

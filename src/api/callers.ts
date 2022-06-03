@@ -65,6 +65,14 @@ const makeCallers = () => {
         },
       })
     },
+    getRequestsVolumePerDays: (startTime: Date, endTime: Date) => {
+      return axios.get(`${API_CONFIG.telemetryUrl}/requests/volume_per_days`, {
+        params: {
+          start_time: (startTime.getTime() / 1000).toFixed(),
+          end_time: (endTime.getTime() / 1000).toFixed(),
+        },
+      })
+    },
     getAvgSizePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(`${API_CONFIG.telemetryUrl}/blocks/avgSizePerDays`, {
         params: {
