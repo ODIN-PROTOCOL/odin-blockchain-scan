@@ -8,9 +8,9 @@
           <div class="account-info__card-balance-row-value-wrapper">
             <span
               class="account-info__card-balance-row-value app-table__cell-txt"
-              :title="displayedOdinBalance"
+              :title="odinBalance"
             >
-              {{ displayedOdinBalance }}
+              {{ odinBalance }}
             </span>
           </div>
         </div>
@@ -19,9 +19,9 @@
           <div class="account-info__card-balance-row-value-wrapper">
             <span
               class="account-info__card-balance-row-value app-table__cell-txt app-table__link"
-              :title="displayedGeoBalance"
+              :title="geoBalance"
             >
-              {{ displayedGeoBalance }}
+              {{ geoBalance }}
             </span>
           </div>
         </div>
@@ -66,11 +66,11 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
-    displayedOdinBalance: {
+    odinBalance: {
       type: String,
       required: true,
     },
-    displayedGeoBalance: {
+    geoBalance: {
       type: String,
       required: true,
     },

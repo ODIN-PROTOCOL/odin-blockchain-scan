@@ -12,10 +12,7 @@
         <CopyButton class="mg-l8" :text="String(route.params.hash)" />
       </div>
     </div>
-    <AccountInfo
-      :displayedGeoBalance="geoBalance"
-      :displayedOdinBalance="odinBalance"
-    />
+    <AccountInfo :geo-balance="geoBalance" :odin-balance="odinBalance" />
     <div class="accounts-item__subtitle-line">
       <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
         <div class="accounts-item__tx-info">

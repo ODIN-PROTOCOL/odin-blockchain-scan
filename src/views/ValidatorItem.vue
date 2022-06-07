@@ -3,7 +3,10 @@
     <div class="app__main-view-title-wrapper validators-item__title-wrapper">
       <BackButton class="validators-item__back-btn" text="Oracle validators" />
       <h2 class="app__main-view-title validators-item__title">Validator</h2>
-      <div class="validators-item__validator-address">
+      <div
+        v-if="!isLoading && validator"
+        class="validators-item__validator-address"
+      >
         <p
           :title="validator?.operatorAddress"
           class="view-main__subtitle validators-item__subtitle"
@@ -12,24 +15,13 @@
         </p>
         <CopyButton class="mg-l8" :text="String(validator?.operatorAddress)" />
       </div>
-      <div class="validators-item__oracle-status">
-        <StatusIcon
-          :width="14"
-          :height="14"
-          class="validators-item__oracle-status-icon"
-          :status="validator?.isActive ? 'success' : 'error'"
-        />
-
-        <span
-          class="validators-item__oracle-status-text"
-          :class="
-            validator?.isActive
-              ? 'validators-item__oracle-status-text--success'
-              : 'validators-item__oracle-status-text--error'
-          "
-          >Oracle</span
-        >
-      </div>
+      <ValidatorStatus
+        v-if="!isLoading && validator"
+        :width="14"
+        :height="14"
+        :status="validatorStatus"
+        class="validators-item__validator-status"
+      />
     </div>
 
     <template v-if="validator">
@@ -47,7 +39,10 @@
       </AppTabs>
     </template>
     <template v-else>
-      <p>Validator not found!</p>
+      <div class="app-table__empty-stub">
+        <p v-if="isLoading" class="empty mg-t32">Loading…</p>
+        <p v-else class="empty mg-t32">Validator not found!</p>
+      </div>
     </template>
   </div>
 </template>
@@ -66,8 +61,9 @@ import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
 import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
 import { handleError } from '@/helpers/errors'
 import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
-import StatusIcon from '@/components/StatusIcon.vue'
+import ValidatorStatus from '@/components/ValidatorStatus.vue'
 import { isActiveValidator } from '@/helpers/validatorDecoders'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
 export default defineComponent({
   components: {
@@ -79,9 +75,10 @@ export default defineComponent({
     OracleReportsTable,
     DelegatorsTable,
     ProposedBlocksTable,
-    StatusIcon,
+    ValidatorStatus,
   },
   setup: function () {
+    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const route: RouteLocationNormalizedLoaded = useRoute()
     const validator = ref()
     const delegators = ref<DelegationResponse[]>([])
@@ -92,13 +89,28 @@ export default defineComponent({
     )
 
     const getValidator = async () => {
-      const response = await callers.getValidator(String(route.params.address))
-      validator.value = {
-        ...response.validator,
-        isActive: await isActiveValidator(String(route.params.address)),
+      lockLoading()
+      try {
+        const response = await callers.getValidator(
+          String(route.params.address)
+        )
+        validator.value = {
+          ...response.validator,
+          isActive: await isActiveValidator(String(route.params.address)),
+        }
+      } catch (error) {
+        handleError(error as Error)
       }
+      releaseLoading()
     }
 
+    const validatorStatus = computed(() => {
+      if (validator.value?.status === 3) {
+        return validator.value.isActive ? 'success' : 'error'
+      } else {
+        return 'inactive'
+      }
+    })
     const getDelegators = async () => {
       const response = await callers.getValidatorDelegations(
         String(route.params.address)
@@ -121,6 +133,8 @@ export default defineComponent({
       validator,
       delegators,
       delegatorsTitle,
+      validatorStatus,
+      isLoading,
     }
   },
 })
@@ -147,30 +161,6 @@ export default defineComponent({
   height: 4.6rem;
   font-size: 16px;
   line-height: 24px;
-}
-.validators-item__oracle-status {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background: var(--clr__modal-field-bg);
-  border-radius: 3.2rem;
-  width: 7.8rem;
-  height: 2.8rem;
-  padding: 0.4rem 1.2rem 0.4rem 0.8rem;
-  gap: 0.4rem;
-  margin-right: 2rem;
-}
-.validators-item__oracle-status-text {
-  font-weight: 400;
-  font-size: 1.4rem;
-  line-height: 2rem;
-  &--success {
-    color: var(--clr__oracle-status-success);
-  }
-  &--error {
-    color: var(--clr__oracle-status-error);
-  }
 }
 .validators-item__subtitle {
   overflow: hidden;
@@ -215,7 +205,7 @@ export default defineComponent({
     margin-right: 0;
     margin-bottom: 3.2rem;
   }
-  .validators-item__oracle-status {
+  .validators-item__validator-status {
     margin-top: 1.2rem;
   }
 }
