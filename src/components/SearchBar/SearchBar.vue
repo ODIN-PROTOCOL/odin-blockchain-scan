@@ -255,8 +255,9 @@ export default defineComponent({
   width: 100%;
   max-width: 42.6rem;
   border: 0.1rem solid var(--clr__input-border);
-  border-left: none;
-  border-right: none;
+  border-left: transparent;
+  border-right: transparent;
+  border-radius: 0;
   &::placeholder {
     color: var(--clr__text-muted);
   }
