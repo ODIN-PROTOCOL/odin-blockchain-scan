@@ -4,10 +4,9 @@
       <div class="app-table__head delegators-table__table-head">
         <span>Delegator</span>
         <span>Stake</span>
-        <!-- <span>Stake</span> -->
       </div>
       <div class="app-table__body">
-        <template v-if="delegators.length">
+        <template v-if="filteredDelegators?.length">
           <div
             v-for="item in filteredDelegators"
             :key="item.delegation.delegatorAddress"
@@ -15,10 +14,12 @@
           >
             <div class="app-table__cell">
               <span class="app-table__title">Delegator</span>
-              <TitledLink
+              <a
                 class="app-table__cell-txt app-table__link"
-                :text="String(item.delegation.delegatorAddress)"
-              />
+                :href="`/account/${item.delegation.delegatorAddress}`"
+              >
+                {{ item.delegation.delegatorAddress }}
+              </a>
             </div>
             <div class="app-table__cell">
               <span class="app-table__title">Stake</span>
@@ -28,22 +29,11 @@
                 }}
               </span>
             </div>
-            <!-- <div class="app-table__cell">
-              <span class="app-table__title">Stake</span>
-              <span class="app-table__cell-txt">
-                {{
-                  $convertLokiToOdin(item.delegation.shares, {
-                    withDenom: true,
-                    withPrecise: true,
-                  })
-                }}
-              </span>
-            </div> -->
           </div>
         </template>
         <template v-else>
           <div class="app-table__empty-stub">
-            <p>No items yet</p>
+            <p class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
@@ -51,7 +41,7 @@
 
     <template v-if="delegatorsCount > ITEMS_PER_PAGE">
       <AppPagination
-        class="mg-t32"
+        class="mg-t32 mg-b32"
         v-model="currentPage"
         :pages="totalPages"
         @update:modelValue="paginationHandler"
@@ -61,54 +51,52 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, toRef } from 'vue'
-import TitledLink from '@/components/TitledLink.vue'
+import { defineComponent, onMounted, ref, PropType, computed } from 'vue'
+import { API_CONFIG } from '@/api/api-config'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
+import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
 
 export default defineComponent({
-  components: { TitledLink, AppPagination },
+  components: { AppPagination },
   props: {
-    delegators: { type: Array, required: true },
+    delegators: {
+      type: Array as PropType<DelegationResponse[]>,
+      required: true,
+    },
   },
-  setup: function (props) {
-    const ITEMS_PER_PAGE = 50
+  setup(props) {
+    const ITEMS_PER_PAGE = 5
     const currentPage = ref(1)
-    const delegatorsCount = ref()
-    const filteredDelegators = ref()
-    const totalPages = computed(() =>
-      Math.ceil(delegatorsCount.value / ITEMS_PER_PAGE)
-    )
+    const totalPages = ref(0)
+    const delegatorsCount = ref(0)
 
-    const _delegators = toRef(props, 'delegators')
-
-    const filterDelegators = (newPage: number) => {
-      let tempArr = _delegators.value
-
-      if (newPage === 1) {
-        filteredDelegators.value = tempArr.slice(0, newPage * ITEMS_PER_PAGE)
+    const filteredDelegators = computed(() => {
+      let tempArr = props.delegators
+      if (currentPage.value === 1) {
+        return tempArr.slice(0, currentPage.value * ITEMS_PER_PAGE)
       } else {
-        filteredDelegators.value = tempArr.slice(
-          (newPage - 1) * ITEMS_PER_PAGE,
-          (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+        return tempArr.slice(
+          (currentPage.value - 1) * ITEMS_PER_PAGE,
+          (currentPage.value - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
         )
       }
-      currentPage.value = newPage
-    }
+    })
 
     const paginationHandler = (num: number) => {
-      filterDelegators(num)
+      currentPage.value = num
     }
 
     onMounted(() => {
-      filterDelegators(currentPage.value)
-      delegatorsCount.value = _delegators.value.length
+      delegatorsCount.value = props.delegators.length
+      totalPages.value = Math.ceil(delegatorsCount.value / ITEMS_PER_PAGE)
     })
 
     return {
+      API_CONFIG,
       ITEMS_PER_PAGE,
-      delegatorsCount,
       currentPage,
       totalPages,
+      delegatorsCount,
       filteredDelegators,
       paginationHandler,
     }

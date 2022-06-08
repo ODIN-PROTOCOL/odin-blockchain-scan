@@ -1,4 +1,4 @@
-.app__btn {
+.app-btn {
   display: inline-block;
   font-size: 2rem;
   background: var(--clr__action);
@@ -20,7 +20,13 @@
     font-size: 1.6rem;
     padding: 0.5rem 2.3rem;
   }
-
+  &--medium{
+    padding: 0.8rem;
+    width: 18.4rem;
+    height: 4rem;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+  }
   &:focus {
     color: var(--clr__text-on-action);
     border: 0.1rem solid var(--clr__btn-normal);

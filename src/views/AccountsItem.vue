@@ -12,21 +12,7 @@
         <CopyButton class="mg-l8" :text="String(route.params.hash)" />
       </div>
     </div>
-
-    <div class="accounts-item__stats mg-b32">
-      <div class="accounts-item__stats-row">
-        <span class="accounts-item__stats-title">GEO Balance:</span>
-        <span class="accounts-item__stats-amount" :title="displayedGeoBalance">
-          {{ displayedGeoBalance }}
-        </span>
-      </div>
-      <div class="accounts-item__stats-row">
-        <span class="accounts-item__stats-title">ODIN Balance:</span>
-        <span class="accounts-item__stats-amount" :title="displayedOdinBalance">
-          {{ displayedOdinBalance }}
-        </span>
-      </div>
-    </div>
+    <AccountInfo :geo-balance="geoBalance" :odin-balance="odinBalance" />
     <div class="accounts-item__subtitle-line">
       <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
         <div class="accounts-item__tx-info">
@@ -83,9 +69,9 @@
           />
         </template>
         <template v-else>
-          <div class="app-table__empty-stub">
-            <p v-if="isLoading">Loading…</p>
-            <p v-else>No items yet</p>
+          <div>
+            <p v-if="isLoading" class="empty mg-t32">Loading…</p>
+            <p v-else class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
@@ -97,15 +83,10 @@
       :pages="totalPages"
       @update:modelValue="updateHandler"
     />
-    <template v-else>
-      <div class="app-table__row">
-        <p class="app-table__empty-stub">No items yet</p>
-      </div>
-    </template>
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, defineComponent, computed, watch } from 'vue'
+import { ref, onMounted, defineComponent, watch } from 'vue'
 import {
   RouteLocationNormalizedLoaded,
   Router,
@@ -126,29 +107,28 @@ import CopyButton from '@/components/CopyButton.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import AccountTxLine from '@/components/AccountTxLine.vue'
 import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
+import AccountInfo from '@/components/AccountInfo.vue'
 
 export default defineComponent({
-  components: { BackButton, CopyButton, AppPagination, AccountTxLine },
+  components: {
+    BackButton,
+    CopyButton,
+    AppPagination,
+    AccountTxLine,
+    AccountInfo,
+  },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const router: Router = useRouter()
     const route: RouteLocationNormalizedLoaded = useRoute()
-    const geoBalance = ref<string>()
-    const odinBalance = ref<string>()
+    const geoBalance = ref<string>('0')
+    const odinBalance = ref<string>('0')
     const transactions = ref()
     const totalTxCount = ref<number>(0)
-
     const currentPage = ref<number>(1)
     const totalPages = ref<number>()
     const ITEMS_PER_PAGE = 50
     const sortingValue = ref(TYPE_TX_SORT.all)
-
-    const displayedGeoBalance = computed(() =>
-      geoBalance.value ? `${geoBalance.value} GEO` : '0 GEO'
-    )
-    const displayedOdinBalance = computed(() =>
-      odinBalance.value ? `${odinBalance.value} ODIN` : '0 ODIN'
-    )
 
     const getTotalAmount = async (
       validatorAddress: string,
@@ -199,8 +179,8 @@ export default defineComponent({
 
     return {
       route,
-      displayedGeoBalance,
-      displayedOdinBalance,
+      geoBalance,
+      odinBalance,
       routerBack,
       router,
       copyValue,
@@ -229,9 +209,6 @@ export default defineComponent({
 }
 
 .accounts-item__stats {
-  border: 0.1rem solid var(--clr__action);
-  border-radius: 0.8rem;
-  padding: 3.2rem 2.4rem;
   display: inline-block;
 }
 
