@@ -20,7 +20,6 @@
       <div class="validators-view__filter-search">
         <div class="validators-view__filter-search-input-wrapper">
           <InputField
-            type="search"
             v-model="searchValue"
             placeholder="Search validator"
             class="validators-view__filter-search-input"
@@ -129,7 +128,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { callers } from '@/api/callers'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import AppTabs from '@/components/tabs/AppTabs.vue'
@@ -224,7 +223,7 @@ export default defineComponent({
           activeValidators.value.length + inactiveValidators.value.length
         filterValidators(currentPage.value)
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
       releaseLoading()
     }

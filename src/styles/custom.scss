@@ -42,7 +42,7 @@ body {
 
 .app-filter {
   display: flex;
-  width: 16.6rem;
+  width: 11.6rem;
   height: 4.8rem;
   position: relative;
   &:focus {
@@ -52,8 +52,7 @@ body {
     .vue-picker-option_cur,
     .vue-picker-option:hover {
       color: var(--clr__action);
-      background: var(--clr__table-border);
-      opacity: 0.4;
+      background: var(--clr__vue-picker-current-option);
     }
   }
   &--coin {
@@ -145,7 +144,7 @@ body {
   position: absolute;
 }
 ._vue-picker {
-  width: 14rem;
+  max-width: 14rem;
   font-weight: 400;
   .vue-picker__opener,
   .vue-picker__opener:focus {
@@ -189,8 +188,7 @@ body {
     .vue-picker-option_cur {
       font-weight: 600;
       color: var(--clr__action);
-      background: var(--clr__table-border);
-      opacity: 0.4;
+      background: var(--clr__vue-picker-current-option);
     }
   }
   @include respond-to(tablet) {

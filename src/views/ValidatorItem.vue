@@ -59,7 +59,7 @@ import ValidatorInfo from '@/components/ValidatorInfo.vue'
 import OracleReportsTable from '@/components/tables/OracleReportsTable.vue'
 import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
 import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
 import { isActiveValidator } from '@/helpers/validatorDecoders'
@@ -100,7 +100,7 @@ export default defineComponent({
           isActive: await isActiveValidator(String(route.params.address)),
         }
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
       releaseLoading()
     }
@@ -128,7 +128,7 @@ export default defineComponent({
         await getValidator()
         await getDelegators()
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     })
 

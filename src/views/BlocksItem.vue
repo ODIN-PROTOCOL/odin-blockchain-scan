@@ -110,7 +110,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { toHex } from '@cosmjs/encoding'
 import { formatDate } from '@/helpers/formatters'
 import BackButton from '@/components/BackButton.vue'
@@ -163,7 +163,7 @@ export default defineComponent({
           .then((resp) => resp.json())
         blocksTransactions.value = await prepareTransaction(data)
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     }
 

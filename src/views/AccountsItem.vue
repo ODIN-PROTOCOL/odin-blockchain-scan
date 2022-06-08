@@ -101,7 +101,7 @@ import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
 import { Bech32 } from '@cosmjs/encoding'
 import { bigMath } from '@/helpers/bigMath'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
@@ -160,8 +160,8 @@ export default defineComponent({
         transactions.value = tx.data
         totalTxCount.value = tx.total_count
         totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
-      } catch (e) {
-        handleError(e as Error)
+      } catch (error) {
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
       releaseLoading()
     }

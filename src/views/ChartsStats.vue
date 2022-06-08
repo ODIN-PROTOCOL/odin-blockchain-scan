@@ -96,6 +96,11 @@ export default defineComponent({
           chartType: 'line',
           chartPageUrl: 'average-transactions-fee',
         },
+        {
+          title: 'Total Requests Chart',
+          chartType: 'line',
+          chartPageUrl: 'total-requests-chart',
+        },
       ],
     ]
 

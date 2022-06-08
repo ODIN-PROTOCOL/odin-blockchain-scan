@@ -102,7 +102,7 @@ import LatestListItem from '@/components/LatestList/LatestListItem.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
 import { adjustedData, TransformedBlocks } from '@/helpers/Types'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 
 export default defineComponent({
@@ -116,7 +116,7 @@ export default defineComponent({
         await getLatestBlocks()
         await getLatestTransactions()
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
     })
 

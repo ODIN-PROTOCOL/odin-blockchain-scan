@@ -1,25 +1,13 @@
-import { OdinApiBroadcastError } from '@/api/api'
-import { notifyError } from './notifications'
-
-type ErrorLike = Pick<Error, 'message'>
-
-export function handleError(error: Error | ErrorLike | unknown): void {
-  if (error instanceof OdinApiBroadcastError) {
-    _handleBroadcastError(error)
-  } else {
-    console.error(error)
-    if (isErrorLike(error)) {
-      notifyError(error.message)
-    }
-  }
+import emitter from './emmiter'
+export const TYPE_NOTIFICATION = {
+  info: 'Info',
+  failed: 'Failed',
+  success: 'Success',
 }
-
-export function isErrorLike(value: unknown): value is ErrorLike {
-  if (!value || typeof value !== 'object') return false
-  return 'message' in value
-}
-
-function _handleBroadcastError(error: OdinApiBroadcastError): void {
-  console.error(error)
-  notifyError(error.message)
+export function handleNotificationInfo(
+  error: Error | string,
+  typeNotification: string
+): void {
+  emitter.emit('handleNotification', { error, typeNotification })
+  if (typeNotification !== TYPE_NOTIFICATION.success) console.error(error)
 }

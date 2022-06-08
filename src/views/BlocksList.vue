@@ -75,7 +75,7 @@ import { defineComponent, ref, onMounted, computed } from 'vue'
 import { convertToTime, convertToDate } from '@/helpers/dates'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { START_VALUE } from '@/api/api-config'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
@@ -112,7 +112,7 @@ export default defineComponent({
         maxHeight.value = lastHeight
         minHeight.value = lastHeight - ITEMS_PER_PAGE
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
       releaseLoading()
     }
@@ -131,7 +131,7 @@ export default defineComponent({
         )
         blocks.value = await prepareBlocks(blockMetas)
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
       releaseLoading()
     }

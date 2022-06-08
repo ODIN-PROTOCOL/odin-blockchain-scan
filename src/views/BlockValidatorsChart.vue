@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import BackButton from '@/components/BackButton.vue'
 import { callers } from '@/api/callers'
 import TitledLink from '@/components/TitledLink.vue'
@@ -96,7 +96,7 @@ export default defineComponent({
         })
         _prepareAdditionalData(validators.value)
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
       isLoading.value = false
     }

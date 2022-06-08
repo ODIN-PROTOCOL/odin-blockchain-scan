@@ -51,7 +51,7 @@
 import { defineComponent, onMounted, ref, toRefs, watch } from 'vue'
 import { Router, useRouter } from 'vue-router'
 import { callers } from '@/api/callers'
-import { handleError } from '@/helpers/errors'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { sortingDaysForChart } from '@/helpers/helpers'
 import CustomBarChart from '@/components/Charts/CustomBarChart.vue'
@@ -88,7 +88,7 @@ export default defineComponent({
         )
         chartData.value = formatDataForCharts(data)
       } catch (error) {
-        handleError(error as Error)
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       } finally {
         isLoading.value = false
       }
