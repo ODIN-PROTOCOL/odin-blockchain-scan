@@ -14,6 +14,8 @@
     box-shadow: 0 0.4rem 1.6rem var(--clr__vue-notifications-box-shadow);
     border-radius: 1.6rem;
     padding: 2.4rem 3.2rem;
+    width: 100%;
+    // align-items: center;
   }
   .failed {
     border: 0.1rem solid var(--clr__vue-notifications-failed-border);
@@ -37,6 +39,7 @@
   .app__notification-content-wrapper {
     width: 100%;
     margin-right: 2rem;
+    text-align: left;
   }
   .app__notification-content {
     font-weight: 400;
@@ -46,6 +49,9 @@
   }
   .app__cancel-icon {
     height: 100%;
+  }
+  .app__cancel-icon-wrapper {
+    margin: auto 0;
   }
   @include respond-to(tablet) {
     top: 0;

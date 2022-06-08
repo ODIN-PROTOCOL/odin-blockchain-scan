@@ -5,14 +5,14 @@
         <header class="app__header" :class="{ app__header_mobile: isOpen }">
           <div class="app__container">
             <div class="app__header-inner">
-              <router-link to="/" @click="changeRoute">
+              <router-link to="/" @click="closeBurger">
                 <img
                   class="app__header-logo"
                   src="~@/assets/brand/odin-logo-black.png"
                   alt="Logo"
                 />
               </router-link>
-              <AppNav :isOpen="isOpen" @changeRoute="changeRoute" />
+              <AppNav :isOpen="isOpen" @changeRoute="closeBurger" />
               <BurgerMenu
                 class="app__header-burger-menu"
                 :isOpen="isOpen"
@@ -35,7 +35,7 @@
   <div class="app__dialogs-container" ref="dialogsContainerRef"></div>
   <notifications width="100%" position="" animation-name="v-fade-left" :max="3">
     <template v-slot:body="props">
-      <div
+      <button
         class="app__notification"
         @click="props.close"
         :class="notification?.typeNotification.toLowerCase()"
@@ -63,9 +63,9 @@
           </p>
         </div>
         <div class="app__cancel-icon-wrapper">
-          <CancelIcon @click="props.close" class="app__cancel-icon" />
+          <CancelIcon class="app__cancel-icon" />
         </div>
-      </div>
+      </button>
     </template>
   </notifications>
 </template>
@@ -125,7 +125,7 @@ export default defineComponent({
       event.preventDefault()
       isOpen.value = isOpen.value !== true
     }
-    const changeRoute = (): void => {
+    const closeBurger = (): void => {
       if (isOpen.value === true) isOpen.value = false
     }
     // Notification
@@ -143,7 +143,7 @@ export default defineComponent({
       isLoggedIn: true,
       isOpen,
       burgerMenuHandler,
-      changeRoute,
+      closeBurger,
       notification,
     }
   },

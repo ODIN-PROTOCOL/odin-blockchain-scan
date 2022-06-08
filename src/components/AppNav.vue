@@ -4,18 +4,18 @@
       <div class="app-nav__page">
         <LinksDropdown
           @click="openDropdownBlockchain"
-          @redirect="changeRoute"
+          @redirect="closeBurger"
           :list="BlockchainList"
           :isDropdownOpen="isBlockchainDropdownOpen"
         />
         <LinksDropdown
           @click="openDropdownResource"
-          @redirect="changeRoute"
+          @redirect="closeBurger"
           :list="ResourceList"
           :isDropdownOpen="isResourceDropdownOpen"
         />
         <router-link
-          @click="changeRoute"
+          @click="closeBurger"
           class="app-nav__link"
           data-text="IBCs"
           :to="{ name: 'IBC' }"
@@ -98,8 +98,8 @@ export default defineComponent({
     }
     const isBlockchainDropdownOpen = ref(false)
     const isResourceDropdownOpen = ref(false)
-    const changeRoute = () => {
-      emit('changeRoute')
+    const closeBurger = () => {
+      emit('closeBurger')
     }
     const openDropdownResource = () => {
       if (isMobile()) {
@@ -121,7 +121,7 @@ export default defineComponent({
     return {
       BlockchainList,
       ResourceList,
-      changeRoute,
+      closeBurger,
       isMainnet,
       START_VALUE,
       isBlockchainDropdownOpen,

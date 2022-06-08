@@ -221,7 +221,7 @@ export default defineComponent({
     position: relative;
     border-radius: none;
     @media (max-width: 480px) {
-      // position: inherit;
+      position: inherit;
     }
   }
   &__dropdown {
