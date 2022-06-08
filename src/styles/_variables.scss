@@ -23,6 +23,7 @@ $clr-input-border: #ced4da;
 // Tables
 $clr-table-border: #cce4ff;
 $clr-table-row-hover: #ecf5ff;
+$clr-table-head: #007bff29;
 
 // Dropdowns
 $clr-dropdown-shadow: #0857AC14;
@@ -36,6 +37,7 @@ $clr-tooltip-text: #fff;
 $clr-modal-backdrop-bg: #6c757d;
 $clr-modal-content-bg: #fff;
 $clr-modal-content-shadow: #00193314;
+$clr-modal-field-bg:#f5f6f7;
 
 // Scrollbar
 $clr-scrollbar-thumb: #D8E0F0;
@@ -52,6 +54,8 @@ $clr-status-success: #00D097;
 $clr-status-pending: #FDC748;
 $clr-status-error: #F65160;
 $clr-status-progress: #66B0FF;
+$clr-oracle-status-success: #00b07f;
+$clr-oracle-status-error: #f65160;
 
 // Panel
 $clr-panel-box-shadow: #053f7d29;
@@ -73,3 +77,8 @@ $clr-vue-notifications-box-shadow: #00193329;
 $clr-vue-notifications-failed-border: #fcced2;
 $clr-vue-notifications-success-border: #64ffd5;
 $clr-vue-notifications-info-border: #66b0ff;
+
+// Frame
+$clr-frame-border: #e1e5e9;
+$clr-frame-box-shadow: #00000029;
+

@@ -186,8 +186,24 @@ export default defineComponent({
           .getValidatorUptime()
           .then((resp) => resp.json())
         activeValidators.value = await Promise.all(
+          await getTransformedValidators([...bonded.validators]).then(
+            (validators) =>
+              validators.map(async (item) => {
+                return {
+                  ...item,
+                  isActive: await isActiveValidator(item.operatorAddress),
+                  uptimeInfo: allUptime.find(
+                    (name: { operator_address: string }) =>
+                      name.operator_address === item.operatorAddress
+                  ),
+                }
+              })
+          )
+        )
+
+        inactiveValidators.value = await Promise.all(
           await getTransformedValidators([
-            ...bonded.validators,
+            ...unbonded.validators,
             ...unbonding.validators,
           ]).then((validators) =>
             validators.map(async (item) => {
@@ -200,22 +216,6 @@ export default defineComponent({
                 ),
               }
             })
-          )
-        )
-
-        inactiveValidators.value = await Promise.all(
-          await getTransformedValidators([...unbonded.validators]).then(
-            (validators) =>
-              validators.map(async (item) => {
-                return {
-                  ...item,
-                  isActive: await isActiveValidator(item.operatorAddress),
-                  uptimeInfo: allUptime.find(
-                    (name: { operator_address: string }) =>
-                      name.operator_address === item.operatorAddress
-                  ),
-                }
-              })
           )
         )
         validators.value = [...activeValidators.value]

@@ -24,6 +24,7 @@
   // Tables
   --clr__table-border: #{$clr-table-border};
   --clr__table-row-hover: #{$clr-table-row-hover};
+  --clr__table-head: #{$clr-table-head};
 
   // Dropdown
 
@@ -39,6 +40,7 @@
   --clr__modal-backdrop-bg: #{$clr-modal-backdrop-bg};
   --clr__modal-content-bg: #{$clr-modal-content-bg};
   --clr__modal-content-shadow: #{$clr-modal-content-shadow};
+  --clr__modal-field-bg: #{$clr-modal-field-bg};
 
   // Scrollbar
   --clr__scrollbar-thumb: #{$clr-scrollbar-thumb};
@@ -55,7 +57,8 @@
   --clr__status-pending: #{$clr-status-pending};
   --clr__status-error: #{$clr-status-error};
   --clr__status-progress: #{$clr-status-progress};
-
+  --clr__oracle-status-success: #{$clr-oracle-status-success};
+  --clr__oracle-status-error: #{$clr-oracle-status-error};
   // Panel
   --clr__panel-box-shadow: #{$clr-panel-box-shadow};
   --clr__panel-main-background: #{$clr-panel-main-background};
@@ -76,4 +79,9 @@
   --clr__vue-notifications-failed-border: #{$clr-vue-notifications-failed-border};
   --clr__vue-notifications-success-border: #{$clr-vue-notifications-success-border};
   --clr__vue-notifications-info-border: #{$clr-vue-notifications-info-border};
+
+  // Frame
+  --clr__frame-border: #{$clr-frame-border};
+  --clr__frame-box-shadow: #{$clr-frame-box-shadow};
+
 }

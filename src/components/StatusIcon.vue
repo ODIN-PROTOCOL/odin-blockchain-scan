@@ -1,6 +1,11 @@
 <template>
   <div>
-    <component :key="component" :is="component" />
+    <component
+      :width="width"
+      :height="height"
+      :key="component"
+      :is="component"
+    />
   </div>
 </template>
 
@@ -13,6 +18,8 @@ export default defineComponent({
   name: 'StatusIcon',
   props: {
     status: { type: String, required: true },
+    width: { type: Number, default: 24 },
+    height: { type: Number, default: 24 },
   },
   components: { SuccessIcon, ErrorIcon },
   setup(props) {
