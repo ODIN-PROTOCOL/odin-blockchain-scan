@@ -64,6 +64,7 @@ import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
 import { isActiveValidator } from '@/helpers/validatorDecoders'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import { VALIDATOR_STATUS_TYPE } from '@/helpers/helpers'
 
 export default defineComponent({
   components: {
@@ -106,9 +107,11 @@ export default defineComponent({
 
     const validatorStatus = computed(() => {
       if (validator.value?.status === 3) {
-        return validator.value.isActive ? 'success' : 'error'
+        return validator.value.isActive
+          ? VALIDATOR_STATUS_TYPE.success
+          : VALIDATOR_STATUS_TYPE.error
       } else {
-        return 'inactive'
+        return VALIDATOR_STATUS_TYPE.inactive
       }
     })
     const getDelegators = async () => {
