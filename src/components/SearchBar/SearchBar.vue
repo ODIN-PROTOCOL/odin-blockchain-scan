@@ -292,8 +292,8 @@ export default defineComponent({
 .search-bar__clear {
   overflow: visible;
   position: absolute;
-  right: 10px;
-  top: 12.5px;
+  right: 1rem;
+  top: 1.2rem;
 }
 @include respond-to(tablet) {
   .search-bar__input {
