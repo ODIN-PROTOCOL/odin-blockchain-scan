@@ -26,7 +26,11 @@
           v-model="searchedText"
           @keydown.enter="searchBy()"
         />
-
+        <template v-if="searchedText">
+          <button @click="clearText" class="search-bar__clear">
+            <img src="~@/assets/icons/close.svg" alt="reset" />
+          </button>
+        </template>
         <template v-if="searchResult">
           <div class="search-bar__dropdown">
             <template v-for="(result, idx) in searchResult" :key="idx">
@@ -193,6 +197,10 @@ export default defineComponent({
       return null
     }
 
+    const clearText = (): void => {
+      searchedText.value = null
+    }
+
     const router: Router = useRouter()
     router.beforeEach(() => {
       searchResult.value = null
@@ -208,6 +216,7 @@ export default defineComponent({
       cropText,
       getDay,
       inputPlaceholder,
+      clearText,
     }
   },
 })
@@ -220,9 +229,6 @@ export default defineComponent({
     width: 39.6rem;
     position: relative;
     border-radius: none;
-    @media (max-width: 480px) {
-      position: inherit;
-    }
   }
   &__dropdown {
     position: absolute;
@@ -261,6 +267,9 @@ export default defineComponent({
   &::placeholder {
     color: var(--clr__text-muted);
   }
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
 }
 .search-bar__btn {
   width: 48px;
@@ -278,6 +287,13 @@ export default defineComponent({
     height: 1.8rem;
     display: block;
   }
+}
+
+.search-bar__clear {
+  overflow: visible;
+  position: absolute;
+  right: 10px;
+  top: 12.5px;
 }
 @include respond-to(tablet) {
   .search-bar__input {
