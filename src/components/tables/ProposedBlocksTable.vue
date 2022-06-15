@@ -39,7 +39,7 @@
         </template>
         <template v-else>
           <div class="app-table__empty-stub">
-            <p>No items yet</p>
+            <p class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
