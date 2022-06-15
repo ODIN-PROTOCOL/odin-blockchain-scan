@@ -21,10 +21,15 @@
         <div class="validators-view__filter-search-input-wrapper">
           <InputField
             v-model="searchValue"
-            placeholder="Search validator"
+            :placeholder="inputPlaceholder"
             class="validators-view__filter-search-input"
             @keydown.enter="filterValidators()"
           />
+          <template v-if="searchValue">
+            <button @click="clearText" class="search-bar__clear">
+              <img src="~@/assets/icons/close.svg" alt="reset" />
+            </button>
+          </template>
         </div>
         <button
           class="validators-view__filter-search-button"
@@ -174,7 +179,8 @@ export default defineComponent({
     )
     const inactiveValidatorsTitle = ref('Inactive')
     const tabStatus = ref(activeValidatorsTitle.value)
-    const searchValue = ref('')
+    const searchValue = ref<string | null>('')
+    const inputPlaceholder = ref('Search validators')
 
     const getValidators = async () => {
       lockLoading()
@@ -229,7 +235,9 @@ export default defineComponent({
     }
 
     const filterValidators = (newPage = 1) => {
+      if (searchValue.value === '') return (searchValue.value = null)
       let tempArr = validators.value
+
       if (searchValue.value.trim()) {
         tempArr = tempArr.filter((item: { description: { moniker: string } }) =>
           item.description.moniker
@@ -268,6 +276,10 @@ export default defineComponent({
       }
     }
 
+    const clearText = (): void => {
+      searchValue.value = null
+    }
+
     onMounted(async () => {
       await getValidators()
     })
@@ -288,6 +300,8 @@ export default defineComponent({
       inactiveValidatorsTitle,
       searchValue,
       filterValidators,
+      clearText,
+      inputPlaceholder,
     }
   },
 })
