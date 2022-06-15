@@ -59,11 +59,14 @@
           </span>
         </div>
         <div class="validator-info__description-item">
-          <span class="validator-info__description-item-title"
-            >Amount of create blocks</span
+          <span class="validator-info__description-item-title">
+            {{ isMobile() ? 'Proposed blocks' : 'Amount of proposed blocks' }}
+          </span>
+          <span
+            :title="proposedBlocksCount"
+            class="validator-info__description-item-value"
           >
-          <span class="validator-info__description-item-value" :title="0">
-            {{ 0 }}
+            {{ proposedBlocksCount }}
           </span>
         </div>
         <div class="validator-info__description-item">
@@ -92,13 +95,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref, onMounted } from 'vue'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
+import { isMobile } from '@/helpers/helpers'
+import { callers } from '@/api/callers'
 
 export default defineComponent({
   components: {},
   props: {
     validator: { type: Object as PropType<ValidatorDecoded>, required: true },
+  },
+  setup(props) {
+    const proposedBlocksCount = ref(0)
+
+    const getProposedBlocks = async () => {
+      const response = await callers
+        .getProposedBlocks(props.validator.operatorAddress, 0, 1)
+        .then((req) => req.json())
+      proposedBlocksCount.value = response?.total_count || 0
+    }
+    onMounted(async () => {
+      await getProposedBlocks()
+    })
+    return {
+      isMobile,
+      proposedBlocksCount,
+    }
   },
 })
 </script>

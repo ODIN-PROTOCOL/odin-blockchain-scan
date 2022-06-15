@@ -12,7 +12,7 @@
                   alt="Logo"
                 />
               </router-link>
-              <AppNav :isOpen="isOpen" @changeRoute="closeBurger" />
+              <AppNav :isOpen="isOpen" @closeBurger="closeBurger" />
               <BurgerMenu
                 class="app__header-burger-menu"
                 :isOpen="isOpen"
