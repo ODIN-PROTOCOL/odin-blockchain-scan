@@ -37,9 +37,9 @@
           <div class="account-info__card-balance-row-value-wrapper">
             <span
               class="account-info__card-balance-row-value app-table__cell-txt"
-              :title="0"
+              :title="odinStake"
             >
-              {{ 0 }}
+              {{ odinStake }}
             </span>
           </div>
         </div>
@@ -50,9 +50,9 @@
           <div class="account-info__card-balance-row-value-wrapper">
             <span
               class="account-info__card-balance-row-value app-table__cell-txt app-table__link"
-              :title="0"
+              :title="odinStakePercentage"
             >
-              {{ 0 }}
+              {{ odinStakePercentage }}
             </span>
           </div>
         </div>
@@ -71,6 +71,14 @@ export default defineComponent({
       required: true,
     },
     geoBalance: {
+      type: String,
+      required: true,
+    },
+    odinStake: {
+      type: Number,
+      required: true,
+    },
+    odinStakePercentage: {
       type: String,
       required: true,
     },
