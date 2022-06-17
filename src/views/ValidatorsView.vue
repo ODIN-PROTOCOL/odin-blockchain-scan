@@ -20,14 +20,14 @@
       <div class="validators-view__filter-search">
         <div class="validators-view__filter-search-input-wrapper">
           <InputField
-            v-model="searchValue"
             :placeholder="inputPlaceholder"
             class="validators-view__filter-search-input"
+            v-model="searchValue"
             @keydown.enter="filterValidators()"
           />
           <template v-if="searchValue">
-            <button @click="clearText" class="search-bar__clear">
-              <img src="~@/assets/icons/close.svg" alt="reset" />
+            <button @click="clearText()" class="search-bar__clear">
+              <CancelIcon />
             </button>
           </template>
         </div>
@@ -118,7 +118,6 @@
         </template>
       </div>
     </div>
-
     <template v-if="filteredValidatorsCount > ITEMS_PER_PAGE">
       <AppPagination
         class="mg-t32"
@@ -148,6 +147,7 @@ import {
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
+import CancelIcon from '@/components/icons/CancelIcon.vue'
 
 export default defineComponent({
   name: 'ValidatorsView',
@@ -160,6 +160,7 @@ export default defineComponent({
     ProgressbarTool,
     InputField,
     SearchIcon,
+    CancelIcon,
   },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
@@ -179,7 +180,7 @@ export default defineComponent({
     )
     const inactiveValidatorsTitle = ref('Inactive')
     const tabStatus = ref(activeValidatorsTitle.value)
-    const searchValue = ref<string | null>('')
+    const searchValue = ref('')
     const inputPlaceholder = ref('Search validators')
 
     const getValidators = async () => {
@@ -235,7 +236,6 @@ export default defineComponent({
     }
 
     const filterValidators = (newPage = 1) => {
-      if (searchValue.value === '') return (searchValue.value = null)
       let tempArr = validators.value
 
       if (searchValue.value.trim()) {
@@ -277,7 +277,8 @@ export default defineComponent({
     }
 
     const clearText = (): void => {
-      searchValue.value = null
+      searchValue.value = ''
+      filterValidators()
     }
 
     onMounted(async () => {
@@ -384,6 +385,13 @@ export default defineComponent({
   &:focus {
     border: none;
   }
+}
+
+.search-bar__clear {
+  overflow: visible;
+  position: absolute;
+  right: 0rem;
+  top: 1.25rem;
 }
 .validators-view__filter-search-button {
   position: relative;

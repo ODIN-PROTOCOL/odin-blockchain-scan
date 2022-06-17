@@ -120,7 +120,9 @@ export default defineComponent({
           String(searchedText.value)
         )
         return await prepareTransaction([res.data.result])
-      } catch {
+      } catch (error) {
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+        searchedText.value = null
         return []
       }
     }
