@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, ComputedRef, Ref } from 'vue'
+import { defineComponent, computed, ComputedRef } from 'vue'
 
 import { useQuery, UseQueryReturn } from '@vue/apollo-composable'
 import { AccountStakingInfoQuery } from '@/graphql/queries'

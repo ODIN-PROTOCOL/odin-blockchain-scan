@@ -2,7 +2,6 @@ import { ApolloClient, InMemoryCache } from '@apollo/client/core'
 
 import { API_CONFIG } from './api-config'
 
-
 const cache = new InMemoryCache()
 
 export const apolloClient = new ApolloClient({

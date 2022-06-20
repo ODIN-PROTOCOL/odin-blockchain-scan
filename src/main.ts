@@ -1,4 +1,4 @@
-import { App, createApp, provide } from 'vue'
+import { App, createApp } from 'vue'
 
 import router from './router'
 import {
@@ -10,7 +10,7 @@ import {
 } from './helpers/formatters'
 import Notifications from '@kyvg/vue3-notification'
 import { api } from './api/api'
-import { apolloClient, apolloProvider } from './api/apollo-provider'
+import { apolloClient } from './api/apollo-provider'
 import { bigMath } from './helpers/bigMath'
 import { translateBondStatus } from './helpers/translators'
 import { convertLokiToOdin } from './helpers/converters'
