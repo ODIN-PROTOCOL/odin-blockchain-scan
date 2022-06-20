@@ -13,10 +13,9 @@
       </div>
     </div>
     <AccountInfo
+      :address="String(route.params.hash)"
       :geo-balance="geoBalance"
       :odin-balance="odinBalance"
-      :odin-stake="stakedAmount"
-      :odin-stake-percentage="stakedPercentage"
     />
     <div class="accounts-item__subtitle-line">
       <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
@@ -91,7 +90,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, defineComponent, watch, computed } from 'vue'
+import { ref, onMounted, defineComponent, watch } from 'vue'
 import {
   RouteLocationNormalizedLoaded,
   Router,
@@ -114,9 +113,6 @@ import AccountTxLine from '@/components/AccountTxLine.vue'
 import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
 import AccountInfo from '@/components/AccountInfo.vue'
 
-import gql from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
-
 export default defineComponent({
   components: {
     BackButton,
@@ -134,7 +130,7 @@ export default defineComponent({
     const transactions = ref()
     const totalTxCount = ref<number>(0)
     const currentPage = ref<number>(1)
-    const totalPages = ref<number>(10)
+    const totalPages = ref<number>(1)
     const ITEMS_PER_PAGE = 50
     const sortingValue = ref(TYPE_TX_SORT.all)
 
@@ -185,40 +181,6 @@ export default defineComponent({
       await getAccountInfo()
     })
 
-    const { result: delegationBalance }: any = useQuery(
-      gql`
-        query AccountDelegationBalance($address: String!) {
-          delegationBalance: action_delegation_total(address: $address) {
-            coins
-          }
-        }
-      `,
-      { address: route.params.hash }
-    )
-
-    const stakedAmount: any = computed(
-      () =>
-        delegationBalance?.value?.delegationBalance?.coins.find(
-          (coin) => coin.denom === 'loki'
-        )?.amount ?? 0
-    )
-
-    const { result: stakingPool }: any = useQuery(gql`
-      query Tokenomics {
-        stakingPool: staking_pool {
-          bonded: bonded_tokens
-          unbonded: not_bonded_tokens
-        }
-      }
-    `)
-
-    const stakedPercentage = computed(() => {
-      const odinStakingPool = stakingPool?.value?.stakingPool[0]
-      const stakingTotal =
-        Number(odinStakingPool?.bonded) + Number(odinStakingPool?.unbonded)
-      return `${Number((stakedAmount.value * 100) / stakingTotal)}%`
-    })
-
     return {
       route,
       geoBalance,
@@ -236,8 +198,6 @@ export default defineComponent({
       sortingTypeTx,
       sortingValue,
       isLoading,
-      stakedAmount,
-      stakedPercentage,
     }
   },
 })

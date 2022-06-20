@@ -37,9 +37,9 @@
           <div class="account-info__card-balance-row-value-wrapper">
             <span
               class="account-info__card-balance-row-value app-table__cell-txt"
-              :title="odinStake"
+              :title="stakedAmount.toFixed(2)"
             >
-              {{ odinStake }}
+              {{ stakedAmount.toFixed(2) }}
             </span>
           </div>
         </div>
@@ -50,9 +50,9 @@
           <div class="account-info__card-balance-row-value-wrapper">
             <span
               class="account-info__card-balance-row-value app-table__cell-txt app-table__link"
-              :title="odinStakePercentage"
+              :title="stakedPercentage"
             >
-              {{ odinStakePercentage }}
+              {{ stakedPercentage }}
             </span>
           </div>
         </div>
@@ -62,7 +62,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed, ref, ComputedRef, Ref } from 'vue'
+
+import { useQuery, UseQueryReturn } from '@vue/apollo-composable'
+import { AccountStakingInfoQuery } from '@/graphql/queries'
+import {
+  AccountStakingInfoResponse,
+  AccountStakingInfoVariables,
+} from '@/graphql/types'
 
 export default defineComponent({
   props: {
@@ -74,17 +81,47 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    odinStake: {
-      type: Number,
-      required: true,
-    },
-    odinStakePercentage: {
+    address: {
       type: String,
       required: true,
     },
   },
-  setup() {
-    return {}
+  setup(props) {
+    const {
+      result,
+      loading,
+    }: UseQueryReturn<AccountStakingInfoResponse, AccountStakingInfoVariables> =
+      useQuery<AccountStakingInfoResponse, AccountStakingInfoVariables>(
+        AccountStakingInfoQuery,
+        {
+          address: props.address,
+        }
+      )
+
+    const stakedAmount: ComputedRef<number> = computed(() => {
+      if (loading.value) {
+        return 0
+      }
+      const odinCoin = result.value?.delegationBalance?.coins?.find(
+        (coin) => coin.denom === 'loki'
+      )
+      return (odinCoin?.amount || 0) / 1000000
+    })
+
+    const stakedPercentage: ComputedRef<string> = computed(() => {
+      if (loading.value) {
+        return '0'
+      }
+      const odinStakingPool = result?.value?.stakingPool[0]
+      const stakingTotal =
+        (Number(odinStakingPool?.bonded) + Number(odinStakingPool?.unbonded)) /
+        1000000
+      return `${Number((stakedAmount.value * 100) / stakingTotal).toFixed(4)}%`
+    })
+    return {
+      stakedAmount,
+      stakedPercentage,
+    }
   },
 })
 </script>
