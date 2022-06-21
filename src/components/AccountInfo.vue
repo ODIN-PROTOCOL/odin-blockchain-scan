@@ -37,9 +37,9 @@
           <div class="account-info__card-balance-row-value-wrapper">
             <span
               class="account-info__card-balance-row-value app-table__cell-txt"
-              :title="stakedAmount.toFixed(2)"
+              :title="$convertLokiToOdin(stakedLokiAmount)"
             >
-              {{ stakedAmount.toFixed(2) }}
+              {{ $convertLokiToOdin(stakedLokiAmount, { withDenom: true }) }}
             </span>
           </div>
         </div>
@@ -98,14 +98,14 @@ export default defineComponent({
         }
       )
 
-    const stakedAmount: ComputedRef<number> = computed(() => {
+    const stakedLokiAmount: ComputedRef<number> = computed(() => {
       if (loading.value) {
         return 0
       }
       const odinCoin = result.value?.delegationBalance?.coins?.find(
         (coin) => coin.denom === 'loki'
       )
-      return (odinCoin?.amount || 0) / 1000000
+      return odinCoin?.amount || 0
     })
 
     const stakedPercentage: ComputedRef<string> = computed(() => {
@@ -113,13 +113,15 @@ export default defineComponent({
         return '0'
       }
       const odinStakingPool = result?.value?.stakingPool[0]
-      const stakingTotal =
-        (Number(odinStakingPool?.bonded) + Number(odinStakingPool?.unbonded)) /
-        1000000
-      return `${Number((stakedAmount.value * 100) / stakingTotal).toFixed(4)}%`
+      const bondedTotal = Number(odinStakingPool?.bonded)
+      const unbondedTotal = Number(odinStakingPool?.unbonded)
+      const stakingTotal = bondedTotal + unbondedTotal
+      return `${Number(
+        (Number(stakedLokiAmount.value) * 100) / stakingTotal
+      ).toFixed(4)}%`
     })
     return {
-      stakedAmount,
+      stakedLokiAmount,
       stakedPercentage,
     }
   },
