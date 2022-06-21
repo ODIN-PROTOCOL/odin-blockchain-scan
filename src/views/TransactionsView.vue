@@ -1,24 +1,28 @@
 <template>
-  <div
-    class="app__main-view load-fog"
-    :class="{ 'load-fog_show': isLoading && transactions?.length }"
-  >
+  <div class="app__main-view">
     <div class="app__main-view-title-wrapper">
       <h2 class="app__main-view-title">Transactions</h2>
     </div>
     <div class="mg-b16 mg-t16">
-      <p>{{ totalTransactions }} Transactions found</p>
+      <skeleton-loader
+        v-if="isLoading"
+        :height="24"
+        :rounded="true"
+        animation="wave"
+        color="rgb(225, 229, 233)"
+      />
+      <p v-else>{{ totalTransactions }} Transactions found</p>
     </div>
     <div class="app-table">
       <div class="app-table__head">
-        <span> Transaction hash </span>
-        <span> Type </span>
-        <span> Block </span>
-        <span> Date and time </span>
-        <span> Sender </span>
-        <span> Receiver </span>
-        <span> Amount </span>
-        <span> Transaction Fee </span>
+        <span>Transaction hash</span>
+        <span>Type</span>
+        <span>Block</span>
+        <span>Date and time</span>
+        <span>Sender</span>
+        <span>Receiver</span>
+        <span>Amount</span>
+        <span>Transaction Fee</span>
       </div>
       <template v-if="transactions?.length">
         <TxLine
@@ -28,9 +32,14 @@
         />
       </template>
       <template v-else>
-        <div>
-          <p v-if="isLoading" class="empty mg-t32">Loading…</p>
-          <p v-else class="empty mg-t32">No items yet</p>
+        <SkeletonTable
+          v-if="isLoading"
+          :header-titles="headerTitles"
+          :tableSize="10"
+          class-string="data-sources__table-row"
+        />
+        <div v-else class="app-table__empty-stub">
+          <p class="empty mg-t32">No items yet</p>
         </div>
       </template>
     </div>
@@ -53,9 +62,11 @@ import { prepareTransaction } from '@/helpers/helpers'
 import TxLine from '@/components/TxLine.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import SkeletonTable from '@/components/SkeletonTable.vue'
+
 export default defineComponent({
   name: 'TransactionsView',
-  components: { TxLine, AppPagination },
+  components: { TxLine, AppPagination, SkeletonTable },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
@@ -64,9 +75,20 @@ export default defineComponent({
     const page = ref<number>(1)
     const totalPages = ref<number>(0)
     const totalTransactions = ref<number>(0)
+    const headerTitles = [
+      { title: 'Transaction hash' },
+      { title: 'Type' },
+      { title: 'Block' },
+      { title: 'Date and time' },
+      { title: 'Sender' },
+      { title: 'Receiver' },
+      { title: 'Amount' },
+      { title: 'Transaction Fee' },
+    ]
     const getTransactions = async () => {
       lockLoading()
       try {
+        transactions.value = []
         const { data, total_count } = await callers
           .getTxSearchFromTelemetry(page.value - 1, ITEMS_PER_PAGE, 'desc')
           .then((resp) => resp.json())
@@ -96,6 +118,7 @@ export default defineComponent({
       updateHandler,
       isLoading,
       ITEMS_PER_PAGE,
+      headerTitles,
     }
   },
 })

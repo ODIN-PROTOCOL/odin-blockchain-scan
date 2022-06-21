@@ -48,9 +48,14 @@
         <span
           class="validators-view__table-head-item validators-view__table-head-item--center"
         >
-          Oracle Status
+          Status
         </span>
-        <span class="validators-view__table-head-item"> Uptime </span>
+        <span
+          v-if="tabStatus !== inactiveValidatorsTitle"
+          class="validators-view__table-head-item"
+        >
+          Uptime
+        </span>
       </div>
       <div>
         <template v-if="filteredValidators?.length">
@@ -89,10 +94,18 @@
               </span>
             </div>
             <div class="app-table__cell validators-view__table-cell--center">
-              <span class="app-table__title">Oracle Status</span>
-              <StatusIcon :status="item.isActive ? 'success' : 'error'" />
+              <span class="app-table__title">Status</span>
+              <ValidatorStatus
+                :width="14"
+                :height="14"
+                :status="validatorStatus(item)"
+                class="validators-item__validator-status"
+              />
             </div>
-            <div class="app-table__cell">
+            <div
+              v-if="tabStatus !== inactiveValidatorsTitle"
+              class="app-table__cell"
+            >
               <span class="app-table__title">Uptime</span>
               <ProgressbarTool
                 v-if="item?.uptimeInfo?.uptime"
@@ -106,9 +119,13 @@
           </div>
         </template>
         <template v-else>
-          <div class="app-table__empty-stub">
-            <p v-if="isLoading" class="empty mg-t32">Loading…</p>
-            <p v-else class="empty mg-t32">No items yet</p>
+          <SkeletonTable
+            v-if="isLoading"
+            :header-titles="headerTitles"
+            class-string="validators-view__table-row"
+          />
+          <div v-else class="app-table__empty-stub">
+            <p class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
@@ -134,7 +151,6 @@ import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import StatusIcon from '@/components/StatusIcon.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import {
   getTransformedValidators,
@@ -143,6 +159,8 @@ import {
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
+import SkeletonTable from '@/components/SkeletonTable.vue'
+import ValidatorStatus from '@/components/ValidatorStatus.vue'
 
 export default defineComponent({
   name: 'ValidatorsView',
@@ -150,11 +168,12 @@ export default defineComponent({
     AppTabs,
     AppTab,
     TitledLink,
-    StatusIcon,
     AppPagination,
     ProgressbarTool,
     InputField,
     SearchIcon,
+    SkeletonTable,
+    ValidatorStatus,
   },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
@@ -175,7 +194,14 @@ export default defineComponent({
     const inactiveValidatorsTitle = ref('Inactive')
     const tabStatus = ref(activeValidatorsTitle.value)
     const searchValue = ref('')
-
+    const headerTitles = [
+      { title: 'Rank' },
+      { title: 'Validator' },
+      { title: 'Delegated' },
+      { title: 'Commission' },
+      { title: 'Uptime' },
+      { title: 'Oracle Status' },
+    ]
     const getValidators = async () => {
       lockLoading()
       try {
@@ -267,7 +293,16 @@ export default defineComponent({
         filterValidators(1)
       }
     }
-
+    const validatorStatus = (validator: {
+      status: number
+      isActive: boolean
+    }) => {
+      if (validator.status === 3) {
+        return validator.isActive ? 'success' : 'error'
+      } else {
+        return 'inactive'
+      }
+    }
     onMounted(async () => {
       await getValidators()
     })
@@ -288,6 +323,9 @@ export default defineComponent({
       inactiveValidatorsTitle,
       searchValue,
       filterValidators,
+      headerTitles,
+      tabStatus,
+      validatorStatus,
     }
   },
 })
@@ -311,18 +349,19 @@ export default defineComponent({
 .validators-view__table-head-item--end {
   text-align: end;
 }
-
-.validators-view__table-head,
-.validators-view__table-row {
-  gap: 3.2rem;
-  grid:
-    auto /
-    minmax(2rem, 5rem)
-    minmax(5rem, 2fr)
-    minmax(11rem, 1fr)
-    minmax(8rem, 1fr)
-    minmax(10rem, 1fr)
-    minmax(6rem, 2fr);
+.validators__table--inactive {
+  .validators__table-head,
+  .validators__table-row {
+    gap: 2rem;
+    grid:
+      auto /
+      minmax(2rem, 5rem)
+      minmax(5rem, 1.5fr)
+      minmax(6rem, 1fr)
+      minmax(8rem, 0.5fr)
+      minmax(7rem, 8.7rem)
+      minmax(24rem, 1.5fr);
+  }
 }
 .validators-view__filter-search {
   display: flex;
@@ -390,7 +429,12 @@ export default defineComponent({
   .validators-view__count-info {
     margin-bottom: 0;
   }
-
+  .validators__table--inactive {
+    .validators__table-head,
+    .validators__table-row {
+      grid: none;
+    }
+  }
   .validators-view__table-cell--center {
     justify-content: flex-start;
   }
@@ -398,9 +442,6 @@ export default defineComponent({
     justify-content: flex-start;
   }
 
-  .validators-view__table-row {
-    grid: none;
-  }
   .validators-view__filter {
     margin-bottom: 0;
     flex-direction: column;

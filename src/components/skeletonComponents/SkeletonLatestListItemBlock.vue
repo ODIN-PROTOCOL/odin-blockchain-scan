@@ -1,27 +1,48 @@
 <template>
   <div class="latest-list-item">
     <div class="latest-list-item__left">
-      <div class="latest-list-item__label">
-        <slot name="label" />
-      </div>
-      <div class="latest-list-item__name">
-        <slot name="name" />
-      </div>
-      <div class="latest-list-item__time">
-        <slot name="time" />
-      </div>
+      <skeleton-loader
+        :height="42"
+        :width="42"
+        :rounded="true"
+        animation="wave"
+        color="rgb(225, 229, 233)"
+        class="latest-list-item__label"
+      />
+      <skeleton-loader
+        :height="16"
+        :width="-1"
+        :rounded="true"
+        animation="wave"
+        color="rgb(225, 229, 233)"
+        class="latest-list-item__name w-full"
+      />
+      <skeleton-loader
+        :height="16"
+        :width="-1"
+        :rounded="true"
+        animation="wave"
+        color="rgb(225, 229, 233)"
+        class="latest-list-item__time w-full"
+      />
     </div>
     <div class="latest-list-item__center">
-      <div class="latest-list-item__validator">
-        <slot name="validator" />
-        <slot name="from" />
-      </div>
-      <div class="latest-list-item__transactions">
-        <slot name="transactions" />
-      </div>
-      <div class="latest-list-item__to">
-        <slot name="to" />
-      </div>
+      <skeleton-loader
+        :height="16"
+        :width="-1"
+        :rounded="true"
+        animation="wave"
+        color="rgb(225, 229, 233)"
+        class="latest-list-item__validator w-full"
+      />
+      <skeleton-loader
+        :height="16"
+        :width="-1"
+        :rounded="true"
+        animation="wave"
+        color="rgb(225, 229, 233)"
+        class="latest-list-item__transaction w-full"
+      />
     </div>
   </div>
 </template>
@@ -30,11 +51,13 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'LatestListItem',
+  name: 'SkeletonLatestListItemBlock',
+  components: {},
+  props: {},
 })
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .latest-list-item {
   display: grid;
   grid:
@@ -57,6 +80,7 @@ export default defineComponent({
   align-items: center;
 }
 .latest-list-item__name {
+  margin-bottom: 1.2rem;
   grid-row-start: 1;
   grid-row-end: 2;
   a {
@@ -69,7 +93,7 @@ export default defineComponent({
   grid-row-end: 3;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  // gap: 1.2rem;
   font-size: 1.4rem;
   color: var(--clr__text-muted);
 }
@@ -90,12 +114,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 1.2rem;
 }
-.latest-list-item__validator,
-.latest-list-item__to {
+.latest-list-item__validator {
   display: flex;
-  gap: 0.8rem;
   width: 100%;
 }
 .latest-list-item__transactions {

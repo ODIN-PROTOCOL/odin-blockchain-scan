@@ -22,7 +22,7 @@
         </div>
         <span class="transactions-item__table-row-title">Time</span>
         <span class="transactions-item__table-row-value">
-          {{ tx.time }}
+          {{ $fDate(tx.time, 'HH:mm dd.MM.yy') }}
         </span>
       </div>
       <div class="transactions-item__table-row">

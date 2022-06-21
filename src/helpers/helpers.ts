@@ -6,7 +6,6 @@ import { AnyFn, Unpacked } from '@/shared-types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { convertLokiToOdin } from '@/helpers/converters'
 import { TxTelemetry } from '@/helpers/Types'
-import { formatDate } from '@/helpers/formatters'
 import { detect } from 'detect-browser'
 
 export function isIos() {
@@ -152,7 +151,7 @@ export const prepareTransaction = async (
         type: type ? type : '-',
         hash: tx.hash ? tx.hash.toLowerCase() : '-',
         block: tx.height ? tx.height : '-',
-        time: time ? formatDate(Number(time), 'HH:mm dd.MM.yy') : '-',
+        time: time ? time : '-',
         sender: sender ? sender : '',
         receiver: receiver ? receiver : '',
         amount: convertLokiToOdin(amount),
@@ -247,4 +246,15 @@ export enum VALIDATOR_STATUS_TYPE {
   inactive = 'inactive',
   success = 'success',
   error = 'error',
+}
+export const duplicateArrayNCount = (
+  exampleArray: Array<unknown>,
+  duplicateNumber: number
+): Array<unknown> => {
+  if (!exampleArray.length) return []
+  const tempArr: Array<unknown> = []
+  for (let i = 0; i < duplicateNumber; i++) {
+    tempArr.push(exampleArray)
+  }
+  return tempArr
 }

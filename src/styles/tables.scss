@@ -48,7 +48,44 @@
     text-align: center;
   }
 }
-
+.blocks-list__table-head,
+.blocks-list__table-row {
+  grid:
+    auto /
+    minmax(3rem, 0.5fr)
+    minmax(10rem, 0.5fr)
+    minmax(8rem, 0.5fr)
+    minmax(8rem, 2fr);
+}
+.top-accounts__table-head,
+.accounts-line {
+  grid:
+    auto /
+    minmax(2rem, 0.5fr)
+    minmax(8rem, 5fr)
+    minmax(8rem, 2fr)
+    minmax(8rem, 2fr)
+    minmax(8rem, 1.5fr);
+}
+.validators-view__table-head,
+.validators-view__table-row {
+  gap: 3.2rem;
+  grid:
+    auto /
+    minmax(2rem, 5rem)
+    minmax(5rem, 2fr)
+    minmax(11rem, 1fr)
+    minmax(8rem, 1fr)
+    minmax(10rem, 1fr)
+    minmax(6rem, 2fr);
+}
+.delegators-table__table-head,
+.delegators-table__table-row {
+  grid:
+    auto /
+    minmax(8rem, 4fr)
+    minmax(8rem, 2fr);
+}
 @include respond-to(tablet) {
   .app-table {
     &__head {
@@ -66,5 +103,11 @@
       grid: none;
       padding: 3.4rem 0 1.6rem;
     }
+  }
+  .blocks-list__table-row,
+  .accounts-line,
+  .validators-view__table-row, 
+  .delegators-table__table-row  {
+    grid: none;
   }
 }

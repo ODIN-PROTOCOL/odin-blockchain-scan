@@ -4,87 +4,46 @@
       <div class="latest-stats__wrapper">
         <LatestList :header="latestBlocksHeader">
           <transition-group name="fade" mode="out-in">
-            <template v-if="latestBlocks">
-              <LatestListItem
+            <template v-if="latestBlocks.length">
+              <LatestListItemBlock
                 v-for="item in latestBlocks"
                 :key="item.blockId.hash"
-              >
-                <template #label> Bk </template>
-                <template #name>
-                  <TitledLink
-                    :to="`/blocks/${item.header.height}`"
-                    class="app-table__cell-txt"
-                    :text="item.header.height"
-                  />
-                </template>
-                <template #time>
-                  <div class="info-value">
-                    {{ diffDays(toDay, getDay(item.header.time)) }}
-                  </div>
-                </template>
-                <template #validator>
-                  <span>Validator:</span>
-                  <TitledLink
-                    :to="`/validators/${item.validator}`"
-                    class="app-table__cell-txt app-table__link"
-                    :text="`${item.validator}`"
-                  />
-                </template>
-                <template #transactions>
-                  <span>{{ item.txs }} transactions</span>
-                </template>
-              </LatestListItem>
+                :block="item"
+              />
             </template>
-            <div class="latest-stats__list-item" v-else>
-              <span class="latest-stats__list-item--empty"> no item </span>
-            </div>
+            <template v-else>
+              <template v-if="isLoading">
+                <SkeletonLatestListItemBlock
+                  v-for="item in latestTransactionsEmpty"
+                  :key="item"
+                />
+              </template>
+              <div v-else class="latest-stats__list-item">
+                <span class="latest-stats__list-item--empty">No Item</span>
+              </div>
+            </template>
           </transition-group>
         </LatestList>
         <LatestList :header="latestTransactionsHeader">
           <transition-group name="fade" mode="out-in">
             <template v-if="latestTransactions.length">
-              <LatestListItem
+              <LatestListItemTx
                 v-for="item in latestTransactions"
                 :key="item.hash"
-              >
-                <template #label> Tx </template>
-                <template #name>
-                  <TitledLink
-                    v-if="item.hash"
-                    class="app-table__cell-txt"
-                    :to="`/transactions/${item.hash}`"
-                    :text="cropText(`0x${item.hash}`)"
-                  />
-                  <span v-else>No info</span>
-                </template>
-                <template #time>
-                  {{ item.time }}
-                </template>
-                <template #from>
-                  <span>From:</span>
-                  <TitledLink
-                    v-if="item.sender"
-                    :to="`/account/${item.sender}`"
-                    class="app-table__cell-txt app-table__link"
-                    :text="item.sender"
-                  />
-                  <span v-else>No info</span>
-                </template>
-                <template #to>
-                  <span>To:</span>
-                  <TitledLink
-                    v-if="item.receiver"
-                    class="app-table__cell-txt app-table__link"
-                    :to="`/account/${item.receiver}`"
-                    :text="item.receiver"
-                  />
-                  <span v-else>No info</span>
-                </template>
-              </LatestListItem>
+                :tx="item"
+              />
             </template>
-            <div class="latest-stats__list-item" v-else>
-              <span class="latest-stats__list-item--empty"> no item </span>
-            </div>
+            <template v-else>
+              <template v-if="isLoading">
+                <SkeletonLatestListItemTx
+                  v-for="item in latestTransactionsEmpty"
+                  :key="item"
+                />
+              </template>
+              <div class="latest-stats__list-item" v-else>
+                <span class="latest-stats__list-item--empty">No Item</span>
+              </div>
+            </template>
           </transition-group>
         </LatestList>
       </div>
@@ -98,30 +57,42 @@ import { callers } from '@/api/callers'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 
 import LatestList from '@/components/LatestList/LatestList.vue'
-import LatestListItem from '@/components/LatestList/LatestListItem.vue'
-import TitledLink from '@/components/TitledLink.vue'
+import LatestListItemBlock from '@/components/LatestList/LatestListItemBlock.vue'
+import LatestListItemTx from '@/components/LatestList/LatestListItemTx.vue'
+import SkeletonLatestListItemTx from '@/components/skeletonComponents/SkeletonLatestListItemTx.vue'
+import SkeletonLatestListItemBlock from '@/components/skeletonComponents/SkeletonLatestListItemBlock.vue'
+
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
 import { adjustedData, TransformedBlocks } from '@/helpers/Types'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
 export default defineComponent({
   name: 'LatestStats',
-  components: { LatestList, LatestListItem, TitledLink },
+  components: {
+    LatestList,
+    LatestListItemBlock,
+    SkeletonLatestListItemBlock,
+    LatestListItemTx,
+    SkeletonLatestListItemTx,
+  },
   setup: function () {
     const toDay = ref<Date>(new Date())
-
+    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+    const latestTransactionsEmpty = [1, 2, 3, 4, 5]
     onMounted(async (): Promise<void> => {
+      lockLoading()
       try {
         await getLatestBlocks()
         await getLatestTransactions()
       } catch (error) {
         handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
+      releaseLoading()
     })
 
     let latestBlocks = ref<Array<TransformedBlocks> | null>([])
-
     let latestTransactions = ref<Array<adjustedData> | null>([])
     let lastHeight = ref<number>(0)
 
@@ -140,12 +111,12 @@ export default defineComponent({
 
     let latestBlocksHeader = {
       title: 'Latest Blocks',
-      link: 'View all Blocks',
+      link: 'View all',
       linkDataText: 'Blocks',
     }
     let latestTransactionsHeader = {
       title: 'Latest Transactions',
-      link: 'View all Transactions',
+      link: 'View all',
       linkDataText: 'Transactions',
     }
 
@@ -159,6 +130,8 @@ export default defineComponent({
       toHexFunc,
       toDay,
       getDay,
+      isLoading,
+      latestTransactionsEmpty,
     }
   },
 })

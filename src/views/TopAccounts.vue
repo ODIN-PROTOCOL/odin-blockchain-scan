@@ -1,23 +1,27 @@
 <template>
-  <div
-    class="app__main-view top-accounts"
-    :class="{ 'load-fog_show': isLoading && transactions?.length }"
-  >
+  <div class="app__main-view top-accounts">
     <div class="app__main-view-title-wrapper">
       <h2 class="app__main-view-title">Top accounts</h2>
     </div>
     <div class="top-accounts__sort-wrapper">
-      <p class="top-accounts__sort-info" v-if="accounts?.length">
+      <skeleton-loader
+        v-if="isLoading"
+        :height="24"
+        :rounded="true"
+        animation="wave"
+        color="rgb(225, 229, 233)"
+      />
+      <p v-else class="top-accounts__sort-info">
         {{ accounts.length }} accounts found
       </p>
     </div>
     <div class="app-table top-accounts__table">
       <div class="app-table__head top-accounts__table-head">
-        <span> Rank </span>
-        <span> Address </span>
-        <span> ODIN balance </span>
-        <span> ODIN token percentage </span>
-        <span> Transaction count </span>
+        <span>Rank</span>
+        <span>Address</span>
+        <span>ODIN balance</span>
+        <span>ODIN token percentage</span>
+        <span>Transaction count</span>
       </div>
       <template v-if="accounts?.length">
         <AccountsLine
@@ -28,9 +32,14 @@
         />
       </template>
       <template v-else>
-        <div>
-          <p v-if="isLoading" class="empty mg-t32">Waiting to receive data</p>
-          <p v-else class="empty mg-t32">No items yet</p>
+        <SkeletonTable
+          v-if="true"
+          :header-titles="headerTitles"
+          :tableSize="10"
+          class-string="accounts-line"
+        />
+        <div v-else class="app-table__empty-stub">
+          <p class="empty mg-t32">No items yet</p>
         </div>
       </template>
     </div>
@@ -51,10 +60,12 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { TempBalanceType } from '@/helpers/Types'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import SkeletonTable from '@/components/SkeletonTable.vue'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 
 export default defineComponent({
   name: 'TopAccounts',
-  components: { AppPagination, AccountsLine },
+  components: { AppPagination, AccountsLine, SkeletonTable },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const ITEMS_PER_PAGE = 20
@@ -62,23 +73,30 @@ export default defineComponent({
     const filteredAccounts = ref<Array<TempBalanceType>>([])
     const currentPage = ref<number>(1)
     const totalPages = ref<number>(0)
+    const headerTitles = [
+      { title: 'Rank' },
+      { title: 'Address' },
+      { title: 'ODIN balance' },
+      { title: 'ODIN token percentage' },
+      { title: 'Transaction count' },
+    ]
+
     const getAccounts = async (): Promise<void> => {
-      lockLoading
+      lockLoading()
       try {
         accounts.value = await callers
           .getTopAccounts()
           .then((resp) => resp.json())
         totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
         await filterAccounts(currentPage.value)
-      } catch (err) {
-        console.error(err)
+      } catch (error) {
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
-      releaseLoading
+      releaseLoading()
     }
 
     const filterAccounts = async (newPage: number): Promise<void> => {
       let tempArr = accounts.value
-
       if (newPage === 1) {
         filteredAccounts.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
       } else {
@@ -101,6 +119,7 @@ export default defineComponent({
       filteredAccounts,
       accounts,
       isLoading,
+      headerTitles,
     }
   },
 })

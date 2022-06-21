@@ -68,19 +68,4 @@ export default defineComponent({
   },
 })
 </script>
-<style scoped lang="scss">
-.accounts-line {
-  grid:
-    auto /
-    minmax(2rem, 0.5fr)
-    minmax(8rem, 5fr)
-    minmax(8rem, 2fr)
-    minmax(8rem, 2fr)
-    minmax(8rem, 1.5fr);
-}
-@include respond-to(tablet) {
-  .accounts-line {
-    grid: none;
-  }
-}
-</style>
+<style scoped lang="scss"></style>
