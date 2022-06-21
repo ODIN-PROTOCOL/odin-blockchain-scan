@@ -30,6 +30,14 @@
               </span>
             </div>
           </div>
+          <template v-if="delegatorsCount > ITEMS_PER_PAGE">
+            <AppPagination
+              class="mg-t32 mg-b32"
+              v-model="currentPage"
+              :pages="totalPages"
+              @update:modelValue="paginationHandler"
+            />
+          </template>
         </template>
         <template v-else>
           <SkeletonTable
@@ -43,15 +51,6 @@
         </template>
       </div>
     </div>
-
-    <template v-if="delegatorsCount > ITEMS_PER_PAGE">
-      <AppPagination
-        class="mg-t32 mg-b32"
-        v-model="currentPage"
-        :pages="totalPages"
-        @update:modelValue="paginationHandler"
-      />
-    </template>
   </div>
 </template>
 
@@ -83,7 +82,9 @@ export default defineComponent({
     const totalPages = computed(() => {
       return Math.ceil(delegatorsCount.value / ITEMS_PER_PAGE)
     })
+
     const headerTitles = [{ title: 'Delegator' }, { title: 'Stake' }]
+
     const filteredDelegators = computed(() => {
       let tempArr = props.delegators
       if (currentPage.value === 1) {
