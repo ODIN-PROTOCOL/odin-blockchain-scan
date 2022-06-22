@@ -116,9 +116,10 @@ export default defineComponent({
       const bondedTotal = Number(odinStakingPool?.bonded)
       const unbondedTotal = Number(odinStakingPool?.unbonded)
       const stakingTotal = bondedTotal + unbondedTotal
+
       return `${Number(
-        (Number(stakedLokiAmount.value) * 100) / stakingTotal
-      ).toFixed(4)}%`
+        Number((stakedLokiAmount.value * 100) / stakingTotal).toFixed(4)
+      )}%`
     })
     return {
       stakedLokiAmount,
