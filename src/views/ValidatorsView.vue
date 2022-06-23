@@ -46,20 +46,20 @@
           Commission
         </span>
         <span
-          class="validators-view__table-head-item validators-view__table-head-item--center"
-        >
-          Status
-        </span>
-        <span
           v-if="tabStatus !== inactiveValidatorsTitle"
           class="validators-view__table-head-item"
         >
           Uptime
         </span>
+        <span
+          class="validators-view__table-head-item validators-view__table-head-item--center"
+        >
+          Status
+        </span>
       </div>
       <div>
         <template v-if="filteredValidators?.length">
-          <div
+          <!-- <div
             v-for="item in filteredValidators"
             :key="item.operatorAddress"
             class="app-table__row validators-view__table-row"
@@ -117,6 +117,25 @@
               <span v-else>N/A</span>
             </div>
           </div>
+        </template> -->
+          <template v-if="windowInnerWidth > 768">
+            <ValidatorsTable
+              v-for="validator in filteredValidators"
+              :key="validator.operatorAddress"
+              :validator="validator"
+              :tabStatus="tabStatus"
+              :inactiveValidatorsTitle="inactiveValidatorsTitle"
+            />
+          </template>
+          <template v-else>
+            <ValidatorsTableMobile
+              v-for="validator in filteredValidators"
+              :key="validator.operatorAddress"
+              :validator="validator"
+              :tabStatus="tabStatus"
+              :inactiveValidatorsTitle="inactiveValidatorsTitle"
+            />
+          </template>
         </template>
         <template v-else>
           <SkeletonTable
@@ -150,30 +169,33 @@ import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
-import TitledLink from '@/components/TitledLink.vue'
+// import TitledLink from '@/components/TitledLink.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import {
   getTransformedValidators,
   isActiveValidator,
 } from '@/helpers/validatorsHelpers'
-import ProgressbarTool from '@/components/ProgressbarTool.vue'
+// import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
-import ValidatorStatus from '@/components/ValidatorStatus.vue'
-
+// import ValidatorStatus from '@/components/ValidatorStatus.vue'
+import ValidatorsTableMobile from '@/components/ValidatorsTableMobile.vue'
+import ValidatorsTable from '@/components/ValidatorsTable.vue'
 export default defineComponent({
   name: 'ValidatorsView',
   components: {
     AppTabs,
     AppTab,
-    TitledLink,
+    // TitledLink,
     AppPagination,
-    ProgressbarTool,
+    // ProgressbarTool,
     InputField,
     SearchIcon,
     SkeletonTable,
-    ValidatorStatus,
+    // ValidatorStatus,
+    ValidatorsTableMobile,
+    ValidatorsTable,
   },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
@@ -194,14 +216,24 @@ export default defineComponent({
     const inactiveValidatorsTitle = ref('Inactive')
     const tabStatus = ref(activeValidatorsTitle.value)
     const searchValue = ref('')
-    const headerTitles = [
-      { title: 'Rank' },
-      { title: 'Validator' },
-      { title: 'Delegated' },
-      { title: 'Commission' },
-      { title: 'Uptime' },
-      { title: 'Oracle Status' },
-    ]
+    const headerTitles = computed(() => {
+      if (windowInnerWidth.value > 768) {
+        return [
+          { title: 'Rank' },
+          { title: 'Validator' },
+          { title: 'Delegated' },
+          { title: 'Commission' },
+          { title: 'Uptime' },
+          { title: 'Oracle Status' },
+        ]
+      } else {
+        return [{ title: '' }, { title: 'Delegated' }]
+      }
+    })
+    const windowInnerWidth = ref(document.documentElement.clientWidth)
+    const updateWidth = () => {
+      windowInnerWidth.value = document.documentElement.clientWidth
+    }
     const getValidators = async () => {
       lockLoading()
       try {
@@ -304,6 +336,7 @@ export default defineComponent({
       }
     }
     onMounted(async () => {
+      window.addEventListener('resize', updateWidth)
       await getValidators()
     })
 
@@ -326,6 +359,7 @@ export default defineComponent({
       headerTitles,
       tabStatus,
       validatorStatus,
+      windowInnerWidth,
     }
   },
 })
