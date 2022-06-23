@@ -115,9 +115,17 @@ export default defineComponent({
     })
 
     const getTransactions = async (): Promise<Array<adjustedData>> => {
+      const TRANSACTION_HASH_LENGHT = 64
+      const transactionToSearch = String(searchedText.value)
+      if (
+        !transactionToSearch ||
+        transactionToSearch.length < TRANSACTION_HASH_LENGHT
+      ) {
+        return []
+      }
       try {
         const res = await callers.getTxForTxDetailsPage(
-          String(searchedText.value)
+          String(transactionToSearch)
         )
         return await prepareTransaction([res.data.result])
       } catch {
@@ -126,18 +134,27 @@ export default defineComponent({
     }
 
     const getAccount = async (): Promise<Array<TempSearchAccountInfoType>> => {
+      const ACCOUNT_LENGHT = 43
+      const accountToSearch = String(searchedText.value)
+      if (
+        !accountToSearch ||
+        !accountToSearch.startsWith('odin') ||
+        accountToSearch.length < ACCOUNT_LENGHT
+      ) {
+        return []
+      }
       try {
         const geoBalance = await callers.getUnverifiedBalances(
-          searchedText.value as string,
+          accountToSearch,
           'minigeo'
         )
         const odinBalance = await callers.getUnverifiedBalances(
-          searchedText.value as string,
+          accountToSearch,
           'loki'
         )
         return [
           {
-            address: searchedText.value as string,
+            address: accountToSearch,
             geoBalance: { ...geoBalance },
             odinBalance: { ...odinBalance },
           },
@@ -303,3 +320,4 @@ export default defineComponent({
   }
 }
 </style>
+odinvaloper1cgfdwtrqfdrzh4z8rkcyx8g4jv22v8wgav3rjx
