@@ -115,11 +115,11 @@ export default defineComponent({
     })
 
     const getTransactions = async (): Promise<Array<adjustedData>> => {
-      const TRANSACTION_HASH_LENGHT = 64
+      const TRANSACTION_HASH_LENGTH = 64
       const transactionToSearch = String(searchedText.value)
       if (
         !transactionToSearch ||
-        transactionToSearch.length < TRANSACTION_HASH_LENGHT
+        transactionToSearch.length < TRANSACTION_HASH_LENGTH
       ) {
         return []
       }
@@ -134,12 +134,12 @@ export default defineComponent({
     }
 
     const getAccount = async (): Promise<Array<TempSearchAccountInfoType>> => {
-      const ACCOUNT_LENGHT = 43
+      const ACCOUNT_LENGTH = 43
       const accountToSearch = String(searchedText.value)
       if (
         !accountToSearch ||
         !accountToSearch.startsWith('odin') ||
-        accountToSearch.length < ACCOUNT_LENGHT
+        accountToSearch.length < ACCOUNT_LENGTH
       ) {
         return []
       }
