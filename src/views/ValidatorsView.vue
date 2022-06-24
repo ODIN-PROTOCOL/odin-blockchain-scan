@@ -280,7 +280,6 @@ export default defineComponent({
 
     const clearText = (): void => {
       searchValue.value = ''
-      filterValidators()
     }
 
     onMounted(async () => {
