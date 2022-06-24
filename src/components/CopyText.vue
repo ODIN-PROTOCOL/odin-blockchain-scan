@@ -66,7 +66,7 @@ export default defineComponent({
 .text {
   @media (max-width: 480px) {
     @include ellipsis();
-    width: 100px;
+    width: 10rem;
   }
 }
 .copy-text {
