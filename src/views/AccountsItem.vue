@@ -72,7 +72,7 @@
           <SkeletonTable
             v-if="isLoading"
             :header-titles="headerTitles"
-            :tableSize="10"
+            table-size="10"
           />
           <div v-else class="app-table__empty-stub">
             <p class="empty mg-t32">No items yet</p>

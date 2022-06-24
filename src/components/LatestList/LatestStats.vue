@@ -13,10 +13,7 @@
             </template>
             <template v-else>
               <template v-if="isLoading">
-                <SkeletonLatestListItemBlock
-                  v-for="item in latestTransactionsEmpty"
-                  :key="item"
-                />
+                <SkeletonLatestListItemBlock v-for="item of 5" :key="item" />
               </template>
               <div v-else class="latest-stats__list-item">
                 <span class="latest-stats__list-item--empty">No Item</span>
@@ -35,12 +32,9 @@
             </template>
             <template v-else>
               <template v-if="isLoading">
-                <SkeletonLatestListItemTx
-                  v-for="item in latestTransactionsEmpty"
-                  :key="item"
-                />
+                <SkeletonLatestListItemTx v-for="item of 5" :key="item" />
               </template>
-              <div class="latest-stats__list-item" v-else>
+              <div v-else class="latest-stats__list-item">
                 <span class="latest-stats__list-item--empty">No Item</span>
               </div>
             </template>
@@ -63,7 +57,7 @@ import SkeletonLatestListItemTx from '@/components/skeletonComponents/SkeletonLa
 import SkeletonLatestListItemBlock from '@/components/skeletonComponents/SkeletonLatestListItemBlock.vue'
 
 import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
-import { adjustedData, TransformedBlocks } from '@/helpers/Types'
+import { DecodedTxData, TransformedBlocks } from '@/helpers/Types'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
@@ -80,7 +74,6 @@ export default defineComponent({
   setup: function () {
     const toDay = ref<Date>(new Date())
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const latestTransactionsEmpty = [1, 2, 3, 4, 5]
     onMounted(async (): Promise<void> => {
       lockLoading()
       try {
@@ -93,7 +86,7 @@ export default defineComponent({
     })
 
     let latestBlocks = ref<Array<TransformedBlocks> | null>([])
-    let latestTransactions = ref<Array<adjustedData> | null>([])
+    let latestTransactions = ref<Array<DecodedTxData> | null>([])
     let lastHeight = ref<number>(0)
 
     const getLatestBlocks = async (): Promise<void> => {
@@ -131,7 +124,6 @@ export default defineComponent({
       toDay,
       getDay,
       isLoading,
-      latestTransactionsEmpty,
     }
   },
 })

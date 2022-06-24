@@ -144,7 +144,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import { adjustedData } from '@/helpers/Types'
+import { DecodedTxData } from '@/helpers/Types'
 import { prepareTransaction } from '@/helpers/helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
@@ -171,7 +171,7 @@ export default defineComponent({
   components: { BackButton, CopyButton, TitledLink },
   setup() {
     const route: RouteLocationNormalizedLoaded = useRoute()
-    const tx = ref<adjustedData>()
+    const tx = ref<DecodedTxData>()
 
     const getTransactions = async () => {
       try {

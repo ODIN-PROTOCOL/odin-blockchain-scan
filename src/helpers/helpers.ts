@@ -1,6 +1,6 @@
 import { toHex } from '@cosmjs/encoding'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
-import { adjustedData, ChartLabelsType } from '@/helpers/Types'
+import { DecodedTxData, ChartLabelsType } from '@/helpers/Types'
 import { bigMath } from '@/helpers/bigMath'
 import { AnyFn, Unpacked } from '@/shared-types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
@@ -130,8 +130,8 @@ export const getHash = (str: Uint8Array): string => {
 
 export const prepareTransaction = async (
   txs: readonly TxTelemetry[]
-): Promise<Array<adjustedData>> => {
-  let tempArr: Array<adjustedData> = []
+): Promise<Array<DecodedTxData>> => {
+  let tempArr: Array<DecodedTxData> = []
   for (const tx of txs) {
     const {
       receiver,
@@ -246,15 +246,4 @@ export enum VALIDATOR_STATUS_TYPE {
   inactive = 'inactive',
   success = 'success',
   error = 'error',
-}
-export const duplicateArrayNCount = (
-  exampleArray: Array<unknown>,
-  duplicateNumber: number
-): Array<unknown> => {
-  if (!exampleArray.length) return []
-  const tempArr: Array<unknown> = []
-  for (let i = 0; i < duplicateNumber; i++) {
-    tempArr.push(exampleArray)
-  }
-  return tempArr
 }

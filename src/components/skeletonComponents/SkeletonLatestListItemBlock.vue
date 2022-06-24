@@ -4,7 +4,7 @@
       <skeleton-loader
         :height="42"
         :width="42"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__label"
@@ -12,7 +12,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__name w-full"
@@ -20,7 +20,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__time w-full"
@@ -30,7 +30,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__validator w-full"
@@ -38,7 +38,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__transaction w-full"
@@ -52,8 +52,6 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'SkeletonLatestListItemBlock',
-  components: {},
-  props: {},
 })
 </script>
 
@@ -93,7 +91,6 @@ export default defineComponent({
   grid-row-end: 3;
   display: flex;
   align-items: center;
-  // gap: 1.2rem;
   font-size: 1.4rem;
   color: var(--clr__text-muted);
 }
@@ -104,7 +101,7 @@ export default defineComponent({
   width: 4.2rem;
   height: 4.2rem;
   background: var(--clr__input-border);
-  border-radius: 4px;
+  border-radius: 0.4rem;
   font-size: 2rem;
   line-height: 2.3rem;
   grid-row-start: 1;

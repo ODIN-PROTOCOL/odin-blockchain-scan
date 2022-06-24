@@ -73,7 +73,6 @@ export default defineComponent({
 .latest-list-item__left {
   display: grid;
   grid-template-columns: 4.2rem auto;
-  // grid-template-rows: 1fr;
   gap: 0 0.8rem;
   align-items: center;
 }
@@ -105,7 +104,7 @@ export default defineComponent({
   width: 4.2rem;
   height: 4.2rem;
   background: var(--clr__input-border);
-  border-radius: 4px;
+  border-radius: 0.4rem;
   font-size: 2rem;
   line-height: 2.3rem;
   grid-row-start: 1;

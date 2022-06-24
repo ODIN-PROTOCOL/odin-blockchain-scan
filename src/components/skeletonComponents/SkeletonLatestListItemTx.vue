@@ -4,7 +4,7 @@
       <skeleton-loader
         :height="42"
         :width="42"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__label"
@@ -12,7 +12,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__name w-full"
@@ -20,7 +20,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__time w-full"
@@ -30,7 +30,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__validator"
@@ -38,7 +38,7 @@
       <skeleton-loader
         :height="16"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__to"
@@ -48,7 +48,7 @@
       <skeleton-loader
         :height="42"
         :width="-1"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
         class="latest-list-item__amount"
@@ -62,8 +62,6 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'LatestListItem',
-  components: {},
-  props: {},
 })
 </script>
 
@@ -92,9 +90,7 @@ export default defineComponent({
   max-width: 14rem;
   min-width: 8rem;
   width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis();
 }
 .latest-list-item__name {
   grid-row-start: 1;
@@ -124,7 +120,7 @@ export default defineComponent({
   width: 4.2rem;
   height: 4.2rem;
   background: var(--clr__input-border);
-  border-radius: 4px;
+  border-radius: 0.4rem;
   font-size: 2rem;
   line-height: 2.3rem;
   grid-row-start: 1;
@@ -150,9 +146,7 @@ export default defineComponent({
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--clr__text);
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis();
 }
 .latest-list-item__amount {
   display: flex;

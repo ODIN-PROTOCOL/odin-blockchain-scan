@@ -7,7 +7,7 @@
       <skeleton-loader
         v-if="isLoading"
         :height="24"
-        :rounded="true"
+        rounded
         animation="wave"
         color="rgb(225, 229, 233)"
       />
@@ -33,9 +33,9 @@
       </template>
       <template v-else>
         <SkeletonTable
-          v-if="true"
+          v-if="isLoading"
           :header-titles="headerTitles"
-          :tableSize="10"
+          table-size="10"
           class-string="accounts-line"
         />
         <div v-else class="app-table__empty-stub">

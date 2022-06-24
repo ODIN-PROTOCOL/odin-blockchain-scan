@@ -35,7 +35,13 @@
       </div>
     </div>
 
-    <div class="app-table">
+    <div
+      class="app-table"
+      :class="{
+        'validators-view__table--inactive':
+          tabStatus === inactiveValidatorsTitle,
+      }"
+    >
       <div class="app-table__head validators-view__table-head">
         <span class="validators-view__table-head-item">Rank</span>
         <span class="validators-view__table-head-item">Validator</span>
@@ -59,65 +65,6 @@
       </div>
       <div>
         <template v-if="filteredValidators?.length">
-          <!-- <div
-            v-for="item in filteredValidators"
-            :key="item.operatorAddress"
-            class="app-table__row validators-view__table-row"
-          >
-            <div class="app-table__cell">
-              <span class="app-table__title">Rank</span>
-              <span>{{ item.rank }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__title">Validator</span>
-              <TitledLink
-                class="app-table__cell-txt app-table__link"
-                :text="item.description.moniker"
-                :to="`/validators/${item.operatorAddress}`"
-              />
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__title">Delegator Share</span>
-              <span :title="$convertLokiToOdin(item.delegatorShares)">
-                {{
-                  $convertLokiToOdin(item.delegatorShares, {
-                    withDenom: true,
-                    withPrecise: true,
-                  })
-                }}
-              </span>
-            </div>
-            <div class="app-table__cell validators-view__table-cell--center">
-              <span class="app-table__title">Commission</span>
-              <span>
-                {{ $getPrecisePercents(item.commission.commissionRates.rate) }}
-              </span>
-            </div>
-            <div class="app-table__cell validators-view__table-cell--center">
-              <span class="app-table__title">Status</span>
-              <ValidatorStatus
-                :width="14"
-                :height="14"
-                :status="validatorStatus(item)"
-                class="validators-item__validator-status"
-              />
-            </div>
-            <div
-              v-if="tabStatus !== inactiveValidatorsTitle"
-              class="app-table__cell"
-            >
-              <span class="app-table__title">Uptime</span>
-              <ProgressbarTool
-                v-if="item?.uptimeInfo?.uptime"
-                :min="0"
-                :max="100"
-                :current="Number(item.uptimeInfo.uptime) || 0"
-                :isForValidators="true"
-              />
-              <span v-else>N/A</span>
-            </div>
-          </div>
-        </template> -->
           <template v-if="windowInnerWidth > 768">
             <ValidatorsTable
               v-for="validator in filteredValidators"
@@ -141,7 +88,7 @@
           <SkeletonTable
             v-if="isLoading"
             :header-titles="headerTitles"
-            class-string="validators-view__table-row"
+            class-string="validators-view-table-row"
           />
           <div v-else class="app-table__empty-stub">
             <p class="empty mg-t32">No items yet</p>
@@ -162,38 +109,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed } from 'vue'
+import { defineComponent, ref, onMounted, computed, onUnmounted } from 'vue'
 import { callers } from '@/api/callers'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
-// import TitledLink from '@/components/TitledLink.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import {
   getTransformedValidators,
   isActiveValidator,
 } from '@/helpers/validatorsHelpers'
-// import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
-// import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import ValidatorsTableMobile from '@/components/ValidatorsTableMobile.vue'
-import ValidatorsTable from '@/components/ValidatorsTable.vue'
+import ValidatorsTableMobile from '@/components/ValidatorsTableRowMobile.vue'
+import ValidatorsTable from '@/components/ValidatorsTableRow.vue'
 export default defineComponent({
   name: 'ValidatorsView',
   components: {
     AppTabs,
     AppTab,
-    // TitledLink,
     AppPagination,
-    // ProgressbarTool,
     InputField,
     SearchIcon,
     SkeletonTable,
-    // ValidatorStatus,
     ValidatorsTableMobile,
     ValidatorsTable,
   },
@@ -339,6 +280,9 @@ export default defineComponent({
       window.addEventListener('resize', updateWidth)
       await getValidators()
     })
+    onUnmounted(async () => {
+      window.removeEventListener('resize', updateWidth)
+    })
 
     return {
       ITEMS_PER_PAGE,
@@ -383,20 +327,7 @@ export default defineComponent({
 .validators-view__table-head-item--end {
   text-align: end;
 }
-.validators__table--inactive {
-  .validators__table-head,
-  .validators__table-row {
-    gap: 2rem;
-    grid:
-      auto /
-      minmax(2rem, 5rem)
-      minmax(5rem, 1.5fr)
-      minmax(6rem, 1fr)
-      minmax(8rem, 0.5fr)
-      minmax(7rem, 8.7rem)
-      minmax(24rem, 1.5fr);
-  }
-}
+
 .validators-view__filter-search {
   display: flex;
   align-items: center;
@@ -462,12 +393,6 @@ export default defineComponent({
 @include respond-to(tablet) {
   .validators-view__count-info {
     margin-bottom: 0;
-  }
-  .validators__table--inactive {
-    .validators__table-head,
-    .validators__table-row {
-      grid: none;
-    }
   }
   .validators-view__table-cell--center {
     justify-content: flex-start;

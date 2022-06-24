@@ -1,5 +1,5 @@
 <template>
-  <div class="app-table__row validators-view__table-row">
+  <div class="app-table__row validators-view-table-row">
     <div class="app-table__cell">
       <span class="app-table__title">Rank</span>
       <span>{{ validator.rank }}</span>
@@ -29,7 +29,7 @@
         }}
       </span>
     </div>
-    <div class="app-table__cell validators__table-cell--center">
+    <div class="app-table__cell validators-view-table-row__cell--center">
       <span class="app-table__title">Commission</span>
       <span>
         {{ $getPrecisePercents(validator.commission.commissionRates.rate) }}
@@ -44,7 +44,7 @@
         :isForValidators="true"
       />
     </div>
-    <div class="app-table__cell validators__table-cell--center">
+    <div class="app-table__cell validators-view-table-row__cell--center">
       <span class="app-table__title">Status</span>
       <ValidatorStatus
         :width="14"
@@ -58,11 +58,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue'
-import { COINS_LIST } from '@/api/api-config'
 import TitledLink from '@/components/TitledLink.vue'
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import { isMobile } from '@/helpers/helpers'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 
 export default defineComponent({
@@ -73,15 +71,13 @@ export default defineComponent({
   },
   props: {
     validator: { type: Object as PropType<ValidatorDecoded>, required: true },
-
     tabStatus: { type: String, required: true },
     inactiveValidatorsTitle: { type: String, required: true },
   },
-  setup(props, { emit }) {
+  setup() {
     const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
-    const totalPages = ref()
-    const isShow = ref([])
+    const totalPages = ref(0)
 
     const validatorStatus = (validator: {
       status: number
@@ -93,89 +89,28 @@ export default defineComponent({
         return 'inactive'
       }
     }
-    const selectedBtn = (typeBtn: string) => {
-      emit('selectedBtn', { typeBtn, validator: props.validator })
-    }
 
     return {
-      COINS_LIST,
       ITEMS_PER_PAGE,
       totalPages,
       currentPage,
       validatorStatus,
-      isShow,
-      isMobile,
-      selectedBtn,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.validators__table-row {
+.validators-view-table-row {
   padding: 3.2rem 0 2rem;
   align-items: center;
 }
-.validators__table--inactive {
-  .validators__table-head,
-  .validators__table-row {
-    gap: 2rem;
-    grid:
-      auto /
-      minmax(2rem, 5rem)
-      minmax(5rem, 1.5fr)
-      minmax(6rem, 1fr)
-      minmax(8rem, 0.5fr)
-      minmax(7rem, 8.7rem)
-      minmax(24rem, 1.5fr);
-  }
-}
-.validators__table-row--top {
-  align-items: flex-start;
-}
-.validators__table-activities {
-  width: 100%;
-  & > *:not(:last-child) {
-    margin-bottom: 1.6rem;
-  }
-}
-.validators__table-activities-item {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1.6rem;
-}
-.validators__table-cell--center {
+.validators-view-table-row__cell--center {
   justify-content: center;
 }
-.validators__mobile-activities {
-  & > *:not(:last-child) {
-    margin-bottom: 0.8rem;
-  }
-}
 @include respond-to(tablet) {
-  .validators__table--inactive {
-    .validators__table-head,
-    .validators__table-row {
-      grid: none;
-    }
-  }
-  .validators__table-activities {
-    width: 100%;
-  }
-
-  .validators__table-activities-item {
-    & > * {
-      flex: 1;
-    }
-  }
-  .validators__table-cell--center {
+  .validators-view-table-row__cell--center {
     justify-content: flex-start;
-  }
-  .validators__table-head--center {
-    text-align: start;
-  }
-  .validators__table-head--end {
-    text-align: start;
   }
 }
 </style>

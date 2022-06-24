@@ -171,9 +171,7 @@ export default defineComponent({
 .validator-info__top-line-item {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis();
   max-width: 100%;
 }
 
@@ -194,9 +192,7 @@ export default defineComponent({
   font-weight: 600;
   font-size: 2.4rem;
   line-height: 3.2rem;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis();
 }
 .validator-info__delegetion-title,
 .validator-info__description-title {

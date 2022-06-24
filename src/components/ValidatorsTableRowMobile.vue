@@ -1,28 +1,28 @@
 <template>
-  <div
-    class="app-table__row validators-table-mobile validators-view__table-row"
-  >
-    <div class="app-table__cell validators-table-mobile__cell">
-      <div class="validators-table-mobile__info">
-        <span class="validators-table-mobile__rank">{{ validator.rank }}</span>
+  <div class="app-table__row validators-table-row-mobile">
+    <div class="app-table__cell validators-table-row-mobile__cell">
+      <div class="validators-table-row-mobile__info">
+        <span class="validators-table-row-mobile__rank">{{
+          validator.rank
+        }}</span>
         <TitledLink
           class="app-table__cell-txt app-table__link"
           :text="validator.description.moniker"
           :to="`/validators/${validator.operatorAddress}`"
         />
       </div>
-      <div class="validators-table-mobile__show">
+      <div class="validators-table-row-mobile__show">
         <button
-          @click="isShow[validator.rank] = !isShow[validator.rank]"
+          @click="isShowValidatorDetails = !isShowValidatorDetails"
           type="button"
-          class="validators-table-mobile__show-button"
+          class="validators-table-row-mobile__show-button"
         >
-          {{ isShow[validator.rank] ? 'Hidden' : 'Show more' }}
+          {{ isShowValidatorDetails ? 'Hidden' : 'Show more' }}
           <ArrowIcon
-            class="validators-table-mobile__arrow-icon"
+            class="validators-table-row-mobile__arrow-icon"
             :class="{
-              ['validators-table-mobile__arrow-icon--active']:
-                isShow[validator.rank],
+              ['validators-table-row-mobile__arrow-icon--active']:
+                isShowValidatorDetails,
             }"
           />
         </button>
@@ -45,7 +45,7 @@
         }}
       </span>
     </div>
-    <template v-if="isShow[validator.rank]">
+    <template v-if="isShowValidatorDetails">
       <div class="app-table__cell">
         <span class="app-table__title">Commission</span>
         <span>
@@ -76,11 +76,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue'
-import { COINS_LIST } from '@/api/api-config'
 import TitledLink from '@/components/TitledLink.vue'
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import { isMobile } from '@/helpers/helpers'
 import ArrowIcon from '@/components/icons/ArrowIcon.vue'
 import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 
@@ -99,8 +97,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
-    const totalPages = ref()
-    const isShow = ref([])
+    const totalPages = ref(0)
+    const isShowValidatorDetails = ref(false)
 
     const validatorStatus = (validator: {
       status: number
@@ -117,21 +115,19 @@ export default defineComponent({
     }
 
     return {
-      COINS_LIST,
+      validatorStatus,
+      selectedBtn,
       ITEMS_PER_PAGE,
       totalPages,
       currentPage,
-      validatorStatus,
-      isShow,
-      isMobile,
-      selectedBtn,
+      isShowValidatorDetails,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.validators-table-mobile__info {
+.validators-table-row-mobile__info {
   display: flex;
   align-items: center;
   max-width: 16.5rem;
@@ -140,21 +136,24 @@ export default defineComponent({
     margin-right: 1.6rem;
   }
 }
-.validators-table-mobile__rank {
+.validators-table-row-mobile {
+  grid: none;
+}
+.validators-table-row-mobile__rank {
   margin-right: 1.6rem;
 }
-.validators__table-row {
+.validators-table-row-mobile {
   padding: 3.2rem 0 2rem;
   align-items: center;
 }
-.validators__table-activities {
+.validators-table-row-mobile__activities {
   width: 100%;
 
   & > *:not(:last-child) {
     margin-bottom: 1.6rem;
   }
 }
-.validators__table-activities-item {
+.validators-table-row-mobile__activities-item {
   display: flex;
   justify-content: flex-end;
   gap: 1.6rem;
@@ -162,33 +161,27 @@ export default defineComponent({
     flex: 1;
   }
 }
-.validators-table-mobile__show {
+.validators-table-row-mobile__show {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 3rem;
 }
-.validators-table-mobile__show-button {
+.validators-table-row-mobile__show-button {
   color: var(--clr__btn-normal);
   text-align: center;
 }
-.validators-table-mobile__arrow-icon {
+.validators-table-row-mobile__arrow-icon {
   fill: var(--clr__btn-normal);
   transform: translate(0.3rem, 0.7rem);
 }
-.validators-table-mobile__arrow-icon--active {
+.validators-table-row-mobile__arrow-icon--active {
   transform: translate(0rem, 0.7rem) rotate(180deg);
   fill: var(--clr__action);
 }
-.validators-table-mobile__cell {
+.validators-table-row-mobile__cell {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.validators__table--inactive {
-  .validators__table-head,
-  .validators__table-row {
-    grid: none;
-  }
 }
 </style>

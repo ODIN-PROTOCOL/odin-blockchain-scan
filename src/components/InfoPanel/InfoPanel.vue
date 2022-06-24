@@ -1,6 +1,6 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div class="info-panel" v-if="totalData || chartData">
+    <div class="info-panel">
       <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
       <div class="info-panel__chart border">
         <div class="info-panel__chart-title">
@@ -11,7 +11,7 @@
             v-if="isLoading"
             width="-1"
             height="-1"
-            :rounded="true"
+            rounded
             animation="wave"
             color="rgb(225, 229, 233)"
             class="info-panel__chart-skeleton"

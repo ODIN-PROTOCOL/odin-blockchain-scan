@@ -47,14 +47,14 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue'
-import { adjustedData } from '@/helpers/Types'
+import { DecodedTxData } from '@/helpers/Types'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
 
 export default defineComponent({
   name: 'LatestListItemTx',
   components: { TitledLink },
-  props: { tx: { type: Object as PropType<adjustedData>, required: true } },
+  props: { tx: { type: Object as PropType<DecodedTxData>, required: true } },
   setup() {
     const toDay = ref<Date>(new Date())
 
@@ -93,9 +93,7 @@ export default defineComponent({
   max-width: 16rem;
   min-width: 7rem;
   width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis();
 }
 .latest-list-item__name {
   width: 100%;
@@ -127,7 +125,7 @@ export default defineComponent({
   width: 4.2rem;
   height: 4.2rem;
   background: var(--clr__input-border);
-  border-radius: 4px;
+  border-radius: 0.4rem;
   font-size: 2rem;
   line-height: 2.3rem;
   grid-row-start: 1;
@@ -153,9 +151,7 @@ export default defineComponent({
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--clr__text);
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis();
 }
 .latest-list-item__amount {
   display: flex;

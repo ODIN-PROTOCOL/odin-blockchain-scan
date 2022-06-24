@@ -82,7 +82,7 @@ import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
 import {
-  adjustedData,
+  DecodedTxData,
   SearchResultType,
   TempSearchAccountInfoType,
   TransformedBlocks,
@@ -110,7 +110,7 @@ export default defineComponent({
       searchResult.value = null
     })
 
-    const getTransactions = async (): Promise<Array<adjustedData>> => {
+    const getTransactions = async (): Promise<Array<DecodedTxData>> => {
       try {
         const res = await callers.getTxForTxDetailsPage(
           String(searchedText.value)
