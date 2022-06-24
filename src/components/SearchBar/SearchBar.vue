@@ -215,7 +215,7 @@ export default defineComponent({
     }
 
     const clearText = (): void => {
-      searchedText.value = null
+      searchedText.value = ''
     }
 
     const router: Router = useRouter()
