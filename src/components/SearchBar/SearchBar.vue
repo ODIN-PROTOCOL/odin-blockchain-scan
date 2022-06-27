@@ -263,8 +263,8 @@ export default defineComponent({
   }
 }
 .search-bar__btn {
-  width: 48px;
-  height: 48px;
+  width: 4.8rem;
+  height: 4.8rem;
   display: flex;
   flex-shrink: 0;
   align-items: center;

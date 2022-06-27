@@ -162,8 +162,8 @@ export default defineComponent({
 }
 .validators-item__back-btn {
   height: 4.6rem;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
 }
 .validators-item__subtitle {
   @include ellipsis();
