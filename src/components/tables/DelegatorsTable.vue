@@ -30,6 +30,14 @@
               </span>
             </div>
           </div>
+          <template v-if="delegatorsCount > ITEMS_PER_PAGE">
+            <AppPagination
+              class="mg-t32 mg-b32"
+              v-model="currentPage"
+              :pages="totalPages"
+              @update:modelValue="paginationHandler"
+            />
+          </template>
         </template>
         <template v-else>
           <div class="app-table__empty-stub">
@@ -38,20 +46,11 @@
         </template>
       </div>
     </div>
-
-    <template v-if="delegatorsCount > ITEMS_PER_PAGE">
-      <AppPagination
-        class="mg-t32 mg-b32"
-        v-model="currentPage"
-        :pages="totalPages"
-        @update:modelValue="paginationHandler"
-      />
-    </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, PropType, computed } from 'vue'
+import { defineComponent, ref, PropType, computed } from 'vue'
 import { API_CONFIG } from '@/api/api-config'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
@@ -67,9 +66,12 @@ export default defineComponent({
   setup(props) {
     const ITEMS_PER_PAGE = 5
     const currentPage = ref(1)
-    const totalPages = ref(0)
-    const delegatorsCount = ref(0)
-
+    const delegatorsCount = computed(() => {
+      return props.delegators.length
+    })
+    const totalPages = computed(() => {
+      return Math.ceil(delegatorsCount.value / ITEMS_PER_PAGE)
+    })
     const filteredDelegators = computed(() => {
       let tempArr = props.delegators
       if (currentPage.value === 1) {
@@ -85,11 +87,6 @@ export default defineComponent({
     const paginationHandler = (num: number) => {
       currentPage.value = num
     }
-
-    onMounted(() => {
-      delegatorsCount.value = props.delegators.length
-      totalPages.value = Math.ceil(delegatorsCount.value / ITEMS_PER_PAGE)
-    })
 
     return {
       API_CONFIG,

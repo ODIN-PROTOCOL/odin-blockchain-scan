@@ -274,14 +274,19 @@ export default defineComponent({
 }
 
 .transactions-item__table-row-status {
-  display: block;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   width: 10rem;
   height: 2.4rem;
   background: var(--clr__muted-bg);
-  border-radius: 0.4rem;
   color: var(--clr__text-on-action);
-  text-align: center;
-  line-height: 2.4rem;
+  border-radius: 3.2rem;
+  padding: 0.4rem 2.4rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
 }
 .transactions-item__table-row-status--success {
   background: var(--clr__status-success);
