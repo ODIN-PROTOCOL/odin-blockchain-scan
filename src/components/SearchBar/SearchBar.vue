@@ -22,6 +22,10 @@
       <div class="search-bar__input-wrapper">
         <input
           class="search-bar__input"
+          :class="{
+            'search-bar__input': true,
+            'search-bar__input--with-value': searchedText,
+          }"
           :placeholder="inputPlaceholder"
           v-model="searchedText"
           @keydown.enter="searchBy()"
@@ -288,7 +292,12 @@ export default defineComponent({
   &::-webkit-search-cancel-button {
     display: none;
   }
+
+  &.search-bar__input--with-value {
+    padding-right: 3.5rem;
+  }
 }
+
 .search-bar__btn {
   width: 4.8rem;
   height: 4.8rem;

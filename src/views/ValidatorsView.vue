@@ -384,6 +384,7 @@ export default defineComponent({
 }
 .validators-view__filter-search-input {
   border: none;
+  padding-right: 2rem;
   &:focus::-webkit-input-placeholder {
     color: transparent;
   }
