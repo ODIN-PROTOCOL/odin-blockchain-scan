@@ -59,7 +59,7 @@ export default defineComponent({
     border: 0.1rem solid var(--clr__action);
   }
   &::placeholder {
-    font-size: 16px;
+    font-size: 1.6rem;
     line-height: 2.4rem;
     font-weight: 400;
     color: var(--clr__text-muted);

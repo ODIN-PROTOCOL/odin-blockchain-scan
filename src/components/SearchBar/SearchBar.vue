@@ -86,7 +86,7 @@ import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
 import {
-  adjustedData,
+  DecodedTxData,
   SearchResultType,
   TempSearchAccountInfoType,
   TransformedBlocks,
@@ -114,7 +114,7 @@ export default defineComponent({
       searchResult.value = null
     })
 
-    const getTransactions = async (): Promise<Array<adjustedData>> => {
+    const getTransactions = async (): Promise<Array<DecodedTxData>> => {
       const TRANSACTION_HASH_LENGTH = 64
       const transactionToSearch = String(searchedText.value)
       if (
@@ -123,6 +123,7 @@ export default defineComponent({
       ) {
         return []
       }
+
       try {
         const res = await callers.getTxForTxDetailsPage(
           String(transactionToSearch)
@@ -289,8 +290,8 @@ export default defineComponent({
   }
 }
 .search-bar__btn {
-  width: 48px;
-  height: 48px;
+  width: 4.8rem;
+  height: 4.8rem;
   display: flex;
   flex-shrink: 0;
   align-items: center;

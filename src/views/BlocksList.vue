@@ -1,20 +1,24 @@
 <template>
-  <div
-    class="app__container load-fog"
-    :class="{ 'load-fog_show': isLoading && blocks?.length }"
-  >
+  <div class="app__container">
     <div class="app__main-view-title-wrapper">
       <h2 class="app__main-view-title">Blocks</h2>
     </div>
-    <template v-if="blocksCount">
-      <p class="mg-b16 mg-t16">{{ blocksCount }} blocks found</p>
-    </template>
+    <div class="mg-b16 mg-t16">
+      <skeleton-loader
+        v-if="isLoading"
+        :height="24"
+        rounded
+        animation="wave"
+        color="rgb(225, 229, 233)"
+      />
+      <p v-else>{{ blocksCount }} blocks found</p>
+    </div>
     <div class="app-table blocks-list__table">
       <div class="app-table__head blocks-list__table-head">
-        <span> Block </span>
-        <span> Date and time </span>
-        <span> Transactions </span>
-        <span> Validator </span>
+        <span>Block</span>
+        <span>Date and time</span>
+        <span>Transactions</span>
+        <span>Validator</span>
       </div>
       <div class="app-table__body">
         <template v-if="blocks?.length">
@@ -50,14 +54,19 @@
           </div>
         </template>
         <template v-else>
-          <div>
-            <p v-if="isLoading" class="empty mg-t32">Loading…</p>
-            <p v-else class="empty mg-t32">No items yet</p>
+          <SkeletonTable
+            v-if="isLoading"
+            :header-titles="headerTitles"
+            table-size="10"
+            class-string="blocks-list__table-row"
+          />
+          <div v-else class="app-table__empty-stub">
+            <p class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
       <AppPagination
-        v-if="!isLoading && blocksCount > ITEMS_PER_PAGE"
+        v-if="blocksCount > ITEMS_PER_PAGE"
         class="mg-t32"
         v-model="currentPage"
         :pages="totalPages"
@@ -78,10 +87,11 @@ import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { START_VALUE } from '@/api/api-config'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import SkeletonTable from '@/components/SkeletonTable.vue'
 
 export default defineComponent({
   name: 'BlocksList',
-  components: { TitledLink, AppPagination },
+  components: { TitledLink, AppPagination, SkeletonTable },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const blocks = ref()
@@ -100,6 +110,12 @@ export default defineComponent({
         : 0
     )
 
+    const headerTitles = [
+      { title: 'Block' },
+      { title: 'Date and time' },
+      { title: 'Transactions' },
+      { title: 'Validator' },
+    ]
     const initBlocks = async () => {
       lockLoading()
       try {
@@ -120,6 +136,7 @@ export default defineComponent({
     const getBLocks = async (): Promise<void> => {
       lockLoading()
       try {
+        blocks.value = []
         const { lastHeight, blockMetas } = await callers.getBlockchain(
           minHeight.value,
           maxHeight.value
@@ -159,22 +176,9 @@ export default defineComponent({
       toHexFunc,
       isLoading,
       ITEMS_PER_PAGE,
+      headerTitles,
     }
   },
 })
 </script>
-<style lang="scss" scoped>
-.blocks-list__table-head,
-.blocks-list__table-row {
-  grid:
-    auto /
-    minmax(3rem, 0.5fr) minmax(10rem, 0.5fr) minmax(8rem, 0.5fr) minmax(8rem, 2fr);
-}
-
-@include respond-to(tablet) {
-  .blocks-list__table-head,
-  .blocks-list__table-row {
-    grid: none;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

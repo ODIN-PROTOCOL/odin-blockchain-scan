@@ -38,7 +38,7 @@ export type CoingeckoCoinsType = {
 
 export type SearchResultType = {
   blocks?: Array<TransformedBlocks>
-  transactions?: Array<adjustedData>
+  transactions?: Array<DecodedTxData>
   accounts?: Array<TempSearchAccountInfoType>
 }
 
@@ -71,7 +71,7 @@ export type TempBalanceType = {
   tx_count: number
 }
 
-export type adjustedData = {
+export type DecodedTxData = {
   voter?: string
   type: string
   hash?: string

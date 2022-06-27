@@ -69,9 +69,13 @@
           />
         </template>
         <template v-else>
-          <div>
-            <p v-if="isLoading" class="empty mg-t32">Loading…</p>
-            <p v-else class="empty mg-t32">No items yet</p>
+          <SkeletonTable
+            v-if="isLoading"
+            :header-titles="headerTitles"
+            table-size="10"
+          />
+          <div v-else class="app-table__empty-stub">
+            <p class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
@@ -108,6 +112,7 @@ import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import AccountTxLine from '@/components/AccountTxLine.vue'
 import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
 import AccountInfo from '@/components/AccountInfo.vue'
+import SkeletonTable from '@/components/SkeletonTable.vue'
 
 export default defineComponent({
   components: {
@@ -116,6 +121,7 @@ export default defineComponent({
     AppPagination,
     AccountTxLine,
     AccountInfo,
+    SkeletonTable,
   },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
@@ -129,7 +135,16 @@ export default defineComponent({
     const totalPages = ref<number>()
     const ITEMS_PER_PAGE = 50
     const sortingValue = ref(TYPE_TX_SORT.all)
-
+    const headerTitles = [
+      { title: 'Transaction hash' },
+      { title: 'Type' },
+      { title: 'Block' },
+      { title: 'Date and time' },
+      { title: 'Sender' },
+      { title: 'Receiver' },
+      { title: 'Amount' },
+      { title: 'Transaction Fee' },
+    ]
     const getTotalAmount = async (
       validatorAddress: string,
       denom: string
@@ -141,6 +156,7 @@ export default defineComponent({
     const getAccountInfo = async () => {
       lockLoading()
       try {
+        transactions.value = []
         const validatorAddress = Bech32.encode(
           'odin',
           Bech32.decode(route.params.hash as string).data
@@ -194,6 +210,7 @@ export default defineComponent({
       sortingTypeTx,
       sortingValue,
       isLoading,
+      headerTitles,
     }
   },
 })
