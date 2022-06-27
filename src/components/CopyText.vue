@@ -65,10 +65,8 @@ export default defineComponent({
 <style scoped lang="scss">
 .text {
   @media (max-width: 480px) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100px;
+    @include ellipsis();
+    width: 10rem;
   }
 }
 .copy-text {

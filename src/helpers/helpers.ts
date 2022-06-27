@@ -1,12 +1,11 @@
 import { toHex } from '@cosmjs/encoding'
 import { getDateFromMessage } from '@/helpers/decodeMessage'
-import { adjustedData, ChartLabelsType } from '@/helpers/Types'
+import { DecodedTxData, ChartLabelsType } from '@/helpers/Types'
 import { bigMath } from '@/helpers/bigMath'
 import { AnyFn, Unpacked } from '@/shared-types'
 import { Pagination } from '@/api/query-ext/telemetryExtension'
 import { convertLokiToOdin } from '@/helpers/converters'
 import { TxTelemetry } from '@/helpers/Types'
-import { formatDate } from '@/helpers/formatters'
 import { detect } from 'detect-browser'
 
 export function isIos() {
@@ -131,8 +130,8 @@ export const getHash = (str: Uint8Array): string => {
 
 export const prepareTransaction = async (
   txs: readonly TxTelemetry[]
-): Promise<Array<adjustedData>> => {
-  let tempArr: Array<adjustedData> = []
+): Promise<Array<DecodedTxData>> => {
+  let tempArr: Array<DecodedTxData> = []
   for (const tx of txs) {
     const {
       receiver,
@@ -152,7 +151,7 @@ export const prepareTransaction = async (
         type: type ? type : '-',
         hash: tx.hash ? tx.hash.toLowerCase() : '-',
         block: tx.height ? tx.height : '-',
-        time: time ? formatDate(Number(time), 'HH:mm dd.MM.yy') : '-',
+        time: time ? time : '-',
         sender: sender ? sender : '',
         receiver: receiver ? receiver : '',
         amount: convertLokiToOdin(amount),

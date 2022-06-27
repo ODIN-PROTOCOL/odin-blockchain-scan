@@ -30,45 +30,60 @@
               </span>
             </div>
           </div>
+          <template v-if="delegatorsCount > ITEMS_PER_PAGE">
+            <AppPagination
+              class="mg-t32 mg-b32"
+              v-model="currentPage"
+              :pages="totalPages"
+              @update:modelValue="paginationHandler"
+            />
+          </template>
         </template>
         <template v-else>
-          <div class="app-table__empty-stub">
+          <SkeletonTable
+            v-if="isLoading"
+            :header-titles="headerTitles"
+            class-string="delegators-table__table-row"
+          />
+          <div v-else class="app-table__empty-stub">
             <p class="empty mg-t32">No items yet</p>
           </div>
         </template>
       </div>
     </div>
-
-    <template v-if="delegatorsCount > ITEMS_PER_PAGE">
-      <AppPagination
-        class="mg-t32 mg-b32"
-        v-model="currentPage"
-        :pages="totalPages"
-        @update:modelValue="paginationHandler"
-      />
-    </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, PropType, computed } from 'vue'
+import { defineComponent, ref, PropType, computed } from 'vue'
 import { API_CONFIG } from '@/api/api-config'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
+import SkeletonTable from '@/components/SkeletonTable.vue'
 
 export default defineComponent({
-  components: { AppPagination },
+  components: { AppPagination, SkeletonTable },
   props: {
     delegators: {
       type: Array as PropType<DelegationResponse[]>,
+      required: true,
+    },
+    isLoading: {
+      type: Boolean,
       required: true,
     },
   },
   setup(props) {
     const ITEMS_PER_PAGE = 5
     const currentPage = ref(1)
-    const totalPages = ref(0)
-    const delegatorsCount = ref(0)
+    const delegatorsCount = computed(() => {
+      return props.delegators.length
+    })
+    const totalPages = computed(() => {
+      return Math.ceil(delegatorsCount.value / ITEMS_PER_PAGE)
+    })
+
+    const headerTitles = [{ title: 'Delegator' }, { title: 'Stake' }]
 
     const filteredDelegators = computed(() => {
       let tempArr = props.delegators
@@ -86,11 +101,6 @@ export default defineComponent({
       currentPage.value = num
     }
 
-    onMounted(() => {
-      delegatorsCount.value = props.delegators.length
-      totalPages.value = Math.ceil(delegatorsCount.value / ITEMS_PER_PAGE)
-    })
-
     return {
       API_CONFIG,
       ITEMS_PER_PAGE,
@@ -99,23 +109,10 @@ export default defineComponent({
       delegatorsCount,
       filteredDelegators,
       paginationHandler,
+      headerTitles,
     }
   },
 })
 </script>
 
-<style lang="scss" scoped>
-.delegators-table__table-head,
-.delegators-table__table-row {
-  grid:
-    auto /
-    minmax(8rem, 4fr)
-    minmax(8rem, 2fr);
-}
-
-@include respond-to(tablet) {
-  .delegators-table__table-row {
-    grid: none;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

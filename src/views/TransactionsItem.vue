@@ -22,7 +22,7 @@
         </div>
         <span class="transactions-item__table-row-title">Time</span>
         <span class="transactions-item__table-row-value">
-          {{ tx.time }}
+          {{ $fDate(tx.time, 'HH:mm dd.MM.yy') }}
         </span>
       </div>
       <div class="transactions-item__table-row">
@@ -144,7 +144,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import { adjustedData } from '@/helpers/Types'
+import { DecodedTxData } from '@/helpers/Types'
 import { prepareTransaction } from '@/helpers/helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
@@ -171,7 +171,7 @@ export default defineComponent({
   components: { BackButton, CopyButton, TitledLink },
   setup() {
     const route: RouteLocationNormalizedLoaded = useRoute()
-    const tx = ref<adjustedData>()
+    const tx = ref<DecodedTxData>()
 
     const getTransactions = async () => {
       try {
@@ -274,14 +274,19 @@ export default defineComponent({
 }
 
 .transactions-item__table-row-status {
-  display: block;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   width: 10rem;
   height: 2.4rem;
   background: var(--clr__muted-bg);
-  border-radius: 0.4rem;
   color: var(--clr__text-on-action);
-  text-align: center;
-  line-height: 2.4rem;
+  border-radius: 3.2rem;
+  padding: 0.4rem 2.4rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
 }
 .transactions-item__table-row-status--success {
   background: var(--clr__status-success);

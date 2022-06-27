@@ -12,7 +12,7 @@
                   alt="Logo"
                 />
               </router-link>
-              <AppNav :isOpen="isOpen" @changeRoute="closeBurger" />
+              <AppNav :isOpen="isOpen" @closeBurger="closeBurger" />
               <BurgerMenu
                 class="app__header-burger-menu"
                 :isOpen="isOpen"
@@ -167,5 +167,8 @@ export default defineComponent({
   width: 100%;
   @include flex-container;
   justify-content: space-between;
+}
+.animation--wave::before {
+  animation: wave 0.5s linear 0.5s infinite;
 }
 </style>

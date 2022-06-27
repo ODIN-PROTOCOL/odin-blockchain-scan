@@ -18,6 +18,7 @@ import { convertLokiToOdin } from './helpers/converters'
 // @ts-ignore
 import { VuePicker, VuePickerOption } from '@invisiburu/vue-picker'
 import { DefaultApolloClient } from '@vue/apollo-composable'
+import SkeletonLoaderVueSample from 'skeleton-loader-vue/src/components/Loader.vue'
 
 async function _main() {
   try {
@@ -49,6 +50,7 @@ async function _main() {
 
   app.component('VuePicker', VuePicker)
   app.component('VuePickerOption', VuePickerOption)
+  app.component('skeleton-loader', SkeletonLoaderVueSample)
   app.mount('#app')
   return app
 }

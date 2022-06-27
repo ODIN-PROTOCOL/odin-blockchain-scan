@@ -28,13 +28,13 @@
       <ValidatorInfo :validator="validator" />
       <AppTabs>
         <AppTab title="Oracle Reports">
-          <OracleReportsTable :proposerAddress="validator.operatorAddress" />
+          <OracleReportsTable :proposer-address="validator.operatorAddress" />
         </AppTab>
         <AppTab :title="delegatorsTitle">
-          <DelegatorsTable :delegators="delegators" />
+          <DelegatorsTable :delegators="delegators" :is-loading="isLoading" />
         </AppTab>
         <AppTab title="Proposed Blocks">
-          <ProposedBlocksTable :proposerAddress="validator.operatorAddress" />
+          <ProposedBlocksTable :proposer-address="validator.operatorAddress" />
         </AppTab>
       </AppTabs>
     </template>
@@ -162,13 +162,11 @@ export default defineComponent({
 }
 .validators-item__back-btn {
   height: 4.6rem;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
 }
 .validators-item__subtitle {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis();
   line-height: 4.6rem;
 }
 @include respond-to(tablet) {
