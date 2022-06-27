@@ -1,24 +1,27 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div>
-      <div class="info-panel" v-if="totalData || chartData">
-        <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
-        <div class="info-panel__chart border">
-          <div class="info-panel__chart-title">
-            Transactions history statistics
-          </div>
+    <div class="info-panel">
+      <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
+      <div class="info-panel__chart border">
+        <div class="info-panel__chart-title">
+          Transactions history statistics
+        </div>
+        <div class="info-panel__chart">
+          <skeleton-loader
+            v-if="isLoading"
+            width="-1"
+            height="-1"
+            rounded
+            animation="wave"
+            color="rgb(225, 229, 233)"
+            class="info-panel__chart-skeleton"
+          />
           <CustomLineChart
-            v-if="chartData"
+            v-else
             :chartDataset="chartData"
             :datasetLabel="'Transactions'"
           />
-          <span v-else class="info-panel__empty-chart">
-            Insufficient data to visualize
-          </span>
         </div>
-      </div>
-      <div v-else class="info-panel border">
-        <span class="info-panel__empty">Waiting to receive data</span>
       </div>
     </div>
   </transition>
@@ -33,11 +36,14 @@ import { getAPIDate } from '@/helpers/requests'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import InfoPanelData from '@/components/InfoPanel/InfoPanelData.vue'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
 export default defineComponent({
   name: 'InfoPanel',
   components: { InfoPanelData, CustomLineChart },
   setup() {
+    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+
     const CHART_DATA_PERIOD = 7
     const transactionCount = ref<number>()
     const chartData = ref()
@@ -107,6 +113,7 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      lockLoading()
       try {
         await getTotalTxNumber()
         // Don`t work request
@@ -115,11 +122,13 @@ export default defineComponent({
       } catch (error) {
         handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
+      releaseLoading()
     })
 
     return {
       totalData,
       chartData,
+      isLoading,
     }
   },
 })
@@ -167,9 +176,14 @@ export default defineComponent({
   font-weight: 400;
 }
 .info-panel__chart {
+  min-height: 19.5rem;
   canvas {
     height: 19.5rem;
   }
+}
+.info-panel__chart-skeleton {
+  height: 19rem;
+  width: 100%;
 }
 
 @include respond-to(tablet) {

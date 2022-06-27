@@ -168,4 +168,7 @@ export default defineComponent({
   @include flex-container;
   justify-content: space-between;
 }
+.animation--wave::before {
+  animation: wave 0.5s linear 0.5s infinite;
+}
 </style>
