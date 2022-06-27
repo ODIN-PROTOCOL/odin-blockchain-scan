@@ -26,9 +26,12 @@
             @keydown.enter="filterValidators()"
           />
           <template v-if="searchValue">
-            <button @click="clearText()" class="search-bar__clear">
+            <button
+              @click="clearText()"
+              class="validators-view__filter-search-clear-btn"
+            >
               <CancelIcon
-                :className="'validators-view__filter-search__cancel-button'"
+                :className="'validators__filter-search-clear-btn-icon'"
               />
             </button>
           </template>
@@ -374,7 +377,7 @@ export default defineComponent({
       fill: var(--clr__input-border);
     }
   }
-  svg.validators-view__filter-search__cancel-button {
+  svg.validators__filter-search-clear-btn-icon {
     fill: var(--clr__text-muted);
   }
 }
@@ -399,7 +402,7 @@ export default defineComponent({
   }
 }
 
-.search-bar__clear {
+.validators-view__filter-search-clear-btn {
   overflow: visible;
   position: absolute;
   right: 0rem;

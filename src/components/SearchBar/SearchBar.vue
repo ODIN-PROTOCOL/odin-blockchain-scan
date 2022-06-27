@@ -21,7 +21,6 @@
       </VuePicker>
       <div class="search-bar__input-wrapper">
         <input
-          class="search-bar__input"
           :class="{
             'search-bar__input': true,
             'search-bar__input--with-value': searchedText,
@@ -31,7 +30,7 @@
           @keydown.enter="searchBy()"
         />
         <template v-if="searchedText">
-          <button @click="clearText" class="search-bar__clear">
+          <button @click="clearText" class="search-bar__clear-btn">
             <img src="~@/assets/icons/close.svg" alt="reset" />
           </button>
         </template>
@@ -316,7 +315,7 @@ export default defineComponent({
   }
 }
 
-.search-bar__clear {
+.search-bar__clear-btn {
   overflow: visible;
   position: absolute;
   right: 1rem;
