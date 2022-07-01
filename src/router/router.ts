@@ -40,6 +40,12 @@ const chartPagesProps = {
   },
 }
 
+export const setPage = (pageNumber: number): void => {
+  router.push({
+    query: { page: pageNumber },
+  })
+}
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',

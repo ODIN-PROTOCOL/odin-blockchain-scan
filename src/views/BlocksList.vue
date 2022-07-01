@@ -88,11 +88,14 @@ import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { START_VALUE } from '@/api/api-config'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import SkeletonTable from '@/components/SkeletonTable.vue'
+import { Router, useRouter } from 'vue-router'
+import { setPage } from '@/router'
 
 export default defineComponent({
   name: 'BlocksList',
   components: { TitledLink, AppPagination, SkeletonTable },
   setup() {
+    const router: Router = useRouter()
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const blocks = ref()
     const ITEMS_PER_PAGE = 20
@@ -154,14 +157,21 @@ export default defineComponent({
     }
 
     const updateHandler = async (num: number) => {
+      setPage(num)
       minHeight.value = lastBlockHeight.value - num * ITEMS_PER_PAGE
       maxHeight.value = minHeight.value + ITEMS_PER_PAGE
-      if (minHeight.value < MIN_POSSIBLE_BLOCK_HEIGHT)
+      if (minHeight.value < MIN_POSSIBLE_BLOCK_HEIGHT) {
         minHeight.value = MIN_POSSIBLE_BLOCK_HEIGHT
+      }
       await getBLocks()
     }
 
     onMounted(async (): Promise<void> => {
+      if (router.currentRoute.value.query.page) {
+        currentPage.value = Number(router.currentRoute.value.query.page)
+      } else {
+        setPage(currentPage.value)
+      }
       await initBlocks()
     })
 

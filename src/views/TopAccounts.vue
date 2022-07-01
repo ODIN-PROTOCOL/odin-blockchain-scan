@@ -62,13 +62,16 @@ import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import { Router, useRouter } from 'vue-router'
+import { setPage } from '@/router'
 
 export default defineComponent({
   name: 'TopAccounts',
   components: { AppPagination, AccountsLine, SkeletonTable },
   setup() {
+    const router: Router = useRouter()
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const ITEMS_PER_PAGE = 20
+    const ITEMS_PER_PAGE = 5
     const accounts = ref<Array<TempBalanceType>>([])
     const filteredAccounts = ref<Array<TempBalanceType>>([])
     const currentPage = ref<number>(1)
@@ -96,6 +99,8 @@ export default defineComponent({
     }
 
     const filterAccounts = async (newPage: number): Promise<void> => {
+      currentPage.value = newPage
+      setPage(currentPage.value)
       let tempArr = accounts.value
       if (newPage === 1) {
         filteredAccounts.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
@@ -105,10 +110,17 @@ export default defineComponent({
           (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
         )
       }
-      currentPage.value = newPage
     }
 
     onMounted(async (): Promise<void> => {
+      if (
+        router.currentRoute.value.query.page &&
+        Number(router.currentRoute.value.query.page) > 1
+      ) {
+        currentPage.value = Number(router.currentRoute.value.query.page)
+      } else {
+        setPage(currentPage.value)
+      }
       await getAccounts()
     })
 
@@ -120,6 +132,7 @@ export default defineComponent({
       accounts,
       isLoading,
       headerTitles,
+      filterAccounts,
     }
   },
 })

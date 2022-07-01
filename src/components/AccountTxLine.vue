@@ -64,7 +64,7 @@
 import { defineComponent, PropType } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { humanizeMessageType } from '@/helpers/decodeMessage'
-import { convertLokiToOdin, getLokiFromString } from '@/helpers/converters'
+import { convertLokiToOdin } from '@/helpers/converters'
 import { API_CONFIG } from '@/api/api-config'
 import { AccountTx } from '@/helpers/Types'
 
@@ -78,10 +78,16 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const fee = getLokiFromString(props.tx.fee)
-    const amount = getLokiFromString(props.tx.amount)
-    const odinAmount = convertLokiToOdin(amount)
-    const odinFee = convertLokiToOdin(fee)
+    const odinAmount = convertLokiToOdin(
+      props.tx.amount[0]?.amount,
+      {},
+      props.tx.amount[0]?.denom
+    )
+    const odinFee = convertLokiToOdin(
+      props.tx.fee[0]?.amount,
+      {},
+      props.tx.fee[0]?.denom
+    )
     const type = humanizeMessageType('/' + props.tx.type)
     const getRequestItemTxHash = props.tx?.tx_hash.split('0x')[1]
     const validatorPrefix = 'odinvaloper'

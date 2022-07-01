@@ -81,7 +81,9 @@ export type DecodedTxData = {
   sender?: string
   receiver?: string
   amount?: string
+  denom?: string
   fee?: string
+  feeDenom?: string
   status?: number | string | undefined
   memo?: string
   gasWanted?: string | number
@@ -190,10 +192,14 @@ export interface TxSearchTelemetry {
   readonly txs: readonly TxTelemetry[]
   readonly totalCount: number
 }
-export type AccountTx = {
+export type AmountDetails = {
   amount: string
+  denom: string
+}
+export type AccountTx = {
+  amount: AmountDetails[]
   block: number
-  fee: string
+  fee: AmountDetails[]
   receiver: string
   sender: string
   timestamp: number

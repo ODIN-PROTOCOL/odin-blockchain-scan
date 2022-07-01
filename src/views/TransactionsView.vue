@@ -47,7 +47,7 @@
     <AppPagination
       v-if="totalTransactions > ITEMS_PER_PAGE"
       class="mg-t32"
-      v-model="page"
+      v-model="currentPage"
       :pages="totalPages"
       @update:modelValue="updateHandler"
     />
@@ -63,16 +63,17 @@ import TxLine from '@/components/TxLine.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import SkeletonTable from '@/components/SkeletonTable.vue'
+import { Router, useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'TransactionsView',
   components: { TxLine, AppPagination, SkeletonTable },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-
+    const router: Router = useRouter()
     const ITEMS_PER_PAGE = 20
     const transactions = ref()
-    const page = ref<number>(1)
+    const currentPage = ref<number>(1)
     const totalPages = ref<number>(0)
     const totalTransactions = ref<number>(0)
     const headerTitles = [
@@ -90,7 +91,11 @@ export default defineComponent({
       try {
         transactions.value = []
         const { data, total_count } = await callers
-          .getTxSearchFromTelemetry(page.value - 1, ITEMS_PER_PAGE, 'desc')
+          .getTxSearchFromTelemetry(
+            currentPage.value - 1,
+            ITEMS_PER_PAGE,
+            'desc'
+          )
           .then((resp) => resp.json())
 
         transactions.value = await prepareTransaction(data)
@@ -103,16 +108,31 @@ export default defineComponent({
     }
 
     const updateHandler = async () => {
+      const query = { page: currentPage.value }
+      await router.push({
+        name: 'Transactions',
+        query,
+      })
       await getTransactions()
     }
 
     onMounted(async () => {
+      if (router.currentRoute.value.query.page) {
+        const { page } = router.currentRoute.value.query
+        currentPage.value = Number(page)
+      } else {
+        const query = { page: currentPage.value }
+        await router.push({
+          name: 'Transactions',
+          query,
+        })
+      }
       await getTransactions()
     })
 
     return {
       transactions,
-      page,
+      currentPage,
       totalPages,
       totalTransactions,
       updateHandler,
