@@ -99,9 +99,6 @@ export default defineComponent({
       )
 
     const stakedLokiAmount: ComputedRef<number> = computed(() => {
-      if (loading.value) {
-        return 0
-      }
       const odinCoin = result.value?.delegationBalance?.coins?.find(
         (coin) => coin.denom === 'loki'
       )
@@ -110,17 +107,22 @@ export default defineComponent({
 
     const stakedPercentage: ComputedRef<string> = computed(() => {
       if (loading.value) {
-        return '0'
+        return '0%'
       }
       const odinStakingPool = result?.value?.stakingPool[0]
       const bondedTotal = Number(odinStakingPool?.bonded)
       const unbondedTotal = Number(odinStakingPool?.unbonded)
       const stakingTotal = bondedTotal + unbondedTotal
 
+      if (!stakingTotal) {
+        return '0%'
+      }
+
       return `${Number(
         Number((stakedLokiAmount.value * 100) / stakingTotal).toFixed(4)
       )}%`
     })
+
     return {
       stakedLokiAmount,
       stakedPercentage,
