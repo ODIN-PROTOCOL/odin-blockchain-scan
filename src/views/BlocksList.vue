@@ -96,6 +96,7 @@ export default defineComponent({
   components: { TitledLink, AppPagination, SkeletonTable },
   setup() {
     const router: Router = useRouter()
+    const { page } = router.currentRoute.value.query
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const blocks = ref()
     const ITEMS_PER_PAGE = 20
@@ -103,9 +104,9 @@ export default defineComponent({
     const currentPage = ref<number>(1)
     const totalPages = ref<number>()
 
-    const minHeight = ref()
-    const maxHeight = ref()
-    const lastBlockHeight = ref()
+    const minHeight = ref(0)
+    const maxHeight = ref(0)
+    const lastBlockHeight = ref(0)
 
     const blocksCount = computed(() =>
       lastBlockHeight.value
@@ -130,6 +131,14 @@ export default defineComponent({
         )
         maxHeight.value = lastHeight
         minHeight.value = lastHeight - ITEMS_PER_PAGE
+        if (currentPage.value > 1 && totalPages.value >= currentPage.value) {
+          minHeight.value = lastHeight - ITEMS_PER_PAGE * currentPage.value
+          maxHeight.value = minHeight.value + ITEMS_PER_PAGE
+          getBLocks()
+        } else {
+          currentPage.value = 1
+          setPage(currentPage.value)
+        }
       } catch (error) {
         handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
@@ -167,8 +176,8 @@ export default defineComponent({
     }
 
     onMounted(async (): Promise<void> => {
-      if (router.currentRoute.value.query.page) {
-        currentPage.value = Number(router.currentRoute.value.query.page)
+      if (page && Number(page) > 1) {
+        currentPage.value = Number(page)
       } else {
         setPage(currentPage.value)
       }

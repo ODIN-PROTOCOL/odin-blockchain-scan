@@ -64,6 +64,8 @@ import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 import { Router, useRouter } from 'vue-router'
+import { setPage } from '@/router'
+import { DecodedTxData } from '@/helpers/Types'
 
 export default defineComponent({
   name: 'TransactionsView',
@@ -71,8 +73,9 @@ export default defineComponent({
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const router: Router = useRouter()
-    const ITEMS_PER_PAGE = 20
-    const transactions = ref()
+    const { page } = router.currentRoute.value.query
+    const ITEMS_PER_PAGE = 50
+    const transactions = ref<DecodedTxData[]>([])
     const currentPage = ref<number>(1)
     const totalPages = ref<number>(0)
     const totalTransactions = ref<number>(0)
@@ -86,6 +89,24 @@ export default defineComponent({
       { title: 'Amount' },
       { title: 'Transaction Fee' },
     ]
+    const getTransactionsCount = async () => {
+      lockLoading()
+      try {
+        const { total_count } = await callers
+          .getTxSearchFromTelemetry(0, 1, 'desc')
+          .then((resp) => resp.json())
+        totalTransactions.value = total_count
+        totalPages.value = Math.ceil(totalTransactions.value / ITEMS_PER_PAGE)
+        if (totalPages.value < currentPage.value) {
+          currentPage.value = 1
+          setPage(currentPage.value)
+        }
+      } catch (error) {
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+      }
+      releaseLoading()
+    }
+
     const getTransactions = async () => {
       lockLoading()
       try {
@@ -108,25 +129,17 @@ export default defineComponent({
     }
 
     const updateHandler = async () => {
-      const query = { page: currentPage.value }
-      await router.push({
-        name: 'Transactions',
-        query,
-      })
+      setPage(currentPage.value)
       await getTransactions()
     }
 
     onMounted(async () => {
-      if (router.currentRoute.value.query.page) {
-        const { page } = router.currentRoute.value.query
+      if (page && Number(page) > 1) {
         currentPage.value = Number(page)
       } else {
-        const query = { page: currentPage.value }
-        await router.push({
-          name: 'Transactions',
-          query,
-        })
+        setPage(currentPage.value)
       }
+      await getTransactionsCount()
       await getTransactions()
     })
 

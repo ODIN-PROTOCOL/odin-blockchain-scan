@@ -70,8 +70,9 @@ export default defineComponent({
   components: { AppPagination, AccountsLine, SkeletonTable },
   setup() {
     const router: Router = useRouter()
+    const { page } = router.currentRoute.value.query
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const ITEMS_PER_PAGE = 5
+    const ITEMS_PER_PAGE = 50
     const accounts = ref<Array<TempBalanceType>>([])
     const filteredAccounts = ref<Array<TempBalanceType>>([])
     const currentPage = ref<number>(1)
@@ -99,6 +100,9 @@ export default defineComponent({
     }
 
     const filterAccounts = async (newPage: number): Promise<void> => {
+      if (totalPages.value < newPage) {
+        newPage = 1
+      }
       currentPage.value = newPage
       setPage(currentPage.value)
       let tempArr = accounts.value
@@ -113,11 +117,8 @@ export default defineComponent({
     }
 
     onMounted(async (): Promise<void> => {
-      if (
-        router.currentRoute.value.query.page &&
-        Number(router.currentRoute.value.query.page) > 1
-      ) {
-        currentPage.value = Number(router.currentRoute.value.query.page)
+      if (page && Number(page) > 1) {
+        currentPage.value = Number(page)
       } else {
         setPage(currentPage.value)
       }

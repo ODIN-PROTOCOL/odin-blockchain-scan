@@ -20,10 +20,7 @@
 
       <div class="charts-stats__charts-wrapper">
         <h3 class="charts-stats__charts-title mg-b24">Statistics</h3>
-        <div
-          class="charts-stats__charts-item"
-          @click="redirectToChartPage('validators')"
-        >
+        <router-link class="charts-stats__charts-item" to="/charts/validators">
           <img
             :src="require('/src/assets/imgs/doughnutChart.png')"
             alt="chart"
@@ -31,7 +28,7 @@
           <span class="charts-stats__charts-item-title">
             Block Validators Chart
           </span>
-        </div>
+        </router-link>
       </div>
     </div>
     <div class="charts-stats__charts-section">
@@ -41,9 +38,9 @@
           <tbody>
             <tr v-for="(chartRow, idx) in blockchainData" :key="idx">
               <td v-for="item in chartRow" :key="item.title">
-                <div
+                <router-link
                   class="charts-stats__charts-item"
-                  @click="redirectToChartPage(item.chartPageUrl)"
+                  :to="{ path: `/charts/${item.chartPageUrl}` }"
                 >
                   <img
                     :src="
@@ -54,7 +51,7 @@
                   <span class="charts-stats__charts-item-title">
                     {{ item.title }}
                   </span>
-                </div>
+                </router-link>
               </td>
             </tr>
           </tbody>
@@ -64,58 +61,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { Router, useRouter } from 'vue-router'
-
-export default defineComponent({
-  name: 'chart-stats',
-  setup() {
-    const router: Router = useRouter()
-    const blockchainData = [
-      [
-        {
-          title: 'Average ODIN Block Size Chart',
-          chartType: 'bar',
-          chartPageUrl: 'average-odin-block-size',
-        },
-        {
-          title: 'Average Block Time Chart',
-          chartType: 'bar',
-          chartPageUrl: 'average-block-time',
-        },
-        {
-          title: 'Daily Transactions Volume Chart',
-          chartType: 'line',
-          chartPageUrl: 'daily-transactions-volume',
-        },
-      ],
-      [
-        {
-          title: 'Average Transaction Fee Chart',
-          chartType: 'line',
-          chartPageUrl: 'average-transactions-fee',
-        },
-        {
-          title: 'Total Requests Chart',
-          chartType: 'line',
-          chartPageUrl: 'total-requests-chart',
-        },
-      ],
-    ]
-
-    const redirectToChartPage = (url: string) => {
-      router.push({
-        path: `/charts-stats/charts/${url}`,
-      })
-    }
-
-    return {
-      blockchainData,
-      redirectToChartPage,
-    }
-  },
-})
+<script setup lang="ts">
+import { blockchainData } from '@/helpers/customChartHelpers'
 </script>
 
 <style lang="scss" scoped>
@@ -160,7 +107,8 @@ export default defineComponent({
   flex-grow: 1;
   padding: 3.3rem;
   cursor: pointer;
-
+  color: var(--clr__text);
+  text-decoration: none;
   &:hover {
     background-color: var(--clr__table-row-hover);
   }

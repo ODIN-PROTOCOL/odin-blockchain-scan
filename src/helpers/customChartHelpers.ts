@@ -254,3 +254,34 @@ export const formatDataForCharts = (
 
   return { data: values, labels }
 }
+export const blockchainData = [
+  [
+    {
+      title: 'Average ODIN Block Size Chart',
+      chartType: 'bar',
+      chartPageUrl: 'average-odin-block-size',
+    },
+    {
+      title: 'Average Block Time Chart',
+      chartType: 'bar',
+      chartPageUrl: 'average-block-time',
+    },
+    {
+      title: 'Daily Transactions Volume Chart',
+      chartType: 'line',
+      chartPageUrl: 'daily-transactions-volume',
+    },
+  ],
+  [
+    {
+      title: 'Average Transaction Fee Chart',
+      chartType: 'line',
+      chartPageUrl: 'average-transactions-fee',
+    },
+    {
+      title: 'Total Requests Chart',
+      chartType: 'line',
+      chartPageUrl: 'total-requests-chart',
+    },
+  ],
+]

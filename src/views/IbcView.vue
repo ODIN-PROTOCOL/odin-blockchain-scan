@@ -68,8 +68,8 @@
 
     <template v-else>
       <div class="app-table__empty-stub">
-        <p v-if="isLoading">Loading…</p>
-        <p v-else>No items yet</p>
+        <p v-if="isLoading" class="empty mg-t32">Loading…</p>
+        <p v-else class="empty mg-t32">No items yet</p>
       </div>
     </template>
     <template v-if="connectionsData?.length > ITEMS_PER_PAGE">
@@ -95,6 +95,8 @@ import ChannelDetail from '@/components/ChannelDetail.vue'
 import ArrowIcon from '@/components/icons/ArrowIcon.vue'
 import { ClientState } from 'cosmjs-types/ibc/lightclients/tendermint/v1/tendermint'
 import { QueryClientStateResponse } from 'cosmjs-types/ibc/core/client/v1/query'
+import { Router, useRouter } from 'vue-router'
+import { setPage } from '@/router'
 
 export default defineComponent({
   components: {
@@ -103,13 +105,15 @@ export default defineComponent({
     ChannelDetail,
   },
   setup: function () {
+    const router: Router = useRouter()
+    const { page } = router.currentRoute.value.query
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const ITEMS_PER_PAGE = 4
     const currentPage = ref(1)
-    const totalPages = ref()
+    const totalPages = ref(0)
     const chainIdData = ref()
-    const connectionsData = ref<IdentifiedConnection[] | undefined>()
-    const channelData = ref<IdentifiedChannel[] | undefined>()
+    const connectionsData = ref<IdentifiedConnection[]>([])
+    const channelData = ref<IdentifiedChannel[]>([])
     const filteredConnections = ref()
     const isShow = ref([])
 
@@ -137,24 +141,37 @@ export default defineComponent({
     }
 
     const filterConnections = (newPage: number) => {
-      let tempArr = connectionsData.value
+      if (totalPages.value < currentPage.value) {
+        currentPage.value = 1
+        setPage(currentPage.value)
+      }
+      const tempArr = connectionsData.value
       if (newPage === 1) {
-        filteredConnections.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
+        filteredConnections.value = tempArr?.slice(
+          0,
+          currentPage.value * ITEMS_PER_PAGE
+        )
       } else {
         filteredConnections.value = tempArr?.slice(
-          (newPage - 1) * ITEMS_PER_PAGE,
-          (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+          (currentPage.value - 1) * ITEMS_PER_PAGE,
+          (currentPage.value - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
         )
       }
-      currentPage.value = newPage
       isShow.value = []
     }
 
     const paginationHandler = (num: number) => {
+      currentPage.value = num
+      setPage(currentPage.value)
       filterConnections(num)
     }
 
     onMounted(async () => {
+      if (page && Number(page) > 1) {
+        currentPage.value = Number(page)
+      } else {
+        setPage(currentPage.value)
+      }
       await loadIbc()
     })
 
