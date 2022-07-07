@@ -12,7 +12,11 @@
         <CopyButton class="mg-l8" :text="String(route.params.hash)" />
       </div>
     </div>
-    <AccountInfo :geo-balance="geoBalance" :odin-balance="odinBalance" />
+    <AccountInfo
+      :address="String(route.params.hash)"
+      :geo-balance="geoBalance"
+      :odin-balance="odinBalance"
+    />
     <div class="accounts-item__subtitle-line">
       <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
         <div class="accounts-item__tx-info">
@@ -132,7 +136,7 @@ export default defineComponent({
     const transactions = ref()
     const totalTxCount = ref<number>(0)
     const currentPage = ref<number>(1)
-    const totalPages = ref<number>()
+    const totalPages = ref<number>(1)
     const ITEMS_PER_PAGE = 50
     const sortingValue = ref(TYPE_TX_SORT.all)
     const headerTitles = [

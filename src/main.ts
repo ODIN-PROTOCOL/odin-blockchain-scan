@@ -1,4 +1,5 @@
 import { App, createApp } from 'vue'
+
 import router from './router'
 import {
   cropAddress,
@@ -9,12 +10,14 @@ import {
 } from './helpers/formatters'
 import Notifications from '@kyvg/vue3-notification'
 import { api } from './api/api'
+import { apolloClient } from './api/apollo-provider'
 import { bigMath } from './helpers/bigMath'
 import { translateBondStatus } from './helpers/translators'
 import { convertLokiToOdin } from './helpers/converters'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { VuePicker, VuePickerOption } from '@invisiburu/vue-picker'
+import { DefaultApolloClient } from '@vue/apollo-composable'
 import SkeletonLoaderVueSample from 'skeleton-loader-vue/src/components/Loader.vue'
 
 async function _main() {
@@ -41,8 +44,10 @@ async function _main() {
   app.config.globalProperties.$fDate = formatDate
   app.config.globalProperties.$tBondStatus = translateBondStatus
   app.config.globalProperties.$convertLokiToOdin = convertLokiToOdin
+  app.provide(DefaultApolloClient, apolloClient)
   app.use(router)
   app.use(Notifications)
+
   app.component('VuePicker', VuePicker)
   app.component('VuePickerOption', VuePickerOption)
   app.component('skeleton-loader', SkeletonLoaderVueSample)
