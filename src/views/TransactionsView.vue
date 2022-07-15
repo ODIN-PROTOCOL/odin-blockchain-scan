@@ -47,7 +47,7 @@
     <AppPagination
       v-if="totalTransactions > ITEMS_PER_PAGE"
       class="mg-t32"
-      v-model="page"
+      v-model="currentPage"
       :pages="totalPages"
       @update:modelValue="updateHandler"
     />
@@ -63,16 +63,20 @@ import TxLine from '@/components/TxLine.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import SkeletonTable from '@/components/SkeletonTable.vue'
+import { Router, useRouter } from 'vue-router'
+import { setPage } from '@/router'
+import { DecodedTxData } from '@/helpers/Types'
 
 export default defineComponent({
   name: 'TransactionsView',
   components: { TxLine, AppPagination, SkeletonTable },
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-
-    const ITEMS_PER_PAGE = 20
-    const transactions = ref()
-    const page = ref<number>(1)
+    const router: Router = useRouter()
+    const { page } = router.currentRoute.value.query
+    const ITEMS_PER_PAGE = 50
+    const transactions = ref<DecodedTxData[]>([])
+    const currentPage = ref<number>(1)
     const totalPages = ref<number>(0)
     const totalTransactions = ref<number>(0)
     const headerTitles = [
@@ -85,12 +89,34 @@ export default defineComponent({
       { title: 'Amount' },
       { title: 'Transaction Fee' },
     ]
+    const getTransactionsCount = async () => {
+      lockLoading()
+      try {
+        const { total_count } = await callers
+          .getTxSearchFromTelemetry(0, 1, 'desc')
+          .then((resp) => resp.json())
+        totalTransactions.value = total_count
+        totalPages.value = Math.ceil(totalTransactions.value / ITEMS_PER_PAGE)
+        if (totalPages.value < currentPage.value) {
+          currentPage.value = 1
+          setPage(currentPage.value)
+        }
+      } catch (error) {
+        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+      }
+      releaseLoading()
+    }
+
     const getTransactions = async () => {
       lockLoading()
       try {
         transactions.value = []
         const { data, total_count } = await callers
-          .getTxSearchFromTelemetry(page.value - 1, ITEMS_PER_PAGE, 'desc')
+          .getTxSearchFromTelemetry(
+            currentPage.value - 1,
+            ITEMS_PER_PAGE,
+            'desc'
+          )
           .then((resp) => resp.json())
 
         transactions.value = await prepareTransaction(data)
@@ -103,16 +129,23 @@ export default defineComponent({
     }
 
     const updateHandler = async () => {
+      setPage(currentPage.value)
       await getTransactions()
     }
 
     onMounted(async () => {
+      if (page && Number(page) > 1) {
+        currentPage.value = Number(page)
+      } else {
+        setPage(currentPage.value)
+      }
+      await getTransactionsCount()
       await getTransactions()
     })
 
     return {
       transactions,
-      page,
+      currentPage,
       totalPages,
       totalTransactions,
       updateHandler,

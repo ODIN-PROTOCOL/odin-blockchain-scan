@@ -69,19 +69,19 @@ export default defineComponent({
       name: 'Blockchain',
       links: [
         {
-          to: 'Transactions',
+          to: '/transactions',
           text: 'Transactions',
         },
         {
-          to: 'Blocks',
+          to: '/blocks',
           text: 'Blocks',
         },
         {
-          to: 'Validators',
+          to: '/validators',
           text: 'Validators',
         },
         {
-          to: 'TopAccounts',
+          to: '/top-accounts',
           text: 'Top Accounts',
         },
       ],
@@ -91,7 +91,7 @@ export default defineComponent({
       name: 'Resources',
       links: [
         {
-          to: 'Chart&Stats',
+          to: '/charts',
           text: 'Charts & Stats',
         },
       ],

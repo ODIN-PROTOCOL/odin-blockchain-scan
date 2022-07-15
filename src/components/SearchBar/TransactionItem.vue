@@ -53,10 +53,11 @@ import TitledLink from '@/components/TitledLink.vue'
 export default defineComponent({
   name: 'TransactionItem',
   components: { TitledLink },
-  props: { result: { type: Object, required: true } },
+  props: {
+    result: { type: Object, required: true },
+  },
   setup() {
     const toDay = ref<Date>(new Date())
-
     return { toDay, diffDays, cropText, getDay, toHexFunc }
   },
 })

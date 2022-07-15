@@ -297,6 +297,7 @@ export async function getDateFromMessage(
     const message = decodeMessage(obj)
     DecodedTxData.type = humanizeMessageType(obj.typeUrl)
     DecodedTxData.fee = decodedTx?.authInfo?.fee?.amount[0]?.amount
+    DecodedTxData.feeDenom = decodedTx?.authInfo?.fee?.amount[0]?.denom
     DecodedTxData.memo = decodedTx.body?.memo
       ? decodedTx.body?.memo
       : '<No Memo>'
@@ -308,8 +309,10 @@ export async function getDateFromMessage(
       if (typeof message.amount === 'object') {
         if ('denom' in message.amount && 'amount' in message.amount) {
           DecodedTxData.amount = message.amount?.amount
+          DecodedTxData.denom = message.amount?.denom
         } else {
           DecodedTxData.amount = message.amount[0]?.amount
+          DecodedTxData.denom = message.amount[0]?.denom
         }
       }
     } else {
@@ -427,6 +430,7 @@ export async function getDateFromMessage(
       }
       if ('initialDeposit' in message) {
         DecodedTxData.amount = message.initialDeposit[0]?.amount
+        DecodedTxData.denom = message.initialDeposit[0]?.denom
       }
     }
     if (DecodedTxData.type === 'Report Data') {

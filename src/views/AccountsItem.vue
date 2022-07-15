@@ -117,6 +117,7 @@ import AccountTxLine from '@/components/AccountTxLine.vue'
 import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
 import AccountInfo from '@/components/AccountInfo.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
+import { setPage } from '@/router'
 
 export default defineComponent({
   components: {
@@ -130,6 +131,8 @@ export default defineComponent({
   setup() {
     const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
     const router: Router = useRouter()
+    const { page } = router.currentRoute.value.query
+
     const route: RouteLocationNormalizedLoaded = useRoute()
     const geoBalance = ref<string>('0')
     const odinBalance = ref<string>('0')
@@ -168,18 +171,22 @@ export default defineComponent({
         const tx = await callers
           .getAccountTx(
             currentPage.value - 1,
-            50,
+            ITEMS_PER_PAGE,
             validatorAddress,
             'desc',
             sortingValue.value
           )
           .then((resp) => resp.json())
-
+        totalTxCount.value = tx.total_count
+        totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
+        if (totalPages.value < currentPage.value) {
+          currentPage.value = 1
+          getAccountInfo()
+          return
+        }
         geoBalance.value = await getTotalAmount(validatorAddress, 'minigeo')
         odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
         transactions.value = tx.data
-        totalTxCount.value = tx.total_count
-        totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
       } catch (error) {
         handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
       }
@@ -187,6 +194,11 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      if (page && Number(page) > 1) {
+        currentPage.value = Number(page)
+      } else {
+        setPage(currentPage.value)
+      }
       getAccountInfo()
     })
     const updateHandler = async () => {
@@ -195,6 +207,10 @@ export default defineComponent({
     watch([sortingValue], async () => {
       currentPage.value = 1
       await getAccountInfo()
+    })
+
+    watch([currentPage], async () => {
+      setPage(currentPage.value)
     })
 
     return {

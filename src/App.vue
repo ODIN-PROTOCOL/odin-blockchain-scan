@@ -26,7 +26,7 @@
 
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
-          <component :key="Component" :is="Component" />
+          <component :is="Component" />
         </transition>
       </router-view>
     </section>
