@@ -321,7 +321,6 @@ export async function getDateFromMessage(
     DecodedTxData.status = tx.tx_result.code
     DecodedTxData.gasWanted = tx.tx_result.gas_wanted
     DecodedTxData.gasUsed = tx.tx_result.gas_used
-    // console.log(message)
 
     if ('amount' in message) {
       if (typeof message.amount === 'object') {
