@@ -12,6 +12,7 @@ import {
   MsgUndelegate,
 } from 'cosmjs-types/cosmos/staking/v1beta1/tx'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
+import { MsgStoreCode } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import { MsgCreateVestingAccount } from 'cosmjs-types/cosmos/vesting/v1beta1/tx.js'
 import {
   MsgActivate,
@@ -22,6 +23,7 @@ import {
   MsgRequestData,
   MsgEditOracleScript,
   MsgEditDataSource,
+  MsgRemoveReporter,
 } from '@provider/codec/oracle/v1/tx'
 import {
   MsgWithdrawDelegatorReward,
@@ -141,11 +143,17 @@ export function humanizeMessageType(type: string): string {
     case '/oracle.v1.MsgEditOracleScript':
       return 'Edit OracleScript'
 
+    case '/oracle.v1.MsgRemoveReporter':
+      return 'Remove Reporter'
+
     case '/mint.MsgMintCoins':
       return 'Mint Coins'
 
     case '/cosmos.distribution.v1beta1.MsgFundCommunityPool':
       return 'Fund Community Pool'
+
+    case '/cosmwasm.wasm.v1.MsgStoreCode':
+      return 'Store Code'
 
     default:
       throw new ReferenceError(`Unknown type ${type}`)
@@ -182,7 +190,9 @@ export function decodeMessage(obj: {
   | MsgCreateVestingAccount
   | MsgEditDataSource
   | MsgEditOracleScript
-  | MsgFundCommunityPool {
+  | MsgFundCommunityPool
+  | MsgRemoveReporter
+  | MsgStoreCode {
   switch (obj.typeUrl) {
     case '/mint.MsgWithdrawCoinsToAccFromTreasury':
       return MsgWithdrawCoinsToAccFromTreasury.decode(obj.value)
@@ -226,6 +236,9 @@ export function decodeMessage(obj: {
     case '/oracle.v1.MsgEditDataSource':
       return MsgEditDataSource.decode(obj.value)
 
+    case '/oracle.v1.MsgRemoveReporter':
+      return MsgRemoveReporter.decode(obj.value)
+
     case '/oracle.v1.MsgCreateOracleScript':
       return MsgCreateOracleScript.decode(obj.value)
 
@@ -268,6 +281,9 @@ export function decodeMessage(obj: {
     case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
       return MsgCreateVestingAccount.decode(obj.value)
 
+    case '/cosmwasm.wasm.v1.MsgStoreCode':
+      return MsgStoreCode.decode(obj.value)
+
     case '/cosmos.distribution.v1beta1.MsgFundCommunityPool':
       return MsgFundCommunityPool.decode(obj.value)
     default:
@@ -281,7 +297,8 @@ export async function getDateFromMessage(
   const DecodedTxData: DecodedTxData = {
     type: '',
     time: (await getTime(Number(tx.height))) as Date,
-    fee: '',
+    fee: '0',
+    amount: '0',
     block: tx.height,
     memo: '',
     status: 0,
@@ -297,6 +314,7 @@ export async function getDateFromMessage(
     const message = decodeMessage(obj)
     DecodedTxData.type = humanizeMessageType(obj.typeUrl)
     DecodedTxData.fee = decodedTx?.authInfo?.fee?.amount[0]?.amount
+    DecodedTxData.feeDenom = decodedTx?.authInfo?.fee?.amount[0]?.denom
     DecodedTxData.memo = decodedTx.body?.memo
       ? decodedTx.body?.memo
       : '<No Memo>'
@@ -308,8 +326,10 @@ export async function getDateFromMessage(
       if (typeof message.amount === 'object') {
         if ('denom' in message.amount && 'amount' in message.amount) {
           DecodedTxData.amount = message.amount?.amount
+          DecodedTxData.denom = message.amount?.denom
         } else {
           DecodedTxData.amount = message.amount[0]?.amount
+          DecodedTxData.denom = message.amount[0]?.denom
         }
       }
     } else {
@@ -320,9 +340,10 @@ export async function getDateFromMessage(
         ?.attributes?.map((item) =>
           item.value ? new TextDecoder().decode(fromBase64(item.value)) : ''
         )
+      console.log(tx.tx_result.events)
 
       DecodedTxData.amount = getLokiFromString(
-        amount?.find((item) => item.includes('loki'))
+        amount?.find((item: string) => item?.includes('loki'))
       )
     }
 
@@ -427,6 +448,7 @@ export async function getDateFromMessage(
       }
       if ('initialDeposit' in message) {
         DecodedTxData.amount = message.initialDeposit[0]?.amount
+        DecodedTxData.denom = message.initialDeposit[0]?.denom
       }
     }
     if (DecodedTxData.type === 'Report Data') {
@@ -513,6 +535,21 @@ export async function getDateFromMessage(
     if (DecodedTxData.type === 'Fund Community Pool') {
       if ('depositor' in message) {
         DecodedTxData.sender = message?.depositor
+      }
+    }
+
+    if (DecodedTxData.type === 'Remove Reporter') {
+      if ('validator' in message) {
+        DecodedTxData.receiver = message.validator
+      }
+      if ('reporter' in message) {
+        DecodedTxData.sender = message.reporter
+      }
+    }
+
+    if (DecodedTxData.type === 'Store Code') {
+      if ('sender' in message) {
+        DecodedTxData.sender = message.sender
       }
     }
 

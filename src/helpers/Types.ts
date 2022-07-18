@@ -2,6 +2,7 @@ import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/respons
 import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
 import { Chart, ChartType, TooltipModel } from 'chart.js'
+import { BigNumber } from 'bignumber.js'
 
 export type Link = {
   to?: string
@@ -80,8 +81,10 @@ export type DecodedTxData = {
   time?: string | void | Date
   sender?: string
   receiver?: string
-  amount?: string
-  fee?: string
+  amount?: string | BigNumber
+  denom?: string
+  fee?: string | BigNumber
+  feeDenom?: string
   status?: number | string | undefined
   memo?: string
   gasWanted?: string | number
@@ -190,10 +193,16 @@ export interface TxSearchTelemetry {
   readonly txs: readonly TxTelemetry[]
   readonly totalCount: number
 }
-export type AccountTx = {
+
+export type AmountDetails = {
   amount: string
+  denom: string
+}
+
+export type txFromTelemetry = {
+  amount: AmountDetails[]
   block: number
-  fee: string
+  fee: AmountDetails[]
   receiver: string
   sender: string
   timestamp: number
