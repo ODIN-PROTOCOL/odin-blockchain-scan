@@ -8,31 +8,35 @@
       <span class="app-table__title">Validator</span>
       <TitledLink
         class="app-table__cell-txt app-table__link"
-        :text="validator.description.moniker"
-        :to="`/validators/${validator.operatorAddress}`"
+        :text="validator?.validatorDescriptions[0]?.moniker || '???'"
+        :to="`/validators/${validator?.validatorInfo.operatorAddress}`"
       />
     </div>
     <div class="app-table__cell app-table__cell-txt">
       <span class="app-table__title">Delegated</span>
       <span
         :title="
-          $convertLokiToOdin(validator.delegatorShares, {
-            withPrecise: true,
-          })
+          $convertLokiToOdin(
+            Number(validator.validatorInfo.delegatorShares).toFixed(6),
+            {
+              onlyNumber: true,
+            }
+          )
         "
       >
         {{
-          $convertLokiToOdin(validator.delegatorShares, {
-            withDenom: true,
-            withPrecise: true,
-          })
+          $convertLokiToOdin(
+            Number(validator.validatorInfo.delegatorShares).toFixed(6)
+          )
         }}
       </span>
     </div>
     <div class="app-table__cell validators-view-table-row__cell--center">
       <span class="app-table__title">Commission</span>
       <span>
-        {{ $getPrecisePercents(validator.commission.commissionRates.rate) }}
+        {{
+          +(validator?.validatorCommissions[0]?.commission * 100).toFixed(2)
+        }}%
       </span>
     </div>
     <div v-if="tabStatus !== inactiveValidatorsTitle" class="app-table__cell">
@@ -40,8 +44,8 @@
       <ProgressbarTool
         :min="0"
         :max="100"
-        :current="Number(validator.uptimeInfo?.uptime) || 0"
-        :isForValidators="true"
+        :current="Number(validator?.uptime?.toFixed(2)) || 0"
+        is-for-validators
       />
     </div>
     <div class="app-table__cell validators-view-table-row__cell--center">
@@ -49,7 +53,7 @@
       <ValidatorStatus
         :width="14"
         :height="14"
-        :status="validatorStatus(validator)"
+        :status="validatorStatus()"
         class="validators-item__validator-status"
       />
     </div>
@@ -61,7 +65,8 @@ import { defineComponent, ref, PropType } from 'vue'
 import TitledLink from '@/components/TitledLink.vue'
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import { ValidatorDecoded } from '@/helpers/validatorDecoders'
+import { VALIDATOR_STATUS } from '@/helpers/validatorsHelpers'
+import { ValidatorInfoModify } from '@/helpers/validatorsHelpers'
 
 export default defineComponent({
   components: {
@@ -70,21 +75,24 @@ export default defineComponent({
     ValidatorStatus,
   },
   props: {
-    validator: { type: Object as PropType<ValidatorDecoded>, required: true },
+    validator: {
+      type: Object as PropType<ValidatorInfoModify>,
+      required: true,
+    },
     tabStatus: { type: String, required: true },
     inactiveValidatorsTitle: { type: String, required: true },
   },
-  setup() {
+  setup(props) {
     const ITEMS_PER_PAGE = 50
     const currentPage = ref(1)
     const totalPages = ref(0)
 
-    const validatorStatus = (validator: {
-      status: number
-      isActive: boolean
-    }) => {
-      if (validator.status === 3) {
-        return validator.isActive ? 'success' : 'error'
+    const validatorStatus = () => {
+      if (
+        props.validator?.validatorStatuses[0]?.status ===
+        VALIDATOR_STATUS.active
+      ) {
+        return props.validator?.isActive ? 'success' : 'error'
       } else {
         return 'inactive'
       }

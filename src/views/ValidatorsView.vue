@@ -109,23 +109,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, onUnmounted } from 'vue'
-import { callers } from '@/api/callers'
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  computed,
+  onUnmounted,
+  watch,
+} from 'vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
-import {
-  getTransformedValidators,
-  isActiveValidator,
-} from '@/helpers/validatorsHelpers'
+import { isActiveValidator } from '@/helpers/validatorsHelpers'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 import ValidatorsTableMobile from '@/components/ValidatorsTableRowMobile.vue'
 import ValidatorsTable from '@/components/ValidatorsTableRow.vue'
+import { useQuery } from '@vue/apollo-composable'
+import { ValidatorsQuery } from '@/graphql/queries'
+import { ValidatorsResponse, ValidatorsInfo } from '@/graphql/types'
+
 export default defineComponent({
   name: 'ValidatorsView',
   components: {
@@ -147,8 +153,8 @@ export default defineComponent({
     const validatorsCount = ref(0)
     const filteredValidators = ref()
     const validators = ref()
-    const activeValidators = ref<ValidatorDecoded[]>([])
-    const inactiveValidators = ref<ValidatorDecoded[]>([])
+    const activeValidators = ref<ValidatorsInfo[]>([])
+    const inactiveValidators = ref<ValidatorsInfo[]>([])
     const activeValidatorsTitle = computed(() =>
       activeValidators.value?.length
         ? `Active (${activeValidators.value?.length})`
@@ -175,51 +181,73 @@ export default defineComponent({
     const updateWidth = () => {
       windowInnerWidth.value = document.documentElement.clientWidth
     }
+    const { result, loading } = useQuery<ValidatorsResponse>(ValidatorsQuery)
+    const signedBlocks = computed(() =>
+      Number(result.value?.slashingParams[0]?.params?.signed_blocks_window)
+    )
+
+    watch([loading], async () => {
+      await getValidators()
+    })
+
     const getValidators = async () => {
+      if (loading.value) {
+        return
+      }
       lockLoading()
       try {
-        const bonded = await callers.getValidators('BOND_STATUS_BONDED')
-        const unbonding = await callers.getValidators('BOND_STATUS_UNBONDING')
-        const unbonded = await callers.getValidators('BOND_STATUS_UNBONDED')
-        const allUptime = await callers
-          .getValidatorUptime()
-          .then((resp) => resp.json())
-        activeValidators.value = await Promise.all(
-          await getTransformedValidators([...bonded.validators]).then(
-            (validators) =>
-              validators.map(async (item) => {
-                return {
-                  ...item,
-                  isActive: await isActiveValidator(item.operatorAddress),
-                  uptimeInfo: allUptime.find(
-                    (name: { operator_address: string }) =>
-                      name.operator_address === item.operatorAddress
-                  ),
-                }
-              })
-          )
-        )
+        console.log(result.value)
 
-        inactiveValidators.value = await Promise.all(
-          await getTransformedValidators([
-            ...unbonded.validators,
-            ...unbonding.validators,
-          ]).then((validators) =>
-            validators.map(async (item) => {
+        const copyActiveValidator =
+          result.value?.validator?.filter(
+            (item: ValidatorsInfo) => item?.validatorStatuses[0]?.status === 3
+          ) || []
+        const copyInactiveValidator =
+          result.value?.validator?.filter(
+            (item: ValidatorsInfo) => item?.validatorStatuses[0]?.status !== 3
+          ) || []
+
+        activeValidators.value = (await Promise.all(
+          copyActiveValidator.map(
+            async (item: ValidatorsInfo, index: number) => {
               return {
                 ...item,
-                isActive: await isActiveValidator(item.operatorAddress),
-                uptimeInfo: allUptime.find(
-                  (name: { operator_address: string }) =>
-                    name.operator_address === item.operatorAddress
-                ),
+                rank: index + 1,
+                uptime:
+                  ((signedBlocks.value -
+                    item.validatorSigningInfos[0]?.missedBlocksCounter) /
+                    signedBlocks.value) *
+                  100,
+                isActive: await isActiveValidator(
+                  item.validatorInfo?.operatorAddress
+                ).then((req) => req),
               }
-            })
+            }
           )
-        )
-        validators.value = [...activeValidators.value]
-        validatorsCount.value =
-          activeValidators.value.length + inactiveValidators.value.length
+        )) as unknown as ValidatorsInfo[]
+
+        inactiveValidators.value = (await Promise.all(
+          copyInactiveValidator.map(
+            async (item: ValidatorsInfo, index: number) => {
+              return {
+                ...item,
+                rank: index + 1,
+                uptime:
+                  ((signedBlocks.value -
+                    item.validatorSigningInfos[0]?.missedBlocksCounter) /
+                    signedBlocks.value) *
+                  100,
+                isActive: await isActiveValidator(
+                  item.validatorInfo?.operatorAddress
+                ).then((req) => req),
+              }
+            }
+          )
+        )) as unknown as ValidatorsInfo[]
+
+        validators.value = activeValidators.value
+        tabStatus.value = activeValidatorsTitle.value
+        validatorsCount.value = result.value?.validator?.length || 0
         filterValidators(currentPage.value)
       } catch (error) {
         handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)

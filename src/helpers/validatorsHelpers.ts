@@ -1,45 +1,25 @@
 import { callers } from '@/api/callers'
-import { bigMath } from './bigMath'
-import { ValidatorDecoded } from './validatorDecoders'
+import { Modify } from '@/shared-types'
+import { Validator } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
+import { ValidatorsInfo } from '@/graphql/types'
+
+export enum VALIDATOR_STATUS {
+  inactive = 1,
+  bounding = 2,
+  active = 3,
+}
+
+export type ValidatorDecoded = Modify<Validator, { consensusPubkey?: string }>
+export type ValidatorInfoModify = Modify<
+  ValidatorsInfo,
+  { isActive?: boolean; rank: number; uptime: number }
+>
 
 export const isActiveValidator = async (
   validatorAddress: string
 ): Promise<boolean> => {
-  const response = await callers.getValidatorStatus(validatorAddress)
-  return response.status?.isActive ? true : false
-}
-
-export const isOracleValidator = async (
-  validatorAddress: string
-): Promise<boolean> => {
-  const response = await callers.getReports(validatorAddress)
-  return response.reporter.length ? true : false
-}
-
-const _sortValidatorsByDelegated = (
-  validators: ValidatorDecoded[]
-): ValidatorDecoded[] => {
-  return validators.sort((a, b) => {
-    return (
-      Number(bigMath.fromPrecise(b.delegatorShares)) -
-      Number(bigMath.fromPrecise(a.delegatorShares))
-    )
-  })
-}
-
-export const getTransformedValidators = async (
-  validators: ValidatorDecoded[]
-): Promise<ValidatorDecoded[]> => {
-  const _validators = _sortValidatorsByDelegated(validators)
-  const transformedValidators = await Promise.all(
-    _validators.map(async (item, idx) => {
-      return {
-        ...item,
-        rank: idx + 1,
-        isOracleValidator: await isOracleValidator(item.operatorAddress),
-      }
-    })
-  )
-
-  return transformedValidators
+  const response = await callers
+    .getValidatorStatus(validatorAddress)
+    .then((req) => req.status?.isActive)
+  return Boolean(response)
 }
