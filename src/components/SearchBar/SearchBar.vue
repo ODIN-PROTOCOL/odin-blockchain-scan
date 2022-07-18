@@ -21,12 +21,19 @@
       </VuePicker>
       <div class="search-bar__input-wrapper">
         <input
-          class="search-bar__input"
+          :class="{
+            'search-bar__input': true,
+            'search-bar__input--with-value': searchedText,
+          }"
           :placeholder="inputPlaceholder"
           v-model="searchedText"
           @keydown.enter="searchBy()"
         />
-
+        <template v-if="searchedText">
+          <button @click="clearText" class="search-bar__clear-btn">
+            <img src="~@/assets/icons/close.svg" alt="reset" />
+          </button>
+        </template>
         <template v-if="searchResult">
           <div class="search-bar__dropdown">
             <template v-for="(result, idx) in searchResult" :key="idx">
@@ -111,9 +118,18 @@ export default defineComponent({
     })
 
     const getTransactions = async (): Promise<Array<DecodedTxData>> => {
+      const TRANSACTION_HASH_LENGTH = 64
+      const transactionToSearch = String(searchedText.value)
+      if (
+        !transactionToSearch ||
+        transactionToSearch.length < TRANSACTION_HASH_LENGTH
+      ) {
+        return []
+      }
+
       try {
         const res = await callers.getTxForTxDetailsPage(
-          String(searchedText.value)
+          String(transactionToSearch)
         )
         return await prepareTransaction([res.data.result])
       } catch {
@@ -122,18 +138,27 @@ export default defineComponent({
     }
 
     const getAccount = async (): Promise<Array<TempSearchAccountInfoType>> => {
+      const ACCOUNT_LENGTH = 43
+      const accountToSearch = String(searchedText.value)
+      if (
+        !accountToSearch ||
+        !accountToSearch.startsWith('odin') ||
+        accountToSearch.length < ACCOUNT_LENGTH
+      ) {
+        return []
+      }
       try {
         const geoBalance = await callers.getUnverifiedBalances(
-          searchedText.value as string,
+          accountToSearch,
           'minigeo'
         )
         const odinBalance = await callers.getUnverifiedBalances(
-          searchedText.value as string,
+          accountToSearch,
           'loki'
         )
         return [
           {
-            address: searchedText.value as string,
+            address: accountToSearch,
             geoBalance: { ...geoBalance },
             odinBalance: { ...odinBalance },
           },
@@ -193,6 +218,10 @@ export default defineComponent({
       return null
     }
 
+    const clearText = (): void => {
+      searchedText.value = ''
+    }
+
     const router: Router = useRouter()
     router.beforeEach(() => {
       searchResult.value = null
@@ -208,6 +237,7 @@ export default defineComponent({
       cropText,
       getDay,
       inputPlaceholder,
+      clearText,
     }
   },
 })
@@ -220,9 +250,6 @@ export default defineComponent({
     width: 39.6rem;
     position: relative;
     border-radius: none;
-    @media (max-width: 480px) {
-      position: inherit;
-    }
   }
   &__dropdown {
     position: absolute;
@@ -261,7 +288,15 @@ export default defineComponent({
   &::placeholder {
     color: var(--clr__text-muted);
   }
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  &.search-bar__input--with-value {
+    padding-right: 3.5rem;
+  }
 }
+
 .search-bar__btn {
   width: 4.8rem;
   height: 4.8rem;
@@ -279,6 +314,13 @@ export default defineComponent({
     display: block;
   }
 }
+
+.search-bar__clear-btn {
+  overflow: visible;
+  position: absolute;
+  right: 1rem;
+  top: 1.2rem;
+}
 @include respond-to(tablet) {
   .search-bar__input {
     &::placeholder {
@@ -287,3 +329,4 @@ export default defineComponent({
   }
 }
 </style>
+odinvaloper1cgfdwtrqfdrzh4z8rkcyx8g4jv22v8wgav3rjx
