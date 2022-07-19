@@ -62,7 +62,7 @@ import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import { isActiveValidator } from '@/helpers/validatorDecoders'
+import { isActiveValidator } from '@/helpers/validatorsHelpers'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import { VALIDATOR_STATUS_TYPE } from '@/helpers/helpers'
 

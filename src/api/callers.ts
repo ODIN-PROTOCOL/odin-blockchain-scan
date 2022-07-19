@@ -1,8 +1,7 @@
 import { api } from './api'
 import { wallet } from './wallet'
-import { mapResponse, sendGet } from './callersHelpers'
+import { sendGet } from './callersHelpers'
 import { cacheAnswers, getAPIDate } from '@/helpers/requests'
-import { decodeValidators } from '@/helpers/validatorDecoders'
 import { API_CONFIG } from './api-config'
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 import axios from 'axios'
@@ -25,14 +24,6 @@ const makeCallers = () => {
     getRate: querier((qc) => qc.coinswap.unverified.rate),
     getTreasuryPool: cacheAnswers(
       querier((qc) => qc.mint.unverified.treasuryPool)
-    ),
-    getValidators: querier((qc) =>
-      mapResponse(qc.staking.validators, (response) => {
-        return {
-          ...response,
-          validators: decodeValidators(response.validators),
-        }
-      })
     ),
     getValidatorByConsensusKey: cacheAnswers((validatorHash: string) => {
       return axios.get(
