@@ -70,8 +70,8 @@
               v-for="validator in filteredValidators"
               :key="validator.operatorAddress"
               :validator="validator"
-              :tabStatus="tabStatus"
-              :inactiveValidatorsTitle="inactiveValidatorsTitle"
+              :tab-status="tabStatus"
+              :inactive-validators-title="inactiveValidatorsTitle"
             />
           </template>
           <template v-else>
@@ -79,8 +79,8 @@
               v-for="validator in filteredValidators"
               :key="validator.operatorAddress"
               :validator="validator"
-              :tabStatus="tabStatus"
-              :inactiveValidatorsTitle="inactiveValidatorsTitle"
+              :tab-status="tabStatus"
+              :inactive-validators-title="inactiveValidatorsTitle"
             />
           </template>
         </template>

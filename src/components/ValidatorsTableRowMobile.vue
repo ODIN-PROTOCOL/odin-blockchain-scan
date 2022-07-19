@@ -42,7 +42,8 @@
       >
         {{
           $convertLokiToOdin(
-            Number(validator.validatorInfo.delegatorShares).toFixed(6)
+            Number(validator.validatorInfo.delegatorShares).toFixed(6),
+            { withDenom: true }
           )
         }}
       </span>
