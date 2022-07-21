@@ -340,8 +340,6 @@ export async function getDateFromMessage(
         ?.attributes?.map((item) =>
           item.value ? new TextDecoder().decode(fromBase64(item.value)) : ''
         )
-      console.log(tx.tx_result.events)
-
       DecodedTxData.amount = getLokiFromString(
         amount?.find((item: string) => item?.includes('loki'))
       )
@@ -427,6 +425,10 @@ export async function getDateFromMessage(
       }
     }
     if (DecodedTxData.type === 'IBC Transfer') {
+      if ('token' in message) {
+        DecodedTxData.amount = message.token?.amount
+        DecodedTxData.denom = message.token?.denom
+      }
       if ('sender' in message) {
         DecodedTxData.sender = message.sender
       }
