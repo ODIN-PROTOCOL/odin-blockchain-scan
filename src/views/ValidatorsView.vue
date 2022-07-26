@@ -20,11 +20,21 @@
       <div class="validators-view__filter-search">
         <div class="validators-view__filter-search-input-wrapper">
           <InputField
-            v-model="searchValue"
-            placeholder="Search validator"
+            :placeholder="inputPlaceholder"
             class="validators-view__filter-search-input"
+            v-model="searchValue"
             @keydown.enter="filterValidators()"
           />
+          <template v-if="searchValue">
+            <button
+              @click="clearText()"
+              class="validators-view__filter-search-clear-btn"
+            >
+              <CancelIcon
+                :className="'validators__filter-search-clear-btn-icon'"
+              />
+            </button>
+          </template>
         </div>
         <button
           class="validators-view__filter-search-button"
@@ -96,7 +106,6 @@
         </template>
       </div>
     </div>
-
     <template v-if="filteredValidatorsCount > ITEMS_PER_PAGE">
       <AppPagination
         class="mg-t32"
@@ -123,9 +132,11 @@ import {
 } from '@/helpers/validatorsHelpers'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
+import CancelIcon from '@/components/icons/CancelIcon.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 import ValidatorsTableMobile from '@/components/ValidatorsTableRowMobile.vue'
 import ValidatorsTable from '@/components/ValidatorsTableRow.vue'
+
 export default defineComponent({
   name: 'ValidatorsView',
   components: {
@@ -134,6 +145,7 @@ export default defineComponent({
     AppPagination,
     InputField,
     SearchIcon,
+    CancelIcon,
     SkeletonTable,
     ValidatorsTableMobile,
     ValidatorsTable,
@@ -157,6 +169,8 @@ export default defineComponent({
     const inactiveValidatorsTitle = ref('Inactive')
     const tabStatus = ref(activeValidatorsTitle.value)
     const searchValue = ref('')
+    const inputPlaceholder = ref('Search validators')
+
     const headerTitles = computed(() => {
       if (windowInnerWidth.value > 768) {
         return [
@@ -229,6 +243,7 @@ export default defineComponent({
 
     const filterValidators = (newPage = 1) => {
       let tempArr = validators.value
+
       if (searchValue.value.trim()) {
         tempArr = tempArr.filter((item: { description: { moniker: string } }) =>
           item.description.moniker
@@ -266,6 +281,11 @@ export default defineComponent({
         filterValidators(1)
       }
     }
+
+    const clearText = (): void => {
+      searchValue.value = ''
+    }
+
     const validatorStatus = (validator: {
       status: number
       isActive: boolean
@@ -300,6 +320,8 @@ export default defineComponent({
       inactiveValidatorsTitle,
       searchValue,
       filterValidators,
+      clearText,
+      inputPlaceholder,
       headerTitles,
       tabStatus,
       validatorStatus,
@@ -336,7 +358,7 @@ export default defineComponent({
   color: var(--clr__input-border);
   svg {
     transition: all 0.5s ease;
-    fill: var(--clr__input-border);
+    fill: var(--clr__text-muted);
   }
   &:hover,
   &:active,
@@ -355,6 +377,9 @@ export default defineComponent({
       fill: var(--clr__input-border);
     }
   }
+  svg.validators__filter-search-clear-btn-icon {
+    fill: var(--clr__text-muted);
+  }
 }
 .validators-view__filter-search-input-wrapper {
   position: relative;
@@ -362,6 +387,7 @@ export default defineComponent({
 }
 .validators-view__filter-search-input {
   border: none;
+  padding-right: 2rem;
   &:focus::-webkit-input-placeholder {
     color: transparent;
   }
@@ -374,6 +400,13 @@ export default defineComponent({
   &:focus {
     border: none;
   }
+}
+
+.validators-view__filter-search-clear-btn {
+  overflow: visible;
+  position: absolute;
+  right: 0rem;
+  top: 1.3rem;
 }
 .validators-view__filter-search-button {
   position: relative;
