@@ -76,6 +76,7 @@ function goToNextPage(): void {
   }
 }
 function goToSelectedPage(event: { target: { value: string } }): void {
+  if (Number(event.target.value) === props.modelValue) return
   if (
     Number(event.target.value) > 0 &&
     Number(event.target.value) <= props.pages
@@ -87,7 +88,7 @@ function goToSelectedPage(event: { target: { value: string } }): void {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .app-pagination__wrapper {
   display: flex;
   justify-content: center;

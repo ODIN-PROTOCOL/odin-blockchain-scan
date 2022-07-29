@@ -25,40 +25,67 @@ export interface ValidatorsResponse {
     },
   ]
   validator: [ValidatorsInfo]
-  validatorDescriptions: [
-    {
-      moniker: string
-      details: string
-    },
-  ]
 }
 export interface ValidatorsInfo {
-  validatorStatuses: [
+  statuses: [
     {
       status: number
       jailed: boolean
       height: number
     },
   ]
-  validatorSigningInfos: [
+  signingInfos: [
     {
       missedBlocksCounter: number
       tombstoned: boolean
     },
   ]
-  validatorInfo: {
+  info: {
+    delegatedAmount: string
     delegatorShares: string
     operatorAddress: string
     selfDelegateAddress: string
+    consensusAddress: string
   }
-  validatorVotingPowers: [
+  votingPowers: [
     {
       votingPower: number
     },
   ]
-  validatorCommissions: [
+  commissions: [
     {
       commission: number
     },
   ]
+  blocksAggregate?: {
+    aggregate: {
+      count: number
+    }
+  }
+  descriptions: [
+    {
+      moniker: string
+      details: string
+    },
+  ]
+}
+
+export interface ValidatorResponse {
+  slashingParams: [
+    {
+      params: {
+        signed_blocks_window: number
+        min_signed_per_window: string
+        downtime_jail_duration: number
+        slash_fraction_downtime: string
+        slash_fraction_double_sign: string
+      }
+    },
+  ]
+  stakingPool: [
+    {
+      bondedTokens: string
+    },
+  ]
+  validator: [ValidatorsInfo]
 }

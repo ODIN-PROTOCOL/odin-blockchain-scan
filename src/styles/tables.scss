@@ -67,17 +67,18 @@
     minmax(8rem, 2fr)
     minmax(8rem, 1.5fr);
 }
+
 .validators-view__table-head,
 .validators-view-table-row{
-  gap: 3.2rem;
-  grid:
-    auto /
-    minmax(2rem, 5rem)
-    minmax(5rem, 2fr)
-    minmax(11rem, 1fr)
-    minmax(8rem, 1fr)
-    minmax(6rem, 2fr)
-    minmax(10rem, 1fr);
+    gap: 2rem;
+    grid:
+      auto /
+      minmax(2rem, 5rem)
+      minmax(5rem, 1.25fr)
+      minmax(6rem, 1fr)
+      minmax(8rem, 1fr)
+      minmax(7rem, 1fr)
+      minmax(6rem, 1fr);
 }
 .validators-view__table--inactive {
   .validators-view__table-head,
@@ -87,9 +88,9 @@
       auto /
       minmax(2rem, 5rem)
       minmax(5rem, 1.5fr)
-      minmax(6rem, 1fr)
+      minmax(6rem, 1.5fr)
       minmax(8rem, 1fr)
-      minmax(7rem, 8.7rem);
+      minmax(6rem, 1fr);
   }
 }
 .delegators-table__table-head,

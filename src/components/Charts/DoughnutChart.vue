@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .doughnut_chart {
   height: 100%;
   width: 100%;

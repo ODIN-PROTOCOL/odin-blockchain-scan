@@ -1,14 +1,16 @@
 import gql from 'graphql-tag'
 
-export const ValidatorsQuery = gql`
-  query Validators {
+export const ValidatorQuery = gql`
+  query Validator($address: String!) {
     stakingPool: staking_pool(limit: 1, order_by: { height: desc }) {
       bondedTokens: bonded_tokens
     }
     slashingParams: slashing_params(order_by: { height: desc }, limit: 1) {
       params
     }
-    validator {
+    validator(
+      where: { validator_info: { operator_address: { _eq: $address } } }
+    ) {
       info: validator_info {
         delegatedAmount: delegated_amount
         operatorAddress: operator_address

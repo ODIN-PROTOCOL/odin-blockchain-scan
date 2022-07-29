@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { VALIDATOR_STATUS_TYPE } from '@/helpers/helpers'
+import { VALIDATOR_STATUS_TYPE } from '@/helpers/validatorsHelpers'
 import SuccessIcon from '@/components/icons/SuccessIcon.vue'
 import ErrorIcon from '@/components/icons/ErrorIcon.vue'
 import InactiveIcon from '@/components/icons/InactiveIcon.vue'

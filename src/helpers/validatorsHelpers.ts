@@ -8,11 +8,16 @@ export enum VALIDATOR_STATUS {
   bounding = 2,
   active = 3,
 }
+export enum VALIDATOR_STATUS_TYPE {
+  inactive = 'inactive',
+  success = 'success',
+  error = 'error',
+}
 
 export type ValidatorDecoded = Modify<Validator, { consensusPubkey?: string }>
 export type ValidatorInfoModify = Modify<
   ValidatorsInfo,
-  { isActive?: boolean; rank: number; uptime: number }
+  { isActive?: boolean; rank?: number; uptime?: number }
 >
 
 export const isActiveValidator = async (
@@ -22,4 +27,14 @@ export const isActiveValidator = async (
     .getValidatorStatus(validatorAddress)
     .then(req => req.status?.isActive)
   return Boolean(response)
+}
+
+export const getValidatorStatus = (status: number, isActive: boolean) => {
+  if (status === VALIDATOR_STATUS.active) {
+    return isActive
+      ? VALIDATOR_STATUS_TYPE.success
+      : VALIDATOR_STATUS_TYPE.error
+  } else {
+    return VALIDATOR_STATUS_TYPE.inactive
+  }
 }

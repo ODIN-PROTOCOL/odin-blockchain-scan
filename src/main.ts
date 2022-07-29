@@ -7,6 +7,7 @@ import {
   formatDate,
   getPrecisePercents,
   getPercentOutOfNumber,
+  trimLeadingZeros,
 } from './helpers/formatters'
 import Notifications from '@kyvg/vue3-notification'
 import { api } from './api/api'
@@ -37,6 +38,7 @@ async function _main() {
   )
   const app = createApp(appModule.default)
   app.config.globalProperties.$cropAddress = cropAddress
+  app.config.globalProperties.$trimZeros = trimLeadingZeros
   app.config.globalProperties.$fCoin = formatCoin
   app.config.globalProperties.$getPrecisePercents = getPrecisePercents
   app.config.globalProperties.$getPercentOutOfNumber = getPercentOutOfNumber

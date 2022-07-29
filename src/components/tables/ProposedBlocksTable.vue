@@ -75,6 +75,7 @@ const currentPage = ref(1)
 const totalPages = ref(0)
 const blocks = ref([])
 const blocksCount = ref()
+
 const headerTitles = [
   { title: 'Block' },
   { title: 'Date and time' },

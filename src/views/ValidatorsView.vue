@@ -45,12 +45,8 @@
       <div class="app-table__head validators-view__table-head">
         <span class="validators-view__table-head-item">Rank</span>
         <span class="validators-view__table-head-item">Validator</span>
-        <span class="validators-view__table-head-item"> Delegator Share </span>
-        <span
-          class="validators-view__table-head-item validators-view__table-head-item--center"
-        >
-          Commission
-        </span>
+        <span class="validators-view__table-head-item">Delegator Share</span>
+        <span class="validators-view__table-head-item">Commission</span>
         <span
           v-if="tabStatus !== inactiveValidatorsTitle"
           class="validators-view__table-head-item"
@@ -112,7 +108,10 @@
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
-import { isActiveValidator } from '@/helpers/validatorsHelpers'
+import {
+  isActiveValidator,
+  VALIDATOR_STATUS,
+} from '@/helpers/validatorsHelpers'
 import { useQuery } from '@vue/apollo-composable'
 import { ValidatorsQuery } from '@/graphql/queries'
 import { ValidatorsResponse, ValidatorsInfo } from '@/graphql/types'
@@ -178,11 +177,13 @@ const getValidators = async () => {
   try {
     const copyActiveValidator =
       result.value?.validator?.filter(
-        (item: ValidatorsInfo) => item?.validatorStatuses[0]?.status === 3,
+        (item: ValidatorsInfo) =>
+          item?.statuses[0]?.status === VALIDATOR_STATUS.active,
       ) || []
     const copyInactiveValidator =
       result.value?.validator?.filter(
-        (item: ValidatorsInfo) => item?.validatorStatuses[0]?.status !== 3,
+        (item: ValidatorsInfo) =>
+          item?.statuses[0]?.status !== VALIDATOR_STATUS.active,
       ) || []
 
     activeValidators.value = (await Promise.all(
@@ -191,13 +192,12 @@ const getValidators = async () => {
           ...item,
           rank: index + 1,
           uptime:
-            ((signedBlocks.value -
-              item.validatorSigningInfos[0]?.missedBlocksCounter) /
+            ((signedBlocks.value - item.signingInfos[0]?.missedBlocksCounter) /
               signedBlocks.value) *
             100,
-          isActive: await isActiveValidator(
-            item.validatorInfo?.operatorAddress,
-          ).then(req => req),
+          isActive: await isActiveValidator(item.info?.operatorAddress).then(
+            req => req,
+          ),
         }
       }),
     )) as unknown as ValidatorsInfo[]
@@ -208,13 +208,12 @@ const getValidators = async () => {
           ...item,
           rank: index + 1,
           uptime:
-            ((signedBlocks.value -
-              item.validatorSigningInfos[0]?.missedBlocksCounter) /
+            ((signedBlocks.value - item.signingInfos[0]?.missedBlocksCounter) /
               signedBlocks.value) *
             100,
-          isActive: await isActiveValidator(
-            item.validatorInfo?.operatorAddress,
-          ).then(req => req),
+          isActive: await isActiveValidator(item.info?.operatorAddress).then(
+            req => req,
+          ),
         }
       }),
     )) as unknown as ValidatorsInfo[]
@@ -271,6 +270,7 @@ onMounted(async () => {
   window.addEventListener('resize', updateWidth)
   await getValidators()
 })
+
 onUnmounted(async () => {
   window.removeEventListener('resize', updateWidth)
 })

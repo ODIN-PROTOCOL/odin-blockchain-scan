@@ -5,10 +5,10 @@
         <span class="validator-info__top-line-item-title">Moniker</span>
         <div class="validator-info__card-balance-row-value-wrapper">
           <span
-            :title="validator.description.moniker"
+            :title="validator.descriptions[0].moniker"
             class="validator-info__top-line-item-value"
           >
-            {{ validator.description.moniker }}
+            {{ validator.descriptions[0].moniker }}
           </span>
         </div>
       </div>
@@ -16,10 +16,10 @@
         <span class="validator-info__top-line-item-title">Status</span>
         <div class="validator-info__card-balance-row-value-wrapper">
           <span
-            :title="$tBondStatus(validator.status)"
+            :title="$tBondStatus(validator.statuses[0].status)"
             class="validator-info__top-line-item-value"
           >
-            {{ $tBondStatus(validator.status) }}
+            {{ $tBondStatus(validator.statuses[0].status) }}
           </span>
         </div>
       </div>
@@ -27,10 +27,10 @@
         <span class="validator-info__top-line-item-title">Jailed?</span>
         <div class="validator-info__card-balance-row-value-wrapper">
           <span
-            :title="validator.jailed ? 'Yes' : 'No'"
+            :title="validator.statuses[0].jailed ? 'Yes' : 'No'"
             class="validator-info__top-line-item-value"
           >
-            {{ validator.jailed ? 'Yes' : 'No' }}
+            {{ validator.statuses[0].jailed ? 'Yes' : 'No' }}
           </span>
         </div>
       </div>
@@ -38,10 +38,14 @@
         <span class="validator-info__top-line-item-title">Stake</span>
         <div class="validator-info__card-balance-row-value-wrapper">
           <span
-            :title="$convertLokiToOdin(validator.tokens, { withDenom: true })"
+            :title="$convertLokiToOdin(validator.info.delegatedAmount)"
             class="validator-info__top-line-item-value"
           >
-            {{ $convertLokiToOdin(validator.tokens, { withDenom: true }) }}
+            {{
+              $convertLokiToOdin(validator.info.delegatedAmount, {
+                withDenom: true,
+              })
+            }}
           </span>
         </div>
       </div>
@@ -49,12 +53,10 @@
         <span class="validator-info__top-line-item-title">Rate</span>
         <div class="validator-info__card-balance-row-value-wrapper">
           <span
-            :title="
-              $getPrecisePercents(validator.commission.commissionRates.rate)
-            "
+            :title="$trimZeros(validator?.commissions[0]?.commission * 100, 2)"
             class="validator-info__top-line-item-value"
           >
-            {{ $getPrecisePercents(validator.commission.commissionRates.rate) }}
+            {{ $trimZeros(validator?.commissions[0]?.commission * 100, 2) }}%
           </span>
         </div>
       </div>
@@ -67,12 +69,7 @@
             >Delegator shares</span
           >
           <span class="validator-info__description-item-value">
-            {{
-              $getPercentOutOfNumber(
-                validator.delegatorShares,
-                validator.tokens,
-              )
-            }}
+            {{ delegetionSharesPercent }}%
           </span>
         </div>
         <div class="validator-info__description-item">
@@ -80,18 +77,16 @@
             {{ isMobile() ? 'Proposed blocks' : 'Amount of proposed blocks' }}
           </span>
           <span
-            :title="proposedBlocksCount"
+            :title="validator.blocksAggregate.aggregate.count"
             class="validator-info__description-item-value"
           >
-            {{ proposedBlocksCount }}
+            {{ validator.blocksAggregate.aggregate.count }}
           </span>
         </div>
         <div class="validator-info__description-item">
           <span class="validator-info__description-item-title">Max rate</span>
           <span class="validator-info__description-item-value">
-            {{
-              $getPrecisePercents(validator.commission.commissionRates.maxRate)
-            }}
+            {{ $trimZeros(validator.info.maxRate * 100, 2) }}%
           </span>
         </div>
         <div class="validator-info__description-item">
@@ -99,11 +94,7 @@
             >Max change rate</span
           >
           <span class="validator-info__description-item-value">
-            {{
-              $getPrecisePercents(
-                validator.commission.commissionRates.maxChangeRate,
-              )
-            }}
+            {{ $trimZeros(validator.info.maxChangeRate * 100, 2) }}%
           </span>
         </div>
       </div>
@@ -112,25 +103,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { ValidatorDecoded } from '@/helpers/validatorsHelpers'
+import { computed } from 'vue'
+import { ValidatorInfoModify } from '@/helpers/validatorsHelpers'
 import { isMobile } from '@/helpers/helpers'
-import { callers } from '@/api/callers'
 
 const props = defineProps<{
-  validator: ValidatorDecoded
+  validator: ValidatorInfoModify
 }>()
 
-const proposedBlocksCount = ref(0)
-
-const getProposedBlocks = async () => {
-  const response = await callers
-    .getProposedBlocks(props.validator.operatorAddress, 0, 1)
-    .then(req => req.json())
-  proposedBlocksCount.value = response?.total_count || 0
-}
-onMounted(async () => {
-  await getProposedBlocks()
+const delegetionSharesPercent = computed(() => {
+  if (Number(props.validator.info.delegatedAmount) !== 0) {
+    return (
+      (Number(props.validator.info.delegatorShares) * 100) /
+      Number(props.validator.info.delegatedAmount)
+    )
+  } else return 0
 })
 </script>
 

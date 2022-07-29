@@ -2,7 +2,7 @@
   <transition name="fade" mode="out-in">
     <div class="info-panel">
       <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
-      <div class="info-panel__chart border">
+      <div class="info-panel__chart-wrapper">
         <div class="info-panel__chart-title">
           Transactions history statistics
         </div>
@@ -122,14 +122,7 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="scss">
-.border {
-  padding: 3.2rem 2.4rem;
-  border-radius: 0.8rem;
-  border: 0.1rem solid var(--clr__action);
-  width: 100%;
-  margin-bottom: 3.2rem;
-}
+<style scoped lang="scss">
 .info-panel__data {
   margin-bottom: 3.2rem;
 }
@@ -157,6 +150,14 @@ onMounted(async () => {
     text-align: center;
     font-size: 2.4rem;
   }
+}
+.info-panel__chart-wrapper {
+  min-height: 20.5rem;
+  margin-bottom: 3.2rem;
+  padding: 3.2rem 2.4rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid var(--clr__action);
+  width: 100%;
 }
 .info-panel__chart-title {
   margin-bottom: 1.53rem;

@@ -241,8 +241,3 @@ export const sortingTypeTx = [
     value: TYPE_TX_SORT.withdraw,
   },
 ]
-export enum VALIDATOR_STATUS_TYPE {
-  inactive = 'inactive',
-  success = 'success',
-  error = 'error',
-}
