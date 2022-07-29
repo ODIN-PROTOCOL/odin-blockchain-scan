@@ -112,18 +112,18 @@
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import { isActiveValidator } from '@/helpers/validatorsHelpers'
+import { useQuery } from '@vue/apollo-composable'
+import { ValidatorsQuery } from '@/graphql/queries'
+import { ValidatorsResponse, ValidatorsInfo } from '@/graphql/types'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
-import { isActiveValidator } from '@/helpers/validatorsHelpers'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 import ValidatorsTableMobile from '@/components/ValidatorsTableRowMobile.vue'
 import ValidatorsTable from '@/components/ValidatorsTableRow.vue'
-import { useQuery } from '@vue/apollo-composable'
-import { ValidatorsQuery } from '@/graphql/queries'
-import { ValidatorsResponse, ValidatorsInfo } from '@/graphql/types'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 const ITEMS_PER_PAGE = 50

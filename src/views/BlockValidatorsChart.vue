@@ -61,14 +61,14 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import BackButton from '@/components/BackButton.vue'
 import { callers } from '@/api/callers'
-import TitledLink from '@/components/TitledLink.vue'
-import CustomDoughnutChart from '@/components/Charts/CustomDoughnutChart.vue'
 import { DoughnutChartType } from '@/helpers/customChartHelpers'
 import { ExtendedDoughnutChartAdditionalInfo } from '@/helpers/Types'
 import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import BackButton from '@/components/BackButton.vue'
+import TitledLink from '@/components/TitledLink.vue'
+import CustomDoughnutChart from '@/components/Charts/CustomDoughnutChart.vue'
 
 const isLoading = ref<boolean>(false)
 const validators = ref<ValidatorBlockStats[]>()

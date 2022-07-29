@@ -2,7 +2,9 @@
 node_modules
 /dist
 .eslintcache
-
+firebase-debug.log
+/.firebase
+*.*.cache
 
 # local env files
 .env.local
@@ -17,6 +19,7 @@ pnpm-debug.log*
 # Editor directories and files
 .idea
 .vscode
+/.firebase
 *.suo
 *.ntvs*
 *.njsproj
