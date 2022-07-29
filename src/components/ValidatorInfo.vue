@@ -69,7 +69,12 @@
             >Delegator shares</span
           >
           <span class="validator-info__description-item-value">
-            {{ delegetionSharesPercent }}%
+            {{
+              getDelegationsShares(
+                validator.info.delegatedAmount,
+                validator.info.delegatorShares,
+              )
+            }}
           </span>
         </div>
         <div class="validator-info__description-item">
@@ -103,22 +108,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ValidatorInfoModify } from '@/helpers/validatorsHelpers'
+import {
+  ValidatorInfoModify,
+  getDelegationsShares,
+} from '@/helpers/validatorsHelpers'
 import { isMobile } from '@/helpers/helpers'
-
-const props = defineProps<{
+defineProps<{
   validator: ValidatorInfoModify
 }>()
-
-const delegetionSharesPercent = computed(() => {
-  if (Number(props.validator.info.delegatedAmount) !== 0) {
-    return (
-      (Number(props.validator.info.delegatorShares) * 100) /
-      Number(props.validator.info.delegatedAmount)
-    )
-  } else return 0
-})
 </script>
 
 <style lang="scss" scoped>

@@ -38,3 +38,12 @@ export const getValidatorStatus = (status: number, isActive: boolean) => {
     return VALIDATOR_STATUS_TYPE.inactive
   }
 }
+
+export function getDelegationsShares(
+  delegatedAmount: string | number,
+  delegatorShares: string | number,
+): string {
+  if (Number(delegatedAmount) !== 0) {
+    return (Number(delegatorShares) * 100) / Number(delegatedAmount) + '%'
+  } else return 0 + '%'
+}

@@ -2,14 +2,16 @@
   <div class="app-table__row validators-table-row-mobile">
     <div class="app-table__cell validators-table-row-mobile__cell">
       <div class="validators-table-row-mobile__info">
-        <span class="validators-table-row-mobile__rank">{{
-          validator.rank
-        }}</span>
+        <span class="validators-table-row-mobile__rank">
+          {{ validator.rank }}
+        </span>
         <TitledLink
+          v-if="validator.descriptions.length"
           class="app-table__cell-txt app-table__link"
           :text="validator.descriptions[0]?.moniker"
           :to="`/validators/${validator.info.operatorAddress}`"
         />
+        <p class="app-table__cell-txt">-</p>
       </div>
       <div class="validators-table-row-mobile__show">
         <button
@@ -47,9 +49,10 @@
     <template v-if="isShowValidatorDetails">
       <div class="app-table__cell">
         <span class="app-table__title">Commission</span>
-        <span>
+        <span v-if="validator.commissions.length">
           {{ $trimZeros(validator?.commissions[0]?.commission * 100, 2) }}%
         </span>
+        <span v-else>0%</span>
       </div>
       <div v-if="tabStatus !== inactiveValidatorsTitle" class="app-table__cell">
         <span class="app-table__title">Uptime</span>
