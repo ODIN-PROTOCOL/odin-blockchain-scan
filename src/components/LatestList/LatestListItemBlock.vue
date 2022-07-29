@@ -31,28 +31,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
-import { diffDays, cropText, getDay } from '@/helpers/formatters'
-import TitledLink from '@/components/TitledLink.vue'
+<script setup lang="ts">
+import { diffDays, getDay } from '@/helpers/formatters'
 import { TransformedBlocks } from '@/helpers/Types'
-export default defineComponent({
-  name: 'LatestListItemBlock',
-  components: { TitledLink },
-  props: {
-    block: { type: Object as PropType<TransformedBlocks>, required: true },
-  },
-  setup() {
-    const toDay = ref<Date>(new Date())
+import TitledLink from '@/components/TitledLink.vue'
 
-    return {
-      diffDays,
-      cropText,
-      getDay,
-      toDay,
-    }
-  },
-})
+defineProps<{
+  block: TransformedBlocks
+}>()
+const toDay = new Date()
 </script>
 
 <style scoped lang="scss">

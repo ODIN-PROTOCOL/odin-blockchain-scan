@@ -23,7 +23,7 @@ class TooltipHandler {
 
   private static _createDesignSpanForTooltip(
     text?: string,
-    color?: string
+    color?: string,
   ): HTMLSpanElement {
     const spanBlocks = document.createElement('span')
     spanBlocks.style.display = 'inline-block'
@@ -100,6 +100,7 @@ class TooltipHandler {
       const bodyLines = [titleLines]
 
       if (typeof this.context.tooltip.dataPoints[0].raw === 'object') {
+        // eslint-disable-next-line no-console
         console.debug(this.context.tooltip.dataPoints[0].raw)
       }
 
@@ -125,15 +126,15 @@ class TooltipHandler {
         const td = document.createElement('td')
         td.style.borderWidth = '0'
         td.appendChild(
-          TooltipHandler._createDesignSpanForTooltip('Transactions:')
+          TooltipHandler._createDesignSpanForTooltip('Transactions:'),
         )
         td.appendChild(
           TooltipHandler._createDesignSpanForTooltip(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             this.context.tooltip.dataPoints[0].raw.data,
-            '#fff'
-          )
+            '#fff',
+          ),
         )
         tr.appendChild(td)
         tableBody.appendChild(tr)
@@ -170,7 +171,7 @@ class TooltipHandler {
 }
 
 export const dailyTransactionsVolumeTooltipHandler = (
-  context: externalTooltipType
+  context: externalTooltipType,
 ): void => {
   const th = new TooltipHandler(context)
   th.init()

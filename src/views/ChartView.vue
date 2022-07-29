@@ -47,8 +47,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, toRefs, watch } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref, toRefs, watch } from 'vue'
 import { Router, useRouter } from 'vue-router'
 import { callers } from '@/api/callers'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
@@ -58,56 +58,45 @@ import CustomBarChart from '@/components/Charts/CustomBarChart.vue'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import BackButton from '@/components/BackButton.vue'
 
-export default defineComponent({
-  name: 'ChartView',
-  components: { CustomBarChart, CustomLineChart, BackButton },
-  props: {
-    chartPageTitle: { type: String, required: true },
-    chartType: { type: String, required: true },
-    getDataMethodName: { type: String, required: true },
-    datasetLabel: { type: String, required: true },
-    datasetUnit: { type: String, default: '' },
-    yAxisTitle: { type: String, required: true },
+const props = withDefaults(
+  defineProps<{
+    chartPageTitle: string
+    chartType: string
+    getDataMethodName: string
+    datasetLabel: string
+    datasetUnit?: string
+    yAxisTitle: string
+  }>(),
+  {
+    datasetUnit: '',
   },
-  setup(props) {
-    const { getDataMethodName } = toRefs(props)
-    const router: Router = useRouter()
-    const chartData = ref()
-    const isLoading = ref<boolean>(false)
-    const sortingValue = ref<string>(sortingDaysForChart.lastWeek.value)
+)
 
-    const getChartData = async () => {
-      const endDate = new Date()
-      const startDate = new Date()
-      startDate.setDate(startDate.getDate() - Number(sortingValue.value))
-      isLoading.value = true
-      try {
-        const { data } = await callers[getDataMethodName.value](
-          startDate,
-          endDate
-        )
-        chartData.value = formatDataForCharts(data)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      } finally {
-        isLoading.value = false
-      }
-    }
+const { getDataMethodName } = toRefs(props)
+const router: Router = useRouter()
+const chartData = ref()
+const isLoading = ref(false)
+const sortingValue = ref(sortingDaysForChart.lastWeek.value)
 
-    watch(sortingValue, async (): Promise<void> => await getChartData())
+const getChartData = async () => {
+  const endDate = new Date()
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - Number(sortingValue.value))
+  isLoading.value = true
+  try {
+    const { data } = await callers[getDataMethodName.value](startDate, endDate)
+    chartData.value = formatDataForCharts(data)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  } finally {
+    isLoading.value = false
+  }
+}
 
-    onMounted(async (): Promise<void> => {
-      await getChartData()
-    })
+watch(sortingValue, async (): Promise<void> => await getChartData())
 
-    return {
-      router,
-      chartData,
-      isLoading,
-      sortingValue,
-      sortingDaysForChart,
-    }
-  },
+onMounted(async (): Promise<void> => {
+  await getChartData()
 })
 </script>
 

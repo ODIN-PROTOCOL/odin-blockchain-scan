@@ -8,25 +8,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
-import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 
-export default defineComponent({
-  name: 'ChartPage',
-  setup() {
-    const chartData = ref<string>()
-    const route: RouteLocationNormalizedLoaded = useRoute()
-
-    onMounted(async (): Promise<void> => {
-      chartData.value = 'asd'
-    })
-
-    return {
-      chartData,
-      route,
-    }
-  },
+const chartData = ref<string>()
+onMounted(async (): Promise<void> => {
+  chartData.value = 'asd'
 })
 </script>
 

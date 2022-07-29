@@ -54,72 +54,55 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { callers } from '@/api/callers'
-import { defineComponent, ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareTransaction } from '@/helpers/helpers'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import TxLine from '@/components/TxLine.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
-import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 
-export default defineComponent({
-  name: 'TransactionsView',
-  components: { TxLine, AppPagination, SkeletonTable },
-  setup() {
-    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
-    const ITEMS_PER_PAGE = 20
-    const transactions = ref()
-    const page = ref<number>(1)
-    const totalPages = ref<number>(0)
-    const totalTransactions = ref<number>(0)
-    const headerTitles = [
-      { title: 'Transaction hash' },
-      { title: 'Type' },
-      { title: 'Block' },
-      { title: 'Date and time' },
-      { title: 'Sender' },
-      { title: 'Receiver' },
-      { title: 'Amount' },
-      { title: 'Transaction Fee' },
-    ]
-    const getTransactions = async () => {
-      lockLoading()
-      try {
-        transactions.value = []
-        const { data, total_count } = await callers
-          .getTxSearchFromTelemetry(page.value - 1, ITEMS_PER_PAGE, 'desc')
-          .then((resp) => resp.json())
+const ITEMS_PER_PAGE = 20
+const transactions = ref()
+const page = ref<number>(1)
+const totalPages = ref<number>(0)
+const totalTransactions = ref<number>(0)
+const headerTitles = [
+  { title: 'Transaction hash' },
+  { title: 'Type' },
+  { title: 'Block' },
+  { title: 'Date and time' },
+  { title: 'Sender' },
+  { title: 'Receiver' },
+  { title: 'Amount' },
+  { title: 'Transaction Fee' },
+]
+const getTransactions = async () => {
+  lockLoading()
+  try {
+    transactions.value = []
+    const { data, total_count } = await callers
+      .getTxSearchFromTelemetry(page.value - 1, ITEMS_PER_PAGE, 'desc')
+      .then(resp => resp.json())
 
-        transactions.value = await prepareTransaction(data)
-        totalTransactions.value = total_count
-        totalPages.value = Math.ceil(totalTransactions.value / ITEMS_PER_PAGE)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    }
+    transactions.value = await prepareTransaction(data)
+    totalTransactions.value = total_count
+    totalPages.value = Math.ceil(totalTransactions.value / ITEMS_PER_PAGE)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
+}
 
-    const updateHandler = async () => {
-      await getTransactions()
-    }
+const updateHandler = async () => {
+  await getTransactions()
+}
 
-    onMounted(async () => {
-      await getTransactions()
-    })
-
-    return {
-      transactions,
-      page,
-      totalPages,
-      totalTransactions,
-      updateHandler,
-      isLoading,
-      ITEMS_PER_PAGE,
-      headerTitles,
-    }
-  },
+onMounted(async () => {
+  await getTransactions()
 })
 </script>

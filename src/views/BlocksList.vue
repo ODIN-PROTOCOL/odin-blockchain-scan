@@ -76,109 +76,85 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
 import { callers } from '@/api/callers'
-import { toHexFunc } from '@/helpers/helpers'
-import TitledLink from '@/components/TitledLink.vue'
-import { defineComponent, ref, onMounted, computed } from 'vue'
-import { convertToTime, convertToDate } from '@/helpers/dates'
 import { prepareBlocks } from '@/helpers/blocksHelper'
-import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import { START_VALUE } from '@/api/api-config'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import { START_VALUE } from '@/api/api-config'
+import TitledLink from '@/components/TitledLink.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 
-export default defineComponent({
-  name: 'BlocksList',
-  components: { TitledLink, AppPagination, SkeletonTable },
-  setup() {
-    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const blocks = ref()
-    const ITEMS_PER_PAGE = 20
-    const MIN_POSSIBLE_BLOCK_HEIGHT = Number(START_VALUE.minHeight)
-    const currentPage = ref<number>(1)
-    const totalPages = ref<number>()
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+const blocks = ref()
+const ITEMS_PER_PAGE = 20
+const MIN_POSSIBLE_BLOCK_HEIGHT = Number(START_VALUE.minHeight)
+const currentPage = ref<number>(1)
+const totalPages = ref<number>()
 
-    const minHeight = ref()
-    const maxHeight = ref()
-    const lastBlockHeight = ref()
+const minHeight = ref()
+const maxHeight = ref()
+const lastBlockHeight = ref()
 
-    const blocksCount = computed(() =>
-      lastBlockHeight.value
-        ? lastBlockHeight.value - MIN_POSSIBLE_BLOCK_HEIGHT
-        : 0
+const blocksCount = computed(() =>
+  lastBlockHeight.value ? lastBlockHeight.value - MIN_POSSIBLE_BLOCK_HEIGHT : 0,
+)
+
+const headerTitles = [
+  { title: 'Block' },
+  { title: 'Date and time' },
+  { title: 'Transactions' },
+  { title: 'Validator' },
+]
+const initBlocks = async () => {
+  lockLoading()
+  try {
+    const { lastHeight, blockMetas } = await callers.getBlockchain()
+    blocks.value = await prepareBlocks(blockMetas)
+    lastBlockHeight.value = lastHeight
+    totalPages.value = Math.ceil(
+      (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE,
+    )
+    maxHeight.value = lastHeight
+    minHeight.value = lastHeight - ITEMS_PER_PAGE
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
+}
+
+const getBLocks = async (): Promise<void> => {
+  lockLoading()
+  try {
+    blocks.value = []
+    const { lastHeight, blockMetas } = await callers.getBlockchain(
+      minHeight.value,
+      maxHeight.value,
     )
 
-    const headerTitles = [
-      { title: 'Block' },
-      { title: 'Date and time' },
-      { title: 'Transactions' },
-      { title: 'Validator' },
-    ]
-    const initBlocks = async () => {
-      lockLoading()
-      try {
-        const { lastHeight, blockMetas } = await callers.getBlockchain()
-        blocks.value = await prepareBlocks(blockMetas)
-        lastBlockHeight.value = lastHeight
-        totalPages.value = Math.ceil(
-          (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE
-        )
-        maxHeight.value = lastHeight
-        minHeight.value = lastHeight - ITEMS_PER_PAGE
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    }
+    lastBlockHeight.value = lastHeight
+    totalPages.value = Math.ceil(
+      (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE,
+    )
+    blocks.value = await prepareBlocks(blockMetas)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
+}
 
-    const getBLocks = async (): Promise<void> => {
-      lockLoading()
-      try {
-        blocks.value = []
-        const { lastHeight, blockMetas } = await callers.getBlockchain(
-          minHeight.value,
-          maxHeight.value
-        )
+const updateHandler = async (num: number) => {
+  minHeight.value = lastBlockHeight.value - num * ITEMS_PER_PAGE
+  maxHeight.value = minHeight.value + ITEMS_PER_PAGE
+  if (minHeight.value < MIN_POSSIBLE_BLOCK_HEIGHT)
+    minHeight.value = MIN_POSSIBLE_BLOCK_HEIGHT
+  await getBLocks()
+}
 
-        lastBlockHeight.value = lastHeight
-        totalPages.value = Math.ceil(
-          (lastHeight - MIN_POSSIBLE_BLOCK_HEIGHT) / ITEMS_PER_PAGE
-        )
-        blocks.value = await prepareBlocks(blockMetas)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    }
-
-    const updateHandler = async (num: number) => {
-      minHeight.value = lastBlockHeight.value - num * ITEMS_PER_PAGE
-      maxHeight.value = minHeight.value + ITEMS_PER_PAGE
-      if (minHeight.value < MIN_POSSIBLE_BLOCK_HEIGHT)
-        minHeight.value = MIN_POSSIBLE_BLOCK_HEIGHT
-      await getBLocks()
-    }
-
-    onMounted(async (): Promise<void> => {
-      await initBlocks()
-    })
-
-    return {
-      blocks,
-      currentPage,
-      totalPages,
-      blocksCount,
-      updateHandler,
-      convertToTime,
-      convertToDate,
-      toHexFunc,
-      isLoading,
-      ITEMS_PER_PAGE,
-      headerTitles,
-    }
-  },
+onMounted(async (): Promise<void> => {
+  await initBlocks()
 })
 </script>
 <style lang="scss" scoped></style>

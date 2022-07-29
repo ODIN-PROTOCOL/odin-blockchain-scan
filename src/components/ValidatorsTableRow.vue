@@ -20,14 +20,14 @@
             Number(validator.validatorInfo.delegatorShares).toFixed(6),
             {
               onlyNumber: true,
-            }
+            },
           )
         "
       >
         {{
           $convertLokiToOdin(
             Number(validator.validatorInfo.delegatorShares).toFixed(6),
-            { withDenom: true }
+            { withDenom: true },
           )
         }}
       </span>
@@ -61,52 +61,28 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, PropType } from 'vue'
+<script setup lang="ts">
+import { VALIDATOR_STATUS } from '@/helpers/validatorsHelpers'
+import { ValidatorInfoModify } from '@/helpers/validatorsHelpers'
 import TitledLink from '@/components/TitledLink.vue'
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import { VALIDATOR_STATUS } from '@/helpers/validatorsHelpers'
-import { ValidatorInfoModify } from '@/helpers/validatorsHelpers'
 
-export default defineComponent({
-  components: {
-    TitledLink,
-    ProgressbarTool,
-    ValidatorStatus,
-  },
-  props: {
-    validator: {
-      type: Object as PropType<ValidatorInfoModify>,
-      required: true,
-    },
-    tabStatus: { type: String, required: true },
-    inactiveValidatorsTitle: { type: String, required: true },
-  },
-  setup(props) {
-    const ITEMS_PER_PAGE = 50
-    const currentPage = ref(1)
-    const totalPages = ref(0)
+const props = defineProps<{
+  validator: ValidatorInfoModify
+  tabStatus: string
+  inactiveValidatorsTitle: string
+}>()
 
-    const validatorStatus = () => {
-      if (
-        props.validator?.validatorStatuses[0]?.status ===
-        VALIDATOR_STATUS.active
-      ) {
-        return props.validator?.isActive ? 'success' : 'error'
-      } else {
-        return 'inactive'
-      }
-    }
-
-    return {
-      ITEMS_PER_PAGE,
-      totalPages,
-      currentPage,
-      validatorStatus,
-    }
-  },
-})
+const validatorStatus = () => {
+  if (
+    props.validator?.validatorStatuses[0]?.status === VALIDATOR_STATUS.active
+  ) {
+    return props.validator?.isActive ? 'success' : 'error'
+  } else {
+    return 'inactive'
+  }
+}
 </script>
 
 <style lang="scss" scoped>

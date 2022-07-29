@@ -1,142 +1,131 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-
-const chartPagesProps = {
-  averageOdinBlockSizeChart: {
-    chartPageTitle: 'Average Odin Block Size Chart',
-    chartType: 'bar',
-    getDataMethodName: 'getAvgSizePerDays',
-    datasetLabel: 'Block Size',
-    datasetUnit: 'kilobytes',
-    yAxisTitle: 'Block Size in Kilobyte',
-  },
-  averageBlockTimeChart: {
-    chartPageTitle: 'Average Block Time Chart',
-    chartType: 'bar',
-    getDataMethodName: 'getAvgTimePerDays',
-    datasetLabel: 'Block Time',
-    datasetUnit: 'sec',
-    yAxisTitle: 'Block Time in Seconds',
-  },
-  dailyTransactionsVolumeChart: {
-    chartPageTitle: 'Daily Transactions Volume Chart',
-    chartType: 'line',
-    getDataMethodName: 'getTxVolumePerDays',
-    datasetLabel: 'Transactions',
-    yAxisTitle: 'Transactions per Day',
-  },
-  averageTransactionFeeChart: {
-    chartPageTitle: 'Average Transaction Fee Chart',
-    chartType: 'line',
-    getDataMethodName: 'getAvgTxFeePerDays',
-    datasetLabel: 'Average Transaction Fee',
-    yAxisTitle: 'Average Transaction Fee',
-  },
-  averageRequestsChart: {
-    chartPageTitle: 'Total Requests Chart',
-    chartType: 'line',
-    getDataMethodName: 'getRequestsVolumePerDays',
-    datasetLabel: 'Number of request',
-    yAxisTitle: 'Number of requests',
-  },
-}
+import { chartPagesProps } from '@/const'
 
 const routes: Array<RouteRecordRaw> = [
+  { path: '/', name: 'Redirector', redirect: { name: 'Home' } },
+  { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: { name: 'Home' } },
   {
     path: '/',
     name: 'Home',
-    component: () => import('../views/HomeView.vue'),
+    component: () =>
+      import(/* webpackChunkName: "home" */ '../views/HomeView.vue'),
   },
   {
     path: '/blocks',
     name: 'Blocks',
-    component: () => import('../views/BlocksList.vue'),
+    component: () =>
+      import(/* webpackChunkName: "blocks" */ '../views/BlocksList.vue'),
   },
   {
     path: '/blocks/:id',
     name: 'BlocksItem',
-    component: () => import('../views/BlocksItem.vue'),
+    component: () =>
+      import(/* webpackChunkName: "blocks" */ '../views/BlocksItem.vue'),
   },
   {
     path: '/transactions',
     name: 'Transactions',
-    component: () => import('../views/TransactionsView.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "transactions" */ '../views/TransactionsView.vue'
+      ),
   },
   {
     path: '/transactions/:hash',
     name: 'TransactionsItem',
-    component: () => import('../views/TransactionsItem.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "transactions" */ '../views/TransactionsItem.vue'
+      ),
   },
   {
     path: '/validators',
     name: 'Validators',
-    component: () => import('../views/ValidatorsView.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "validators" */ '../views/ValidatorsView.vue'
+      ),
   },
   {
     path: '/validators/:address',
     name: 'ValidatorItem',
-    component: () => import('../views/ValidatorItem.vue'),
+    component: () =>
+      import(/* webpackChunkName: "validators" */ '../views/ValidatorItem.vue'),
   },
   {
-    path: '/top-accounts/',
+    path: '/top-accounts',
     name: 'TopAccounts',
-    component: () => import('../views/TopAccounts.vue'),
+    component: () =>
+      import(/* webpackChunkName: "accounts" */ '../views/TopAccounts.vue'),
   },
   {
-    path: '/account/:hash/',
+    path: '/account/:hash',
     name: 'AccountsItem',
-    component: () => import('../views/AccountsItem.vue'),
+    component: () =>
+      import(/* webpackChunkName: "accounts" */ '../views/AccountsItem.vue'),
   },
   {
-    path: '/charts-stats',
-    name: 'Chart&Stats',
-    component: () => import('../views/ChartsStats.vue'),
-  },
-  {
-    path: '/ibc',
-    name: 'IBC',
-    component: () => import('../views/IbcView.vue'),
-  },
-  {
-    path: '/charts-stats/charts',
-    name: 'charts',
+    path: '/charts',
+    name: 'ChartPage',
+    component: () =>
+      import(/* webpackChunkName: "charts" */ '../views/ChartPage.vue'),
     children: [
+      {
+        path: '',
+        name: 'ChartsStats',
+        component: () =>
+          import(/* webpackChunkName: "charts" */ '../views/ChartsStats.vue'),
+      },
       {
         path: 'validators',
         name: 'BlockValidatorsChart',
-        component: () => import('../views/BlockValidatorsChart.vue'),
+        component: () =>
+          import(
+            /* webpackChunkName: "charts" */ '../views/BlockValidatorsChart.vue'
+          ),
       },
       {
         path: 'average-odin-block-size',
         name: 'AverageOdinBlockSizeChart',
-        component: () => import('../views/ChartView.vue'),
+        component: () =>
+          import(/* webpackChunkName: "charts" */ '../views/ChartView.vue'),
         props: chartPagesProps.averageOdinBlockSizeChart,
       },
       {
         path: 'average-block-time',
         name: 'AverageBlockTimeChart',
-        component: () => import('../views/ChartView.vue'),
+        component: () =>
+          import(/* webpackChunkName: "charts" */ '../views/ChartView.vue'),
         props: chartPagesProps.averageBlockTimeChart,
       },
       {
         path: 'daily-transactions-volume',
         name: 'DailyTransactionsVolumeChart',
-        component: () => import('../views/ChartView.vue'),
+        component: () =>
+          import(/* webpackChunkName: "charts" */ '../views/ChartView.vue'),
         props: chartPagesProps.dailyTransactionsVolumeChart,
       },
       {
         path: 'average-transactions-fee',
         name: 'AverageTransactionFeeChart',
-        component: () => import('../views/ChartView.vue'),
+        component: () =>
+          import(/* webpackChunkName: "charts" */ '../views/ChartView.vue'),
         props: chartPagesProps.averageTransactionFeeChart,
       },
       {
         path: 'total-requests-chart',
         name: 'TotalRequestsChart',
-        component: () => import('../views/ChartView.vue'),
+        component: () =>
+          import(/* webpackChunkName: "charts" */ '../views/ChartView.vue'),
         props: chartPagesProps.averageRequestsChart,
       },
     ],
-    component: () => import('../views/ChartPage.vue'),
+  },
+  {
+    path: '/ibc',
+    name: 'IBC',
+    component: () =>
+      import(/* webpackChunkName: "ibc" */ '../views/IbcView.vue'),
   },
 ]
 

@@ -17,17 +17,10 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-  name: 'LatestList',
-  props: {
-    header: {
-      type: Object,
-      required: true,
-    },
-  },
-})
+<script setup lang="ts">
+defineProps<{
+  header: unknown
+}>()
 </script>
 
 <style lang="scss" scoped>

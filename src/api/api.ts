@@ -64,7 +64,7 @@ class Api {
     this._stargate = await SigningStargateClient.connectWithSigner(
       API_CONFIG.rpc,
       wallet.signer,
-      { registry: this._stargateRegistry }
+      { registry: this._stargateRegistry },
     )
     if (this._stargate) {
       this._wallet = wallet
@@ -79,7 +79,7 @@ class Api {
 
   makeBroadcastCaller<T>(
     typeUrl: string,
-    type: GeneratedType
+    type: GeneratedType,
   ): (msg: T) => Promise<DeliverTxResponse> {
     this._stargateRegistry.register(typeUrl, type)
     return (msg: T): Promise<DeliverTxResponse> => {
@@ -89,14 +89,14 @@ class Api {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   makeQueryCaller<T extends (...args: any) => any>(
-    make: (qc: OdinQueryClient) => T
+    make: (qc: OdinQueryClient) => T,
   ): T {
     return make(this._query)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   makeTendermintCaller<T extends (...args: any) => any>(
-    make: (tc: Tendermint34Client) => T
+    make: (tc: Tendermint34Client) => T,
   ): T {
     return make(this._tendermint)
   }
@@ -115,17 +115,17 @@ class Api {
       setupStakingExtension,
       setupBankExtension,
       setupTelemetryExtension,
-      setupIbcExtension
+      setupIbcExtension,
     )
   }
 
   private async _signAndBroadcast(
-    messages: EncodeObject[]
+    messages: EncodeObject[],
   ): Promise<DeliverTxResponse> {
     const res = await this._stargate.signAndBroadcast(
       this._wallet.account.address,
       messages,
-      { amount: coins(0, 'loki'), gas: '2000000' }
+      { amount: coins(0, 'loki'), gas: '2000000' },
     )
     if (!res || ('code' in res && res.code !== 0)) {
       throw new OdinApiBroadcastError(res as BroadcastTxFailure)

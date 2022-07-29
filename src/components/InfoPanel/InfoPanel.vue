@@ -27,110 +27,98 @@
   </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { CoingeckoCoinsType, Link } from '@/helpers/Types'
 import { callers } from '@/api/callers'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { getAPIDate } from '@/helpers/requests'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
-import InfoPanelData from '@/components/InfoPanel/InfoPanelData.vue'
+import InfoPanelData from './InfoPanelData.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
-export default defineComponent({
-  name: 'InfoPanel',
-  components: { InfoPanelData, CustomLineChart },
-  setup() {
-    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
-    const CHART_DATA_PERIOD = 7
-    const transactionCount = ref<number>()
-    const chartData = ref()
-    const totalData = ref<Array<Link> | null>([])
-    const getTotalTxNumber = async () => {
-      try {
-        const { total_count } = await callers
-          .getTxSearchFromTelemetry(0, 1, 'desc')
-          .then((resp) => resp.json())
-        transactionCount.value = total_count
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-    }
+const CHART_DATA_PERIOD = 7
+const transactionCount = ref()
+const chartData = ref()
+const totalData = ref<Link[]>([])
+const getTotalTxNumber = async () => {
+  try {
+    const { total_count } = await callers
+      .getTxSearchFromTelemetry(0, 1, 'desc')
+      .then(resp => resp.json())
+    transactionCount.value = total_count
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+}
 
-    const getLatestTelemetry = async (): Promise<void> => {
-      const endDate = new Date()
-      const startDate = new Date()
-      startDate.setDate(startDate.getDate() - CHART_DATA_PERIOD)
+const getLatestTelemetry = async (): Promise<void> => {
+  const endDate = new Date()
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - CHART_DATA_PERIOD)
 
-      try {
-        const { data } = await callers.getTxVolumePerDays(startDate, endDate)
+  try {
+    const { data } = await callers.getTxVolumePerDays(startDate, endDate)
 
-        chartData.value = formatDataForCharts(data)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-    }
+    chartData.value = formatDataForCharts(data)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+}
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const getCoinInfo = async (): Promise<void> => {
-      const {
-        data: {
-          name: odinName,
-          market_data: {
-            current_price: { usd: odinUSD },
-            market_cap: { usd: odinMarketCapUSD },
-          },
-        },
-      } = (await getAPIDate(
-        `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`
-      )) as CoingeckoCoinsType
-      const {
-        data: {
-          name: geoDBName,
-          market_data: {
-            current_price: { usd: geoDBUSD },
-            market_cap: { usd: geoDBMarketCapUSD },
-          },
-        },
-      } = (await getAPIDate(
-        `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`
-      )) as CoingeckoCoinsType
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getCoinInfo = async (): Promise<void> => {
+  const {
+    data: {
+      name: odinName,
+      market_data: {
+        current_price: { usd: odinUSD },
+        market_cap: { usd: odinMarketCapUSD },
+      },
+    },
+  } = (await getAPIDate(
+    `${process.env.VUE_APP_COINGECKO_API}/coins/odin-protocol`,
+  )) as CoingeckoCoinsType
+  const {
+    data: {
+      name: geoDBName,
+      market_data: {
+        current_price: { usd: geoDBUSD },
+        market_cap: { usd: geoDBMarketCapUSD },
+      },
+    },
+  } = (await getAPIDate(
+    `${process.env.VUE_APP_COINGECKO_API}/coins/geodb`,
+  )) as CoingeckoCoinsType
 
-      totalData.value = [
-        { title: odinName, text: `$${odinUSD}` },
-        { title: geoDBName, text: `$${geoDBUSD}` },
-        {
-          title: 'Transactions',
-          text: `${transactionCount.value || 'Insufficient data'}`,
-        },
-        {
-          title: 'Market CAP',
-          text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
-        },
-      ]
-    }
+  totalData.value = [
+    { title: odinName, text: `$${odinUSD}` },
+    { title: geoDBName, text: `$${geoDBUSD}` },
+    {
+      title: 'Transactions',
+      text: `${transactionCount.value || 'Insufficient data'}`,
+    },
+    {
+      title: 'Market CAP',
+      text: `$${odinMarketCapUSD + geoDBMarketCapUSD}`,
+    },
+  ]
+}
 
-    onMounted(async () => {
-      lockLoading()
-      try {
-        await getTotalTxNumber()
-        // Don`t work request
-        // await getCoinInfo()
-        await getLatestTelemetry()
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    })
-
-    return {
-      totalData,
-      chartData,
-      isLoading,
-    }
-  },
+onMounted(async () => {
+  lockLoading()
+  try {
+    await getTotalTxNumber()
+    // Don`t work request
+    // await getCoinInfo()
+    await getLatestTelemetry()
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
 })
 </script>
 

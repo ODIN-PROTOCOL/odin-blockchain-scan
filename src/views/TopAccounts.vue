@@ -53,75 +53,57 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { callers } from '@/api/callers'
-import AccountsLine from '@/components/AccountsLine.vue'
-import { defineComponent, ref, onMounted } from 'vue'
 import { TempBalanceType } from '@/helpers/Types'
-import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
-import SkeletonTable from '@/components/SkeletonTable.vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import AccountsLine from '@/components/AccountsLine.vue'
+import AppPagination from '@/components/AppPagination/AppPagination.vue'
+import SkeletonTable from '@/components/SkeletonTable.vue'
 
-export default defineComponent({
-  name: 'TopAccounts',
-  components: { AppPagination, AccountsLine, SkeletonTable },
-  setup() {
-    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const ITEMS_PER_PAGE = 20
-    const accounts = ref<Array<TempBalanceType>>([])
-    const filteredAccounts = ref<Array<TempBalanceType>>([])
-    const currentPage = ref<number>(1)
-    const totalPages = ref<number>(0)
-    const headerTitles = [
-      { title: 'Rank' },
-      { title: 'Address' },
-      { title: 'ODIN balance' },
-      { title: 'ODIN token percentage' },
-      { title: 'Transaction count' },
-    ]
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+const ITEMS_PER_PAGE = 20
+const accounts = ref<Array<TempBalanceType>>([])
+const filteredAccounts = ref<Array<TempBalanceType>>([])
+const currentPage = ref<number>(1)
+const totalPages = ref<number>(0)
+const headerTitles = [
+  { title: 'Rank' },
+  { title: 'Address' },
+  { title: 'ODIN balance' },
+  { title: 'ODIN token percentage' },
+  { title: 'Transaction count' },
+]
 
-    const getAccounts = async (): Promise<void> => {
-      lockLoading()
-      try {
-        accounts.value = await callers
-          .getTopAccounts()
-          .then((resp) => resp.json())
-        totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
-        await filterAccounts(currentPage.value)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    }
+const getAccounts = async (): Promise<void> => {
+  lockLoading()
+  try {
+    accounts.value = await callers.getTopAccounts().then(resp => resp.json())
+    totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
+    await filterAccounts(currentPage.value)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
+}
 
-    const filterAccounts = async (newPage: number): Promise<void> => {
-      let tempArr = accounts.value
-      if (newPage === 1) {
-        filteredAccounts.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
-      } else {
-        filteredAccounts.value = tempArr?.slice(
-          (newPage - 1) * ITEMS_PER_PAGE,
-          (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-        )
-      }
-      currentPage.value = newPage
-    }
+const filterAccounts = async (newPage: number): Promise<void> => {
+  let tempArr = accounts.value
+  if (newPage === 1) {
+    filteredAccounts.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
+  } else {
+    filteredAccounts.value = tempArr?.slice(
+      (newPage - 1) * ITEMS_PER_PAGE,
+      (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
+    )
+  }
+  currentPage.value = newPage
+}
 
-    onMounted(async (): Promise<void> => {
-      await getAccounts()
-    })
-
-    return {
-      ITEMS_PER_PAGE,
-      totalPages,
-      currentPage,
-      filteredAccounts,
-      accounts,
-      isLoading,
-      headerTitles,
-    }
-  },
+onMounted(async (): Promise<void> => {
+  await getAccounts()
 })
 </script>
 

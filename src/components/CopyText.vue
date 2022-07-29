@@ -18,48 +18,42 @@
   </div>
 </template>
 
-<script lang="ts">
-import { NumLike, NumLikeTypes, toStr } from '@/helpers/casts'
-import { computed, defineComponent, PropType, ref, toRef } from 'vue'
+<script setup lang="ts">
+import { computed, ref, toRef } from 'vue'
+import { NumLike, toStr } from '@/helpers/casts'
 import { textToClipboard } from '@/helpers/clipboard'
 
-export default defineComponent({
-  name: 'CopyText',
-  props: {
-    text: { type: NumLikeTypes as PropType<NumLike>, required: true },
-    displayText: { type: NumLikeTypes as PropType<NumLike>, required: false },
-    title: { type: NumLikeTypes as PropType<NumLike>, required: false },
-    className: { type: String, required: false },
-  },
-  setup(props) {
-    const _text = toRef(props, 'text')
-    const _displayText = toRef(props, 'displayText')
-    const _title = toRef(props, 'title')
+const props = defineProps<{
+  text: NumLike
+  displayText?: NumLike
+  title?: NumLike
+  className?: string
+}>()
 
-    const displayValue = computed(() =>
-      toStr((_displayText.value as NumLike) ?? _text.value)
-    )
-    const displayTitle = computed(() =>
-      _title.value ? toStr(_title.value as NumLike) : null
-    )
+const _text = toRef(props, 'text')
+const _displayText = toRef(props, 'displayText')
+const _title = toRef(props, 'title')
 
-    const isCopiedShown = ref(false)
-    const toClipboard = async () => {
-      if (!_text.value) return
-      try {
-        await textToClipboard(String(_text.value))
-        isCopiedShown.value = true
-        setTimeout(() => {
-          isCopiedShown.value = false
-        }, 2000)
-      } catch (error) {
-        // noop
-      }
-    }
+const displayValue = computed(() =>
+  toStr((_displayText.value as NumLike) ?? _text.value),
+)
+const displayTitle = computed(() =>
+  _title.value ? toStr(_title.value as NumLike) : null,
+)
 
-    return { displayValue, displayTitle, toClipboard, isCopiedShown }
-  },
-})
+const isCopiedShown = ref(false)
+const toClipboard = async () => {
+  if (!_text.value) return
+  try {
+    await textToClipboard(String(_text.value))
+    isCopiedShown.value = true
+    setTimeout(() => {
+      isCopiedShown.value = false
+    }, 2000)
+  } catch (error) {
+    // noop
+  }
+}
 </script>
 
 <style scoped lang="scss">

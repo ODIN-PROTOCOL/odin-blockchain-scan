@@ -17,19 +17,19 @@ export interface ValidatorsResponse {
         slash_fraction_downtime: string
         slash_fraction_double_sign: string
       }
-    }
+    },
   ]
   stakingPool: [
     {
       bondedTokens: string
-    }
+    },
   ]
   validator: [ValidatorsInfo]
   validatorDescriptions: [
     {
       moniker: string
       details: string
-    }
+    },
   ]
 }
 export interface ValidatorsInfo {
@@ -38,13 +38,13 @@ export interface ValidatorsInfo {
       status: number
       jailed: boolean
       height: number
-    }
+    },
   ]
   validatorSigningInfos: [
     {
       missedBlocksCounter: number
       tombstoned: boolean
-    }
+    },
   ]
   validatorInfo: {
     delegatorShares: string
@@ -54,11 +54,11 @@ export interface ValidatorsInfo {
   validatorVotingPowers: [
     {
       votingPower: number
-    }
+    },
   ]
   validatorCommissions: [
     {
       commission: number
-    }
+    },
   ]
 }

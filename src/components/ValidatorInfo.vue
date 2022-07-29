@@ -70,7 +70,7 @@
             {{
               $getPercentOutOfNumber(
                 validator.delegatorShares,
-                validator.tokens
+                validator.tokens,
               )
             }}
           </span>
@@ -101,7 +101,7 @@
           <span class="validator-info__description-item-value">
             {{
               $getPrecisePercents(
-                validator.commission.commissionRates.maxChangeRate
+                validator.commission.commissionRates.maxChangeRate,
               )
             }}
           </span>
@@ -111,34 +111,26 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { ValidatorDecoded } from '@/helpers/validatorsHelpers'
 import { isMobile } from '@/helpers/helpers'
 import { callers } from '@/api/callers'
 
-export default defineComponent({
-  components: {},
-  props: {
-    validator: { type: Object as PropType<ValidatorDecoded>, required: true },
-  },
-  setup(props) {
-    const proposedBlocksCount = ref(0)
+const props = defineProps<{
+  validator: ValidatorDecoded
+}>()
 
-    const getProposedBlocks = async () => {
-      const response = await callers
-        .getProposedBlocks(props.validator.operatorAddress, 0, 1)
-        .then((req) => req.json())
-      proposedBlocksCount.value = response?.total_count || 0
-    }
-    onMounted(async () => {
-      await getProposedBlocks()
-    })
-    return {
-      isMobile,
-      proposedBlocksCount,
-    }
-  },
+const proposedBlocksCount = ref(0)
+
+const getProposedBlocks = async () => {
+  const response = await callers
+    .getProposedBlocks(props.validator.operatorAddress, 0, 1)
+    .then(req => req.json())
+  proposedBlocksCount.value = response?.total_count || 0
+}
+onMounted(async () => {
+  await getProposedBlocks()
 })
 </script>
 

@@ -139,8 +139,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
@@ -149,51 +149,23 @@ import { prepareTransaction } from '@/helpers/helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
+import { TOOLTIP_INFO, TX_STATUSES } from '@/const'
 
-const TOOLTIP_INFO = {
-  time: 'The date and time at which a transaction is validated.',
-  status:
-    'The status of the transaction. A Status code indicating if the top-level call succeeded or failed.',
-  block:
-    'The number of the block in which the transaction was recorded. Block confirmation indicate how many blocks since the transaction are validated.',
-  gas: 'The receiving party of the transaction (could be a contract address).',
-  fee: 'Amount paid to the validator for validation of the transaction.',
-  memo: 'Amount paid to the validator for validation of the transaction.',
-  total: 'The amount being transacted in ODIN and fiat value.',
+const route: RouteLocationNormalizedLoaded = useRoute()
+const tx = ref<DecodedTxData>()
+
+const getTransactions = async () => {
+  try {
+    const res = await callers.getTxForTxDetailsPage(String(route.params.hash))
+    const preparedTx = await prepareTransaction([res.data.result])
+    tx.value = preparedTx[0]
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
 }
 
-const TX_STATUSES = {
-  SUCCESS: 'Success',
-  FAILED: 'Failed',
-}
-
-export default defineComponent({
-  components: { BackButton, CopyButton, TitledLink },
-  setup() {
-    const route: RouteLocationNormalizedLoaded = useRoute()
-    const tx = ref<DecodedTxData>()
-
-    const getTransactions = async () => {
-      try {
-        const res = await callers.getTxForTxDetailsPage(
-          String(route.params.hash)
-        )
-        const preparedTx = await prepareTransaction([res.data.result])
-        tx.value = preparedTx[0]
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-    }
-
-    onMounted(async () => {
-      await getTransactions()
-    })
-    return {
-      TOOLTIP_INFO,
-      TX_STATUSES,
-      tx,
-    }
-  },
+onMounted(async () => {
+  await getTransactions()
 })
 </script>
 

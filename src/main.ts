@@ -56,7 +56,7 @@ async function _main() {
 }
 
 let app: App<Element>
-_main().then((_app) => {
+_main().then(_app => {
   if (_app) app = _app
 })
 

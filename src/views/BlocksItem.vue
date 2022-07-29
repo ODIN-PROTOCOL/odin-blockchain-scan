@@ -11,7 +11,7 @@
         <div class="blocks-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
           <span class="blocks-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.blockHeight }}
+            {{ BLOCK_TOOLTIP_INFO.blockHeight }}
           </span>
         </div>
         <span class="blocks-item__table-row-title">Block height</span>
@@ -22,7 +22,7 @@
         <div class="blocks-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
           <span class="blocks-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.blockHash }}
+            {{ BLOCK_TOOLTIP_INFO.blockHash }}
           </span>
         </div>
         <span class="blocks-item__table-row-title">Block hash</span>
@@ -33,7 +33,7 @@
         <div class="blocks-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
           <span class="blocks-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.blockParentHash }}
+            {{ BLOCK_TOOLTIP_INFO.blockParentHash }}
           </span>
         </div>
         <span class="blocks-item__table-row-title">Block parent hash</span>
@@ -46,7 +46,7 @@
         <div class="blocks-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
           <span class="blocks-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.timestamp }}
+            {{ BLOCK_TOOLTIP_INFO.timestamp }}
           </span>
         </div>
         <span class="blocks-item__table-row-title">Timestamp</span>
@@ -56,7 +56,7 @@
         <div class="blocks-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
           <span class="blocks-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.blocksTransactions }}
+            {{ BLOCK_TOOLTIP_INFO.blocksTransactions }}
           </span>
         </div>
         <span class="blocks-item__table-row-title">Block`s transactions</span>
@@ -79,7 +79,7 @@
         <div class="blocks-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
           <span class="blocks-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.blockCreator }}
+            {{ BLOCK_TOOLTIP_INFO.blockCreator }}
           </span>
         </div>
         <span class="blocks-item__table-row-title">Block creator</span>
@@ -94,7 +94,7 @@
         <div class="blocks-item__table-row-info">
           <img src="~@/assets/icons/info.svg" alt="info" />
           <span class="blocks-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.blockSize }}
+            {{ BLOCK_TOOLTIP_INFO.blockSize }}
           </span>
         </div>
         <span class="blocks-item__table-row-title">Block size</span>
@@ -106,83 +106,53 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { toHex } from '@cosmjs/encoding'
 import { formatDate } from '@/helpers/formatters'
+import { prepareTransaction } from '@/helpers/helpers'
+import { BLOCK_TOOLTIP_INFO } from '@/const'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { prepareTransaction } from '@/helpers/helpers'
 
-const TOOLTIP_INFO = {
-  blockHeight: `Also known as Block Number. The block height,
-    which indicates length of the blockchain, increases after 
-    the addition of the new the new block.`,
-  blockHash: 'The hash of the block header of the current block.',
-  blockParentHash:
-    'The hash of the block from which this block was generated, also known as its parent block.',
-  timestamp: 'The date and time at which a block is validated.',
-  blocksTransactions: 'List of transactions in the block.',
-  blockCreator:
-    'Validator who successfully included the block onto the blockchain.',
-  blockSize: 'The block size is actually determined by the block`s gas limit.',
+const route: RouteLocationNormalizedLoaded = useRoute()
+const blockInfo = ref()
+const blockHeight = ref(route.params.id)
+const blockHash = ref('-')
+const blockParentHash = ref('-')
+const blockTimestamp = ref()
+const blocksTransactions = ref()
+const blockCreator = ref('-')
+const blockSize = ref()
+const getBlock = async () => {
+  try {
+    blockInfo.value = await callers.getBlock(Number(route.params.id))
+    blockHash.value = '0x' + toHex(blockInfo.value.blockId.hash)
+    blockParentHash.value =
+      '0x' + toHex(blockInfo.value.block.header.lastBlockId.hash)
+    blockTimestamp.value = formatDate(blockInfo.value.block.header.time)
+    const res = await callers.getBlockSize(Number(route.params.id))
+    blockSize.value = res?.data?.block?.BlockSize
+    const validatorData = await callers.getValidatorByConsensusKey(
+      toHex(blockInfo.value.block.header.proposerAddress),
+    )
+
+    blockCreator.value = validatorData.data.result.result.operator_address
+    const { data } = await callers
+      .getTxSearchFromTelemetry(0, 30, 'desc', Number(route.params.id))
+      .then(resp => resp.json())
+    blocksTransactions.value = await prepareTransaction(data)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
 }
 
-export default defineComponent({
-  components: { BackButton, CopyButton, TitledLink },
-  setup() {
-    const route: RouteLocationNormalizedLoaded = useRoute()
-    const blockInfo = ref()
-    const blockHeight = ref(route.params.id)
-    const blockHash = ref('-')
-    const blockParentHash = ref('-')
-    const blockTimestamp = ref()
-    const blocksTransactions = ref()
-    const blockCreator = ref('-')
-    const blockSize = ref()
-    const getBlock = async () => {
-      try {
-        blockInfo.value = await callers.getBlock(Number(route.params.id))
-        blockHash.value = '0x' + toHex(blockInfo.value.blockId.hash)
-        blockParentHash.value =
-          '0x' + toHex(blockInfo.value.block.header.lastBlockId.hash)
-        blockTimestamp.value = formatDate(blockInfo.value.block.header.time)
-        const res = await callers.getBlockSize(Number(route.params.id))
-        blockSize.value = res?.data?.block?.BlockSize
-        const validatorData = await callers.getValidatorByConsensusKey(
-          toHex(blockInfo.value.block.header.proposerAddress)
-        )
-
-        blockCreator.value = validatorData.data.result.result.operator_address
-        const { data } = await callers
-          .getTxSearchFromTelemetry(0, 30, 'desc', Number(route.params.id))
-          .then((resp) => resp.json())
-        blocksTransactions.value = await prepareTransaction(data)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-    }
-
-    onMounted(async () => {
-      await getBlock()
-    })
-
-    return {
-      TOOLTIP_INFO,
-      blockInfo,
-      blockHeight,
-      blockHash,
-      blockParentHash,
-      blockTimestamp,
-      blocksTransactions,
-      blockCreator,
-      blockSize,
-    }
-  },
+onMounted(async () => {
+  await getBlock()
 })
 </script>
 

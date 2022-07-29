@@ -46,7 +46,7 @@ class FallbackStorage implements Storage {
 
 export const storage = new StorageWrapper(
   _getStorage('sessionStorage') || new FallbackStorage(),
-  'odin'
+  'odin',
 )
 
 function _getStorage(type: string): Storage | null {

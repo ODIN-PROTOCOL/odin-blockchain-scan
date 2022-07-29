@@ -5,13 +5,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import LatestStats from '@/components/LatestList/LatestStats.vue'
 import InfoPanel from '@/components/InfoPanel/InfoPanel.vue'
-
-export default defineComponent({
-  name: 'HomeView',
-  components: { LatestStats, InfoPanel },
-})
 </script>

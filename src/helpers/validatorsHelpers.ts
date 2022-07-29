@@ -16,10 +16,10 @@ export type ValidatorInfoModify = Modify<
 >
 
 export const isActiveValidator = async (
-  validatorAddress: string
+  validatorAddress: string,
 ): Promise<boolean> => {
   const response = await callers
     .getValidatorStatus(validatorAddress)
-    .then((req) => req.status?.isActive)
+    .then(req => req.status?.isActive)
   return Boolean(response)
 }

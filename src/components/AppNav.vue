@@ -46,90 +46,80 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
+<script setup lang="ts">
+import { computed, ref } from 'vue'
 import LinksDropdown from '@/components/LinksDropdown.vue'
 import UserWidget from '@/components/UserWidget.vue'
 import { LinkList } from '@/helpers/Types'
 import { START_VALUE } from '@/api/api-config'
 import { isMobile } from '@/helpers/helpers'
-
-export default defineComponent({
-  name: 'AppNav',
-  components: {
-    LinksDropdown,
-    UserWidget,
+enum EVENTS {
+  closeBurger = 'close-burger',
+}
+withDefaults(
+  defineProps<{
+    isOpen?: boolean
+  }>(),
+  {
+    isOpen: false,
   },
-  props: {
-    isOpen: { type: Boolean, default: false },
-  },
+)
 
-  setup(_, { emit }) {
-    const BlockchainList: LinkList = {
-      name: 'Blockchain',
-      links: [
-        {
-          to: 'Transactions',
-          text: 'Transactions',
-        },
-        {
-          to: 'Blocks',
-          text: 'Blocks',
-        },
-        {
-          to: 'Validators',
-          text: 'Validators',
-        },
-        {
-          to: 'TopAccounts',
-          text: 'Top Accounts',
-        },
-      ],
-    }
+const BlockchainList: LinkList = {
+  name: 'Blockchain',
+  links: [
+    {
+      to: '/transactions',
+      text: 'Transactions',
+    },
+    {
+      to: '/blocks',
+      text: 'Blocks',
+    },
+    {
+      to: '/validators',
+      text: 'Validators',
+    },
+    {
+      to: '/top-accounts',
+      text: 'Top Accounts',
+    },
+  ],
+}
+const emit = defineEmits<{
+  (e: EVENTS.closeBurger): void
+}>()
+const ResourceList: LinkList = {
+  name: 'Resources',
+  links: [
+    {
+      to: '/charts',
+      text: 'Charts & Stats',
+    },
+  ],
+}
+const isBlockchainDropdownOpen = ref(false)
+const isResourceDropdownOpen = ref(false)
 
-    const ResourceList: LinkList = {
-      name: 'Resources',
-      links: [
-        {
-          to: 'Chart&Stats',
-          text: 'Charts & Stats',
-        },
-      ],
-    }
-    const isBlockchainDropdownOpen = ref(false)
-    const isResourceDropdownOpen = ref(false)
-    const closeBurger = () => {
-      emit('closeBurger')
-    }
-    const openDropdownResource = () => {
-      if (isMobile()) {
-        isResourceDropdownOpen.value = !isResourceDropdownOpen.value
-        isBlockchainDropdownOpen.value = false
-      }
-    }
-    const openDropdownBlockchain = () => {
-      if (isMobile()) {
-        isBlockchainDropdownOpen.value = !isBlockchainDropdownOpen.value
-        isResourceDropdownOpen.value = false
-      }
-    }
+const closeBurger = () => {
+  emit(EVENTS.closeBurger)
+}
 
-    const isMainnet = computed(() => {
-      return START_VALUE.server === 'mainnet'
-    })
+const openDropdownResource = () => {
+  if (isMobile()) {
+    isResourceDropdownOpen.value = !isResourceDropdownOpen.value
+    isBlockchainDropdownOpen.value = false
+  }
+}
+const openDropdownBlockchain = () => {
+  if (isMobile()) {
+    isBlockchainDropdownOpen.value = !isBlockchainDropdownOpen.value
+    isResourceDropdownOpen.value = false
+  }
+}
 
-    return {
-      BlockchainList,
-      ResourceList,
-      closeBurger,
-      isMainnet,
-      START_VALUE,
-      isBlockchainDropdownOpen,
-      isResourceDropdownOpen,
-      openDropdownBlockchain,
-      openDropdownResource,
-    }
-  },
+const isMainnet = computed(() => {
+  return START_VALUE.server === 'mainnet'
 })
 </script>
 

@@ -16,7 +16,7 @@ const LOKI_MULTIPLIER = 1000000
 
 export function convertLokiToOdin(
   amount: string | undefined,
-  options?: ConverterOptions
+  options?: ConverterOptions,
 ): string {
   if (!amount) return '-'
 
