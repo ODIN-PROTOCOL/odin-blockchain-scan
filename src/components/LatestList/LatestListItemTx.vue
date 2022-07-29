@@ -45,27 +45,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+<script setup lang="ts">
 import { DecodedTxData } from '@/helpers/Types'
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import TitledLink from '@/components/TitledLink.vue'
 
-export default defineComponent({
-  name: 'LatestListItemTx',
-  components: { TitledLink },
-  props: { tx: { type: Object as PropType<DecodedTxData>, required: true } },
-  setup() {
-    const toDay = ref<Date>(new Date())
-
-    return {
-      diffDays,
-      cropText,
-      getDay,
-      toDay,
-    }
-  },
-})
+defineProps<{
+  tx: DecodedTxData
+}>()
+const toDay = new Date()
 </script>
 
 <style scoped lang="scss">

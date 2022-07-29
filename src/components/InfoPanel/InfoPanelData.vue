@@ -11,17 +11,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-  name: 'InfoPanelData',
-  props: {
-    infoPanelRows: {
-      type: Array,
-      required: true,
-    },
-  },
-})
+<script setup lang="ts">
+import { Link } from '@/helpers/Types'
+defineProps<{
+  infoPanelRows: Link[]
+}>()
 </script>
 <style lang="scss" scoped>
 .info-panel-data {

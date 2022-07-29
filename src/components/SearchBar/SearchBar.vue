@@ -79,15 +79,11 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue'
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue'
 import { callers } from '@/api/callers'
-import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import { isMobile, prepareTransaction } from '@/helpers/helpers'
 import { Router, useRouter } from 'vue-router'
-import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
-import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
-import AccountItem from '@/components/SearchBar/AccountItem.vue'
 import {
   DecodedTxData,
   SearchResultType,
@@ -96,150 +92,132 @@ import {
 } from '@/helpers/Types'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
+import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
+import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
+import AccountItem from '@/components/SearchBar/AccountItem.vue'
 
-export default defineComponent({
-  name: 'SearchBar',
-  components: { BlockResultItem, TransactionItem, AccountItem },
-  setup: function () {
-    const filters = ref<Array<string>>([
-      'All Filters',
-      'Block',
-      'Tx hash',
-      'Account',
-    ])
-    const inputPlaceholder = computed(() =>
-      isMobile() ? 'Search' : 'Searching by account address, block, Tx hash'
+const filters = ref<Array<string>>([
+  'All Filters',
+  'Block',
+  'Tx hash',
+  'Account',
+])
+const inputPlaceholder = computed(() =>
+  isMobile() ? 'Search' : 'Searching by account address, block, Tx hash',
+)
+const activeFilter = ref<string>(filters.value[0])
+const searchedText = ref<string | null>('')
+const searchResult = ref<Array<SearchResultType> | null>(null)
+watch(activeFilter, () => {
+  searchResult.value = null
+})
+
+const getTransactions = async (): Promise<Array<DecodedTxData>> => {
+  const TRANSACTION_HASH_LENGTH = 64
+  const transactionToSearch = String(searchedText.value)
+  if (
+    !transactionToSearch ||
+    transactionToSearch.length < TRANSACTION_HASH_LENGTH
+  ) {
+    return []
+  }
+
+  try {
+    const res = await callers.getTxForTxDetailsPage(String(transactionToSearch))
+    return await prepareTransaction([res.data.result])
+  } catch {
+    return []
+  }
+}
+
+const getAccount = async (): Promise<Array<TempSearchAccountInfoType>> => {
+  const ACCOUNT_LENGTH = 43
+  const accountToSearch = String(searchedText.value)
+  if (
+    !accountToSearch ||
+    !accountToSearch.startsWith('odin') ||
+    accountToSearch.length < ACCOUNT_LENGTH
+  ) {
+    return []
+  }
+  try {
+    const geoBalance = await callers.getUnverifiedBalances(
+      accountToSearch,
+      'minigeo',
     )
-    const activeFilter = ref<string>(filters.value[0])
-    const searchedText = ref<string | null>('')
-    const searchResult = ref<Array<SearchResultType> | null>(null)
-    watch(activeFilter, () => {
-      searchResult.value = null
-    })
+    const odinBalance = await callers.getUnverifiedBalances(
+      accountToSearch,
+      'loki',
+    )
+    return [
+      {
+        address: accountToSearch,
+        geoBalance: { ...geoBalance },
+        odinBalance: { ...odinBalance },
+      },
+    ]
+  } catch {
+    return []
+  }
+}
 
-    const getTransactions = async (): Promise<Array<DecodedTxData>> => {
-      const TRANSACTION_HASH_LENGTH = 64
-      const transactionToSearch = String(searchedText.value)
-      if (
-        !transactionToSearch ||
-        transactionToSearch.length < TRANSACTION_HASH_LENGTH
-      ) {
-        return []
-      }
+const getBlock = async (): Promise<Array<TransformedBlocks>> => {
+  try {
+    const { blockMetas } = await callers.getBlockchain(
+      Number(searchedText.value),
+      Number(searchedText.value),
+    )
+    return await prepareBlocks(blockMetas)
+  } catch {
+    return []
+  }
+}
 
-      try {
-        const res = await callers.getTxForTxDetailsPage(
-          String(transactionToSearch)
-        )
-        return await prepareTransaction([res.data.result])
-      } catch {
-        return []
-      }
+const searchBy = async (): Promise<Array<SearchResultType> | null> => {
+  if (searchedText.value === '') return (searchResult.value = null)
+  try {
+    if (activeFilter.value === 'Blocks') {
+      return (searchResult.value = [
+        {
+          blocks: await getBlock(),
+        },
+      ])
     }
-
-    const getAccount = async (): Promise<Array<TempSearchAccountInfoType>> => {
-      const ACCOUNT_LENGTH = 43
-      const accountToSearch = String(searchedText.value)
-      if (
-        !accountToSearch ||
-        !accountToSearch.startsWith('odin') ||
-        accountToSearch.length < ACCOUNT_LENGTH
-      ) {
-        return []
-      }
-      try {
-        const geoBalance = await callers.getUnverifiedBalances(
-          accountToSearch,
-          'minigeo'
-        )
-        const odinBalance = await callers.getUnverifiedBalances(
-          accountToSearch,
-          'loki'
-        )
-        return [
-          {
-            address: accountToSearch,
-            geoBalance: { ...geoBalance },
-            odinBalance: { ...odinBalance },
-          },
-        ]
-      } catch {
-        return []
-      }
+    if (activeFilter.value === 'Transaction') {
+      return (searchResult.value = [
+        {
+          transactions: await getTransactions(),
+        },
+      ])
     }
-
-    const getBlock = async (): Promise<Array<TransformedBlocks>> => {
-      try {
-        const { blockMetas } = await callers.getBlockchain(
-          Number(searchedText.value),
-          Number(searchedText.value)
-        )
-        return await prepareBlocks(blockMetas)
-      } catch {
-        return []
-      }
+    if (activeFilter.value === 'Account') {
+      return (searchResult.value = [
+        {
+          accounts: await getAccount(),
+        },
+      ])
     }
+    searchResult.value = [
+      {
+        blocks: await getBlock(),
+        transactions: await getTransactions(),
+        accounts: await getAccount(),
+      },
+    ]
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+    searchResult.value = null
+  }
+  return null
+}
 
-    const searchBy = async (): Promise<Array<SearchResultType> | null> => {
-      if (searchedText.value === '') return (searchResult.value = null)
-      try {
-        if (activeFilter.value === 'Blocks') {
-          return (searchResult.value = [
-            {
-              blocks: await getBlock(),
-            },
-          ])
-        }
-        if (activeFilter.value === 'Transaction') {
-          return (searchResult.value = [
-            {
-              transactions: await getTransactions(),
-            },
-          ])
-        }
-        if (activeFilter.value === 'Account') {
-          return (searchResult.value = [
-            {
-              accounts: await getAccount(),
-            },
-          ])
-        }
-        searchResult.value = [
-          {
-            blocks: await getBlock(),
-            transactions: await getTransactions(),
-            accounts: await getAccount(),
-          },
-        ]
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-        searchResult.value = null
-      }
-      return null
-    }
+const clearText = (): void => {
+  searchedText.value = ''
+}
 
-    const clearText = (): void => {
-      searchedText.value = ''
-    }
-
-    const router: Router = useRouter()
-    router.beforeEach(() => {
-      searchResult.value = null
-    })
-
-    return {
-      filters,
-      activeFilter,
-      searchedText,
-      searchBy,
-      searchResult,
-      diffDays,
-      cropText,
-      getDay,
-      inputPlaceholder,
-      clearText,
-    }
-  },
+const router: Router = useRouter()
+router.beforeEach(() => {
+  searchResult.value = null
 })
 </script>
 <style lang="scss" scoped>
@@ -329,4 +307,3 @@ export default defineComponent({
   }
 }
 </style>
-odinvaloper1cgfdwtrqfdrzh4z8rkcyx8g4jv22v8wgav3rjx

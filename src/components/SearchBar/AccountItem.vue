@@ -29,38 +29,22 @@
   </template>
 </template>
 
-<script lang="ts">
-import { toHexFunc } from '@/helpers/helpers'
-import { computed, defineComponent, ref } from 'vue'
-import { diffDays, cropText, getDay } from '@/helpers/formatters'
-import TitledLink from '@/components/TitledLink.vue'
+<script setup lang="ts">
+import { computed } from 'vue'
 import { bigMath } from '@/helpers/bigMath'
+import { TempSearchAccountInfoType } from '@/helpers/Types'
+import TitledLink from '@/components/TitledLink.vue'
 
-export default defineComponent({
-  name: 'AccountItem',
-  components: { TitledLink },
-  props: { result: { type: Object, required: true } },
-  setup(props) {
-    const toDay = ref<Date>(new Date())
+const props = defineProps<{
+  result: TempSearchAccountInfoType
+}>()
 
-    const geoBalance = computed(() =>
-      bigMath.bigConvectOdinAndGeo(props.result.geoBalance.amount)
-    )
-    const odinBalance = computed(() =>
-      bigMath.bigConvectOdinAndGeo(props.result.odinBalance.amount)
-    )
-
-    return {
-      toDay,
-      diffDays,
-      cropText,
-      getDay,
-      toHexFunc,
-      geoBalance,
-      odinBalance,
-    }
-  },
-})
+const geoBalance = computed(() =>
+  bigMath.bigConvectOdinAndGeo(props.result.geoBalance.amount),
+)
+const odinBalance = computed(() =>
+  bigMath.bigConvectOdinAndGeo(props.result.odinBalance.amount),
+)
 </script>
 
 <style lang="scss" scoped>

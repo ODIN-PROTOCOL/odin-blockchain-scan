@@ -7,28 +7,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { copyValue } from '@/helpers/helpers'
 
-export default defineComponent({
-  props: {
-    text: { type: String, required: true },
-  },
-  setup: function (props) {
-    const isCopiedShown = ref(false)
+const props = defineProps<{
+  text: string
+}>()
 
-    const copy = () => {
-      copyValue(props.text)
-      isCopiedShown.value = true
-      setTimeout(() => {
-        isCopiedShown.value = false
-      }, 1300)
-    }
+const isCopiedShown = ref(false)
 
-    return { copy, isCopiedShown }
-  },
-})
+const copy = () => {
+  copyValue(props.text)
+  isCopiedShown.value = true
+  setTimeout(() => {
+    isCopiedShown.value = false
+  }, 1300)
+}
 </script>
 
 <style lang="scss" scoped>

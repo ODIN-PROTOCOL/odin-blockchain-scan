@@ -4,16 +4,8 @@
   </a>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import { START_VALUE } from '@/api/api-config'
-
-export default defineComponent({
-  name: 'UserWidget',
-  setup() {
-    return { START_VALUE }
-  },
-})
 </script>
 
 <style scoped lang="scss">

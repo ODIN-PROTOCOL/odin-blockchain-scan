@@ -31,7 +31,7 @@ export class Pagination {
     offset: number,
     limit: number,
     desc: boolean,
-    countTotal: boolean
+    countTotal: boolean,
   ) {
     this.offset = new Long(offset)
     this.limit = new Long(limit)
@@ -77,7 +77,7 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
   return {
     telemetry: {
       unverified: {
-        topBalances: async (args) => {
+        topBalances: async args => {
           return await queryService.TopBalances({
             denom: args.denom,
             pagination: {
@@ -88,7 +88,7 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
             desc: args.desc,
           })
         },
-        extendedValidators: async (args) => {
+        extendedValidators: async args => {
           return await queryService.ExtendedValidators({
             status: args.status,
             pagination: {
@@ -99,31 +99,31 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
             },
           })
         },
-        avgBlockSize: async (args) => {
+        avgBlockSize: async args => {
           return await queryService.AvgBlockSize({
             startDate: args.startDate,
             endDate: args.endDate,
           })
         },
-        avgBlockTime: async (args) => {
+        avgBlockTime: async args => {
           return await queryService.AvgBlockTime({
             startDate: args.startDate,
             endDate: args.endDate,
           })
         },
-        txVolume: async (args) => {
+        txVolume: async args => {
           return await queryService.TxVolume({
             startDate: args.startDate,
             endDate: args.endDate,
           })
         },
-        avgTxFee: async (args) => {
+        avgTxFee: async args => {
           return await queryService.AvgTxFee({
             startDate: args.startDate,
             endDate: args.endDate,
           })
         },
-        topValidators: async (args) => {
+        topValidators: async args => {
           return await queryService.TopValidators({
             startDate: args.startDate,
             endDate: args.endDate,
@@ -135,7 +135,7 @@ export function setupTelemetryExtension(base: QueryClient): TelemetryExt {
             },
           })
         },
-        validatorBlocks: async (args) => {
+        validatorBlocks: async args => {
           return await queryService.ValidatorBlocks({
             validatorAddress: args.validatorAddress,
             pagination: {

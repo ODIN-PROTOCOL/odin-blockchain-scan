@@ -45,88 +45,50 @@
   </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
-import { diffDays, cropText, getDay } from '@/helpers/formatters'
-
-import LatestList from '@/components/LatestList/LatestList.vue'
-import LatestListItemBlock from '@/components/LatestList/LatestListItemBlock.vue'
-import LatestListItemTx from '@/components/LatestList/LatestListItemTx.vue'
-import SkeletonLatestListItemTx from '@/components/skeletonComponents/SkeletonLatestListItemTx.vue'
-import SkeletonLatestListItemBlock from '@/components/skeletonComponents/SkeletonLatestListItemBlock.vue'
-
-import { prepareTransaction, toHexFunc } from '@/helpers/helpers'
+import { prepareTransaction } from '@/helpers/helpers'
 import { DecodedTxData, TransformedBlocks } from '@/helpers/Types'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import { latestBlocksHeader, latestTransactionsHeader } from '@/const'
 
-export default defineComponent({
-  name: 'LatestStats',
-  components: {
-    LatestList,
-    LatestListItemBlock,
-    SkeletonLatestListItemBlock,
-    LatestListItemTx,
-    SkeletonLatestListItemTx,
-  },
-  setup: function () {
-    const toDay = ref<Date>(new Date())
-    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    onMounted(async (): Promise<void> => {
-      lockLoading()
-      try {
-        await getLatestBlocks()
-        await getLatestTransactions()
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    })
+import LatestList from './LatestList.vue'
+import LatestListItemBlock from './LatestListItemBlock.vue'
+import LatestListItemTx from './LatestListItemTx.vue'
+import SkeletonLatestListItemTx from '@/components/skeletonComponents/SkeletonLatestListItemTx.vue'
+import SkeletonLatestListItemBlock from '@/components/skeletonComponents/SkeletonLatestListItemBlock.vue'
 
-    let latestBlocks = ref<Array<TransformedBlocks> | null>([])
-    let latestTransactions = ref<Array<DecodedTxData> | null>([])
-    let lastHeight = ref<number>(0)
-
-    const getLatestBlocks = async (): Promise<void> => {
-      const { blockMetas, lastHeight: reqLastHeight } =
-        await callers.getBlockchain()
-      latestBlocks.value = await prepareBlocks(blockMetas.slice(0, 5))
-      lastHeight.value = reqLastHeight
-    }
-    const getLatestTransactions = async (): Promise<void> => {
-      const { data } = await callers
-        .getTxSearchFromTelemetry(0, 5, 'desc')
-        .then((resp) => resp.json())
-      latestTransactions.value = await prepareTransaction(data)
-    }
-
-    let latestBlocksHeader = {
-      title: 'Latest Blocks',
-      link: 'View all',
-      linkDataText: 'Blocks',
-    }
-    let latestTransactionsHeader = {
-      title: 'Latest Transactions',
-      link: 'View all',
-      linkDataText: 'Transactions',
-    }
-
-    return {
-      latestBlocksHeader,
-      latestBlocks,
-      latestTransactions,
-      latestTransactionsHeader,
-      diffDays,
-      cropText,
-      toHexFunc,
-      toDay,
-      getDay,
-      isLoading,
-    }
-  },
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+onMounted(async (): Promise<void> => {
+  lockLoading()
+  try {
+    await getLatestBlocks()
+    await getLatestTransactions()
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
 })
+
+const latestBlocks = ref<TransformedBlocks[]>([])
+const latestTransactions = ref<DecodedTxData[]>([])
+const lastHeight = ref(0)
+
+const getLatestBlocks = async (): Promise<void> => {
+  const { blockMetas, lastHeight: reqLastHeight } =
+    await callers.getBlockchain()
+  latestBlocks.value = await prepareBlocks(blockMetas.slice(0, 5))
+  lastHeight.value = reqLastHeight
+}
+const getLatestTransactions = async (): Promise<void> => {
+  const { data } = await callers
+    .getTxSearchFromTelemetry(0, 5, 'desc')
+    .then(resp => resp.json())
+  latestTransactions.value = await prepareTransaction(data)
+}
 </script>
 
 <style lang="scss" scoped>

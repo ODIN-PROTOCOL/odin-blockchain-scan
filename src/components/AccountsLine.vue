@@ -36,36 +36,20 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 import TitledLink from '@/components/TitledLink.vue'
 import { convertLokiToOdin } from '@/helpers/converters'
+import { TempBalanceType } from '@/helpers/Types'
 
-export default defineComponent({
-  components: { TitledLink },
-  props: {
-    account: {
-      type: Object,
-      required: true,
-    },
-    rank: {
-      type: Number,
-      required: false,
-    },
-  },
-  setup(props) {
-    const odinBalanceTitle = convertLokiToOdin(props.account.odin_balance)
-    const odinBalanceValue = convertLokiToOdin(props.account.odin_balance, {
-      withDenom: true,
-    })
-    const accountOdinPercentage = Number(props.account.odin_percent).toFixed(2)
+const props = defineProps<{
+  account: TempBalanceType
+  rank: number
+}>()
 
-    return {
-      accountOdinPercentage,
-      odinBalanceTitle,
-      odinBalanceValue,
-    }
-  },
+const odinBalanceTitle = convertLokiToOdin(String(props.account.odin_balance))
+const odinBalanceValue = convertLokiToOdin(String(props.account.odin_balance), {
+  withDenom: true,
 })
+const accountOdinPercentage = Number(props.account.odin_percent).toFixed(2)
 </script>
 <style scoped lang="scss"></style>

@@ -58,23 +58,11 @@
     </div>
   </div>
 </template>
-<script type="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { DecodedTxData } from '@/helpers/Types'
 import TitledLink from '@/components/TitledLink.vue'
 
-export default defineComponent({
-  name: 'TxLine',
-  components: { TitledLink },
-  props: {
-    transition: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup() {
-    return {
-
-    }
-  },
-})
+defineProps<{
+  transition: DecodedTxData
+}>()
 </script>

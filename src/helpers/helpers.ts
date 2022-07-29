@@ -129,7 +129,7 @@ export const getHash = (str: Uint8Array): string => {
 }
 
 export const prepareTransaction = async (
-  txs: readonly TxTelemetry[]
+  txs: readonly TxTelemetry[],
 ): Promise<Array<DecodedTxData>> => {
   let tempArr: Array<DecodedTxData> = []
   for (const tx of txs) {
@@ -169,7 +169,7 @@ export const prepareTransaction = async (
 }
 export const addedRankBy = <T extends ChartLabelsType>(
   arr: Array<T>,
-  by: string
+  by: string,
 ): Array<T> => {
   arr
     .sort(function (a, b) {
@@ -183,15 +183,14 @@ export const addedRankBy = <T extends ChartLabelsType>(
 
 // TODO: Come back to this later
 export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
-  arr = arr.filter((el) => el[Object.keys(el)[0]].length !== 0)
+  arr = arr.filter(el => el[Object.keys(el)[0]].length !== 0)
   arr = arr.filter(
     (el, index, self) =>
       index ===
-      self.findIndex((t) => {
+      self.findIndex(t => {
         return JSON.stringify(t) === JSON.stringify(el)
-      })
+      }),
   )
-  console.debug('withoutDuplicates', arr)
   return arr
 }
 
@@ -203,7 +202,7 @@ export const requestByDays = async <T extends AnyFn>(
     pagination,
   }: { startDate: Date; endDate: Date; pagination?: Pagination },
   fn: T,
-  days: number
+  days: number,
 ): Promise<Array<Unpacked<ReturnType<T>>>> => {
   const tempArr: Array<Unpacked<ReturnType<T>>> = []
   for (let i = 0; i <= days * 24; ++i) {
@@ -244,8 +243,3 @@ export const sortingTypeTx = [
     value: TYPE_TX_SORT.withdraw,
   },
 ]
-export enum VALIDATOR_STATUS_TYPE {
-  inactive = 'inactive',
-  success = 'success',
-  error = 'error',
-}

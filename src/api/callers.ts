@@ -1,8 +1,7 @@
 import { api } from './api'
 import { wallet } from './wallet'
-import { mapResponse, sendGet } from './callersHelpers'
+import { sendGet } from './callersHelpers'
 import { cacheAnswers, getAPIDate } from '@/helpers/requests'
-import { decodeValidators } from '@/helpers/validatorDecoders'
 import { API_CONFIG } from './api-config'
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
 import axios from 'axios'
@@ -12,50 +11,40 @@ const makeCallers = () => {
   const tmQuerier = api.makeTendermintCaller.bind(api)
 
   return {
-    getReports: querier((qc) => qc.oracle.unverified.reporters),
-    getAllBalances: querier((qc) => () => {
+    getReports: querier(qc => qc.oracle.unverified.reporters),
+    getAllBalances: querier(qc => () => {
       const myAddress = wallet.account.address
       return qc.bank.allBalances(myAddress)
     }),
-    getBalances: querier((qc) => () => {
+    getBalances: querier(qc => () => {
       const myAddress = wallet.account.address
       return qc.bank.balance(myAddress, 'loki')
     }),
-    getUnverifiedBalances: querier((qc) => qc.bank.balance),
-    getRate: querier((qc) => qc.coinswap.unverified.rate),
+    getUnverifiedBalances: querier(qc => qc.bank.balance),
+    getRate: querier(qc => qc.coinswap.unverified.rate),
     getTreasuryPool: cacheAnswers(
-      querier((qc) => qc.mint.unverified.treasuryPool)
-    ),
-    getValidators: querier((qc) =>
-      mapResponse(qc.staking.validators, (response) => {
-        return {
-          ...response,
-          validators: decodeValidators(response.validators),
-        }
-      })
+      querier(qc => qc.mint.unverified.treasuryPool),
     ),
     getValidatorByConsensusKey: cacheAnswers((validatorHash: string) => {
       return axios.get(
-        `${API_CONFIG.api}telemetry/validator_by_cons_addr/${validatorHash}`
+        `${API_CONFIG.api}telemetry/validator_by_cons_addr/${validatorHash}`,
       )
     }),
-    getChannel: querier((qc) => qc.ibc.channel.allChannels),
-    getConnections: querier((qc) => qc.ibc.connection.allConnections),
-    getClientState: querier((qc) => qc.ibc.client.state),
+    getChannel: querier(qc => qc.ibc.channel.allChannels),
+    getConnections: querier(qc => qc.ibc.connection.allConnections),
+    getClientState: querier(qc => qc.ibc.client.state),
     getClient: () => {
       return Tendermint34Client.connect(API_CONFIG.rpc)
     },
-    getValidator: querier((qc) => qc.staking.validator),
-    getValidatorDelegations: querier((qc) => qc.staking.validatorDelegations),
-    getBlockchain: tmQuerier((tc) => tc.blockchain.bind(tc)),
-    getBlock: cacheAnswers(tmQuerier((tc) => tc.block.bind(tc))),
-    getTx: tmQuerier((tc) => tc.tx.bind(tc)),
-    getTxVolume: cacheAnswers(
-      querier((qc) => qc.telemetry.unverified.txVolume)
-    ),
-    getValidatorStatus: querier((qc) => qc.oracle.unverified.validator),
+    getValidator: querier(qc => qc.staking.validator),
+    getValidatorDelegations: querier(qc => qc.staking.validatorDelegations),
+    getBlockchain: tmQuerier(tc => tc.blockchain.bind(tc)),
+    getBlock: cacheAnswers(tmQuerier(tc => tc.block.bind(tc))),
+    getTx: tmQuerier(tc => tc.tx.bind(tc)),
+    getTxVolume: cacheAnswers(querier(qc => qc.telemetry.unverified.txVolume)),
+    getValidatorStatus: querier(qc => qc.oracle.unverified.validator),
     getTxForTxDetailsPage: (hash: string) => {
-      return getAPIDate(`${API_CONFIG.rpc}/tx?hash=0x${hash}&prove=true`)
+      return getAPIDate(`${API_CONFIG.rpc}tx?hash=0x${hash}&prove=true`)
     },
     getTxVolumePerDays: (startTime: Date, endTime: Date) => {
       return axios.get(`${API_CONFIG.telemetryUrl}/blocks/txVolumePerDays`, {
@@ -100,10 +89,10 @@ const makeCallers = () => {
     getProposedBlocks: (
       proposer: string,
       page_number: number,
-      page_limit: number
+      page_limit: number,
     ) => {
       return sendGet(
-        `${API_CONFIG.telemetryUrl}/validator/${proposer}/transactions?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=desc`
+        `${API_CONFIG.telemetryUrl}/validator/${proposer}/transactions?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=desc`,
       )
     },
     getValidatorsBlock: () => {
@@ -116,10 +105,10 @@ const makeCallers = () => {
       page_number: number,
       page_limit: number,
       page_order: string,
-      block = 0
+      block = 0,
     ) => {
       return sendGet(
-        `${API_CONFIG.telemetryUrl}/txs?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&block=${block}`
+        `${API_CONFIG.telemetryUrl}/txs?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&block=${block}`,
       )
     },
     getAccountTx: (
@@ -127,10 +116,10 @@ const makeCallers = () => {
       page_limit: number,
       owner: string,
       page_order: string,
-      tx_type: string
+      tx_type: string,
     ) => {
       return sendGet(
-        `${API_CONFIG.telemetryUrl}/account_txs/${owner}?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&type=${tx_type}`
+        `${API_CONFIG.telemetryUrl}/account_txs/${owner}?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&type=${tx_type}`,
       )
     },
     getTopAccounts: () => {
@@ -141,7 +130,7 @@ const makeCallers = () => {
     },
     getOracleReports: (id: string, page_number: number, page_limit: number) => {
       return axios.get(
-        `${API_CONFIG.telemetryUrl}/validator/${id}/reports?page[number]=${page_number}&page[limit]=${page_limit}`
+        `${API_CONFIG.telemetryUrl}/validator/${id}/reports?page[number]=${page_number}&page[limit]=${page_limit}`,
       )
     },
   }

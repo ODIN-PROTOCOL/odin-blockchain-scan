@@ -44,22 +44,14 @@
   </template>
 </template>
 
-<script lang="ts">
-import { toHexFunc } from '@/helpers/helpers'
-import { defineComponent, ref } from 'vue'
-import { diffDays, cropText, getDay } from '@/helpers/formatters'
+<script setup lang="ts">
+import { cropText } from '@/helpers/formatters'
+import { DecodedTxData } from '@/helpers/Types'
 import TitledLink from '@/components/TitledLink.vue'
 
-export default defineComponent({
-  name: 'TransactionItem',
-  components: { TitledLink },
-  props: { result: { type: Object, required: true } },
-  setup() {
-    const toDay = ref<Date>(new Date())
-
-    return { toDay, diffDays, cropText, getDay, toHexFunc }
-  },
-})
+defineProps<{
+  result: DecodedTxData
+}>()
 </script>
 
 <style lang="scss" scoped>

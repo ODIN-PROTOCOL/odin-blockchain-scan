@@ -80,7 +80,7 @@ function bigConvectOdinAndGeo(num: NumLike): string {
 }
 function bigStakePercentage(num: NumLike): string {
   return bigToStrStrict(
-    bigDivide(num, _bn(10).exponentiatedBy(16), { decimals: 3 })
+    bigDivide(num, _bn(10).exponentiatedBy(16), { decimals: 3 }),
   )
 }
 

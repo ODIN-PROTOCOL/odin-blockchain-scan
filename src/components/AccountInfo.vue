@@ -61,9 +61,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, ComputedRef } from 'vue'
-
+<script setup lang="ts">
+import { computed, ComputedRef } from 'vue'
 import { useQuery, UseQueryReturn } from '@vue/apollo-composable'
 import { AccountStakingInfoQuery } from '@/graphql/queries'
 import {
@@ -71,63 +70,46 @@ import {
   AccountStakingInfoVariables,
 } from '@/graphql/types'
 
-export default defineComponent({
-  props: {
-    odinBalance: {
-      type: String,
-      required: true,
+const props = defineProps<{
+  odinBalance: string
+  geoBalance: string
+  address: string
+}>()
+
+const {
+  result,
+  loading,
+}: UseQueryReturn<AccountStakingInfoResponse, AccountStakingInfoVariables> =
+  useQuery<AccountStakingInfoResponse, AccountStakingInfoVariables>(
+    AccountStakingInfoQuery,
+    {
+      address: props.address,
     },
-    geoBalance: {
-      type: String,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props) {
-    const {
-      result,
-      loading,
-    }: UseQueryReturn<AccountStakingInfoResponse, AccountStakingInfoVariables> =
-      useQuery<AccountStakingInfoResponse, AccountStakingInfoVariables>(
-        AccountStakingInfoQuery,
-        {
-          address: props.address,
-        }
-      )
+  )
 
-    const stakedLokiAmount: ComputedRef<number> = computed(() => {
-      const odinCoin = result.value?.delegationBalance?.coins?.find(
-        (coin) => coin.denom === 'loki'
-      )
-      return odinCoin?.amount || 0
-    })
+const stakedLokiAmount: ComputedRef<number> = computed(() => {
+  const odinCoin = result.value?.delegationBalance?.coins?.find(
+    coin => coin.denom === 'loki',
+  )
+  return odinCoin?.amount || 0
+})
 
-    const stakedPercentage: ComputedRef<string> = computed(() => {
-      if (loading.value) {
-        return '0%'
-      }
-      const odinStakingPool = result?.value?.stakingPool[0]
-      const bondedTotal = Number(odinStakingPool?.bonded)
-      const unbondedTotal = Number(odinStakingPool?.unbonded)
-      const stakingTotal = bondedTotal + unbondedTotal
+const stakedPercentage: ComputedRef<string> = computed(() => {
+  if (loading.value) {
+    return '0%'
+  }
+  const odinStakingPool = result?.value?.stakingPool[0]
+  const bondedTotal = Number(odinStakingPool?.bonded)
+  const unbondedTotal = Number(odinStakingPool?.unbonded)
+  const stakingTotal = bondedTotal + unbondedTotal
 
-      if (!stakingTotal) {
-        return '0%'
-      }
+  if (!stakingTotal) {
+    return '0%'
+  }
 
-      return `${Number(
-        Number((stakedLokiAmount.value * 100) / stakingTotal).toFixed(4)
-      )}%`
-    })
-
-    return {
-      stakedLokiAmount,
-      stakedPercentage,
-    }
-  },
+  return `${Number(
+    Number((stakedLokiAmount.value * 100) / stakingTotal).toFixed(4),
+  )}%`
 })
 </script>
 

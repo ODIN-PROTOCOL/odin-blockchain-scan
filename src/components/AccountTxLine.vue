@@ -30,7 +30,7 @@
       <span class="app-table__title">Sender</span>
       <TitledLink
         v-if="tx.sender"
-        :to="`/account/${tx.sender}`"
+        :to="generateAddrLink(tx.sender)"
         class="app-table__cell-txt app-table__link"
         :text="tx.sender"
       />
@@ -40,7 +40,7 @@
       <span class="app-table__title">Receiver</span>
       <TitledLink
         v-if="tx.receiver"
-        :to="`/account/${tx.receiver}`"
+        :to="generateAddrLink(tx.receiver)"
         class="app-table__cell-txt app-table__link"
         :text="tx.receiver"
       />
@@ -60,52 +60,26 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, PropType } from 'vue'
+<script setup lang="ts">
 import TitledLink from '@/components/TitledLink.vue'
 import { humanizeMessageType } from '@/helpers/decodeMessage'
 import { convertLokiToOdin } from '@/helpers/converters'
-import { API_CONFIG } from '@/api/api-config'
-import { txFromTelemetry } from '@/helpers/Types'
+import { AccountTx } from '@/helpers/Types'
 
-export default defineComponent({
-  name: 'AccountTxLine',
-  components: { TitledLink },
-  props: {
-    tx: {
-      type: Object as PropType<txFromTelemetry>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const odinAmount = convertLokiToOdin(
-      props.tx.amount[0]?.amount,
-      {},
-      props.tx.amount[0]?.denom
-    )
-    const odinFee = convertLokiToOdin(
-      props.tx.fee[0]?.amount,
-      {},
-      props.tx.fee[0]?.denom
-    )
-    const type = humanizeMessageType('/' + props.tx.type)
-    const getRequestItemTxHash = props.tx?.tx_hash.split('0x')[1]
-    const validatorPrefix = 'odinvaloper'
-    const generateAddrLink = (addr: string) => {
-      if (addr.includes(validatorPrefix)) {
-        return `validators/${addr}`
-      } else {
-        return `account/${addr}`
-      }
-    }
-    return {
-      generateAddrLink,
-      odinFee,
-      odinAmount,
-      type,
-      API_CONFIG,
-      getRequestItemTxHash,
-    }
-  },
-})
+const props = defineProps<{
+  tx: AccountTx
+}>()
+
+const odinAmount = convertLokiToOdin(props.tx.amount[0]?.amount)
+const odinFee = convertLokiToOdin(props.tx.fee[0]?.amount)
+const type = humanizeMessageType('/' + props.tx.type)
+const getRequestItemTxHash = props.tx?.tx_hash.split('0x')[1]
+const validatorPrefix = 'odinvaloper'
+const generateAddrLink = (addr: string) => {
+  if (addr.includes(validatorPrefix)) {
+    return `validators/${addr}`
+  } else {
+    return `account/${addr}`
+  }
+}
 </script>

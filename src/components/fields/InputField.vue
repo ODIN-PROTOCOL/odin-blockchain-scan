@@ -18,33 +18,45 @@
   />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+enum EVENTS {
+  updateModelValue = 'update:model-value',
+  input = 'input',
+}
+const emit = defineEmits<{
+  (e: EVENTS.updateModelValue, modelValue: string): void
+}>()
 
-export default defineComponent({
-  emits: ['update:modelValue'],
-  props: {
-    modelValue: { type: String },
-    classString: { type: String },
-    type: { type: String, default: 'text' },
-    min: { type: Number },
-    max: { type: Number },
-    maxlength: { type: Number },
-    step: { type: Number },
-    name: { type: String },
-    placeholder: { type: String, default: 'placeholder' },
-    autocomplete: { type: String, default: 'off' },
-    readonly: { type: Boolean, default: false },
-    required: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false },
+withDefaults(
+  defineProps<{
+    modelValue?: string
+    type?: string
+    classString?: string
+    max?: number | string
+    min?: number | string
+    maxlength?: number
+    step?: number
+    name?: string
+    placeholder?: string
+    autocomplete?: string
+    readonly?: boolean
+    required?: boolean
+    disabled?: boolean
+  }>(),
+  {
+    modelValue: '',
+    label: '',
+    type: 'text',
+    autocomplete: 'off',
+    readonly: false,
+    required: false,
+    disabled: false,
   },
-  setup(props, { emit }) {
-    const inputChange = (event: { target: { value: string | null } }) => {
-      emit('update:modelValue', event.target.value)
-    }
-    return { inputChange }
-  },
-})
+)
+
+const inputChange = (event: { target: { value: string } }) => {
+  emit(EVENTS.updateModelValue, event.target.value)
+}
 </script>
 
 <style scoped lang="scss">

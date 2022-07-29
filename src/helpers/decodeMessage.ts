@@ -51,7 +51,7 @@ import { getLokiFromString } from '@/helpers/converters'
 export const getDecodeTx = (tx: TxResponse['tx']): Tx => Tx.decode(tx)
 
 const getTime = async (
-  height: number
+  height: number,
 ): Promise<ReadonlyDateWithNanoseconds> => {
   const res = await callers.getBlockchain(height, height)
   return res.blockMetas[0].header.time
@@ -292,7 +292,7 @@ export function decodeMessage(obj: {
 }
 
 export async function getDateFromMessage(
-  tx: TxTelemetry
+  tx: TxTelemetry,
 ): Promise<DecodedTxData> {
   const DecodedTxData: DecodedTxData = {
     type: '',
@@ -334,14 +334,14 @@ export async function getDateFromMessage(
       }
     } else {
       const amount = tx.tx_result.events
-        .find((item) => {
+        .find(item => {
           DecodedTxData.type.toLowerCase().includes(item.type.split('_')[0])
         })
-        ?.attributes?.map((item) =>
-          item.value ? new TextDecoder().decode(fromBase64(item.value)) : ''
+        ?.attributes?.map(item =>
+          item.value ? new TextDecoder().decode(fromBase64(item.value)) : '',
         )
       DecodedTxData.amount = getLokiFromString(
-        amount?.find((item: string) => item?.includes('loki'))
+        amount?.find(item => item.includes('loki')),
       )
     }
 
@@ -554,8 +554,6 @@ export async function getDateFromMessage(
         DecodedTxData.sender = message.sender
       }
     }
-
-    console.debug(DecodedTxData.type)
   }
   return DecodedTxData
 }

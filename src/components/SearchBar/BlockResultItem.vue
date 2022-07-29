@@ -1,20 +1,20 @@
 <template>
-  <template v-if="block">
+  <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/blocks/${block?.header?.height}`"
+      :to="`/blocks/${result?.header?.height}`"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Bk</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt"
-            :text="block?.header?.height"
-            :to="`/blocks/${block?.header?.height}`"
+            :text="result?.header?.height"
+            :to="`/blocks/${result?.header?.height}`"
           />
         </div>
         <div class="search__dropdown--item-time">
-          {{ diffDays(today, getDay(block?.header?.time)) }}
+          {{ diffDays(today, getDay(result?.header?.time)) }}
         </div>
       </div>
       <div class="search__dropdown--item-right">
@@ -22,43 +22,29 @@
           Validator:
 
           <TitledLink
-            :to="`/validators/${block.validator}`"
+            :to="`/validators/${result.validator}`"
             class="app-table__cell-txt"
-            :text="cropText(block.validator)"
+            :text="cropText(result.validator)"
           />
         </div>
         <div class="search__dropdown--item-transactions">
-          {{ block.txs }} transactions
+          {{ result.txs }} transactions
         </div>
       </div>
     </router-link>
   </template>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue'
+<script setup lang="ts">
 import { diffDays, cropText, getDay } from '@/helpers/formatters'
+import { TransformedBlocks } from '@/helpers/Types'
 import TitledLink from '@/components/TitledLink.vue'
 
-export default defineComponent({
-  name: 'BlockResultItem',
-  components: { TitledLink },
-  props: { result: { type: Object, required: true } },
-  setup(props) {
-    const block = computed(() => {
-      return props?.result
-    })
-    const today = new Date()
+defineProps<{
+  result: TransformedBlocks
+}>()
 
-    return {
-      block,
-      today,
-      diffDays,
-      cropText,
-      getDay,
-    }
-  },
-})
+const today = new Date()
 </script>
 
 <style lang="scss" scoped>

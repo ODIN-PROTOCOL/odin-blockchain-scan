@@ -10,24 +10,12 @@
     </span>
     <transition name="fade">
       <div class="link-dropdown__modal" ref="dropdownEl">
-        <template v-for="link in list.links">
+        <template v-for="link in list.links" :key="link.to">
           <router-link
-            v-if="link.to"
             class="link-dropdown__modal-link"
-            @click="isRedirect"
-            :key="link.to"
+            @click="isRedirect()"
             :data-text="link.text"
-            :to="{ name: link.to }"
-          >
-            <span>{{ link.text }}</span>
-          </router-link>
-          <router-link
-            v-else
-            class="link-dropdown__modal-link"
-            @click="isRedirect"
-            :key="link.url"
-            :data-text="link.text"
-            :to="link.url"
+            :to="{ path: link.to }"
           >
             <span>{{ link.text }}</span>
           </router-link>
@@ -37,25 +25,25 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { LinkList } from '@/helpers/Types'
 import ArrowIcon from '@/components/icons/ArrowIcon.vue'
-import { defineComponent } from 'vue'
 
-export default defineComponent({
-  name: 'linksDropdown',
-  emits: ['redirect'],
-  components: { ArrowIcon },
-  props: {
-    list: { type: Object, required: true },
-    isDropdownOpen: { type: Boolean, required: true },
-  },
-  setup(_, { emit }) {
-    const isRedirect = () => {
-      emit('redirect')
-    }
-    return { isRedirect }
-  },
-})
+enum EVENTS {
+  redirect = 'redirect',
+}
+
+defineProps<{
+  list: LinkList
+  isDropdownOpen: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: EVENTS.redirect): void
+}>()
+const isRedirect = () => {
+  emit(EVENTS.redirect)
+}
 </script>
 
 <style scoped lang="scss">

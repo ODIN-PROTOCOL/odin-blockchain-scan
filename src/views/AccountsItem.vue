@@ -12,7 +12,9 @@
         <CopyButton class="mg-l8" :text="String(route.params.hash)" />
       </div>
     </div>
+
     <AccountInfo
+      v-if="!isLoading"
       :address="String(route.params.hash)"
       :geo-balance="geoBalance"
       :odin-balance="odinBalance"
@@ -93,130 +95,91 @@
     />
   </div>
 </template>
-<script lang="ts">
-import { ref, onMounted, defineComponent, watch } from 'vue'
-import {
-  RouteLocationNormalizedLoaded,
-  Router,
-  useRoute,
-  useRouter,
-} from 'vue-router'
-import { routerBack } from '@/router'
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
+import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { callers } from '@/api/callers'
-import { convertToTxTime } from '@/helpers/dates'
-import { copyValue } from '@/helpers/helpers'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
-
 import { Bech32 } from '@cosmjs/encoding'
 import { bigMath } from '@/helpers/bigMath'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import AccountTxLine from '@/components/AccountTxLine.vue'
-import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
 import AccountInfo from '@/components/AccountInfo.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 
-export default defineComponent({
-  components: {
-    BackButton,
-    CopyButton,
-    AppPagination,
-    AccountTxLine,
-    AccountInfo,
-    SkeletonTable,
-  },
-  setup() {
-    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const router: Router = useRouter()
-    const route: RouteLocationNormalizedLoaded = useRoute()
-    const geoBalance = ref<string>('0')
-    const odinBalance = ref<string>('0')
-    const transactions = ref()
-    const totalTxCount = ref<number>(0)
-    const currentPage = ref<number>(1)
-    const totalPages = ref<number>(1)
-    const ITEMS_PER_PAGE = 50
-    const sortingValue = ref(TYPE_TX_SORT.all)
-    const headerTitles = [
-      { title: 'Transaction hash' },
-      { title: 'Type' },
-      { title: 'Block' },
-      { title: 'Date and time' },
-      { title: 'Sender' },
-      { title: 'Receiver' },
-      { title: 'Amount' },
-      { title: 'Transaction Fee' },
-    ]
-    const getTotalAmount = async (
-      validatorAddress: string,
-      denom: string
-    ): Promise<string> =>
-      callers
-        .getUnverifiedBalances(validatorAddress, denom)
-        .then((res) => bigMath.bigConvectOdinAndGeo(res.amount).toString())
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
-    const getAccountInfo = async () => {
-      lockLoading()
-      try {
-        transactions.value = []
-        const validatorAddress = Bech32.encode(
-          'odin',
-          Bech32.decode(route.params.hash as string).data
-        )
-        const tx = await callers
-          .getAccountTx(
-            currentPage.value - 1,
-            50,
-            validatorAddress,
-            'desc',
-            sortingValue.value
-          )
-          .then((resp) => resp.json())
+const route: RouteLocationNormalizedLoaded = useRoute()
+const geoBalance = ref('0')
+const odinBalance = ref('0')
+const transactions = ref()
+const totalTxCount = ref(0)
+const currentPage = ref(1)
+const totalPages = ref(1)
+const ITEMS_PER_PAGE = 50
+const sortingValue = ref(TYPE_TX_SORT.all)
+const headerTitles = [
+  { title: 'Transaction hash' },
+  { title: 'Type' },
+  { title: 'Block' },
+  { title: 'Date and time' },
+  { title: 'Sender' },
+  { title: 'Receiver' },
+  { title: 'Amount' },
+  { title: 'Transaction Fee' },
+]
+const getTotalAmount = async (
+  validatorAddress: string,
+  denom: string,
+): Promise<string> =>
+  callers
+    .getUnverifiedBalances(validatorAddress, denom)
+    .then(res => bigMath.bigConvectOdinAndGeo(res.amount).toString())
 
-        geoBalance.value = await getTotalAmount(validatorAddress, 'minigeo')
-        odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
-        transactions.value = tx.data
-        totalTxCount.value = tx.total_count
-        totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    }
+const getAccountInfo = async () => {
+  lockLoading()
+  try {
+    transactions.value = []
+    const validatorAddress = Bech32.encode(
+      'odin',
+      Bech32.decode(route.params.hash as string).data,
+    )
+    const tx = await callers
+      .getAccountTx(
+        currentPage.value - 1,
+        50,
+        validatorAddress,
+        'desc',
+        sortingValue.value,
+      )
+      .then(resp => resp.json())
 
-    onMounted(() => {
-      getAccountInfo()
-    })
-    const updateHandler = async () => {
-      await getAccountInfo()
-    }
-    watch([sortingValue], async () => {
-      currentPage.value = 1
-      await getAccountInfo()
-    })
+    geoBalance.value = await getTotalAmount(validatorAddress, 'minigeo')
+    odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
+    transactions.value = tx.data
+    totalTxCount.value = tx.total_count
+    totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
+}
 
-    return {
-      route,
-      geoBalance,
-      odinBalance,
-      routerBack,
-      router,
-      copyValue,
-      convertToTxTime,
-      transactions,
-      totalTxCount,
-      currentPage,
-      totalPages,
-      ITEMS_PER_PAGE,
-      updateHandler,
-      sortingTypeTx,
-      sortingValue,
-      isLoading,
-      headerTitles,
-    }
-  },
+onMounted(async () => {
+  await getAccountInfo()
+})
+
+const updateHandler = async () => {
+  await getAccountInfo()
+}
+
+watch([sortingValue], async () => {
+  currentPage.value = 1
+  await getAccountInfo()
 })
 </script>
 

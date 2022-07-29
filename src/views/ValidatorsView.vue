@@ -55,12 +55,8 @@
       <div class="app-table__head validators-view__table-head">
         <span class="validators-view__table-head-item">Rank</span>
         <span class="validators-view__table-head-item">Validator</span>
-        <span class="validators-view__table-head-item"> Delegator Share </span>
-        <span
-          class="validators-view__table-head-item validators-view__table-head-item--center"
-        >
-          Commission
-        </span>
+        <span class="validators-view__table-head-item">Delegator Share</span>
+        <span class="validators-view__table-head-item">Commission</span>
         <span
           v-if="tabStatus !== inactiveValidatorsTitle"
           class="validators-view__table-head-item"
@@ -80,8 +76,8 @@
               v-for="validator in filteredValidators"
               :key="validator.operatorAddress"
               :validator="validator"
-              :tabStatus="tabStatus"
-              :inactiveValidatorsTitle="inactiveValidatorsTitle"
+              :tab-status="tabStatus"
+              :inactive-validators-title="inactiveValidatorsTitle"
             />
           </template>
           <template v-else>
@@ -89,8 +85,8 @@
               v-for="validator in filteredValidators"
               :key="validator.operatorAddress"
               :validator="validator"
-              :tabStatus="tabStatus"
-              :inactiveValidatorsTitle="inactiveValidatorsTitle"
+              :tab-status="tabStatus"
+              :inactive-validators-title="inactiveValidatorsTitle"
             />
           </template>
         </template>
@@ -117,19 +113,20 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, computed, onUnmounted } from 'vue'
-import { callers } from '@/api/callers'
+<script setup lang="ts">
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import {
+  isActiveValidator,
+  VALIDATOR_STATUS,
+} from '@/helpers/validatorsHelpers'
+import { useQuery } from '@vue/apollo-composable'
+import { ValidatorsQuery } from '@/graphql/queries'
+import { ValidatorsResponse, ValidatorsInfo } from '@/graphql/types'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
-import {
-  getTransformedValidators,
-  isActiveValidator,
-} from '@/helpers/validatorsHelpers'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import CancelIcon from '@/components/icons/CancelIcon.vue'
@@ -137,197 +134,159 @@ import SkeletonTable from '@/components/SkeletonTable.vue'
 import ValidatorsTableMobile from '@/components/ValidatorsTableRowMobile.vue'
 import ValidatorsTable from '@/components/ValidatorsTableRow.vue'
 
-export default defineComponent({
-  name: 'ValidatorsView',
-  components: {
-    AppTabs,
-    AppTab,
-    AppPagination,
-    InputField,
-    SearchIcon,
-    CancelIcon,
-    SkeletonTable,
-    ValidatorsTableMobile,
-    ValidatorsTable,
-  },
-  setup() {
-    const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-    const ITEMS_PER_PAGE = 50
-    const currentPage = ref(1)
-    const totalPages = ref()
-    const filteredValidatorsCount = ref(0)
-    const validatorsCount = ref(0)
-    const filteredValidators = ref()
-    const validators = ref()
-    const activeValidators = ref<ValidatorDecoded[]>([])
-    const inactiveValidators = ref<ValidatorDecoded[]>([])
-    const activeValidatorsTitle = computed(() =>
-      activeValidators.value?.length
-        ? `Active (${activeValidators.value?.length})`
-        : 'Active'
-    )
-    const inactiveValidatorsTitle = ref('Inactive')
-    const tabStatus = ref(activeValidatorsTitle.value)
-    const searchValue = ref('')
-    const inputPlaceholder = ref('Search validators')
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+const ITEMS_PER_PAGE = 50
+const currentPage = ref(1)
+const totalPages = ref()
+const filteredValidatorsCount = ref(0)
+const validatorsCount = ref(0)
+const filteredValidators = ref()
+const validators = ref()
+const activeValidators = ref<ValidatorsInfo[]>([])
+const inactiveValidators = ref<ValidatorsInfo[]>([])
+const activeValidatorsTitle = computed(() =>
+  activeValidators.value?.length
+    ? `Active (${activeValidators.value?.length})`
+    : 'Active',
+)
+const inactiveValidatorsTitle = ref('Inactive')
+const tabStatus = ref(activeValidatorsTitle.value)
+const searchValue = ref('')
+const headerTitles = computed(() => {
+  if (windowInnerWidth.value > 768) {
+    return [
+      { title: 'Rank' },
+      { title: 'Validator' },
+      { title: 'Delegated' },
+      { title: 'Commission' },
+      { title: 'Uptime' },
+      { title: 'Oracle Status' },
+    ]
+  } else {
+    return [{ title: '' }, { title: 'Delegated' }]
+  }
+})
+const windowInnerWidth = ref(document.documentElement.clientWidth)
+const updateWidth = () => {
+  windowInnerWidth.value = document.documentElement.clientWidth
+}
+const { result, loading: isValidatorsResponseLoading } =
+  useQuery<ValidatorsResponse>(ValidatorsQuery)
+const signedBlocks = computed(() =>
+  Number(result.value?.slashingParams[0]?.params?.signed_blocks_window),
+)
 
-    const headerTitles = computed(() => {
-      if (windowInnerWidth.value > 768) {
-        return [
-          { title: 'Rank' },
-          { title: 'Validator' },
-          { title: 'Delegated' },
-          { title: 'Commission' },
-          { title: 'Uptime' },
-          { title: 'Oracle Status' },
-        ]
-      } else {
-        return [{ title: '' }, { title: 'Delegated' }]
-      }
-    })
-    const windowInnerWidth = ref(document.documentElement.clientWidth)
-    const updateWidth = () => {
-      windowInnerWidth.value = document.documentElement.clientWidth
-    }
-    const getValidators = async () => {
-      lockLoading()
-      try {
-        const bonded = await callers.getValidators('BOND_STATUS_BONDED')
-        const unbonding = await callers.getValidators('BOND_STATUS_UNBONDING')
-        const unbonded = await callers.getValidators('BOND_STATUS_UNBONDED')
-        const allUptime = await callers
-          .getValidatorUptime()
-          .then((resp) => resp.json())
-        activeValidators.value = await Promise.all(
-          await getTransformedValidators([...bonded.validators]).then(
-            (validators) =>
-              validators.map(async (item) => {
-                return {
-                  ...item,
-                  isActive: await isActiveValidator(item.operatorAddress),
-                  uptimeInfo: allUptime.find(
-                    (name: { operator_address: string }) =>
-                      name.operator_address === item.operatorAddress
-                  ),
-                }
-              })
-          )
-        )
+const getValidators = async () => {
+  if (isValidatorsResponseLoading.value) {
+    return
+  }
+  lockLoading()
+  try {
+    const copyActiveValidator =
+      result.value?.validator?.filter(
+        (item: ValidatorsInfo) =>
+          item?.statuses[0]?.status === VALIDATOR_STATUS.active,
+      ) || []
+    const copyInactiveValidator =
+      result.value?.validator?.filter(
+        (item: ValidatorsInfo) =>
+          item?.statuses[0]?.status !== VALIDATOR_STATUS.active,
+      ) || []
 
-        inactiveValidators.value = await Promise.all(
-          await getTransformedValidators([
-            ...unbonded.validators,
-            ...unbonding.validators,
-          ]).then((validators) =>
-            validators.map(async (item) => {
-              return {
-                ...item,
-                isActive: await isActiveValidator(item.operatorAddress),
-                uptimeInfo: allUptime.find(
-                  (name: { operator_address: string }) =>
-                    name.operator_address === item.operatorAddress
-                ),
-              }
-            })
-          )
-        )
-        validators.value = [...activeValidators.value]
-        validatorsCount.value =
-          activeValidators.value.length + inactiveValidators.value.length
-        filterValidators(currentPage.value)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-      }
-      releaseLoading()
-    }
-
-    const filterValidators = (newPage = 1) => {
-      let tempArr = validators.value
-
-      if (searchValue.value.trim()) {
-        tempArr = tempArr.filter((item: { description: { moniker: string } }) =>
-          item.description.moniker
-            .toLowerCase()
-            .includes(searchValue.value.toLowerCase())
-        )
-      }
-      if (newPage === 1) {
-        filteredValidators.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
-      } else {
-        filteredValidators.value = tempArr?.slice(
-          (newPage - 1) * ITEMS_PER_PAGE,
-          (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-        )
-      }
-      filteredValidatorsCount.value = tempArr.length
-      totalPages.value = Math.ceil(
-        filteredValidatorsCount.value / ITEMS_PER_PAGE
-      )
-      currentPage.value = newPage
-    }
-
-    const paginationHandler = (num: number) => {
-      filterValidators(num)
-    }
-
-    const tabHandler = async (title: string) => {
-      if (title !== tabStatus.value) {
-        tabStatus.value = title
-        if (tabStatus.value === activeValidatorsTitle.value) {
-          validators.value = [...activeValidators.value]
-        } else if (tabStatus.value === inactiveValidatorsTitle.value) {
-          validators.value = [...inactiveValidators.value]
+    activeValidators.value = (await Promise.all(
+      copyActiveValidator.map(async (item: ValidatorsInfo, index: number) => {
+        return {
+          ...item,
+          rank: index + 1,
+          uptime:
+            ((signedBlocks.value - item.signingInfos[0]?.missedBlocksCounter) /
+              signedBlocks.value) *
+            100,
+          isActive: await isActiveValidator(item.info?.operatorAddress).then(
+            req => req,
+          ),
         }
-        filterValidators(1)
-      }
-    }
+      }),
+    )) as unknown as ValidatorsInfo[]
 
-    const clearText = (): void => {
-      searchValue.value = ''
-    }
+    inactiveValidators.value = (await Promise.all(
+      copyInactiveValidator.map(async (item: ValidatorsInfo, index: number) => {
+        return {
+          ...item,
+          rank: index + 1,
+          uptime:
+            ((signedBlocks.value - item.signingInfos[0]?.missedBlocksCounter) /
+              signedBlocks.value) *
+            100,
+          isActive: await isActiveValidator(item.info?.operatorAddress).then(
+            req => req,
+          ),
+        }
+      }),
+    )) as unknown as ValidatorsInfo[]
 
-    const validatorStatus = (validator: {
-      status: number
-      isActive: boolean
-    }) => {
-      if (validator.status === 3) {
-        return validator.isActive ? 'success' : 'error'
-      } else {
-        return 'inactive'
-      }
-    }
-    onMounted(async () => {
-      window.addEventListener('resize', updateWidth)
-      await getValidators()
-    })
-    onUnmounted(async () => {
-      window.removeEventListener('resize', updateWidth)
-    })
+    validators.value = activeValidators.value
+    tabStatus.value = activeValidatorsTitle.value
+    validatorsCount.value = result.value?.validator?.length || 0
+    filterValidators(currentPage.value)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  releaseLoading()
+}
 
-    return {
-      ITEMS_PER_PAGE,
-      currentPage,
-      totalPages,
-      filteredValidatorsCount,
-      validatorsCount,
-      filteredValidators,
-      validators,
-      isLoading,
-      getValidators,
-      paginationHandler,
-      tabHandler,
-      activeValidatorsTitle,
-      inactiveValidatorsTitle,
-      searchValue,
-      filterValidators,
-      clearText,
-      inputPlaceholder,
-      headerTitles,
-      tabStatus,
-      validatorStatus,
-      windowInnerWidth,
+const filterValidators = (newPage = 1) => {
+  let tempArr = validators.value
+  if (searchValue.value.trim()) {
+    tempArr = tempArr.filter((item: { description: { moniker: string } }) =>
+      item.description.moniker
+        .toLowerCase()
+        .includes(searchValue.value.toLowerCase()),
+    )
+  }
+  if (newPage === 1) {
+    filteredValidators.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
+  } else {
+    filteredValidators.value = tempArr?.slice(
+      (newPage - 1) * ITEMS_PER_PAGE,
+      (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
+    )
+  }
+  filteredValidatorsCount.value = tempArr.length
+  totalPages.value = Math.ceil(filteredValidatorsCount.value / ITEMS_PER_PAGE)
+  currentPage.value = newPage
+}
+
+const paginationHandler = (num: number) => {
+  filterValidators(num)
+}
+
+const tabHandler = async (title: string) => {
+  if (title !== tabStatus.value) {
+    tabStatus.value = title
+    if (tabStatus.value === activeValidatorsTitle.value) {
+      validators.value = [...activeValidators.value]
+    } else if (tabStatus.value === inactiveValidatorsTitle.value) {
+      validators.value = [...inactiveValidators.value]
+      filterValidators(1)
     }
-  },
+  }
+}
+const clearText = (): void => {
+  searchValue.value = ''
+}
+
+watch([isValidatorsResponseLoading], async () => {
+  await getValidators()
+})
+
+onMounted(async () => {
+  window.addEventListener('resize', updateWidth)
+  await getValidators()
+})
+
+onUnmounted(async () => {
+  window.removeEventListener('resize', updateWidth)
 })
 </script>
 

@@ -27,7 +27,7 @@ export const getChartOptions = (datasetUnit: string, labels: string[]) => {
         },
         ticks: {
           maxTicksLimit: 10,
-          callback: (value) => {
+          callback: value => {
             return _getShortLabelDate(labels[value])
           },
         },
@@ -53,13 +53,13 @@ export const getChartOptions = (datasetUnit: string, labels: string[]) => {
 
 export const createExternalTooltip = (
   datasetUnit: string,
-  additionalInfo: any = null
+  additionalInfo: any = null,
 ) => {
   return (ctx): void => {
     const tooltipModel = ctx.tooltip
     let tooltipEl = document.getElementById('chartjs-tooltip')
     let tooltipArrow = tooltipEl?.querySelector(
-      '.chartjs-tooltip__arrow'
+      '.chartjs-tooltip__arrow',
     ) as HTMLElement
 
     // Create element on first render
@@ -76,7 +76,7 @@ export const createExternalTooltip = (
       if (additionalInfo) {
         innerHtml += _setTooltipDataFromAdditionalInfo(
           tooltipModel,
-          additionalInfo
+          additionalInfo,
         )
       } else {
         innerHtml += _setTooltipTitles(tooltipModel)
@@ -130,7 +130,7 @@ const _setTooltipAndArrowOnChart = (
   chart: any,
   tooltipModel: any,
   tooltip: HTMLElement,
-  tooltipArrow: HTMLElement
+  tooltipArrow: HTMLElement,
 ) => {
   const position = chart.canvas.getBoundingClientRect()
 
@@ -152,11 +152,11 @@ const _setTooltipAndArrowOnChart = (
     tooltipModel.caretX + position.left - tooltip.offsetLeft + 'px'
 }
 
-const _setTooltipTitles = (tooltipModel) => {
+const _setTooltipTitles = tooltipModel => {
   const titleLines = tooltipModel.title
   let innerHtml = ''
 
-  titleLines.forEach((title) => {
+  titleLines.forEach(title => {
     innerHtml += '<span>' + _getLabelDate(title) + '</span>'
   })
 
@@ -164,10 +164,10 @@ const _setTooltipTitles = (tooltipModel) => {
 }
 
 const _setTooltipBody = (tooltipModel, unit: string) => {
-  const bodyLines = tooltipModel.body.map((item) => item.lines)
+  const bodyLines = tooltipModel.body.map(item => item.lines)
   let innerHtml = ''
 
-  bodyLines.forEach((body) => {
+  bodyLines.forEach(body => {
     const delimiterIndex = body[0].lastIndexOf(':')
     const lineTitle = body[0].substring(0, delimiterIndex + 1)
     const lineValue = body[0].substring(delimiterIndex + 1, body[0].length)
@@ -227,7 +227,7 @@ const _getShortLabelDate = (date: string) => {
 }
 
 export const formatDataForCharts = (
-  data: telemetryDataForCharts[]
+  data: telemetryDataForCharts[],
 ): formatedTelemetryDataForCharts => {
   const values: number[] = []
   const labels: string[] = []

@@ -59,76 +59,58 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import BackButton from '@/components/BackButton.vue'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
-import TitledLink from '@/components/TitledLink.vue'
-import CustomDoughnutChart from '@/components/Charts/CustomDoughnutChart.vue'
 import { DoughnutChartType } from '@/helpers/customChartHelpers'
 import { ExtendedDoughnutChartAdditionalInfo } from '@/helpers/Types'
 import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import BackButton from '@/components/BackButton.vue'
+import TitledLink from '@/components/TitledLink.vue'
+import CustomDoughnutChart from '@/components/Charts/CustomDoughnutChart.vue'
 
-export default defineComponent({
-  name: 'ValidatorChart',
-  components: {
-    CustomDoughnutChart,
-    BackButton,
-    TitledLink,
-  },
-  setup: function () {
-    const isLoading = ref<boolean>(false)
-    const validators = ref<ValidatorBlockStats[]>()
-    const chartData = ref()
-    const additionalData = ref<ExtendedDoughnutChartAdditionalInfo[]>()
+const isLoading = ref<boolean>(false)
+const validators = ref<ValidatorBlockStats[]>()
+const chartData = ref()
+const additionalData = ref<ExtendedDoughnutChartAdditionalInfo[]>()
 
-    const getChartData = async () => {
-      isLoading.value = true
-      try {
-        const topValidators = await callers.getValidatorsBlock()
-        validators.value = topValidators.data.map((item) => {
-          return {
-            validatorAddress: item.operator_address,
-            blocksCount: Number(item.validated_blocks),
-            stakePercentage: Number(item.tokens).toFixed(2),
-          }
-        })
-        _prepareAdditionalData(validators.value)
-      } catch (error) {
-        handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+const getChartData = async () => {
+  isLoading.value = true
+  try {
+    const topValidators = await callers.getValidatorsBlock()
+    validators.value = topValidators.data.map(item => {
+      return {
+        validatorAddress: item.operator_address,
+        blocksCount: Number(item.validated_blocks),
+        stakePercentage: Number(item.tokens).toFixed(2),
       }
-      isLoading.value = false
-    }
-
-    const _prepareAdditionalData = (
-      validatorsArr: ValidatorBlockStats[] | undefined
-    ) => {
-      let tempDataArr: number[] = []
-
-      additionalData.value = validatorsArr?.map((item: ValidatorBlockStats) => {
-        tempDataArr.push(Number(item.stakePercentage))
-        return {
-          validatorAddress: item.validatorAddress,
-          Blocks: Number(item.blocksCount),
-          'Stake percentage': item.stakePercentage + '%',
-        }
-      })
-      chartData.value = { data: tempDataArr }
-    }
-
-    onMounted(async () => {
-      await getChartData()
     })
+    _prepareAdditionalData(validators.value)
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
+  isLoading.value = false
+}
 
+const _prepareAdditionalData = (
+  validatorsArr: ValidatorBlockStats[] | undefined,
+) => {
+  let tempDataArr: number[] = []
+
+  additionalData.value = validatorsArr?.map((item: ValidatorBlockStats) => {
+    tempDataArr.push(Number(item.stakePercentage))
     return {
-      DoughnutChartType,
-      chartData,
-      additionalData,
-      validators,
-      isLoading,
+      validatorAddress: item.validatorAddress,
+      Blocks: Number(item.blocksCount),
+      'Stake percentage': item.stakePercentage + '%',
     }
-  },
+  })
+  chartData.value = { data: tempDataArr }
+}
+
+onMounted(async () => {
+  await getChartData()
 })
 </script>
 

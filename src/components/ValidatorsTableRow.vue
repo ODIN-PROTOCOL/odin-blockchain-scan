@@ -7,41 +7,43 @@
     <div class="app-table__cell">
       <span class="app-table__title">Validator</span>
       <TitledLink
+        v-if="validator.descriptions.length"
         class="app-table__cell-txt app-table__link"
-        :text="validator.description.moniker"
-        :to="`/validators/${validator.operatorAddress}`"
+        :text="validator.descriptions[0]?.moniker"
+        :to="`/validators/${validator.info.operatorAddress}`"
       />
+      <p class="app-table__cell-txt">-</p>
     </div>
     <div class="app-table__cell app-table__cell-txt">
       <span class="app-table__title">Delegated</span>
       <span
         :title="
-          $convertLokiToOdin(validator.delegatorShares, {
-            withPrecise: true,
+          $convertLokiToOdin($trimZeros(validator.info.delegatedAmount), {
+            onlyNumber: true,
           })
         "
       >
         {{
-          $convertLokiToOdin(validator.delegatorShares, {
+          $convertLokiToOdin($trimZeros(validator.info.delegatedAmount), {
             withDenom: true,
-            withPrecise: true,
           })
         }}
       </span>
     </div>
-    <div class="app-table__cell validators-view-table-row__cell--center">
+    <div class="app-table__cell validators-view-table-row__cell--margin-left">
       <span class="app-table__title">Commission</span>
-      <span>
-        {{ $getPrecisePercents(validator.commission.commissionRates.rate) }}
+      <span v-if="validator.commissions.length">
+        {{ $trimZeros(validator?.commissions[0]?.commission * 100, 2) }}%
       </span>
+      <span v-else>0%</span>
     </div>
     <div v-if="tabStatus !== inactiveValidatorsTitle" class="app-table__cell">
       <span class="app-table__title">Uptime</span>
       <ProgressbarTool
         :min="0"
         :max="100"
-        :current="Number(validator.uptimeInfo?.uptime) || 0"
-        :isForValidators="true"
+        :current="$trimZeros(validator?.uptime, 2) || 0"
+        is-for-validators
       />
     </div>
     <div class="app-table__cell validators-view-table-row__cell--center">
@@ -49,55 +51,29 @@
       <ValidatorStatus
         :width="14"
         :height="14"
-        :status="validatorStatus(validator)"
+        :status="
+          getValidatorStatus(validator.statuses[0].status, validator.isActive)
+        "
         class="validators-item__validator-status"
       />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, PropType } from 'vue'
+<script setup lang="ts">
+import {
+  getValidatorStatus,
+  ValidatorInfoModify,
+} from '@/helpers/validatorsHelpers'
 import TitledLink from '@/components/TitledLink.vue'
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import { ValidatorDecoded } from '@/helpers/validatorDecoders'
 
-export default defineComponent({
-  components: {
-    TitledLink,
-    ProgressbarTool,
-    ValidatorStatus,
-  },
-  props: {
-    validator: { type: Object as PropType<ValidatorDecoded>, required: true },
-    tabStatus: { type: String, required: true },
-    inactiveValidatorsTitle: { type: String, required: true },
-  },
-  setup() {
-    const ITEMS_PER_PAGE = 50
-    const currentPage = ref(1)
-    const totalPages = ref(0)
-
-    const validatorStatus = (validator: {
-      status: number
-      isActive: boolean
-    }) => {
-      if (validator.status === 3) {
-        return validator.isActive ? 'success' : 'error'
-      } else {
-        return 'inactive'
-      }
-    }
-
-    return {
-      ITEMS_PER_PAGE,
-      totalPages,
-      currentPage,
-      validatorStatus,
-    }
-  },
-})
+defineProps<{
+  validator: ValidatorInfoModify
+  tabStatus: string
+  inactiveValidatorsTitle: string
+}>()
 </script>
 
 <style lang="scss" scoped>
@@ -107,6 +83,9 @@ export default defineComponent({
 }
 .validators-view-table-row__cell--center {
   justify-content: center;
+}
+.validators-view-table-row__cell--margin-left {
+  margin-left: 2rem;
 }
 @include respond-to(tablet) {
   .validators-view-table-row__cell--center {
