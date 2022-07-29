@@ -20,11 +20,21 @@
       <div class="validators-view__filter-search">
         <div class="validators-view__filter-search-input-wrapper">
           <InputField
-            v-model="searchValue"
-            placeholder="Search validator"
+            :placeholder="inputPlaceholder"
             class="validators-view__filter-search-input"
+            v-model="searchValue"
             @keydown.enter="filterValidators()"
           />
+          <template v-if="searchValue">
+            <button
+              @click="clearText()"
+              class="validators-view__filter-search-clear-btn"
+            >
+              <CancelIcon
+                :className="'validators__filter-search-clear-btn-icon'"
+              />
+            </button>
+          </template>
         </div>
         <button
           class="validators-view__filter-search-button"
@@ -92,7 +102,6 @@
         </template>
       </div>
     </div>
-
     <template v-if="filteredValidatorsCount > ITEMS_PER_PAGE">
       <AppPagination
         class="mg-t32"
@@ -120,6 +129,7 @@ import AppTab from '@/components/tabs/AppTab.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import InputField from '@/components/fields/InputField.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
+import CancelIcon from '@/components/icons/CancelIcon.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 import ValidatorsTableMobile from '@/components/ValidatorsTableRowMobile.vue'
 import ValidatorsTable from '@/components/ValidatorsTableRow.vue'
@@ -160,17 +170,14 @@ const windowInnerWidth = ref(document.documentElement.clientWidth)
 const updateWidth = () => {
   windowInnerWidth.value = document.documentElement.clientWidth
 }
-const { result, loading } = useQuery<ValidatorsResponse>(ValidatorsQuery)
+const { result, loading: isValidatorsResponseLoading } =
+  useQuery<ValidatorsResponse>(ValidatorsQuery)
 const signedBlocks = computed(() =>
   Number(result.value?.slashingParams[0]?.params?.signed_blocks_window),
 )
 
-watch([loading], async () => {
-  await getValidators()
-})
-
 const getValidators = async () => {
-  if (loading.value) {
+  if (isValidatorsResponseLoading.value) {
     return
   }
   lockLoading()
@@ -261,10 +268,17 @@ const tabHandler = async (title: string) => {
       validators.value = [...activeValidators.value]
     } else if (tabStatus.value === inactiveValidatorsTitle.value) {
       validators.value = [...inactiveValidators.value]
+      filterValidators(1)
     }
-    filterValidators(1)
   }
 }
+const clearText = (): void => {
+  searchValue.value = ''
+}
+
+watch([isValidatorsResponseLoading], async () => {
+  await getValidators()
+})
 
 onMounted(async () => {
   window.addEventListener('resize', updateWidth)
@@ -303,7 +317,7 @@ onUnmounted(async () => {
   color: var(--clr__input-border);
   svg {
     transition: all 0.5s ease;
-    fill: var(--clr__input-border);
+    fill: var(--clr__text-muted);
   }
   &:hover,
   &:active,
@@ -322,6 +336,9 @@ onUnmounted(async () => {
       fill: var(--clr__input-border);
     }
   }
+  svg.validators__filter-search-clear-btn-icon {
+    fill: var(--clr__text-muted);
+  }
 }
 .validators-view__filter-search-input-wrapper {
   position: relative;
@@ -329,6 +346,7 @@ onUnmounted(async () => {
 }
 .validators-view__filter-search-input {
   border: none;
+  padding-right: 2rem;
   &:focus::-webkit-input-placeholder {
     color: transparent;
   }
@@ -341,6 +359,13 @@ onUnmounted(async () => {
   &:focus {
     border: none;
   }
+}
+
+.validators-view__filter-search-clear-btn {
+  overflow: visible;
+  position: absolute;
+  right: 0rem;
+  top: 1.3rem;
 }
 .validators-view__filter-search-button {
   position: relative;

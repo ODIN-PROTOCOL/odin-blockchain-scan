@@ -4,6 +4,7 @@ import { bigMath } from './bigMath'
 type ConverterOptions = {
   withDenom?: boolean
   withPrecise?: boolean
+  onlyNumber?: boolean
 }
 
 const FORMAT_OPTIONS = {
@@ -12,14 +13,22 @@ const FORMAT_OPTIONS = {
 }
 const ODIN_MULTIPLIER = 0.000001
 const ODIN_DENOM = 'ODIN'
+const LOKI_DENOM = 'LOKI'
+const GEO_DENOM = 'GEO'
 const LOKI_MULTIPLIER = 1000000
 
 export function convertLokiToOdin(
-  amount: string | undefined,
+  amount: string | BigNumber | undefined,
   options?: ConverterOptions,
-): string {
+  denom = ODIN_DENOM,
+): string | BigNumber {
   if (!amount) return '-'
-
+  if (Number.isNaN(Number(amount))) return '0'
+  if (denom.toUpperCase() === LOKI_DENOM || denom === ODIN_DENOM) {
+    denom = ODIN_DENOM
+  } else {
+    denom = GEO_DENOM
+  }
   let res: BigNumber
   if (options && options.withPrecise) {
     res = bigMath.fromPrecise(bigMath.multiply(amount, ODIN_MULTIPLIER))
@@ -28,9 +37,11 @@ export function convertLokiToOdin(
   }
 
   if (options && options.withDenom) {
-    return bigMath.format(res, FORMAT_OPTIONS) + ' ' + ODIN_DENOM
+    return bigMath.format(res, FORMAT_OPTIONS) + ' ' + denom
+  } else if (options && options.onlyNumber) {
+    return res
   } else {
-    return res + ' ' + ODIN_DENOM
+    return res + ' ' + denom
   }
 }
 

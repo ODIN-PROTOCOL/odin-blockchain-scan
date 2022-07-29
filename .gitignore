@@ -2,9 +2,7 @@
 node_modules
 /dist
 .eslintcache
-firebase-debug.log
-/.firebase
-*.*.cache
+
 
 # local env files
 .env.local
