@@ -12,7 +12,7 @@
         :text="validator.descriptions[0]?.moniker"
         :to="`/validators/${validator.info.operatorAddress}`"
       />
-      <p class="app-table__cell-txt">-</p>
+      <p v-else class="app-table__cell-txt">-</p>
     </div>
     <div class="app-table__cell app-table__cell-txt">
       <span class="app-table__title">Delegated</span>

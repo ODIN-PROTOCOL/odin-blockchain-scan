@@ -20,6 +20,7 @@
             v-else
             :chartDataset="chartData"
             :datasetLabel="'Transactions'"
+            class="info-panel__custom-line-chart"
           />
         </div>
       </div>
@@ -174,7 +175,9 @@ onMounted(async () => {
   height: 19rem;
   width: 100%;
 }
-
+.info-panel__custom-line-chart {
+  max-height: 19.5rem;
+}
 @include respond-to(tablet) {
   .info-panel__text {
     font-size: 2rem;

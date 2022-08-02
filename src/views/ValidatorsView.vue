@@ -144,6 +144,7 @@ const filteredValidators = ref()
 const validators = ref()
 const activeValidators = ref<ValidatorsInfo[]>([])
 const inactiveValidators = ref<ValidatorsInfo[]>([])
+const inputPlaceholder = ref('Search validators')
 const activeValidatorsTitle = computed(() =>
   activeValidators.value?.length
     ? `Active (${activeValidators.value?.length})`
@@ -268,8 +269,8 @@ const tabHandler = async (title: string) => {
       validators.value = [...activeValidators.value]
     } else if (tabStatus.value === inactiveValidatorsTitle.value) {
       validators.value = [...inactiveValidators.value]
-      filterValidators(1)
     }
+    filterValidators(1)
   }
 }
 const clearText = (): void => {
