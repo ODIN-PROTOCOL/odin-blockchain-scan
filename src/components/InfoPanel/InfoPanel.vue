@@ -9,11 +9,9 @@
         <div class="info-panel__chart">
           <skeleton-loader
             v-if="isLoading"
-            width="-1"
-            height="-1"
-            rounded
-            animation="wave"
-            color="rgb(225, 229, 233)"
+            pill
+            shimmer
+            width="100%"
             class="info-panel__chart-skeleton"
           />
           <CustomLineChart

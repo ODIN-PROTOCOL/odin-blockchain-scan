@@ -4,53 +4,47 @@
       <skeleton-loader
         :height="42"
         :width="42"
-        rounded
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        pill
+        shimmer
         class="latest-list-item__label"
       />
       <skeleton-loader
         :height="16"
-        :width="-1"
-        rounded
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        pill
+        shimmer
+        width="100%"
         class="latest-list-item__name w-full"
       />
       <skeleton-loader
         :height="16"
-        :width="-1"
-        rounded
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        pill
+        shimmer
+        width="100%"
         class="latest-list-item__time w-full"
       />
     </div>
     <div class="latest-list-item__center">
       <skeleton-loader
         :height="16"
-        :width="-1"
-        rounded
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        pill
+        shimmer
+        width="100%"
         class="latest-list-item__validator"
       />
       <skeleton-loader
         :height="16"
-        :width="-1"
-        rounded
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        pill
+        shimmer
+        width="100%"
         class="latest-list-item__to"
       />
     </div>
     <div class="latest-list-item__right">
       <skeleton-loader
         :height="42"
-        :width="-1"
-        rounded
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        pill
+        shimmer
+        width="100%"
         class="latest-list-item__amount"
       />
     </div>

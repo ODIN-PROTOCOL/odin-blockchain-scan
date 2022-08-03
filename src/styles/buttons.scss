@@ -7,7 +7,6 @@
   border: 0.1rem solid transparent; // to sync position with the 2nd variant
   border-radius: 0.4rem;
   padding: 1.2rem 1.6rem;
-
   @include transition(background);
 
   &_outlined {
@@ -20,7 +19,7 @@
     font-size: 1.6rem;
     padding: 0.5rem 2.3rem;
   }
-  &--medium{
+  &--medium {
     padding: 0.8rem;
     width: 18.4rem;
     height: 4rem;

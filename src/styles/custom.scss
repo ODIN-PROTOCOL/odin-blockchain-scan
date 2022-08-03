@@ -29,13 +29,13 @@ body {
 
   .chartjs-tooltip {
     &__title {
-      @include ellipsis(inline-block, 100%)
+      @include ellipsis(inline-block, 100%);
     }
 
     &__row-title {
       font-size: 1.4rem;
       font-weight: 300;
-      opacity: 0.6; 
+      opacity: 0.6;
     }
   }
 }
@@ -60,7 +60,7 @@ body {
     min-width: 13.8rem;
   }
   &--rounding {
-    &-left{
+    &-left {
       border-radius: 0.8rem 0 0 0.8rem;
     }
   }
@@ -125,7 +125,7 @@ body {
   display: inline-block;
   width: 5rem;
   height: 5rem;
-  border: 0.3rem solid rgba($clr-action, .3);
+  border: 0.3rem solid rgba($clr-action, 0.3);
   border-radius: 50%;
   border-top-color: var(--clr__action);
   animation: spin 1s ease-in-out infinite;
@@ -134,10 +134,14 @@ body {
 }
 
 @keyframes spin {
-  to { -webkit-transform: rotate(360deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
 @-webkit-keyframes spin {
-  to { -webkit-transform: rotate(360deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 .app__dialogs-container {
@@ -192,12 +196,12 @@ body {
     }
   }
   @include respond-to(tablet) {
-    .vue-picker__opener{
+    .vue-picker__opener {
       padding-left: 0;
     }
   }
 }
-.card-frame {   
+.card-frame {
   padding: 3.2rem;
   border: 0.1rem solid var(--clr__frame-border);
   box-shadow: 0 0.4rem 0.8rem var(--clr__frame-box-shadow);

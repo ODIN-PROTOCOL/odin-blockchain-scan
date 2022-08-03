@@ -7,11 +7,17 @@
       <h2 class="app__main-view-title">All Validators</h2>
     </div>
 
-    <template v-if="validatorsCount">
-      <div class="validators-view__count-info">
-        <p>{{ validatorsCount }} validators found</p>
-      </div>
-    </template>
+    <div class="validators-view__count-info">
+      <skeleton-loader
+        v-if="isLoading || isValidatorsResponseLoading"
+        pill
+        shimmer
+        :height="24"
+        width="100"
+      />
+      <p v-else>{{ validatorsCount }} validators found</p>
+    </div>
+
     <div class="validators-view__filter">
       <AppTabs @changeTab="tabHandler($event)">
         <AppTab :title="activeValidatorsTitle" />

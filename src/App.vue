@@ -51,13 +51,11 @@ onMounted(() => {
 @import '~@/styles/shortcuts.scss';
 @import '~@/styles/fonts.scss';
 @import '~@/styles/custom.scss';
+@import '~@/styles/vue-skeletor.scss';
 
 #app {
   width: 100%;
   @include flex-container;
   justify-content: space-between;
-}
-.animation--wave::before {
-  animation: wave 0.5s linear 0.5s infinite;
 }
 </style>
