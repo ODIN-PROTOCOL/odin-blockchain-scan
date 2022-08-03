@@ -157,6 +157,7 @@ const tx = ref<DecodedTxData>()
 const getTransactions = async () => {
   try {
     const res = await callers.getTxForTxDetailsPage(String(route.params.hash))
+
     const preparedTx = await prepareTransaction([res.data.result])
     tx.value = preparedTx[0]
   } catch (error) {

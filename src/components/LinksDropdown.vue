@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { LinkList } from '@/helpers/Types'
-import ArrowIcon from '@/components/icons/ArrowIcon.vue'
+import { ArrowIcon } from '@/components/icons'
 
 enum EVENTS {
   redirect = 'redirect',

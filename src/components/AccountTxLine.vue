@@ -70,8 +70,16 @@ const props = defineProps<{
   tx: AccountTx
 }>()
 
-const odinAmount = convertLokiToOdin(props.tx.amount[0]?.amount)
-const odinFee = convertLokiToOdin(props.tx.fee[0]?.amount)
+const odinAmount = convertLokiToOdin(
+  props.tx.amount[0]?.amount,
+  {},
+  props.tx.amount[0]?.denom,
+)
+const odinFee = convertLokiToOdin(
+  props.tx.fee[0]?.amount,
+  {},
+  props.tx.fee[0]?.denom,
+)
 const type = humanizeMessageType('/' + props.tx.type)
 const getRequestItemTxHash = props.tx?.tx_hash.split('0x')[1]
 const validatorPrefix = 'odinvaloper'

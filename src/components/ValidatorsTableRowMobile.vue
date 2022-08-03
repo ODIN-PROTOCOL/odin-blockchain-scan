@@ -84,10 +84,10 @@ import {
   getValidatorStatus,
   ValidatorInfoModify,
 } from '@/helpers/validatorsHelpers'
+import { ArrowIcon } from '@/components/icons'
 import TitledLink from '@/components/TitledLink.vue'
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import ArrowIcon from '@/components/icons/ArrowIcon.vue'
 
 defineProps<{
   validator: ValidatorInfoModify

@@ -8,7 +8,11 @@
     </div>
 
     <div class="chart-view__sort-wrapper">
-      <span class="chart-view__y-axis">{{ yAxisTitle }}</span>
+      <div class="chart-view__y-axis">
+        <span v-if="chartData?.data?.length > 1 && !isLoading">
+          {{ yAxisTitle }}
+        </span>
+      </div>
 
       <VuePicker
         class="app-form__field-input app-filter app-filter--coin _vue-picker"
@@ -30,19 +34,43 @@
         </template>
       </VuePicker>
     </div>
-    <template v-if="chartType === 'bar'">
-      <CustomBarChart
-        :chartDataset="chartData"
-        :datasetLabel="datasetLabel"
-        :datasetUnit="datasetUnit"
-      />
+    <template v-if="!isLoading">
+      <template v-if="isLoadingError">
+        <ui-loading-error-message
+          message="Something went wrong"
+          title="Try again!"
+        />
+      </template>
+      <template v-else>
+        <template v-if="chartData?.data?.length > 1">
+          <template v-if="chartType === 'bar'">
+            <CustomBarChart
+              :chartDataset="chartData"
+              :datasetLabel="datasetLabel"
+              :datasetUnit="datasetUnit"
+            />
+          </template>
+          <template v-if="chartType === 'line'">
+            <CustomLineChart
+              :chartDataset="chartData"
+              :datasetLabel="datasetLabel"
+              :datasetUnit="datasetUnit"
+            />
+          </template>
+        </template>
+        <template v-else>
+          <div class="app-table__empty-stub">
+            <ui-no-data-message-with-img
+              message="Insufficient data to visualize"
+            />
+          </div>
+        </template>
+      </template>
     </template>
-    <template v-if="chartType === 'line'">
-      <CustomLineChart
-        :chartDataset="chartData"
-        :datasetLabel="datasetLabel"
-        :datasetUnit="datasetUnit"
-      />
+    <template v-else>
+      <div class="app-table__empty-stub">
+        <ui-loader positionCenter message="Loading" />
+      </div>
     </template>
   </div>
 </template>
@@ -57,6 +85,11 @@ import { sortingDaysForChart } from '@/helpers/helpers'
 import CustomBarChart from '@/components/Charts/CustomBarChart.vue'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import BackButton from '@/components/BackButton.vue'
+import {
+  UiLoadingErrorMessage,
+  UiLoader,
+  UiNoDataMessageWithImg,
+} from '@/components/ui'
 
 const props = withDefaults(
   defineProps<{
@@ -77,6 +110,7 @@ const router: Router = useRouter()
 const chartData = ref()
 const isLoading = ref(false)
 const sortingValue = ref(sortingDaysForChart.lastWeek.value)
+const isLoadingError = ref(false)
 
 const getChartData = async () => {
   const endDate = new Date()
@@ -86,7 +120,9 @@ const getChartData = async () => {
   try {
     const { data } = await callers[getDataMethodName.value](startDate, endDate)
     chartData.value = formatDataForCharts(data)
+    isLoadingError.value = false
   } catch (error) {
+    isLoadingError.value = true
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   } finally {
     isLoading.value = false

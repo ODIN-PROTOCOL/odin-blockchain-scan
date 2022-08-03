@@ -6,56 +6,73 @@
         Block Validators Chart
       </h2>
     </div>
-    <CustomDoughnutChart
-      class="mg-b40"
-      :type="DoughnutChartType.EXTENDED"
-      :chartDataset="chartData"
-      :additionalInfo="additionalData"
-    />
-    <div class="app-table">
-      <div class="app-table__head block-validators-chart__head">
-        <span>Rank</span>
-        <span>Address</span>
-        <span>Blocks</span>
-        <span>Stake percentage</span>
-      </div>
-      <template v-if="validators">
-        <div>
-          <div
-            class="app-table__row block-validators-chart__row"
-            v-for="(item, idx) in validators"
-            :key="item.validatorAddress"
-          >
-            <div class="app-table__cell">
-              <span class="app-table__title">Rank</span>
-              <span>{{ idx + 1 }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__title">Address</span>
-              <TitledLink
-                :to="`/validators/${item.validatorAddress}`"
-                :text="item.validatorAddress"
-                class="app-table-cell-txt app-table__link"
-              />
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__title">Blocks</span>
-              <span>{{ item.blocksCount }}</span>
-            </div>
-            <div class="app-table__cell">
-              <span class="app-table__title">Stake percentage</span>
-              <span>{{ item.stakePercentage }} %</span>
-            </div>
-          </div>
-        </div>
+    <template v-if="!isLoading">
+      <template v-if="isLoadingError">
+        <ui-loading-error-message
+          message="Something went wrong"
+          title="Try again!"
+        />
       </template>
       <template v-else>
-        <div class="app-table__empty-stub">
-          <p v-if="isLoading">Loading…</p>
-          <p v-else>No items yet</p>
-        </div>
+        <template v-if="chartData?.data?.length && validators.length">
+          <CustomDoughnutChart
+            class="mg-b40"
+            :type="DoughnutChartType.EXTENDED"
+            :chartDataset="chartData"
+            :additionalInfo="additionalData"
+          />
+          <div class="app-table">
+            <div class="app-table__head block-validators-chart__head">
+              <span>Rank</span>
+              <span>Address</span>
+              <span>Blocks</span>
+              <span>Stake percentage</span>
+            </div>
+
+            <div>
+              <div
+                class="app-table__row block-validators-chart__row"
+                v-for="(item, idx) in validators"
+                :key="item.validatorAddress"
+              >
+                <div class="app-table__cell">
+                  <span class="app-table__title">Rank</span>
+                  <span>{{ idx + 1 }}</span>
+                </div>
+                <div class="app-table__cell">
+                  <span class="app-table__title">Address</span>
+                  <TitledLink
+                    :to="`/validators/${item.validatorAddress}`"
+                    :text="item.validatorAddress"
+                    class="app-table-cell-txt app-table__link"
+                  />
+                </div>
+                <div class="app-table__cell">
+                  <span class="app-table__title">Blocks</span>
+                  <span>{{ item.blocksCount }}</span>
+                </div>
+                <div class="app-table__cell">
+                  <span class="app-table__title">Stake percentage</span>
+                  <span>{{ item.stakePercentage }} %</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="app-table__empty-stub">
+            <ui-no-data-message-with-img
+              message="Insufficient data to visualize"
+            />
+          </div>
+        </template>
       </template>
-    </div>
+    </template>
+    <template v-else>
+      <div class="app-table__empty-stub">
+        <ui-loader positionCenter message="Loading" />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -66,14 +83,20 @@ import { DoughnutChartType } from '@/helpers/customChartHelpers'
 import { ExtendedDoughnutChartAdditionalInfo } from '@/helpers/Types'
 import { ValidatorBlockStats } from '@provider/codec/telemetry/telemetry'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import {
+  UiLoadingErrorMessage,
+  UiLoader,
+  UiNoDataMessageWithImg,
+} from '@/components/ui'
 import BackButton from '@/components/BackButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import CustomDoughnutChart from '@/components/Charts/CustomDoughnutChart.vue'
 
-const isLoading = ref<boolean>(false)
+const isLoading = ref(false)
 const validators = ref<ValidatorBlockStats[]>()
 const chartData = ref()
 const additionalData = ref<ExtendedDoughnutChartAdditionalInfo[]>()
+const isLoadingError = ref(false)
 
 const getChartData = async () => {
   isLoading.value = true
@@ -88,6 +111,7 @@ const getChartData = async () => {
     })
     _prepareAdditionalData(validators.value)
   } catch (error) {
+    isLoadingError.value = true
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }
   isLoading.value = false

@@ -23,7 +23,6 @@
             :placeholder="inputPlaceholder"
             class="validators-view__filter-search-input"
             v-model="searchValue"
-            @keydown.enter="filterValidators()"
           />
           <template v-if="searchValue">
             <button
@@ -92,7 +91,7 @@
         </template>
         <template v-else>
           <SkeletonTable
-            v-if="isLoading"
+            v-if="isLoading || isValidatorsResponseLoading"
             :header-titles="headerTitles"
             class-string="validators-view-table-row"
           />
@@ -124,12 +123,11 @@ import {
 import { useQuery } from '@vue/apollo-composable'
 import { ValidatorsQuery } from '@/graphql/queries'
 import { ValidatorsResponse, ValidatorsInfo } from '@/graphql/types'
+import { SearchIcon, CancelIcon } from '@/components/icons'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import InputField from '@/components/fields/InputField.vue'
-import SearchIcon from '@/components/icons/SearchIcon.vue'
-import CancelIcon from '@/components/icons/CancelIcon.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 import ValidatorsTableMobile from '@/components/ValidatorsTableRowMobile.vue'
 import ValidatorsTable from '@/components/ValidatorsTableRow.vue'
@@ -239,8 +237,8 @@ const getValidators = async () => {
 const filterValidators = (newPage = 1) => {
   let tempArr = validators.value
   if (searchValue.value.trim()) {
-    tempArr = tempArr.filter((item: { description: { moniker: string } }) =>
-      item.description.moniker
+    tempArr = tempArr.filter((item: ValidatorsInfo) =>
+      item.descriptions[0].moniker
         .toLowerCase()
         .includes(searchValue.value.toLowerCase()),
     )
@@ -261,6 +259,10 @@ const filterValidators = (newPage = 1) => {
 const paginationHandler = (num: number) => {
   filterValidators(num)
 }
+
+watch([searchValue], async () => {
+  filterValidators()
+})
 
 const tabHandler = async (title: string) => {
   if (title !== tabStatus.value) {
