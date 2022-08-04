@@ -24,9 +24,12 @@
             <div class="app-table__cell">
               <span class="app-table__title">Block</span>
               <TitledLink
-                :to="`/blocks/${item.header.height}`"
-                class="app-table__cell-txt app-table__link"
+                :name="{
+                  name: $routes.blockDetails,
+                  params: { id: item.header.height },
+                }"
                 :text="item.header.height"
+                class="app-table__cell-txt app-table__link"
               />
             </div>
             <div class="app-table__cell">
@@ -40,9 +43,12 @@
             <div class="app-table__cell">
               <span class="app-table__title">Validator</span>
               <TitledLink
-                :to="`/validators/${item.validator}`"
-                class="app-table__cell-txt app-table__link"
+                :name="{
+                  name: $routes.validatorDetails,
+                  params: { address: item.validator },
+                }"
                 :text="item.validator"
+                class="app-table__cell-txt app-table__link"
               />
             </div>
           </div>

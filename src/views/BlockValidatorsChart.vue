@@ -42,7 +42,10 @@
                 <div class="app-table__cell">
                   <span class="app-table__title">Address</span>
                   <TitledLink
-                    :to="`/validators/${item.validatorAddress}`"
+                    :name="{
+                      name: $routes.validatorDetails,
+                      params: { address: item.validatorAddress },
+                    }"
                     :text="item.validatorAddress"
                     class="app-table-cell-txt app-table__link"
                   />

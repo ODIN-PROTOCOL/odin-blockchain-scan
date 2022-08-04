@@ -6,6 +6,7 @@ import { BigNumber } from 'bignumber.js'
 
 export type Link = {
   to?: string
+  name?: string
   text?: string
   title?: string
   url?: string

@@ -2,7 +2,10 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/blocks/${result?.header?.height}`"
+      :to="{
+        name: $routes.blockDetails,
+        params: { id: result.header?.height },
+      }"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Bk</div>
@@ -10,7 +13,10 @@
           <TitledLink
             class="app-table__cell-txt"
             :text="result?.header?.height"
-            :to="`/blocks/${result?.header?.height}`"
+            :name="{
+              name: $routes.blockDetails,
+              params: { id: result.header?.height },
+            }"
           />
         </div>
         <div class="search__dropdown--item-time">
@@ -22,7 +28,10 @@
           Validator:
 
           <TitledLink
-            :to="`/validators/${result.validator}`"
+            :name="{
+              name: $routes.validatorDetails,
+              params: { address: result.validator },
+            }"
             class="app-table__cell-txt"
             :text="cropText(result.validator)"
           />

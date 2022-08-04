@@ -33,9 +33,9 @@ import { callers } from '@/api/callers'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { getAPIDate } from '@/helpers/requests'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import InfoPanelData from './InfoPanelData.vue'
-import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
@@ -122,9 +122,6 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.info-panel__data {
-  margin-bottom: 3.2rem;
-}
 .info-panel__empty {
   grid-column-start: 1;
   grid-column-end: -1;

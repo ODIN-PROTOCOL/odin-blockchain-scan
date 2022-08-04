@@ -56,7 +56,10 @@
         <span class="transactions-item__table-row-title">Block</span>
         <TitledLink
           v-if="tx?.block"
-          :to="`/blocks/${tx?.block}`"
+          :name="{
+            name: $routes.blockDetails,
+            params: { id: tx.block },
+          }"
           class="transactions-item__table-row-value transactions-item__table-row-link"
           :text="tx?.block"
         />
@@ -114,18 +117,24 @@
       <div class="transactions-item__message-row" v-if="tx.sender">
         <span class="transactions-item__message-row-title">From</span>
         <TitledLink
-          :to="`/account/${tx.sender}`"
-          class="transactions-item__message-row-value transactions-item__message-row-link"
+          :name="{
+            name: $routes.accountDetails,
+            params: { hash: tx.sender },
+          }"
           :text="tx.sender"
+          class="transactions-item__message-row-value transactions-item__message-row-link"
         />
         <CopyButton class="mg-l8" :text="tx.sender" />
       </div>
       <div class="transactions-item__message-row" v-if="tx.receiver">
         <span class="transactions-item__message-row-title">To</span>
         <TitledLink
-          :to="`/account/${tx.receiver}`"
-          class="transactions-item__message-row-value transactions-item__message-row-link"
+          :name="{
+            name: $routes.accountDetails,
+            params: { hash: tx.receiver },
+          }"
           :text="tx.receiver"
+          class="transactions-item__message-row-value transactions-item__message-row-link"
         />
         <CopyButton class="mg-l8" :text="tx.receiver" />
       </div>

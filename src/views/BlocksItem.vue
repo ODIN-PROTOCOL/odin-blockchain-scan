@@ -65,7 +65,10 @@
             <TitledLink
               v-for="item in blocksTransactions"
               :key="item.hash"
-              :to="`/transactions/${item.hash}`"
+              :name="{
+                name: $routes.transactionDetails,
+                params: { hash: item.hash },
+              }"
               class="blocks-item__table-row-value blocks-item__table-row-link"
               :text="'0x' + item.hash"
             />
@@ -84,9 +87,12 @@
         </div>
         <span class="blocks-item__table-row-title">Block creator</span>
         <TitledLink
-          :to="`/validators/${blockCreator}`"
-          class="blocks-item__table-row-value blocks-item__table-row-link"
+          :name="{
+            name: $routes.validatorDetails,
+            params: { address: blockCreator },
+          }"
           :text="blockCreator"
+          class="blocks-item__table-row-value blocks-item__table-row-link"
         />
         <CopyButton class="mg-l8" :text="String(blockCreator)" />
       </div>

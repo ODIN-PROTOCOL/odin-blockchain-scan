@@ -2,7 +2,7 @@
   <header class="app__header" :class="{ app__header_mobile: isOpen }">
     <div class="app__container">
       <div class="app__header-inner">
-        <router-link to="/" @click="closeBurger">
+        <router-link :to="{ name: $routes.app }" @click="closeBurger">
           <img
             class="app__header-logo"
             src="~@/assets/brand/odin-logo-black.png"

@@ -1,31 +1,33 @@
+import { ROUTE_NAMES } from '@/enums'
+
 export const blockchainData = [
   [
     {
       title: 'Average ODIN Block Size Chart',
       chartType: 'bar',
-      chartPageUrl: 'average-odin-block-size',
+      chartPageName: ROUTE_NAMES.averageOdinBlockSizeChart,
     },
     {
       title: 'Average Block Time Chart',
       chartType: 'bar',
-      chartPageUrl: 'average-block-time',
+      chartPageName: ROUTE_NAMES.averageBlockTimeChart,
     },
     {
       title: 'Daily Transactions Volume Chart',
       chartType: 'line',
-      chartPageUrl: 'daily-transactions-volume',
+      chartPageName: ROUTE_NAMES.dailyTransactionsVolumeChart,
     },
   ],
   [
     {
       title: 'Average Transaction Fee Chart',
       chartType: 'line',
-      chartPageUrl: 'average-transactions-fee',
+      chartPageName: ROUTE_NAMES.averageTransactionFeeChart,
     },
     {
       title: 'Total Requests Chart',
       chartType: 'line',
-      chartPageUrl: 'total-requests-chart',
+      chartPageName: ROUTE_NAMES.totalRequestsChart,
     },
   ],
 ]

@@ -10,12 +10,12 @@
     </span>
     <transition name="fade">
       <div class="link-dropdown__modal" ref="dropdownEl">
-        <template v-for="link in list.links" :key="link.to">
+        <template v-for="link in list.links" :key="link.name">
           <router-link
             class="link-dropdown__modal-link"
             @click="isRedirect()"
             :data-text="link.text"
-            :to="{ path: link.to }"
+            :to="{ name: link.name }"
           >
             <span>{{ link.text }}</span>
           </router-link>

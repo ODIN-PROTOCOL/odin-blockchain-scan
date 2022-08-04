@@ -4,7 +4,10 @@
       <div class="latest-list-item__label">Bk</div>
       <div class="latest-list-item__name">
         <TitledLink
-          :to="`/blocks/${block.header.height}`"
+          :name="{
+            name: $routes.blockDetails,
+            params: { id: block.header.height },
+          }"
           class="app-table__cell-txt"
           :text="block.header.height"
         />
@@ -19,9 +22,12 @@
       <div class="latest-list-item__validator">
         <span>Validator:</span>
         <TitledLink
-          :to="`/validators/${block.validator}`"
-          class="app-table__cell-txt app-table__link"
+          :name="{
+            name: $routes.validatorDetails,
+            params: { address: block.validator },
+          }"
           :text="`${block.validator}`"
+          class="app-table__cell-txt app-table__link"
         />
       </div>
       <div class="latest-list-item__transactions">

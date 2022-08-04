@@ -20,7 +20,10 @@
 
       <div class="charts-stats__charts-wrapper">
         <h3 class="charts-stats__charts-title mg-b24">Statistics</h3>
-        <router-link class="charts-stats__charts-item" to="/charts/validators">
+        <router-link
+          class="charts-stats__charts-item"
+          :to="{ name: $routes.blockValidatorsChart }"
+        >
           <img
             :src="require('/src/assets/imgs/doughnutChart.png')"
             alt="chart"
@@ -40,7 +43,7 @@
               <td v-for="item in chartRow" :key="item.title">
                 <router-link
                   class="charts-stats__charts-item"
-                  :to="{ path: `/charts/${item.chartPageUrl}` }"
+                  :to="{ name: item.chartPageName }"
                 >
                   <img
                     :src="

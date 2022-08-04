@@ -10,7 +10,10 @@
         v-if="validator.descriptions.length"
         class="app-table__cell-txt app-table__link"
         :text="validator.descriptions[0]?.moniker"
-        :to="`/validators/${validator.info.operatorAddress}`"
+        :name="{
+          name: $routes.validatorDetails,
+          params: { address: validator.info.operatorAddress },
+        }"
       />
       <p v-else class="app-table__cell-txt">-</p>
     </div>

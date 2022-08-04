@@ -20,6 +20,7 @@ import { convertLokiToOdin } from './helpers/converters'
 import { VuePicker, VuePickerOption } from '@invisiburu/vue-picker'
 import { DefaultApolloClient } from '@vue/apollo-composable'
 import { Skeletor } from 'vue-skeletor'
+import { ROUTE_NAMES } from '@/enums'
 
 async function _main() {
   try {
@@ -37,6 +38,7 @@ async function _main() {
     /* webpackChunkName: "app-entry" */ './App.vue'
   )
   const app = createApp(appModule.default)
+  app.config.globalProperties.$routes = ROUTE_NAMES
   app.config.globalProperties.$cropAddress = cropAddress
   app.config.globalProperties.$trimZeros = trimLeadingZeros
   app.config.globalProperties.$fCoin = formatCoin
