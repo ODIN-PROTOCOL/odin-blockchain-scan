@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in">
     <div class="info-panel">
-      <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
+      <InfoPanelData class="info-panel__data" :info-panel-rows="totalData" />
       <div class="info-panel__chart-wrapper">
         <div class="info-panel__chart-title">
           Transactions history statistics
@@ -16,8 +16,8 @@
           />
           <CustomLineChart
             v-else
-            :chartDataset="chartData"
-            :datasetLabel="'Transactions'"
+            :chart-dataset="chartData"
+            :dataset-label="'Transactions'"
             class="info-panel__custom-line-chart"
           />
         </div>

@@ -23,7 +23,7 @@
         />
       </template>
     </div>
-    <template v-if="!isValidatorResponseLoading ?? !isLoading">
+    <template v-if="isFinishLoading">
       <template v-if="isLoadingError || !isValidatorResponseLoadingError">
         <div class="app-table__empty-stub">
           <ui-loading-error-message message="Not Found" title="404" />
@@ -113,6 +113,15 @@ const isValidatorResponseLoadingError = computed(
   () => result.value?.validator.length,
 )
 
+const isFinishLoading = computed(
+  () =>
+    !(
+      isLoading.value ||
+      isValidatorResponseLoading.value ||
+      !result.value?.validator
+    ),
+)
+
 const getValidator = async () => {
   lockLoading()
   try {
@@ -125,7 +134,7 @@ const getValidator = async () => {
     }
   } catch (error) {
     isLoadingError.value = true
-    throw error as Error
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }
   releaseLoading()
 }
@@ -141,7 +150,7 @@ const getDelegators = async () => {
     }
   } catch (error) {
     isLoadingError.value = true
-    throw error as Error
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }
   releaseLoading()
 }
@@ -151,12 +160,8 @@ watch([isValidatorResponseLoading], async () => {
 })
 
 onMounted(async () => {
-  try {
-    await getValidator()
-    await getDelegators()
-  } catch (error) {
-    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-  }
+  await getValidator()
+  await getDelegators()
 })
 </script>
 

@@ -15,48 +15,6 @@
     }
   }
 
-  // HEADER
-  &__header {
-    border-bottom: 0.1rem solid #cce4ff;
-    margin-bottom: 3rem;
-
-    &_mobile {
-      @include respond-to(tablet) {
-        position: fixed;
-        width: 100%;
-        z-index: 1;
-        background: var(--clr__main-bg);
-      }
-    }
-  }
-
-  &__header-inner {
-    padding: 2.8rem 0 1.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    position: relative;
-    @include respond-to(tablet) {
-      width: 100%;
-      margin: 0;
-      justify-content: space-between;
-    }
-  }
-
-  &__header-logo {
-    width: 9rem;
-    height: 3.4rem;
-    margin-right: 5.4rem;
-  }
-
-  &__header-burger-menu {
-    display: none;
-    @include respond-to(tablet) {
-      display: flex;
-      flex-shrink: 0;
-    }
-  }
-
   // MAIN-VIEW
   &__main-view {
     width: 100%;

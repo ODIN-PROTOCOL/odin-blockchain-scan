@@ -42,7 +42,7 @@
               class="accounts-item__vue-picker _vue-picker"
               name="filter"
               v-model="sortingValue"
-              :isDisabled="isLoading"
+              :is-disabled="isLoading"
             >
               <template #dropdownInner>
                 <div class="_vue-picker__dropdown-custom">

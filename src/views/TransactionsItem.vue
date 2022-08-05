@@ -207,7 +207,6 @@ const getTransactions = async () => {
   } catch (error) {
     isLoadingError.value = true
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
-    // setTimeout()
   }
   releaseLoading()
 }

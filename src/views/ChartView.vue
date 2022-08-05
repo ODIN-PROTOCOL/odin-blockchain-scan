@@ -18,7 +18,7 @@
         class="app-form__field-input app-filter app-filter--coin _vue-picker"
         name="filter"
         v-model="sortingValue"
-        :isDisabled="isLoading"
+        :is-disabled="isLoading"
       >
         <template #dropdownInner>
           <div class="_vue-picker__dropdown-custom">
@@ -45,16 +45,16 @@
         <template v-if="chartData?.data?.length > 1">
           <template v-if="chartType === 'bar'">
             <CustomBarChart
-              :chartDataset="chartData"
-              :datasetLabel="datasetLabel"
-              :datasetUnit="datasetUnit"
+              :chart-dataset="chartData"
+              :dataset-label="datasetLabel"
+              :dataset-unit="datasetUnit"
             />
           </template>
           <template v-if="chartType === 'line'">
             <CustomLineChart
-              :chartDataset="chartData"
-              :datasetLabel="datasetLabel"
-              :datasetUnit="datasetUnit"
+              :chart-dataset="chartData"
+              :dataset-label="datasetLabel"
+              :dataset-unit="datasetUnit"
             />
           </template>
         </template>

@@ -14,59 +14,10 @@
             v-for="(connection, index) in filteredConnections"
             :key="connection?.id"
           >
-            <div class="app-table__body ibc-view__body">
-              <div class="app-table__row ibc-view__table-row">
-                <div class="app-table__cell ibc-view__table-cell">
-                  <span class="app-table__title ibc-view__table-title"
-                    >Connection</span
-                  >
-                  <span class="app-table__cell-txt">{{ connection.id }}</span>
-                </div>
-                <div class="app-table__cell ibc-view__table-cell">
-                  <span class="app-table__title ibc-view__table-title"
-                    >Counterparty Chain ID</span
-                  >
-                  <span class="app-table__cell-txt">{{
-                    chainIdData[index].chainId || '-'
-                  }}</span>
-                </div>
-                <div class="app-table__cell ibc-view__table-cell">
-                  <span class="app-table__title ibc-view__table-title"
-                    >Client ID</span
-                  >
-                  <span class="app-table__cell-txt">
-                    {{ connection.clientId || '-' }}
-                  </span>
-                </div>
-                <div class="app-table__cell ibc-view__table-cell">
-                  <span class="app-table__title ibc-view__table-title"
-                    >Counterparty Client ID</span
-                  >
-                  <span class="app-table__cell-txt">
-                    {{ connection.counterparty.clientId || '-' }}
-                  </span>
-                </div>
-              </div>
-              <div class="ibc-view__show">
-                <button
-                  @click="isShow[index] = !isShow[index]"
-                  type="button"
-                  class="ibc-view__show-button"
-                >
-                  {{ isShow[index] ? 'Hidden channels' : 'Show channels' }}
-                  <ArrowIcon
-                    class="ibc-view__arrow-icon"
-                    :class="{
-                      ['ibc-view__arrow-icon--active']: isShow[index],
-                    }"
-                  />
-                </button>
-              </div>
-            </div>
-            <ChannelDetail
-              v-if="isShow[index]"
-              :channelData="channelData"
+            <ibc-line
               :connection="connection"
+              :channel-data="channelData"
+              :chain-id-data="chainIdData[index]"
             />
           </div>
           <template v-if="connectionsData?.length > ITEMS_PER_PAGE">
@@ -108,19 +59,17 @@ import {
   UiLoader,
   UiNoDataMessage,
 } from '@/components/ui'
-import { ArrowIcon } from '@/components/icons'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
-import ChannelDetail from '@/components/ChannelDetail.vue'
+import IbcLine from '@/components/IbcLine.vue'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 const ITEMS_PER_PAGE = 4
 const currentPage = ref(1)
-const totalPages = ref()
-const chainIdData = ref()
-const connectionsData = ref<IdentifiedConnection[] | undefined>()
-const channelData = ref<IdentifiedChannel[] | undefined>()
-const filteredConnections = ref()
-const isShow = ref([])
+const totalPages = ref(0)
+const chainIdData = ref<ClientState[]>([])
+const connectionsData = ref<IdentifiedConnection[]>([])
+const channelData = ref<IdentifiedChannel[]>([])
+const filteredConnections = ref<IdentifiedConnection[]>([])
 const isLoadingError = ref(false)
 
 const loadIbc = async () => {
@@ -158,7 +107,6 @@ const filterConnections = (newPage: number) => {
     )
   }
   currentPage.value = newPage
-  isShow.value = []
 }
 
 const paginationHandler = (num: number) => {

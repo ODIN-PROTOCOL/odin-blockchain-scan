@@ -15,8 +15,8 @@
           <CustomDoughnutChart
             class="mg-b40"
             :type="DoughnutChartType.EXTENDED"
-            :chartDataset="chartData"
-            :additionalInfo="additionalData"
+            :chart-dataset="chartData"
+            :additional-info="additionalData"
           />
           <div class="app-table">
             <div class="app-table__head block-validators-chart__head">
