@@ -23,30 +23,40 @@
         />
       </template>
     </div>
-    <template v-if="!isLoading && !isValidatorResponseLoading">
-      <template v-if="validator">
-        <ValidatorInfo :validator="validator" />
-        <AppTabs>
-          <AppTab title="Oracle Reports">
-            <OracleReportsTable :proposer-address="operatorAddress" />
-          </AppTab>
-          <AppTab :title="delegatorsTitle">
-            <DelegatorsTable :delegators="delegators" :is-loading="isLoading" />
-          </AppTab>
-          <AppTab title="Proposed Blocks">
-            <ProposedBlocksTable :proposer-address="operatorAddress" />
-          </AppTab>
-        </AppTabs>
+    <template v-if="!isValidatorResponseLoading ?? !isLoading">
+      <template v-if="isLoadingError || !isValidatorResponseLoadingError">
+        <div class="app-table__empty-stub">
+          <ui-loading-error-message message="Not Found" title="404" />
+        </div>
       </template>
       <template v-else>
-        <div class="app-table__empty-stub">
-          <p class="empty mg-t32">Validator not found!</p>
-        </div>
+        <template v-if="validator">
+          <ValidatorInfo :validator="validator" />
+          <AppTabs>
+            <AppTab title="Oracle Reports">
+              <OracleReportsTable :proposer-address="operatorAddress" />
+            </AppTab>
+            <AppTab :title="delegatorsTitle">
+              <DelegatorsTable
+                :delegators="delegators"
+                :is-loading="isLoading"
+              />
+            </AppTab>
+            <AppTab title="Proposed Blocks">
+              <ProposedBlocksTable :proposer-address="operatorAddress" />
+            </AppTab>
+          </AppTabs>
+        </template>
+        <template v-else>
+          <div class="app-table__empty-stub">
+            <ui-no-data-message />
+          </div>
+        </template>
       </template>
     </template>
     <template v-else>
       <div class="app-table__empty-stub">
-        <p class="empty mg-t32">Loading…</p>
+        <ui-loader positionCenter message="Loading" />
       </div>
     </template>
   </div>
@@ -67,6 +77,11 @@ import {
   ValidatorInfoModify,
   getValidatorStatus,
 } from '@/helpers/validatorsHelpers'
+import {
+  UiLoadingErrorMessage,
+  UiLoader,
+  UiNoDataMessage,
+} from '@/components/ui'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import AppTabs from '@/components/tabs/AppTabs.vue'
@@ -78,6 +93,7 @@ import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+const isLoadingError = ref(false)
 const route: RouteLocationNormalizedLoaded = useRoute()
 const validator = ref<ValidatorInfoModify>()
 const delegators = ref<DelegationResponse[]>([])
@@ -93,6 +109,10 @@ const { result, loading: isValidatorResponseLoading } =
     address: String(route.params.address),
   })
 
+const isValidatorResponseLoadingError = computed(
+  () => result.value?.validator.length,
+)
+
 const getValidator = async () => {
   lockLoading()
   try {
@@ -104,12 +124,14 @@ const getValidator = async () => {
       operatorAddress.value = validator.value.info.operatorAddress
     }
   } catch (error) {
+    isLoadingError.value = true
     throw error as Error
   }
   releaseLoading()
 }
 
 const getDelegators = async () => {
+  lockLoading()
   try {
     const response = await callers.getValidatorDelegations(
       String(route.params.address),
@@ -118,8 +140,10 @@ const getDelegators = async () => {
       delegators.value = response.delegationResponses
     }
   } catch (error) {
+    isLoadingError.value = true
     throw error as Error
   }
+  releaseLoading()
 }
 
 watch([isValidatorResponseLoading], async () => {

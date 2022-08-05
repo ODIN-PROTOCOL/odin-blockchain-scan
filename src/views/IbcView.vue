@@ -5,10 +5,7 @@
     </div>
     <template v-if="!isLoading">
       <template v-if="isLoadingError">
-        <ui-loading-error-message
-          message="Something went wrong"
-          title="Try again!"
-        />
+        <ui-loading-error-message message="Not Found" title="404" />
       </template>
       <template v-else>
         <template v-if="connectionsData?.length">

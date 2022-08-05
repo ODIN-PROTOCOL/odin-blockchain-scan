@@ -10,141 +10,168 @@
         <CopyButton class="mg-l8" :text="tx.hash" />
       </div>
     </div>
+    <template v-if="!isLoading">
+      <template v-if="isLoadingError">
+        <div class="app-table__empty-stub">
+          <ui-loading-error-message message="Not Found" title="404" />
+        </div>
+      </template>
+      <template v-else>
+        <template v-if="tx">
+          <span class="app__main-view-subtitle">Transaction details</span>
+          <div class="transactions-item__table mg-b32">
+            <div class="transactions-item__table-row">
+              <div class="transactions-item__table-row-info">
+                <img src="~@/assets/icons/info.svg" alt="info" />
+                <span class="transactions-item__table-row-tooltip">
+                  {{ TOOLTIP_INFO.time }}
+                </span>
+              </div>
+              <span class="transactions-item__table-row-title">Time</span>
+              <span class="transactions-item__table-row-value">
+                {{ $fDate(tx.time, 'HH:mm dd.MM.yy') }}
+              </span>
+            </div>
+            <div class="transactions-item__table-row">
+              <div class="transactions-item__table-row-info">
+                <img src="~@/assets/icons/info.svg" alt="info" />
+                <span class="transactions-item__table-row-tooltip">
+                  {{ TOOLTIP_INFO.status }}
+                </span>
+              </div>
+              <span class="transactions-item__table-row-title">Status</span>
+              <div class="transactions-item__table-row-value">
+                <span
+                  class="transactions-item__table-row-status"
+                  :class="
+                    tx.status === TX_STATUSES.SUCCESS
+                      ? 'transactions-item__table-row-status--success'
+                      : 'transactions-item__table-row-status--failed'
+                  "
+                >
+                  {{ tx.status }}
+                </span>
+              </div>
+            </div>
+            <div class="transactions-item__table-row">
+              <div class="transactions-item__table-row-info">
+                <img src="~@/assets/icons/info.svg" alt="info" />
+                <span class="transactions-item__table-row-tooltip">
+                  {{ TOOLTIP_INFO.block }}
+                </span>
+              </div>
+              <span class="transactions-item__table-row-title">Block</span>
+              <TitledLink
+                v-if="tx?.block"
+                :name="{
+                  name: $routes.blockDetails,
+                  params: { id: tx.block },
+                }"
+                class="transactions-item__table-row-value transactions-item__table-row-link"
+                :text="tx?.block"
+              />
+              <span v-else class="transactions-item__table-row-value">-</span>
+            </div>
+            <div class="transactions-item__table-row">
+              <div class="transactions-item__table-row-info">
+                <img src="~@/assets/icons/info.svg" alt="info" />
+                <span class="transactions-item__table-row-tooltip">
+                  {{ TOOLTIP_INFO.gas }}
+                </span>
+              </div>
+              <span class="transactions-item__table-row-title">
+                Gas (used/wanted)
+              </span>
+              <span class="transactions-item__table-row-value">
+                {{ tx.gasUsed }} / {{ tx.gasWanted }}
+              </span>
+            </div>
+            <div class="transactions-item__table-row">
+              <div class="transactions-item__table-row-info">
+                <img src="~@/assets/icons/info.svg" alt="info" />
+                <span class="transactions-item__table-row-tooltip">
+                  {{ TOOLTIP_INFO.fee }}
+                </span>
+              </div>
+              <span class="transactions-item__table-row-title">Fee</span>
+              <span class="transactions-item__table-row-value">{{
+                tx.fee
+              }}</span>
+            </div>
+            <div class="transactions-item__table-row">
+              <div class="transactions-item__table-row-info">
+                <img src="~@/assets/icons/info.svg" alt="info" />
+                <span class="transactions-item__table-row-tooltip">
+                  {{ TOOLTIP_INFO.memo }}
+                </span>
+              </div>
+              <span class="transactions-item__table-row-title">Memo</span>
+              <span class="transactions-item__table-row-value">{{
+                tx.memo
+              }}</span>
+            </div>
+            <div class="transactions-item__table-row">
+              <div class="transactions-item__table-row-info">
+                <img src="~@/assets/icons/info.svg" alt="info" />
+                <span class="transactions-item__table-row-tooltip">
+                  {{ TOOLTIP_INFO.total }}
+                </span>
+              </div>
+              <span class="transactions-item__table-row-title">Total</span>
+              <span class="transactions-item__table-row-value">{{
+                tx.amount
+              }}</span>
+            </div>
+          </div>
 
-    <span class="app__main-view-subtitle">Transaction details</span>
-    <div class="transactions-item__table mg-b32" v-if="tx">
-      <div class="transactions-item__table-row">
-        <div class="transactions-item__table-row-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="transactions-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.time }}
-          </span>
-        </div>
-        <span class="transactions-item__table-row-title">Time</span>
-        <span class="transactions-item__table-row-value">
-          {{ $fDate(tx.time, 'HH:mm dd.MM.yy') }}
-        </span>
-      </div>
-      <div class="transactions-item__table-row">
-        <div class="transactions-item__table-row-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="transactions-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.status }}
-          </span>
-        </div>
-        <span class="transactions-item__table-row-title">Status</span>
-        <div class="transactions-item__table-row-value">
-          <span
-            class="transactions-item__table-row-status"
-            :class="
-              tx.status === TX_STATUSES.SUCCESS
-                ? 'transactions-item__table-row-status--success'
-                : 'transactions-item__table-row-status--failed'
-            "
-          >
-            {{ tx.status }}
-          </span>
-        </div>
-      </div>
-      <div class="transactions-item__table-row">
-        <div class="transactions-item__table-row-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="transactions-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.block }}
-          </span>
-        </div>
-        <span class="transactions-item__table-row-title">Block</span>
-        <TitledLink
-          v-if="tx?.block"
-          :name="{
-            name: $routes.blockDetails,
-            params: { id: tx.block },
-          }"
-          class="transactions-item__table-row-value transactions-item__table-row-link"
-          :text="tx?.block"
-        />
-        <span v-else class="transactions-item__table-row-value">-</span>
-      </div>
-      <div class="transactions-item__table-row">
-        <div class="transactions-item__table-row-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="transactions-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.gas }}
-          </span>
-        </div>
-        <span class="transactions-item__table-row-title">
-          Gas (used/wanted)
-        </span>
-        <span class="transactions-item__table-row-value">
-          {{ tx.gasUsed }} / {{ tx.gasWanted }}
-        </span>
-      </div>
-      <div class="transactions-item__table-row">
-        <div class="transactions-item__table-row-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="transactions-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.fee }}
-          </span>
-        </div>
-        <span class="transactions-item__table-row-title">Fee</span>
-        <span class="transactions-item__table-row-value">{{ tx.fee }}</span>
-      </div>
-      <div class="transactions-item__table-row">
-        <div class="transactions-item__table-row-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="transactions-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.memo }}
-          </span>
-        </div>
-        <span class="transactions-item__table-row-title">Memo</span>
-        <span class="transactions-item__table-row-value">{{ tx.memo }}</span>
-      </div>
-      <div class="transactions-item__table-row">
-        <div class="transactions-item__table-row-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="transactions-item__table-row-tooltip">
-            {{ TOOLTIP_INFO.total }}
-          </span>
-        </div>
-        <span class="transactions-item__table-row-title">Total</span>
-        <span class="transactions-item__table-row-value">{{ tx.amount }}</span>
-      </div>
-    </div>
+          <p class="app__main-view-subtitle mg-b24">Messages</p>
+          <div class="transactions-item__message" v-if="tx">
+            <span class="transactions-item__message-title">{{ tx.type }}</span>
+            <div class="transactions-item__message-row" v-if="tx.sender">
+              <span class="transactions-item__message-row-title">From</span>
+              <TitledLink
+                :name="{
+                  name: $routes.accountDetails,
+                  params: { hash: tx.sender },
+                }"
+                :text="tx.sender"
+                class="transactions-item__message-row-value transactions-item__message-row-link"
+              />
+              <CopyButton class="mg-l8" :text="tx.sender" />
+            </div>
+            <div class="transactions-item__message-row" v-if="tx.receiver">
+              <span class="transactions-item__message-row-title">To</span>
+              <TitledLink
+                :name="{
+                  name: $routes.accountDetails,
+                  params: { hash: tx.receiver },
+                }"
+                :text="tx.receiver"
+                class="transactions-item__message-row-value transactions-item__message-row-link"
+              />
+              <CopyButton class="mg-l8" :text="tx.receiver" />
+            </div>
+            <div class="transactions-item__message-row">
+              <span class="transactions-item__message-row-title">Amount</span>
+              <span class="transactions-item__message-row-value">
+                {{ tx.amount }}
+              </span>
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="app-table__empty-stub">
+            <ui-no-data-message />
+          </div>
+        </template>
+      </template>
+    </template>
 
-    <p class="app__main-view-subtitle mg-b24">Messages</p>
-    <div class="transactions-item__message" v-if="tx">
-      <span class="transactions-item__message-title">{{ tx.type }}</span>
-      <div class="transactions-item__message-row" v-if="tx.sender">
-        <span class="transactions-item__message-row-title">From</span>
-        <TitledLink
-          :name="{
-            name: $routes.accountDetails,
-            params: { hash: tx.sender },
-          }"
-          :text="tx.sender"
-          class="transactions-item__message-row-value transactions-item__message-row-link"
-        />
-        <CopyButton class="mg-l8" :text="tx.sender" />
+    <template v-else>
+      <div class="app-table__empty-stub">
+        <ui-loader positionCenter message="Loading" />
       </div>
-      <div class="transactions-item__message-row" v-if="tx.receiver">
-        <span class="transactions-item__message-row-title">To</span>
-        <TitledLink
-          :name="{
-            name: $routes.accountDetails,
-            params: { hash: tx.receiver },
-          }"
-          :text="tx.receiver"
-          class="transactions-item__message-row-value transactions-item__message-row-link"
-        />
-        <CopyButton class="mg-l8" :text="tx.receiver" />
-      </div>
-      <div class="transactions-item__message-row">
-        <span class="transactions-item__message-row-title">Amount</span>
-        <span class="transactions-item__message-row-value">
-          {{ tx.amount }}
-        </span>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -159,19 +186,30 @@ import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
 import { TOOLTIP_INFO, TX_STATUSES } from '@/const'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
+import {
+  UiLoadingErrorMessage,
+  UiLoader,
+  UiNoDataMessage,
+} from '@/components/ui'
 
 const route: RouteLocationNormalizedLoaded = useRoute()
 const tx = ref<DecodedTxData>()
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
+const isLoadingError = ref(false)
 
 const getTransactions = async () => {
+  lockLoading()
   try {
     const res = await callers.getTxForTxDetailsPage(String(route.params.hash))
-
     const preparedTx = await prepareTransaction([res.data.result])
     tx.value = preparedTx[0]
   } catch (error) {
+    isLoadingError.value = true
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+    // setTimeout()
   }
+  releaseLoading()
 }
 
 onMounted(async () => {

@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="validator-info__top-line-item card-frame">
-        <span class="validator-info__top-line-item-title">Jailed?</span>
+        <span class="validator-info__top-line-item-title">Jailed</span>
         <div class="validator-info__card-balance-row-value-wrapper">
           <span
             :title="validator.statuses[0].jailed ? 'Yes' : 'No'"

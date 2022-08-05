@@ -4,6 +4,7 @@
       <BackButton text="Top accounts" />
       <h1 class="app__main-view-title accounts-item__title">Account</h1>
       <div
+        v-if="!isLoadingError"
         class="app__main-view-subtitle-wrapper accounts-item__subtitle-wrapper"
       >
         <p class="app__main-view-subtitle fs-cut">
@@ -13,86 +14,92 @@
       </div>
     </div>
 
-    <AccountInfo
-      v-if="!isLoading"
-      :address="String(route.params.hash)"
-      :geo-balance="geoBalance"
-      :odin-balance="odinBalance"
-    />
-    <div class="accounts-item__subtitle-line">
-      <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
-        <div class="accounts-item__tx-info">
-          <img src="~@/assets/icons/info.svg" alt="info" />
-          <span class="accounts-item__tooltip">
-            Based on last transactions in system
-          </span>
-        </div>
-        <span class="view-main__subtitle-item">Transaction list</span>
+    <template v-if="isLoadingError">
+      <div class="app-table__empty-stub">
+        <ui-loading-error-message message="Not Found" title="404" />
       </div>
-      <div class="accounts-item__selection">
-        <div class="accounts-item__selection-item">
-          <span class="accounts-item__selection-item-title">Filter</span>
-          <VuePicker
-            class="accounts-item__vue-picker _vue-picker"
-            name="filter"
-            v-model="sortingValue"
-            :isDisabled="isLoading"
-          >
-            <template #dropdownInner>
-              <div class="_vue-picker__dropdown-custom">
-                <VuePickerOption
-                  v-for="{ text, value } in sortingTypeTx"
-                  :key="text"
-                  :value="value"
-                  :text="text"
-                >
-                  {{ text }}
-                </VuePickerOption>
-              </div>
-            </template>
-          </VuePicker>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="transactions" class="app-table">
-      <div class="app-table__head">
-        <span> Transaction hash </span>
-        <span> Type </span>
-        <span> Block </span>
-        <span> Date and time </span>
-        <span> Sender </span>
-        <span> Receiver </span>
-        <span> Amount </span>
-        <span> Transaction Fee </span>
-      </div>
-      <div class="app-table__body">
-        <template v-if="transactions?.length">
-          <AccountTxLine
-            v-for="(item, index) in transactions"
-            :key="index"
-            :tx="item.attributes"
-          />
-        </template>
-        <template v-else>
-          <SkeletonTable
-            v-if="isLoading"
-            :header-titles="headerTitles"
-            table-size="10"
-          />
-          <div v-else class="app-table__empty-stub">
-            <p class="empty mg-t32">No items yet</p>
+    </template>
+    <template v-else>
+      <AccountInfo
+        :address="String(route.params.hash)"
+        :geo-balance="geoBalance"
+        :odin-balance="odinBalance"
+      />
+      <div class="accounts-item__subtitle-line">
+        <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
+          <div class="accounts-item__tx-info">
+            <img src="~@/assets/icons/info.svg" alt="info" />
+            <span class="accounts-item__tooltip">
+              Based on last transactions in system
+            </span>
           </div>
-        </template>
+          <span class="view-main__subtitle-item">Transaction list</span>
+        </div>
+        <div class="accounts-item__selection">
+          <div class="accounts-item__selection-item">
+            <span class="accounts-item__selection-item-title">Filter</span>
+            <VuePicker
+              class="accounts-item__vue-picker _vue-picker"
+              name="filter"
+              v-model="sortingValue"
+              :isDisabled="isLoading"
+            >
+              <template #dropdownInner>
+                <div class="_vue-picker__dropdown-custom">
+                  <VuePickerOption
+                    v-for="{ text, value } in sortingTypeTx"
+                    :key="text"
+                    :value="value"
+                    :text="text"
+                  >
+                    {{ text }}
+                  </VuePickerOption>
+                </div>
+              </template>
+            </VuePicker>
+          </div>
+        </div>
       </div>
-    </div>
-    <AppPagination
-      v-if="totalTxCount > ITEMS_PER_PAGE"
-      class="mg-t32"
-      v-model="currentPage"
-      :pages="totalPages"
-      @update:modelValue="updateHandler"
-    />
+
+      <div v-if="transactions" class="app-table">
+        <div class="app-table__head">
+          <span> Transaction hash </span>
+          <span> Type </span>
+          <span> Block </span>
+          <span> Date and time </span>
+          <span> Sender </span>
+          <span> Receiver </span>
+          <span> Amount </span>
+          <span> Transaction Fee </span>
+        </div>
+        <div class="app-table__body">
+          <template v-if="transactions?.length">
+            <AccountTxLine
+              v-for="(item, index) in transactions"
+              :key="index"
+              :tx="item.attributes"
+            />
+          </template>
+          <template v-else>
+            <SkeletonTable
+              v-if="isLoading"
+              :header-titles="headerTitles"
+              table-size="10"
+            />
+            <div v-else class="app-table__empty-stub">
+              <ui-no-data-message />
+            </div>
+          </template>
+        </div>
+      </div>
+      <AppPagination
+        v-if="totalTxCount > ITEMS_PER_PAGE"
+        class="mg-t32"
+        v-model="currentPage"
+        :pages="totalPages"
+        @update:modelValue="updateHandler"
+      />
+    </template>
   </div>
 </template>
 <script setup lang="ts">
@@ -104,6 +111,7 @@ import { Bech32 } from '@cosmjs/encoding'
 import { bigMath } from '@/helpers/bigMath'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
+import { UiLoadingErrorMessage, UiNoDataMessage } from '@/components/ui'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
@@ -112,7 +120,7 @@ import AccountInfo from '@/components/AccountInfo.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-
+const isLoadingError = ref(false)
 const route: RouteLocationNormalizedLoaded = useRoute()
 const geoBalance = ref('0')
 const odinBalance = ref('0')
@@ -164,6 +172,7 @@ const getAccountInfo = async () => {
     totalTxCount.value = tx.total_count
     totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
   } catch (error) {
+    isLoadingError.value = true
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }
   releaseLoading()

@@ -1,8 +1,8 @@
 <template>
   <div class="app-pagination__wrapper">
-    <ul class="app-pagination">
-      <li
-        class="app-pagination__control border"
+    <div class="app-pagination">
+      <button
+        class="app-pagination__control app-pagination__border"
         :class="{ 'app-pagination__control--active': isPrevControlsActive }"
         @click="goToPreviousPage"
       >
@@ -11,10 +11,10 @@
           :width="6"
           :height="10"
         />
-      </li>
-      <li>
+      </button>
+      <div>
         <input
-          class="app-pagination__input border"
+          class="app-pagination__input app-pagination__border"
           type="number"
           :min="1"
           :max="pages"
@@ -23,12 +23,12 @@
           @keydown.enter="goToSelectedPage($event)"
           @blur="goToSelectedPage($event)"
         />
-      </li>
-      <li class="app-pagination__total-page">
+      </div>
+      <div class="app-pagination__total-page">
         <span>of {{ pages }}</span>
-      </li>
-      <li
-        class="app-pagination__control border"
+      </div>
+      <button
+        class="app-pagination__control app-pagination__border"
         :class="{ 'app-pagination__control--active': isNextControlsActive }"
         @click="goToNextPage"
       >
@@ -37,8 +37,8 @@
           :width="6"
           :height="10"
         />
-      </li>
-    </ul>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -102,6 +102,8 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   flex-wrap: nowrap;
   align-items: center;
   list-style-type: none;
+  justify-content: center;
+  color: var(--clr-text);
   margin: 0;
   padding: 0;
 }
@@ -113,22 +115,23 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   height: 3.6rem;
   border: 0.1rem solid var(--clr__input-border);
   fill: var(--clr__input-border);
-}
-.app-pagination__control--active {
-  cursor: pointer;
-  border: 0.1rem solid var(--clr__action);
-  fill: var(--clr__action);
-  svg {
+  &--active {
+    cursor: pointer;
+    border: 0.1rem solid var(--clr__action);
     fill: var(--clr__action);
-    transition: all 0.5s ease;
-  }
-  &:hover {
     svg {
-      fill: var(--clr__btn-hover);
+      fill: var(--clr__action);
+      transition: all 0.5s ease;
     }
-    border-color: var(--clr__btn-hover);
+    &:hover {
+      svg {
+        fill: var(--clr__btn-hover);
+      }
+      border-color: var(--clr__btn-hover);
+    }
   }
 }
+
 .app-pagination__control-arrow {
   position: absolute;
   display: block;
@@ -137,6 +140,7 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   margin: 0 0.2rem;
   fill: var(--clr__input-border);
 }
+
 .app-pagination__total-page {
   display: flex;
   justify-content: center;
@@ -145,6 +149,7 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   font-size: 1.6rem;
   margin: 0 0.8rem;
 }
+
 .app-pagination__input {
   border: 0.1rem solid var(--clr__input-border);
   width: 6rem;
@@ -156,13 +161,16 @@ function goToSelectedPage(event: { target: { value: string } }): void {
     border: 0.1rem solid var(--clr__action);
   }
 }
+
 .rotate-right {
   transform: rotate(180deg);
 }
+
 .rotate-left {
   transform: translateX(-0.3rem) rotate(0deg);
 }
-.border {
+
+.app-pagination__border {
   background: var(--clr__main-bg);
   border-radius: 0.4rem;
   margin: 0 0.2rem;

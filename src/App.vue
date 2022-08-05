@@ -47,7 +47,6 @@ onMounted(() => {
 @import '~@/styles/views.scss';
 @import '~@/styles/load-fog.scss';
 @import '~@/styles/forms.scss';
-@import '~@/styles/vue-notification.scss';
 @import '~@/styles/shortcuts.scss';
 @import '~@/styles/fonts.scss';
 @import '~@/styles/custom.scss';
