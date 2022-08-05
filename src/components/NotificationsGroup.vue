@@ -83,9 +83,9 @@ const component = computed(() => {
     align-items: center;
     gap: 2rem;
     max-width: 49.6rem;
-    width: 95%;
+    width: 93%;
     min-width: 28rem;
-    margin: 2rem 1rem;
+    margin: 2rem;
     background: var(--clr__main-bg);
     color: var(--clr__text);
     box-shadow: 0 0.4rem 1.6rem var(--clr__vue-notifications-box-shadow);
@@ -127,6 +127,7 @@ const component = computed(() => {
     }
     .notifications-group__inner {
       padding: 1.6rem 2.4rem;
+      margin: 2rem 1rem;
     }
     .notifications-group__inner-title {
       font-size: 2rem;
