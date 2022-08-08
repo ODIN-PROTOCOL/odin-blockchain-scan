@@ -24,7 +24,7 @@
           >Counterparty Client ID</span
         >
         <span class="app-table__cell-txt">
-          {{ connection.counterparty.clientId || '-' }}
+          {{ connection.counterparty?.clientId || '-' }}
         </span>
       </div>
     </div>
@@ -59,10 +59,11 @@ import { ClientState } from 'cosmjs-types/ibc/lightclients/tendermint/v1/tenderm
 import ChannelDetail from '@/components/ChannelDetail.vue'
 
 defineProps<{
-  connection?: IdentifiedConnection
-  chainIdData?: ClientState
-  channelData?: IdentifiedChannel
+  connection: IdentifiedConnection
+  chainIdData: ClientState
+  channelData: IdentifiedChannel
 }>()
+
 const isShowChannelDetail = ref(false)
 </script>
 
