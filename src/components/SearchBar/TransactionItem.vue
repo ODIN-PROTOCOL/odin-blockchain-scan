@@ -2,15 +2,21 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/transactions/${result.hash}`"
+      :to="{
+        name: $routes.transactionDetails,
+        params: { hash: result.hash },
+      }"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">Tx</div>
         <div class="search__dropdown--item-height">
           <TitledLink
-            class="app-table__cell-txt"
-            :to="`/transactions/${result.hash}`"
+            :name="{
+              name: $routes.transactionDetails,
+              params: { hash: result.hash },
+            }"
             :text="result.hash ? cropText(`0x${result.hash}`) : 'No info'"
+            class="app-table__cell-txt"
           />
         </div>
 
@@ -24,7 +30,10 @@
           <TitledLink
             v-if="result.sender"
             class="app-table__cell-txt"
-            :to="`/account/${result.sender}`"
+            :name="{
+              name: $routes.accountDetails,
+              params: { hash: result.sender },
+            }"
             :text="cropText(`${result.sender}`)"
           />
           <span v-else>No info</span>
@@ -34,7 +43,10 @@
           <TitledLink
             v-if="result.receiver"
             class="app-table__cell-txt"
-            :to="`/account/${result.receiver}`"
+            :name="{
+              name: $routes.accountDetails,
+              params: { hash: result.receiver },
+            }"
             :text="cropText(`${result.receiver}`)"
           />
           <span v-else>No info</span>

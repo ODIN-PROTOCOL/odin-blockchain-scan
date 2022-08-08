@@ -52,6 +52,6 @@ const { lineChartProps } = useLineChart({
 
 <style lang="scss" scoped>
 .custom-line-chart {
-  max-height: 20rem;
+  min-height: 10rem;
 }
 </style>

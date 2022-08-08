@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in">
     <div class="info-panel">
-      <InfoPanelData class="info-panel__data" :infoPanelRows="totalData" />
+      <InfoPanelData class="info-panel__data" :info-panel-rows="totalData" />
       <div class="info-panel__chart-wrapper">
         <div class="info-panel__chart-title">
           Transactions history statistics
@@ -9,17 +9,16 @@
         <div class="info-panel__chart">
           <skeleton-loader
             v-if="isLoading"
-            width="-1"
-            height="-1"
-            rounded
-            animation="wave"
-            color="rgb(225, 229, 233)"
+            pill
+            shimmer
+            width="100%"
             class="info-panel__chart-skeleton"
           />
           <CustomLineChart
             v-else
-            :chartDataset="chartData"
-            :datasetLabel="'Transactions'"
+            :chart-dataset="chartData"
+            :dataset-label="'Transactions'"
+            class="info-panel__custom-line-chart"
           />
         </div>
       </div>
@@ -34,9 +33,9 @@ import { callers } from '@/api/callers'
 import { formatDataForCharts } from '@/helpers/customChartHelpers'
 import { getAPIDate } from '@/helpers/requests'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import CustomLineChart from '@/components/Charts/CustomLineChart.vue'
 import InfoPanelData from './InfoPanelData.vue'
-import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
@@ -123,9 +122,6 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.info-panel__data {
-  margin-bottom: 3.2rem;
-}
 .info-panel__empty {
   grid-column-start: 1;
   grid-column-end: -1;
@@ -174,7 +170,9 @@ onMounted(async () => {
   height: 19rem;
   width: 100%;
 }
-
+.info-panel__custom-line-chart {
+  max-height: 19.5rem;
+}
 @include respond-to(tablet) {
   .info-panel__text {
     font-size: 2rem;

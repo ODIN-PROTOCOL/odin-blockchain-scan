@@ -18,7 +18,7 @@
           @click="closeBurger"
           class="app-nav__link"
           data-text="IBCs"
-          :to="{ name: 'IBC' }"
+          :to="{ name: $routes.ibc }"
         >
           <span>IBCs</span>
         </router-link>
@@ -53,6 +53,8 @@ import UserWidget from '@/components/UserWidget.vue'
 import { LinkList } from '@/helpers/Types'
 import { START_VALUE } from '@/api/api-config'
 import { isMobile } from '@/helpers/helpers'
+import { ROUTE_NAMES } from '@/enums'
+
 enum EVENTS {
   closeBurger = 'close-burger',
 }
@@ -69,19 +71,19 @@ const BlockchainList: LinkList = {
   name: 'Blockchain',
   links: [
     {
-      to: '/transactions',
+      name: ROUTE_NAMES.transactions,
       text: 'Transactions',
     },
     {
-      to: '/blocks',
+      name: ROUTE_NAMES.blocks,
       text: 'Blocks',
     },
     {
-      to: '/validators',
+      name: ROUTE_NAMES.validators,
       text: 'Validators',
     },
     {
-      to: '/top-accounts',
+      name: ROUTE_NAMES.accounts,
       text: 'Top Accounts',
     },
   ],
@@ -93,7 +95,7 @@ const ResourceList: LinkList = {
   name: 'Resources',
   links: [
     {
-      to: '/charts',
+      name: ROUTE_NAMES.charts,
       text: 'Charts & Stats',
     },
   ],

@@ -87,11 +87,11 @@ const {
     },
   )
 
-const stakedLokiAmount: ComputedRef<number> = computed(() => {
+const stakedLokiAmount = computed(() => {
   const odinCoin = result.value?.delegationBalance?.coins?.find(
     coin => coin.denom === 'loki',
   )
-  return odinCoin?.amount || 0
+  return odinCoin?.amount || '0'
 })
 
 const stakedPercentage: ComputedRef<string> = computed(() => {
@@ -108,7 +108,7 @@ const stakedPercentage: ComputedRef<string> = computed(() => {
   }
 
   return `${Number(
-    Number((stakedLokiAmount.value * 100) / stakingTotal).toFixed(4),
+    Number((Number(stakedLokiAmount.value) * 100) / stakingTotal).toFixed(4),
   )}%`
 })
 </script>

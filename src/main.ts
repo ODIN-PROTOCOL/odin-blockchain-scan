@@ -19,7 +19,8 @@ import { convertLokiToOdin } from './helpers/converters'
 // @ts-ignore
 import { VuePicker, VuePickerOption } from '@invisiburu/vue-picker'
 import { DefaultApolloClient } from '@vue/apollo-composable'
-import SkeletonLoaderVueSample from 'skeleton-loader-vue/src/components/Loader.vue'
+import { Skeletor } from 'vue-skeletor'
+import { ROUTE_NAMES } from '@/enums'
 
 async function _main() {
   try {
@@ -37,6 +38,7 @@ async function _main() {
     /* webpackChunkName: "app-entry" */ './App.vue'
   )
   const app = createApp(appModule.default)
+  app.config.globalProperties.$routes = ROUTE_NAMES
   app.config.globalProperties.$cropAddress = cropAddress
   app.config.globalProperties.$trimZeros = trimLeadingZeros
   app.config.globalProperties.$fCoin = formatCoin
@@ -52,7 +54,7 @@ async function _main() {
 
   app.component('VuePicker', VuePicker)
   app.component('VuePickerOption', VuePickerOption)
-  app.component('skeleton-loader', SkeletonLoaderVueSample)
+  app.component('skeleton-loader', Skeletor)
   app.mount('#app')
   return app
 }

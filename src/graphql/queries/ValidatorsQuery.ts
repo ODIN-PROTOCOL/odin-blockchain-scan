@@ -8,7 +8,7 @@ export const ValidatorsQuery = gql`
     slashingParams: slashing_params(order_by: { height: desc }, limit: 1) {
       params
     }
-    validator {
+    validator(order_by: { validator_info: { delegated_amount: desc } }) {
       info: validator_info {
         delegatedAmount: delegated_amount
         operatorAddress: operator_address

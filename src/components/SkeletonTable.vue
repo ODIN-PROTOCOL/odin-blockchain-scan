@@ -15,21 +15,17 @@
       </span>
       <skeleton-loader
         v-else
+        pill
+        shimmer
         :height="skeletonHeight"
-        rounded
-        :width="-1"
-        :radius="skeletonRadius"
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        width="100%"
         class="skeleton-table__loader"
       />
       <skeleton-loader
+        pill
+        shimmer
         :height="skeletonHeight"
-        rounded
-        :width="-1"
-        :radius="skeletonRadius"
-        animation="wave"
-        color="rgb(225, 229, 233)"
+        width="100%"
         class="skeleton-table__loader"
       />
     </div>

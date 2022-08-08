@@ -7,9 +7,12 @@
     <div class="app-table__cell">
       <span class="app-table__title">Address</span>
       <TitledLink
-        :to="`/account/${account.address}`"
-        class="app-table__cell-txt app-table__link"
+        :name="{
+          name: $routes.accountDetails,
+          params: { hash: account.address },
+        }"
         :text="account.address"
+        class="app-table__cell-txt app-table__link"
       />
     </div>
     <div class="app-table__cell">

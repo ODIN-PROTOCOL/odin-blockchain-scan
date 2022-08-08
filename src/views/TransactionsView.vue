@@ -4,13 +4,7 @@
       <h2 class="app__main-view-title">Transactions</h2>
     </div>
     <div class="mg-b16 mg-t16">
-      <skeleton-loader
-        v-if="isLoading"
-        :height="24"
-        rounded
-        animation="wave"
-        color="rgb(225, 229, 233)"
-      />
+      <skeleton-loader v-if="isLoading" pill shimmer :height="24" width="100" />
       <p v-else>{{ totalTransactions }} Transactions found</p>
     </div>
     <div class="app-table">

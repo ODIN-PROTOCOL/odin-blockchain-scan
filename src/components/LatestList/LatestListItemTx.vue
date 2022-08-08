@@ -6,7 +6,10 @@
         <TitledLink
           v-if="tx?.hash"
           class="app-table__cell-txt"
-          :to="`/transactions/${tx.hash}`"
+          :name="{
+            name: $routes.transactionDetails,
+            params: { hash: tx.hash },
+          }"
           :text="cropText(`0x${tx.hash}`)"
         />
         <span v-else>No info</span>
@@ -20,9 +23,12 @@
         <span>From:</span>
         <TitledLink
           v-if="tx?.sender"
-          :to="`/account/${tx.sender}`"
-          class="app-table__cell-txt app-table__link"
+          :name="{
+            name: $routes.accountDetails,
+            params: { hash: tx.sender },
+          }"
           :text="tx.sender"
+          class="app-table__cell-txt app-table__link"
         />
         <span v-else>No info</span>
       </div>
@@ -30,9 +36,12 @@
         <span>To:</span>
         <TitledLink
           v-if="tx?.receiver"
-          class="app-table__cell-txt app-table__link"
-          :to="`/account/${tx.receiver}`"
+          :name="{
+            name: $routes.accountDetails,
+            params: { hash: tx.receiver },
+          }"
           :text="tx.receiver"
+          class="app-table__cell-txt app-table__link"
         />
         <span v-else>No info</span>
       </div>

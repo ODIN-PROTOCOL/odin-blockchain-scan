@@ -3,9 +3,12 @@
     <div class="app-table__cell">
       <span class="app-table__title">Transaction hash</span>
       <TitledLink
-        :to="`/transactions/${getRequestItemTxHash}`"
-        class="app-table__cell-txt app-table__link"
+        :name="{
+          name: $routes.transactionDetails,
+          params: { hash: getRequestItemTxHash },
+        }"
         :text="tx.tx_hash"
+        class="app-table__cell-txt app-table__link"
       />
     </div>
     <div class="app-table__cell">
@@ -17,7 +20,10 @@
     <div class="app-table__cell">
       <span class="app-table__title">Block</span>
       <TitledLink
-        :to="`/blocks/${tx.block}`"
+        :name="{
+          name: $routes.blockDetails,
+          params: { id: tx.block },
+        }"
         class="app-table__cell-txt app-table__link"
         :text="tx.block"
       />
@@ -70,8 +76,16 @@ const props = defineProps<{
   tx: AccountTx
 }>()
 
-const odinAmount = convertLokiToOdin(props.tx.amount[0]?.amount)
-const odinFee = convertLokiToOdin(props.tx.fee[0]?.amount)
+const odinAmount = convertLokiToOdin(
+  props.tx.amount[0]?.amount,
+  {},
+  props.tx.amount[0]?.denom,
+)
+const odinFee = convertLokiToOdin(
+  props.tx.fee[0]?.amount,
+  {},
+  props.tx.fee[0]?.denom,
+)
 const type = humanizeMessageType('/' + props.tx.type)
 const getRequestItemTxHash = props.tx?.tx_hash.split('0x')[1]
 const validatorPrefix = 'odinvaloper'

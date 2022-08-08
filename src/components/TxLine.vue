@@ -3,7 +3,10 @@
     <div class="app-table__cell">
       <span class="app-table__title">Transaction hash</span>
       <TitledLink
-        :to="`/transactions/${transition.hash}`"
+        :name="{
+          name: $routes.transactionDetails,
+          params: { hash: transition.hash },
+        }"
         class="app-table__cell-txt app-table__link"
         :text="'0x' + transition.hash"
       />
@@ -17,9 +20,12 @@
     <div class="app-table__cell">
       <span class="app-table__title">Block</span>
       <TitledLink
-        :to="`/blocks/${transition.block}`"
-        class="app-table__cell-txt app-table__link"
+        :name="{
+          name: $routes.blockDetails,
+          params: { id: transition.block },
+        }"
         :text="transition.block"
+        class="app-table__cell-txt app-table__link"
       />
     </div>
     <div class="app-table__cell">
@@ -30,7 +36,10 @@
       <span class="app-table__title">Sender</span>
       <TitledLink
         v-if="transition.sender !== ''"
-        :to="`/account/${transition.sender}`"
+        :name="{
+          name: $routes.accountDetails,
+          params: { hash: transition.sender },
+        }"
         class="app-table__cell-txt app-table__link"
         :text="transition.sender"
       />
@@ -40,9 +49,12 @@
       <span class="app-table__title">Receiver</span>
       <TitledLink
         v-if="transition.receiver !== ''"
-        :to="`/account/${transition.receiver}`"
-        class="app-table__cell-txt app-table__link"
+        :name="{
+          name: $routes.accountDetails,
+          params: { hash: transition.receiver },
+        }"
         :text="transition.receiver"
+        class="app-table__cell-txt app-table__link"
       />
       <span class="app-table__cell-txt" v-else> - </span>
     </div>

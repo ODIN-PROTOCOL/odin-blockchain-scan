@@ -9,9 +9,12 @@
           v-if="validator.descriptions.length"
           class="app-table__cell-txt app-table__link"
           :text="validator.descriptions[0]?.moniker"
-          :to="`/validators/${validator.info.operatorAddress}`"
+          :name="{
+            name: $routes.validatorDetails,
+            params: { address: validator.info.operatorAddress },
+          }"
         />
-        <p class="app-table__cell-txt">-</p>
+        <p v-else class="app-table__cell-txt">-</p>
       </div>
       <div class="validators-table-row-mobile__show">
         <button
@@ -84,10 +87,10 @@ import {
   getValidatorStatus,
   ValidatorInfoModify,
 } from '@/helpers/validatorsHelpers'
+import { ArrowIcon } from '@/components/icons'
 import TitledLink from '@/components/TitledLink.vue'
 import ProgressbarTool from '@/components/ProgressbarTool.vue'
 import ValidatorStatus from '@/components/ValidatorStatus.vue'
-import ArrowIcon from '@/components/icons/ArrowIcon.vue'
 
 defineProps<{
   validator: ValidatorInfoModify

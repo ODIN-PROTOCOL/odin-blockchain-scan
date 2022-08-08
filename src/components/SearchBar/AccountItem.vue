@@ -2,14 +2,20 @@
   <template v-if="result">
     <router-link
       class="search__dropdown--item"
-      :to="`/account/${result.address}`"
+      :to="{
+        name: $routes.accountDetails,
+        params: { hash: result.address },
+      }"
     >
       <div class="search__dropdown--item-left">
         <div class="search__dropdown--item-label">A</div>
         <div class="search__dropdown--item-height">
           <TitledLink
             class="app-table__cell-txt address-link"
-            :to="`/account/${result.address}`"
+            :name="{
+              name: $routes.accountDetails,
+              params: { hash: result.address },
+            }"
             :text="`0x${result.address}`"
           />
         </div>
