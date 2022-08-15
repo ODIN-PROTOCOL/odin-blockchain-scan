@@ -9,5 +9,9 @@ export const AccountStakingInfoQuery = gql`
       bonded: bonded_tokens
       unbonded: not_bonded_tokens
     }
+    accountBalance: account_balance(where: { address: { _eq: $address } }) {
+      lokiBalance: loki_balance
+      minigeoBalance: mgeo_balance
+    }
   }
 `

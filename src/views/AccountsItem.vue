@@ -10,7 +10,7 @@
         <p class="app__main-view-subtitle fs-cut">
           {{ route.params.hash }}
         </p>
-        <CopyButton class="mg-l8" :text="String(route.params.hash)" />
+        <CopyButton class="mg-l8" :text="route.params.hash" />
       </div>
     </div>
 
@@ -20,11 +20,7 @@
       </div>
     </template>
     <template v-else>
-      <AccountInfo
-        :address="String(route.params.hash)"
-        :geo-balance="geoBalance"
-        :odin-balance="odinBalance"
-      />
+      <account-info :address="accountAdress" />
       <div class="accounts-item__subtitle-line">
         <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
           <div class="accounts-item__tx-info">
@@ -42,7 +38,7 @@
               class="accounts-item__vue-picker _vue-picker"
               name="filter"
               v-model="sortingValue"
-              :is-disabled="isLoading"
+              :is-disabled="isLoading || isTransactionLoading"
             >
               <template #dropdownInner>
                 <div class="_vue-picker__dropdown-custom">
@@ -77,12 +73,12 @@
             <AccountTxLine
               v-for="(item, index) in transactions"
               :key="index"
-              :tx="item.attributes"
+              :tx="item"
             />
           </template>
           <template v-else>
             <SkeletonTable
-              v-if="isLoading"
+              v-if="isLoading || isTransactionLoading"
               :header-titles="headerTitles"
               table-size="10"
             />
@@ -105,13 +101,17 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
-import { callers } from '@/api/callers'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
-import { Bech32 } from '@cosmjs/encoding'
-import { bigMath } from '@/helpers/bigMath'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
-import { sortingTypeTx, TYPE_TX_SORT } from '@/helpers/helpers'
 import { UiLoadingErrorMessage, UiNoDataMessage } from '@/components/ui'
+import { useQuery } from '@vue/apollo-composable'
+import { AccountTransactionsQuery } from '@/graphql/queries'
+import {
+  prepareAccountTransaction,
+  sortingTypeTx,
+  TYPE_TX_SORT,
+  decodeTypeTxSort,
+} from '@/helpers/account.helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
@@ -122,14 +122,13 @@ import SkeletonTable from '@/components/SkeletonTable.vue'
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 const isLoadingError = ref(false)
 const route: RouteLocationNormalizedLoaded = useRoute()
-const geoBalance = ref('0')
-const odinBalance = ref('0')
 const transactions = ref()
 const totalTxCount = ref(0)
 const currentPage = ref(1)
 const totalPages = ref(1)
 const ITEMS_PER_PAGE = 50
 const sortingValue = ref(TYPE_TX_SORT.all)
+const accountAdress = String(route.params.hash)
 const headerTitles = [
   { title: 'Transaction hash' },
   { title: 'Type' },
@@ -140,37 +139,41 @@ const headerTitles = [
   { title: 'Amount' },
   { title: 'Transaction Fee' },
 ]
-const getTotalAmount = async (
-  validatorAddress: string,
-  denom: string,
-): Promise<string> =>
-  callers
-    .getUnverifiedBalances(validatorAddress, denom)
-    .then(res => bigMath.bigConvectOdinAndGeo(res.amount).toString())
+
+const {
+  result,
+  loading: isTransactionLoading,
+  refetch,
+  onResult,
+} = useQuery(AccountTransactionsQuery, {
+  offset: (currentPage.value - 1) * ITEMS_PER_PAGE,
+  limit: ITEMS_PER_PAGE,
+  address: accountAdress,
+  type: decodeTypeTxSort(sortingValue.value),
+})
+
+onResult(async () => {
+  await getAccountInfo()
+})
 
 const getAccountInfo = async () => {
   lockLoading()
   try {
     transactions.value = []
-    const validatorAddress = Bech32.encode(
-      'odin',
-      Bech32.decode(route.params.hash as string).data,
-    )
-    const tx = await callers
-      .getAccountTx(
-        currentPage.value - 1,
-        50,
-        validatorAddress,
-        'desc',
-        sortingValue.value,
-      )
-      .then(resp => resp.json())
-
-    geoBalance.value = await getTotalAmount(validatorAddress, 'minigeo')
-    odinBalance.value = await getTotalAmount(validatorAddress, 'loki')
-    transactions.value = tx.data
-    totalTxCount.value = tx.total_count
-    totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
+    if (!isTransactionLoading.value) {
+      // const tx = await callers
+      //   .getAccountTx(
+      //     currentPage.value - 1,
+      //     50,
+      //     String(route.params.hash),
+      //     'desc',
+      //     sortingValue.value,
+      //   )
+      //   .then(resp => resp.json())
+      // totalTxCount.value = tx.total_count
+      // totalPages.value = Math.ceil(tx.total_count / ITEMS_PER_PAGE)
+      transactions.value = prepareAccountTransaction(result.value.message)
+    }
   } catch (error) {
     isLoadingError.value = true
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
@@ -183,12 +186,24 @@ onMounted(async () => {
 })
 
 const updateHandler = async () => {
-  await getAccountInfo()
+  transactions.value = []
+  refetch({
+    offset: (currentPage.value - 1) * ITEMS_PER_PAGE,
+    limit: ITEMS_PER_PAGE,
+    address: accountAdress,
+    type: decodeTypeTxSort(sortingValue.value),
+  })
 }
 
 watch([sortingValue], async () => {
   currentPage.value = 1
-  await getAccountInfo()
+  transactions.value = []
+  refetch({
+    offset: (currentPage.value - 1) * ITEMS_PER_PAGE,
+    limit: ITEMS_PER_PAGE,
+    address: accountAdress,
+    type: decodeTypeTxSort(sortingValue.value),
+  })
 })
 </script>
 

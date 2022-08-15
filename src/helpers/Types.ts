@@ -79,7 +79,7 @@ export type DecodedTxData = {
   hash?: string
   block?: string | number | undefined
   delegatorAddress?: string
-  time?: string | void | Date
+  time: string | Date | number
   sender?: string
   receiver?: string
   amount?: string | BigNumber

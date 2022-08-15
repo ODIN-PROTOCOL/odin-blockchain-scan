@@ -1,3 +1,6 @@
 export * from './AccountStakingInfoQuery'
 export * from './ValidatorsQuery'
 export * from './ValidatorQuery'
+export * from './TransactionsQuery'
+export * from './TransactionQuery'
+export * from './AccountTransactionsQuery'

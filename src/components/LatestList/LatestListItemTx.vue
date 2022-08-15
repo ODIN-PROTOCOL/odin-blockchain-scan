@@ -15,7 +15,7 @@
         <span v-else>No info</span>
       </div>
       <div class="latest-list-item__time app-table__cell-txt">
-        {{ diffDays(toDay, getDay(tx.time)) }}
+        {{ diffDays(toDay, getDay(+tx.time)) }}
       </div>
     </div>
     <div class="latest-list-item__center">

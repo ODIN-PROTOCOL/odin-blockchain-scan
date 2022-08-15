@@ -6,6 +6,10 @@ export interface AccountStakingInfoResponse {
     bonded: number
     unbonded: number
   }
+  accountBalance: {
+    lokiBalance: number
+    minigeoBalance: number
+  }[]
 }
 export interface ValidatorsResponse {
   slashingParams: [
@@ -65,7 +69,9 @@ export interface ValidatorsInfo {
   descriptions: [
     {
       moniker: string
-      details: string
+      details: string | null
+      website: string | null
+      avatarUrl: string | null
     },
   ]
 }

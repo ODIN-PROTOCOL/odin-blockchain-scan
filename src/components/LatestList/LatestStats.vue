@@ -31,7 +31,7 @@
               />
             </template>
             <template v-else>
-              <template v-if="isLoading">
+              <template v-if="isLoading || isTransactionLoading">
                 <SkeletonLatestListItemTx v-for="item of 5" :key="item" />
               </template>
               <div v-else class="latest-stats__list-item">
@@ -48,12 +48,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { callers } from '@/api/callers'
-import { prepareTransaction } from '@/helpers/helpers'
+import { prepareTransaction } from '@/helpers/transaction.helpers'
 import { DecodedTxData, TransformedBlocks } from '@/helpers/Types'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { prepareBlocks } from '@/helpers/blocksHelper'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import { latestBlocksHeader, latestTransactionsHeader } from '@/const'
+import { useQuery } from '@vue/apollo-composable'
+import { TransactionsQuery } from '@/graphql/queries'
 
 import LatestList from './LatestList.vue'
 import LatestListItemBlock from './LatestListItemBlock.vue'
@@ -66,11 +68,23 @@ onMounted(async (): Promise<void> => {
   lockLoading()
   try {
     await getLatestBlocks()
-    await getLatestTransactions()
+    refetch({
+      offset: 0,
+      limit: 5,
+    })
   } catch (error) {
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }
   releaseLoading()
+})
+const {
+  result,
+  loading: isTransactionLoading,
+  refetch,
+  onResult,
+} = useQuery(TransactionsQuery, {
+  limit: 5,
+  offset: 0,
 })
 
 const latestBlocks = ref<TransformedBlocks[]>([])
@@ -83,12 +97,19 @@ const getLatestBlocks = async (): Promise<void> => {
   latestBlocks.value = await prepareBlocks(blockMetas.slice(0, 5))
   lastHeight.value = reqLastHeight
 }
-const getLatestTransactions = async (): Promise<void> => {
-  const { data } = await callers
-    .getTxSearchFromTelemetry(0, 5, 'desc')
-    .then(resp => resp.json())
-  latestTransactions.value = await prepareTransaction(data)
+const getTransactions = () => {
+  try {
+    if (!isTransactionLoading.value) {
+      latestTransactions.value = prepareTransaction(result.value.transaction)
+    }
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
+  }
 }
+
+onResult(() => {
+  getTransactions()
+})
 </script>
 
 <style lang="scss" scoped>

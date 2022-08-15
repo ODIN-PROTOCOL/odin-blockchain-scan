@@ -10,8 +10,8 @@
         <CopyButton class="mg-l8" :text="tx.hash" />
       </div>
     </div>
-    <template v-if="!isLoading">
-      <template v-if="isLoadingError">
+    <template v-if="isFinishLoading">
+      <template v-if="isLoadingError || !result?.transaction.length">
         <div class="app-table__empty-stub">
           <ui-loading-error-message message="Not Found" title="404" />
         </div>
@@ -29,7 +29,8 @@
               </div>
               <span class="transactions-item__table-row-title">Time</span>
               <span class="transactions-item__table-row-value">
-                {{ $fDate(tx.time, 'HH:mm dd.MM.yy') }}
+                {{ tx.time }}
+                <!-- {{ $fDate(tx.time, 'HH:mm dd.MM.yy') }} -->
               </span>
             </div>
             <div class="transactions-item__table-row">
@@ -176,12 +177,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
-import { callers } from '@/api/callers'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
 import { DecodedTxData } from '@/helpers/Types'
-import { prepareTransaction } from '@/helpers/helpers'
+import { prepareTransaction } from '@/helpers/transaction.helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
@@ -192,18 +192,33 @@ import {
   UiLoader,
   UiNoDataMessage,
 } from '@/components/ui'
+import { useQuery } from '@vue/apollo-composable'
+import { TransactionQuery } from '@/graphql/queries'
 
 const route: RouteLocationNormalizedLoaded = useRoute()
 const tx = ref<DecodedTxData>()
-const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 const isLoadingError = ref(false)
+const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 
-const getTransactions = async () => {
+const {
+  result,
+  loading: isTransactionLoading,
+  onResult,
+} = useQuery(TransactionQuery, {
+  hash: String(route.params.hash).toUpperCase(),
+})
+
+const isFinishLoading = computed(
+  () => !(isLoading.value || isTransactionLoading.value),
+)
+
+const getTransactions = () => {
   lockLoading()
   try {
-    const res = await callers.getTxForTxDetailsPage(String(route.params.hash))
-    const preparedTx = await prepareTransaction([res.data.result])
-    tx.value = preparedTx[0]
+    if (!isTransactionLoading.value) {
+      const preparedTransaction = prepareTransaction(result.value.transaction)
+      tx.value = preparedTransaction[0]
+    }
   } catch (error) {
     isLoadingError.value = true
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
@@ -211,8 +226,12 @@ const getTransactions = async () => {
   releaseLoading()
 }
 
+onResult(() => {
+  getTransactions()
+})
+
 onMounted(async () => {
-  await getTransactions()
+  getTransactions()
 })
 </script>
 

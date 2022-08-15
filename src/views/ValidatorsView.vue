@@ -175,65 +175,73 @@ const windowInnerWidth = ref(document.documentElement.clientWidth)
 const updateWidth = () => {
   windowInnerWidth.value = document.documentElement.clientWidth
 }
-const { result, loading: isValidatorsResponseLoading } =
-  useQuery<ValidatorsResponse>(ValidatorsQuery)
+const {
+  result,
+  loading: isValidatorsResponseLoading,
+  onResult,
+} = useQuery<ValidatorsResponse>(ValidatorsQuery)
 const signedBlocks = computed(() =>
   Number(result.value?.slashingParams[0]?.params?.signed_blocks_window),
 )
-
+onResult(async () => {
+  await getValidators()
+})
 const getValidators = async () => {
-  if (isValidatorsResponseLoading.value) {
-    return
-  }
   lockLoading()
   try {
-    const copyActiveValidator =
-      result.value?.validator?.filter(
-        (item: ValidatorsInfo) =>
-          item?.statuses[0]?.status === VALIDATOR_STATUS.active,
-      ) || []
-    const copyInactiveValidator =
-      result.value?.validator?.filter(
-        (item: ValidatorsInfo) =>
-          item?.statuses[0]?.status !== VALIDATOR_STATUS.active,
-      ) || []
+    if (!isValidatorsResponseLoading.value) {
+      const copyActiveValidator =
+        result.value?.validator?.filter(
+          (item: ValidatorsInfo) =>
+            item?.statuses[0]?.status === VALIDATOR_STATUS.active,
+        ) || []
+      const copyInactiveValidator =
+        result.value?.validator?.filter(
+          (item: ValidatorsInfo) =>
+            item?.statuses[0]?.status !== VALIDATOR_STATUS.active,
+        ) || []
 
-    activeValidators.value = (await Promise.all(
-      copyActiveValidator.map(async (item: ValidatorsInfo, index: number) => {
-        return {
-          ...item,
-          rank: index + 1,
-          uptime:
-            ((signedBlocks.value - item.signingInfos[0]?.missedBlocksCounter) /
-              signedBlocks.value) *
-            100,
-          isActive: await isActiveValidator(item.info?.operatorAddress).then(
-            req => req,
-          ),
-        }
-      }),
-    )) as unknown as ValidatorsInfo[]
+      activeValidators.value = (await Promise.all(
+        copyActiveValidator.map(async (item: ValidatorsInfo, index: number) => {
+          return {
+            ...item,
+            rank: index + 1,
+            uptime:
+              ((signedBlocks.value -
+                item.signingInfos[0]?.missedBlocksCounter) /
+                signedBlocks.value) *
+              100,
+            isActive: await isActiveValidator(item.info?.operatorAddress).then(
+              req => req,
+            ),
+          }
+        }),
+      )) as unknown as ValidatorsInfo[]
 
-    inactiveValidators.value = (await Promise.all(
-      copyInactiveValidator.map(async (item: ValidatorsInfo, index: number) => {
-        return {
-          ...item,
-          rank: index + 1,
-          uptime:
-            ((signedBlocks.value - item.signingInfos[0]?.missedBlocksCounter) /
-              signedBlocks.value) *
-            100,
-          isActive: await isActiveValidator(item.info?.operatorAddress).then(
-            req => req,
-          ),
-        }
-      }),
-    )) as unknown as ValidatorsInfo[]
+      inactiveValidators.value = (await Promise.all(
+        copyInactiveValidator.map(
+          async (item: ValidatorsInfo, index: number) => {
+            return {
+              ...item,
+              rank: index + 1,
+              uptime:
+                ((signedBlocks.value -
+                  item.signingInfos[0]?.missedBlocksCounter) /
+                  signedBlocks.value) *
+                100,
+              isActive: await isActiveValidator(
+                item.info?.operatorAddress,
+              ).then(req => req),
+            }
+          },
+        ),
+      )) as unknown as ValidatorsInfo[]
 
-    validators.value = activeValidators.value
-    tabStatus.value = activeValidatorsTitle.value
-    validatorsCount.value = result.value?.validator?.length || 0
-    filterValidators(currentPage.value)
+      validators.value = activeValidators.value
+      tabStatus.value = activeValidatorsTitle.value
+      validatorsCount.value = result.value?.validator?.length || 0
+      filterValidators(currentPage.value)
+    }
   } catch (error) {
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }

@@ -5,16 +5,16 @@
       <TitledLink
         :name="{
           name: $routes.transactionDetails,
-          params: { hash: getRequestItemTxHash },
+          params: { hash: tx.hash },
         }"
-        :text="tx.tx_hash"
+        :text="tx.hash"
         class="app-table__cell-txt app-table__link"
       />
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Type</span>
-      <span class="app-table__cell-txt" :title="type">
-        {{ type }}
+      <span class="app-table__cell-txt" :title="tx.type">
+        {{ tx.type }}
       </span>
     </div>
     <div class="app-table__cell">
@@ -30,13 +30,13 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Date and time</span>
-      <span>{{ $fDate(tx.timestamp * 1000, 'HH:mm dd.MM.yy') }}</span>
+      <span>{{ $fDate(tx.time, 'HH:mm dd.MM.yy') }}</span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Sender</span>
       <TitledLink
         v-if="tx.sender"
-        :to="generateAddrLink(tx.sender)"
+        :to="tx.sender"
         class="app-table__cell-txt app-table__link"
         :text="tx.sender"
       />
@@ -46,7 +46,7 @@
       <span class="app-table__title">Receiver</span>
       <TitledLink
         v-if="tx.receiver"
-        :to="generateAddrLink(tx.receiver)"
+        :to="tx.receiver"
         class="app-table__cell-txt app-table__link"
         :text="tx.receiver"
       />
@@ -54,46 +54,23 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Amount</span>
-      <span class="app-table__cell-txt" :title="odinAmount">{{
-        odinAmount
-      }}</span>
+      <span class="app-table__cell-txt" :title="tx.amount">
+        {{ tx.amount }}
+      </span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Transaction Fee</span>
-      <span class="app-table__cell-txt" :title="odinFee">
-        {{ odinFee }}
+      <span class="app-table__cell-txt" :title="tx.fee">
+        {{ tx.fee }}
       </span>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import TitledLink from '@/components/TitledLink.vue'
-import { humanizeMessageType } from '@/helpers/decodeMessage'
-import { convertLokiToOdin } from '@/helpers/converters'
 import { AccountTx } from '@/helpers/Types'
+import TitledLink from '@/components/TitledLink.vue'
 
-const props = defineProps<{
+defineProps<{
   tx: AccountTx
 }>()
-
-const odinAmount = convertLokiToOdin(
-  props.tx.amount[0]?.amount,
-  {},
-  props.tx.amount[0]?.denom,
-)
-const odinFee = convertLokiToOdin(
-  props.tx.fee[0]?.amount,
-  {},
-  props.tx.fee[0]?.denom,
-)
-const type = humanizeMessageType('/' + props.tx.type)
-const getRequestItemTxHash = props.tx?.tx_hash.split('0x')[1]
-const validatorPrefix = 'odinvaloper'
-const generateAddrLink = (addr: string) => {
-  if (addr.includes(validatorPrefix)) {
-    return `validators/${addr}`
-  } else {
-    return `account/${addr}`
-  }
-}
 </script>

@@ -52,7 +52,7 @@
               class="account-info__card-balance-row-value app-table__cell-txt app-table__link"
               :title="stakedPercentage"
             >
-              {{ stakedPercentage }}
+              {{ stakedPercentage }}%
             </span>
           </div>
         </div>
@@ -62,23 +62,31 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useQuery, UseQueryReturn } from '@vue/apollo-composable'
 import { AccountStakingInfoQuery } from '@/graphql/queries'
 import {
   AccountStakingInfoResponse,
   AccountStakingInfoVariables,
 } from '@/graphql/types'
+import { bigMath } from '@/helpers/bigMath'
+import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import { trimLeadingZeros } from '@/helpers/formatters'
 
 const props = defineProps<{
-  odinBalance: string
-  geoBalance: string
   address: string
 }>()
+
+const geoBalance = ref('0')
+const odinBalance = ref('0')
+const stakedLokiAmount = ref('0')
+const stakedPercentage = ref(0)
 
 const {
   result,
   loading,
+  onResult,
+  refetch,
 }: UseQueryReturn<AccountStakingInfoResponse, AccountStakingInfoVariables> =
   useQuery<AccountStakingInfoResponse, AccountStakingInfoVariables>(
     AccountStakingInfoQuery,
@@ -87,30 +95,39 @@ const {
     },
   )
 
-const stakedLokiAmount = computed(() => {
-  const odinCoin = result.value?.delegationBalance?.coins?.find(
-    coin => coin.denom === 'loki',
-  )
-  return odinCoin?.amount || '0'
+onResult(() => {
+  if (result.value) {
+    getTotalAmount()
+    stakedLokiAmount.value = result.value.delegationBalance.coins.length
+      ? result.value.delegationBalance.coins[0].amount.toString()
+      : '0'
+    const odinStakingPool = result?.value?.stakingPool[0]
+    const bondedTotal = Number(odinStakingPool?.bonded)
+    const unbondedTotal = Number(odinStakingPool?.unbonded)
+    const stakingTotal = bondedTotal + unbondedTotal
+    stakedPercentage.value =
+      stakingTotal > 0
+        ? trimLeadingZeros((+stakedLokiAmount.value * 100) / stakingTotal, 2)
+        : 0
+  }
 })
 
-const stakedPercentage: ComputedRef<string> = computed(() => {
-  if (loading.value) {
-    return '0%'
+const getTotalAmount = () => {
+  try {
+    if (!loading.value && result.value?.accountBalance.length) {
+      geoBalance.value = bigMath
+        .bigConvectOdinAndGeo(result.value.accountBalance[0].minigeoBalance)
+        .toString()
+      odinBalance.value = bigMath
+        .bigConvectOdinAndGeo(result.value.accountBalance[0].lokiBalance)
+        .toString()
+    }
+  } catch (error) {
+    handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }
-  const odinStakingPool = result?.value?.stakingPool[0]
-  const bondedTotal = Number(odinStakingPool?.bonded)
-  const unbondedTotal = Number(odinStakingPool?.unbonded)
-  const stakingTotal = bondedTotal + unbondedTotal
+}
 
-  if (!stakingTotal) {
-    return '0%'
-  }
-
-  return `${Number(
-    Number((Number(stakedLokiAmount.value) * 100) / stakingTotal).toFixed(4),
-  )}%`
-})
+onMounted(() => refetch({ address: props.address }))
 </script>
 
 <style lang="scss" scoped>
