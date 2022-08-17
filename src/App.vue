@@ -1,7 +1,7 @@
 <template>
   <template v-if="isAppReady">
+    <app-header />
     <section class="app__main-section">
-      <app-header />
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :key="Component" :is="Component" />
@@ -56,5 +56,9 @@ onMounted(() => {
   width: 100%;
   @include flex-container;
   justify-content: space-between;
+
+  .app__main-section {
+    background-color: var(--clr__app-main-bg);
+  }
 }
 </style>

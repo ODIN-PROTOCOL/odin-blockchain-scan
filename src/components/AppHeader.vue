@@ -1,22 +1,28 @@
 <template>
   <header class="app-header" :class="{ 'app-header--mobile': isOpen }">
-    <div class="app__container">
-      <div class="app-header__inner">
-        <router-link :to="{ name: $routes.app }" @click="closeBurger">
-          <img
-            class="app-header__logo"
-            src="~@/assets/brand/odin-logo-black.png"
-            alt="Logo"
+    <div class="app-header__container">
+      <div class="app__container">
+        <div class="app-header__inner">
+          <router-link :to="{ name: $routes.app }" @click="closeBurger">
+            <img
+              class="app-header__logo"
+              src="~@/assets/brand/odin-logo-white.png"
+              alt="Logo"
+            />
+          </router-link>
+          <app-nav :is-open="isOpen" @close-burger="closeBurger" />
+          <burger-menu
+            class="app-header__burger-menu"
+            :is-open="isOpen"
+            @click="burgerMenuHandler($event)"
           />
-        </router-link>
-        <app-nav :is-open="isOpen" @close-burger="closeBurger" />
-        <burger-menu
-          class="app-header__burger-menu"
-          :is-open="isOpen"
-          @click="burgerMenuHandler($event)"
-        />
+        </div>
       </div>
-      <search-bar />
+    </div>
+    <div class="app-header__search-bar">
+      <div class="app__container">
+        <search-bar />
+      </div>
     </div>
   </header>
 </template>
@@ -40,43 +46,55 @@ const closeBurger = (): void => {
 
 <style scoped lang="scss">
 .app-header {
-  border-bottom: 0.1rem solid var(--clr__btn-disabled);
-  margin-bottom: 3rem;
+  &__container {
+    min-height: 7.6rem;
+    display: flex;
+    align-items: center;
+    padding: 1.8rem 0;
+    background-color: var(--clr__header_bg);
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    @include respond-to(tablet) {
+      width: 100%;
+      margin: 0;
+      justify-content: space-between;
+    }
+  }
+
+  &__logo {
+    width: 9rem;
+    height: 3.4rem;
+    margin-right: 5.4rem;
+  }
+
+  &__burger-menu {
+    display: none;
+
+    @include respond-to(tablet) {
+      display: flex;
+      flex-shrink: 0;
+    }
+  }
 
   &--mobile {
     @include respond-to(tablet) {
-      position: fixed;
       width: 100%;
+      position: fixed;
+      background-color: var(--clr__main-bg);
       z-index: 1;
-      background: var(--clr__main-bg);
     }
   }
-}
 
-.app-header__inner {
-  padding: 2.8rem 0 1.6rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
-  @include respond-to(tablet) {
-    width: 100%;
-    margin: 0;
-    justify-content: space-between;
-  }
-}
-
-.app-header__logo {
-  width: 9rem;
-  height: 3.4rem;
-  margin-right: 5.4rem;
-}
-
-.app-header__burger-menu {
-  display: none;
-  @include respond-to(tablet) {
+  &__search-bar {
+    height: 8.4rem;
     display: flex;
-    flex-shrink: 0;
+    align-items: center;
+    background-color: var(--clr-white);
   }
 }
 </style>

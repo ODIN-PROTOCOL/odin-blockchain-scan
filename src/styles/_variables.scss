@@ -1,3 +1,9 @@
+$clr-primary: #242628;
+$clr-secondary: #6274ff;
+$clr-white: #fff;
+$clr-light-gray: #ced4da;
+$clr-light-gray-1: #e7edf2;
+$clr-light-gray-2: #f8f8f8;
 $clr-main-bg: #fff;
 $clr-splash-bg: #66b0ff;
 $clr-muted-bg: #f7f7f7;
@@ -8,7 +14,14 @@ $clr-action: #007bff;
 $clr-action-disabled: #bfdefb;
 $clr-danger: #a30000;
 $clr-action-extra-muted: #e4f2fc;
-$clr-light-gray: #ced4da;
+
+// Header
+$clr-header-bg: #111111;
+
+// Nav / Switch
+$clr-switch-bg: #242628;
+$clr-switch-text: #c6c6c6;
+$clr-nested-nav-text: #212529;
 
 // Buttons
 $clr-btn-normal: #007bff;

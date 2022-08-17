@@ -177,13 +177,13 @@ body {
   &.vue-picker_open {
     .vue-picker__opener-ico {
       &:after {
-        border: solid var(--clr__action);
+        border: solid var(--clr__secondary);
         border-width: 0 0.2rem 0.2rem 0;
         transform: rotate(225deg);
       }
     }
     .vue-picker__opener-txt {
-      color: var(--clr__action);
+      color: var(--clr__secondary);
       font-weight: bold;
     }
   }
@@ -191,8 +191,8 @@ body {
     .vue-picker-option:hover:not(:disabled),
     .vue-picker-option_cur {
       font-weight: 600;
-      color: var(--clr__action);
-      background: var(--clr__vue-picker-current-option);
+      color: var(--clr__secondary);
+      background: rgba(98, 116, 255, 0.4);
     }
   }
   @include respond-to(tablet) {

@@ -1,8 +1,8 @@
 <template>
   <div
     class="link-dropdown"
-    @click="dropdownOpen"
     :class="{ ['link-dropdown--active']: isDropdownOpen }"
+    @click="dropdownOpen"
   >
     <span class="link-dropdown__title-wrapper">
       <span class="link-dropdown__title">{{ list.name }}</span>
@@ -13,9 +13,9 @@
         <template v-for="link in list.links" :key="link.name">
           <router-link
             class="link-dropdown__modal-link"
-            @click="isRedirect()"
             :data-text="link.text"
             :to="{ name: link.name }"
+            @click="isRedirect()"
           >
             <span>{{ link.text }}</span>
           </router-link>
@@ -51,111 +51,115 @@ const isRedirect = () => {
   position: relative;
   white-space: nowrap;
 
+  &__title-wrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__title {
+    margin-right: 0.4rem;
+  }
+
+  &__arrow {
+    fill: var(--clr__header-text);
+  }
+
+  &__modal {
+    min-width: 16.7rem;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--clr__main-bg);
+    border-radius: 0 0 0.8rem 0.8rem;
+    box-shadow: 0 0.4rem 2.4rem rgba(8, 87, 172, 0.12);
+    z-index: 99;
+
+    &-link {
+      padding: 0.8rem 1.2rem;
+      color: var(--clr__nested-nav-text);
+      text-decoration: none;
+
+      &:last-child {
+        border-end-start-radius: 0.8rem;
+        border-end-end-radius: 0.8rem;
+      }
+
+      &.router-link-exact-active,
+      &:hover {
+        background: rgba(98, 116, 255, 0.4);
+        color: var(--clr__nav-active-text);
+        font-weight: bold;
+      }
+    }
+  }
+
+  @include respond-to(tablet) {
+    width: 100%;
+    padding: 0.8rem 0;
+    border-bottom: 0.1rem solid var(--clr__input-border);
+
+    &__title-wrapper {
+      justify-content: space-between;
+      padding: 1.6rem 1.2rem;
+    }
+
+    &__title {
+      font-weight: 600;
+    }
+
+    &__modal {
+      padding: 0;
+      position: relative;
+      top: initial;
+      gap: 0;
+      box-shadow: none;
+
+      &-link {
+        padding: 1.2rem 2.8rem;
+
+        &:last-child {
+          border-radius: 0;
+        }
+
+        &:hover {
+          background: inherit;
+        }
+      }
+    }
+
+    &--active {
+      &__title {
+        color: var(--clr__action);
+      }
+
+      &__arrow {
+        fill: var(--clr__action);
+        transform: rotate(180deg);
+      }
+
+      &__modal {
+        display: flex;
+      }
+    }
+  }
+
   @media screen and (min-width: 768px) {
     &:hover {
       .link-dropdown__title {
-        color: var(--clr__action);
+        color: var(--clr__secondary);
       }
 
       .link-dropdown__arrow {
-        fill: var(--clr__action);
+        fill: var(--clr__secondary);
         transform: rotate(180deg);
       }
 
       .link-dropdown__modal {
         display: flex;
       }
-    }
-  }
-}
-.link-dropdown__title-wrapper {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.link-dropdown__title {
-  margin-right: 0.4rem;
-}
-
-.link-dropdown__arrow {
-  fill: var(--clr__text);
-}
-
-.link-dropdown__modal {
-  display: none;
-  flex-direction: column;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  min-width: 16.7rem;
-  background: var(--clr__main-bg);
-  box-shadow: 0 0.4rem 2.4rem rgba(8, 87, 172, 0.12);
-  border-radius: 0 0 0.8rem 0.8rem;
-  z-index: 99;
-}
-
-.link-dropdown__modal-link {
-  padding: 0.8rem 1.2rem;
-  text-decoration: none;
-  color: inherit;
-
-  &:last-child {
-    border-end-start-radius: 0.8rem;
-    border-end-end-radius: 0.8rem;
-  }
-
-  &:hover {
-    background: rgba(204, 228, 255, 0.4);
-    color: var(--clr__action);
-    font-weight: 600;
-  }
-}
-
-@include respond-to(tablet) {
-  .link-dropdown {
-    width: 100%;
-    border-bottom: 0.1rem solid var(--clr__input-border);
-    padding: 0.8rem 0;
-    &--active {
-      .link-dropdown__title {
-        color: var(--clr__action);
-      }
-      .link-dropdown__arrow {
-        fill: var(--clr__action);
-        transform: rotate(180deg);
-      }
-      .link-dropdown__modal {
-        display: flex;
-      }
-    }
-  }
-  .link-dropdown__title-wrapper {
-    padding: 1.6rem 1.2rem;
-    justify-content: space-between;
-  }
-
-  .link-dropdown__title {
-    font-weight: 600;
-  }
-
-  .link-dropdown__modal {
-    position: relative;
-    box-shadow: none;
-    top: initial;
-    padding: 0;
-    gap: 0;
-  }
-
-  .link-dropdown__modal-link {
-    padding: 1.2rem 2.8rem;
-
-    &:last-child {
-      border-radius: 0;
-    }
-
-    &:hover {
-      background: inherit;
     }
   }
 }

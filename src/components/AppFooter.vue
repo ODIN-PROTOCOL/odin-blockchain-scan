@@ -56,8 +56,7 @@ import { START_VALUE } from '@/api/api-config'
 
 <style scoped lang="scss">
 .app-footer {
-  background: var(--clr__tooltip-bg);
-  margin-top: 6.4rem;
+  background: var(--clr__secondary);
 }
 .app-footer__inner {
   display: flex;

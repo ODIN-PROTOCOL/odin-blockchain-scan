@@ -222,13 +222,12 @@ router.beforeEach(() => {
 </script>
 <style lang="scss" scoped>
 .search-bar {
-  padding: 1.2rem 0 2.4rem;
-
   &__input-wrapper {
     width: 39.6rem;
     position: relative;
     border-radius: none;
   }
+
   &__dropdown {
     position: absolute;
     background: white;
@@ -240,17 +239,30 @@ router.beforeEach(() => {
       left: 0;
     }
   }
+
   &__dropdown-empty-msg {
     display: flex;
     justify-content: center;
     padding: 1rem;
     color: var(--clr__text-muted);
   }
+
   &__row {
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+  }
+
+  &__input-wrapper > &__input {
+    background-color: var(--clr__light-gray-1);
+    border: none;
+  }
+
+  & .app-filter {
+    background-color: var(--clr__light-gray-1);
+    border: none;
+    border-right: 0.1rem solid var(--clr__input-border);
   }
 }
 
@@ -282,7 +294,7 @@ router.beforeEach(() => {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  background: var(--clr__action);
+  background: var(--clr__secondary);
   border-top-right-radius: 0.4rem;
   border-bottom-right-radius: 0.4rem;
 

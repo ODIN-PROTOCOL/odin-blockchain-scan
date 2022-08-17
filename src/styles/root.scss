@@ -1,4 +1,7 @@
 :root {
+  --clr__white: #{$clr-white};
+  --clr__secondary: #{$clr-secondary};
+  --clr__app-main-bg: #{$clr-light-gray-2};
   --clr__main-bg: #{$clr-main-bg};
   --clr__splash-bg: #{$clr-splash-bg};
   --clr__muted-bg: #{$clr-muted-bg};
@@ -10,6 +13,19 @@
   --clr__danger: #{$clr-danger};
   --clr__action-extra-muted: #{$clr-action-extra-muted};
   --clr__light-gray: #{$clr-light-gray};
+  --clr__light-gray-1: #{$clr-light-gray-1};
+
+  // Header
+  --clr__header_bg: #{$clr-header-bg};
+  --clr__header-text: #{$clr-light-gray-1};
+
+  // Nav / Switch
+  --clr__nav-active-text: #{$clr-secondary};
+  --clr__nested-nav-text: #{$clr-nested-nav-text};
+  --clr__switch-bg: #{$clr-primary};
+  --clr__switch-text: #{$clr-switch-text};
+  --clr__switch-active-text: #{$clr-white};
+  --clr__switch-active-bg: #{$clr-secondary};
 
   // Buttons
   --clr__btn-normal: #{$clr-btn-normal};
