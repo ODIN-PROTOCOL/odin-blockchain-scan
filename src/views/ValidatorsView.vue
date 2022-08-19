@@ -147,7 +147,7 @@ const filteredValidators = ref()
 const validators = ref()
 const activeValidators = ref<ValidatorsInfo[]>([])
 const inactiveValidators = ref<ValidatorsInfo[]>([])
-const inputPlaceholder = ref('Search validators')
+const inputPlaceholder = ref('Search')
 const activeValidatorsTitle = computed(() =>
   activeValidators.value?.length
     ? `Active (${activeValidators.value?.length})`
@@ -320,9 +320,11 @@ onUnmounted(async () => {
 .validators-view__filter-search {
   display: flex;
   align-items: center;
-  border-bottom: 0.1rem solid var(--clr__input-border);
-  transition: all 0.5s ease;
+  background-color: var(--clr__light-gray-1);
+  border-radius: 0.8rem;
   color: var(--clr__input-border);
+  transition: all 0.5s ease;
+
   svg {
     transition: all 0.5s ease;
     fill: var(--clr__text-muted);
@@ -353,8 +355,11 @@ onUnmounted(async () => {
   z-index: 0;
 }
 .validators-view__filter-search-input {
-  border: none;
+  width: 35rem;
   padding-right: 2rem;
+  background-color: inherit;
+  border: none;
+
   &:focus::-webkit-input-placeholder {
     color: transparent;
   }
