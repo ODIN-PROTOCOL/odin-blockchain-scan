@@ -14,7 +14,7 @@
           <burger-menu
             class="app-header__burger-menu"
             :is-open="isOpen"
-            @click="burgerMenuHandler($event)"
+            @click="burgerMenuHandler"
           />
         </div>
       </div>
@@ -45,56 +45,54 @@ const closeBurger = (): void => {
 </script>
 
 <style scoped lang="scss">
-.app-header {
-  &__container {
-    min-height: 7.6rem;
+.app-header__container {
+  min-height: 7.6rem;
+  display: flex;
+  align-items: center;
+  padding: 1.8rem 0;
+  background-color: var(--clr__header_bg);
+}
+
+.app-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  @include respond-to(tablet) {
+    width: 100%;
+    margin: 0;
+    justify-content: space-between;
+  }
+}
+
+.app-header__logo {
+  width: 9rem;
+  height: 3.4rem;
+  margin-right: 5.4rem;
+}
+
+.app-header__burger-menu {
+  display: none;
+
+  @include respond-to(tablet) {
     display: flex;
-    align-items: center;
-    padding: 1.8rem 0;
-    background-color: var(--clr__header_bg);
+    flex-shrink: 0;
   }
+}
 
-  &__inner {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    @include respond-to(tablet) {
-      width: 100%;
-      margin: 0;
-      justify-content: space-between;
-    }
+.app-header--mobile {
+  @include respond-to(tablet) {
+    width: 100%;
+    position: fixed;
+    background-color: var(--clr__main-bg);
+    z-index: 1;
   }
+}
 
-  &__logo {
-    width: 9rem;
-    height: 3.4rem;
-    margin-right: 5.4rem;
-  }
-
-  &__burger-menu {
-    display: none;
-
-    @include respond-to(tablet) {
-      display: flex;
-      flex-shrink: 0;
-    }
-  }
-
-  &--mobile {
-    @include respond-to(tablet) {
-      width: 100%;
-      position: fixed;
-      background-color: var(--clr__main-bg);
-      z-index: 1;
-    }
-  }
-
-  &__search-bar {
-    height: 8.4rem;
-    display: flex;
-    align-items: center;
-    background-color: var(--clr-white);
-  }
+.app-header__search-bar {
+  height: 8.4rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--clr-white);
 }
 </style>

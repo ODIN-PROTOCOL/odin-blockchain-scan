@@ -50,116 +50,118 @@ const isRedirect = () => {
 .link-dropdown {
   position: relative;
   white-space: nowrap;
+}
 
-  &__title-wrapper {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
+.link-dropdown__title-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
-  &__title {
-    margin-right: 0.4rem;
-  }
+.link-dropdown__title {
+  margin-right: 0.4rem;
+}
 
-  &__arrow {
-    fill: var(--clr__header-text);
-  }
+.link-dropdown__arrow {
+  fill: var(--clr__header-text);
+}
 
-  &__modal {
-    min-width: 16.7rem;
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: var(--clr__main-bg);
-    border-radius: 0 0 0.8rem 0.8rem;
-    box-shadow: 0 0.4rem 2.4rem rgba(8, 87, 172, 0.12);
-    z-index: 99;
+.link-dropdown__modal {
+  min-width: 16.7rem;
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--clr__main-bg);
+  border-radius: 0 0 0.8rem 0.8rem;
+  box-shadow: 0 0.4rem 2.4rem rgba(8, 87, 172, 0.12);
+  z-index: 99;
 
-    &-link {
-      padding: 0.8rem 1.2rem;
-      color: var(--clr__nested-nav-text);
-      text-decoration: none;
+  .link-dropdown__modal-link {
+    padding: 0.8rem 1.2rem;
+    color: var(--clr__nested-nav-text);
+    text-decoration: none;
 
-      &:last-child {
-        border-end-start-radius: 0.8rem;
-        border-end-end-radius: 0.8rem;
-      }
+    &:last-child {
+      border-end-start-radius: 0.8rem;
+      border-end-end-radius: 0.8rem;
+    }
 
-      &.router-link-exact-active,
-      &:hover {
-        background: rgba(98, 116, 255, 0.4);
-        color: var(--clr__nav-active-text);
-        font-weight: bold;
-      }
+    &.router-link-exact-active,
+    &:hover {
+      background: rgba($clr-secondary, 0.4);
+      color: var(--clr__nav-active-text);
+      font-weight: bold;
     }
   }
+}
 
-  @include respond-to(tablet) {
+@include respond-to(tablet) {
+  .link-dropdown {
     width: 100%;
     padding: 0.8rem 0;
     border-bottom: 0.1rem solid var(--clr__input-border);
+  }
 
-    &__title-wrapper {
-      justify-content: space-between;
-      padding: 1.6rem 1.2rem;
+  .link-dropdown__title-wrapper {
+    justify-content: space-between;
+    padding: 1.6rem 1.2rem;
+  }
+
+  .link-dropdown__title {
+    font-weight: 600;
+  }
+
+  .link-dropdown__modal {
+    padding: 0;
+    position: relative;
+    top: initial;
+    gap: 0;
+    box-shadow: none;
+  }
+
+  .link-dropdown__modal-link {
+    padding: 1.2rem 2.8rem;
+
+    &:last-child {
+      border-radius: 0;
     }
 
-    &__title {
-      font-weight: 600;
-    }
-
-    &__modal {
-      padding: 0;
-      position: relative;
-      top: initial;
-      gap: 0;
-      box-shadow: none;
-
-      &-link {
-        padding: 1.2rem 2.8rem;
-
-        &:last-child {
-          border-radius: 0;
-        }
-
-        &:hover {
-          background: inherit;
-        }
-      }
-    }
-
-    &--active {
-      &__title {
-        color: var(--clr__action);
-      }
-
-      &__arrow {
-        fill: var(--clr__action);
-        transform: rotate(180deg);
-      }
-
-      &__modal {
-        display: flex;
-      }
+    &:hover {
+      background: inherit;
     }
   }
 
-  @media screen and (min-width: 768px) {
-    &:hover {
-      .link-dropdown__title {
-        color: var(--clr__secondary);
-      }
+  .link-dropdown--active {
+    .link-dropdown--active__title {
+      color: var(--clr__action);
+    }
 
-      .link-dropdown__arrow {
-        fill: var(--clr__secondary);
-        transform: rotate(180deg);
-      }
+    .link-dropdown--active__arrow {
+      fill: var(--clr__action);
+      transform: rotate(180deg);
+    }
 
-      .link-dropdown__modal {
-        display: flex;
-      }
+    .link-dropdown--active__modal {
+      display: flex;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .link-dropdown:hover {
+    .link-dropdown__title {
+      color: var(--clr__secondary);
+    }
+
+    .link-dropdown__arrow {
+      fill: var(--clr__secondary);
+      transform: rotate(180deg);
+    }
+
+    .link-dropdown__modal {
+      display: flex;
     }
   }
 }

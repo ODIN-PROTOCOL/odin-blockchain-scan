@@ -192,7 +192,7 @@ body {
     .vue-picker-option_cur {
       font-weight: 600;
       color: var(--clr__secondary);
-      background: rgba(98, 116, 255, 0.4);
+      background: rgba($clr-secondary, 0.4);
     }
   }
   @include respond-to(tablet) {
