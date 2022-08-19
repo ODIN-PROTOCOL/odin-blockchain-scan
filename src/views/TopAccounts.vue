@@ -1,13 +1,22 @@
 <template>
   <div class="app__main-view top-accounts">
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">Top accounts</h2>
-    </div>
-    <div class="top-accounts__sort-wrapper">
-      <skeleton-loader v-if="isLoading" pill shimmer :height="24" width="100" />
-      <p v-else class="top-accounts__sort-info">
-        {{ accounts.length }} accounts found
-      </p>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Ta</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Top accounts</h3>
+        <skeleton-loader
+          v-if="isLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ accounts.length.toLocaleString() }} accounts found
+        </span>
+      </div>
     </div>
     <div class="app-table top-accounts__table">
       <div class="app-table__head top-accounts__table-head">

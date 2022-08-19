@@ -1,11 +1,22 @@
 <template>
   <div class="app__main-view">
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">Transactions</h2>
-    </div>
-    <div class="mg-b16 mg-t16">
-      <skeleton-loader v-if="isLoading" pill shimmer :height="24" width="100" />
-      <p v-else>{{ totalTransactions }} Transactions found</p>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Tx</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Transactions</h3>
+        <skeleton-loader
+          v-if="isLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ totalTransactions.toLocaleString() }} transactions found
+        </span>
+      </div>
     </div>
     <div class="app-table">
       <div class="app-table__head">

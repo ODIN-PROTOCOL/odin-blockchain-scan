@@ -3,21 +3,24 @@
     class="app__main-view validators-view load-fog"
     :class="{ 'load-fog_show': isLoading && validators?.length }"
   >
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">All Validators</h2>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Va</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Validators</h3>
+        <skeleton-loader
+          v-if="isLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ validatorsCount.toLocaleString() }} validators found
+        </span>
+      </div>
     </div>
-
-    <div class="validators-view__count-info">
-      <skeleton-loader
-        v-if="isLoading || isValidatorsResponseLoading"
-        pill
-        shimmer
-        :height="24"
-        width="100"
-      />
-      <p v-else>{{ validatorsCount }} validators found</p>
-    </div>
-
     <div class="validators-view__filter">
       <AppTabs @changeTab="tabHandler($event)">
         <AppTab :title="activeValidatorsTitle" />
