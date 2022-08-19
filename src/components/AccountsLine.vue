@@ -32,7 +32,7 @@
       <span class="app-table__title">Transaction count</span>
       <div>
         <span v-if="account.tx_count">
-          {{ account.tx_count }}
+          {{ account.tx_count.toLocaleString() }}
         </span>
         <span v-else>0</span>
       </div>
@@ -53,6 +53,6 @@ const odinBalanceTitle = convertLokiToOdin(String(props.account.odin_balance))
 const odinBalanceValue = convertLokiToOdin(String(props.account.odin_balance), {
   withDenom: true,
 })
-const accountOdinPercentage = Number(props.account.odin_percent).toFixed(2)
+const accountOdinPercentage = Number(props.account.odin_percent).toFixed(8)
 </script>
 <style scoped lang="scss"></style>

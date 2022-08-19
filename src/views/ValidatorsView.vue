@@ -62,16 +62,12 @@
         <span class="validators-view__table-head-item">Validator</span>
         <span class="validators-view__table-head-item">Delegator Share</span>
         <span class="validators-view__table-head-item">Commission</span>
+        <span class="validators-view__table-head-item">Oracle Status</span>
         <span
           v-if="tabStatus !== inactiveValidatorsTitle"
           class="validators-view__table-head-item"
         >
           Uptime
-        </span>
-        <span
-          class="validators-view__table-head-item validators-view__table-head-item--center"
-        >
-          Status
         </span>
       </div>
       <div>

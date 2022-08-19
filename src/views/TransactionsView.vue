@@ -9,14 +9,9 @@
     </div>
     <div class="app-table">
       <div class="app-table__head">
-        <span>Transaction hash</span>
-        <span>Type</span>
-        <span>Block</span>
-        <span>Date and time</span>
-        <span>Sender</span>
-        <span>Receiver</span>
-        <span>Amount</span>
-        <span>Transaction Fee</span>
+        <span v-for="(item, index) in headerTitles" :key="index">
+          {{ item.title }}
+        </span>
       </div>
       <template v-if="transactions?.length">
         <TxLine
@@ -66,14 +61,14 @@ const page = ref<number>(1)
 const totalPages = ref<number>(0)
 const totalTransactions = ref<number>(0)
 const headerTitles = [
-  { title: 'Transaction hash' },
+  { title: 'Transaction Hash' },
   { title: 'Type' },
   { title: 'Block' },
-  { title: 'Date and time' },
+  { title: 'Date' },
   { title: 'Sender' },
   { title: 'Receiver' },
-  { title: 'Amount' },
   { title: 'Transaction Fee' },
+  { title: 'Amount' },
 ]
 const getTransactions = async () => {
   lockLoading()

@@ -1,5 +1,6 @@
 :root {
   --clr__white: #{$clr-white};
+  --clr__primary: #{$clr-primary};
   --clr__secondary: #{$clr-secondary};
   --clr__app-main-bg: #{$clr-light-gray-2};
   --clr__main-bg: #{$clr-main-bg};
@@ -12,6 +13,7 @@
   --clr__action-disabled: #{$clr-action-disabled};
   --clr__danger: #{$clr-danger};
   --clr__action-extra-muted: #{$clr-action-extra-muted};
+  --clr__azureish-white: #{$clr-azureish-white};
   --clr__light-gray: #{$clr-light-gray};
   --clr__light-gray-1: #{$clr-light-gray-1};
 
