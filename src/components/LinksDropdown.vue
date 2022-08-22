@@ -134,22 +134,22 @@ const isRedirect = () => {
   }
 
   .link-dropdown--active {
-    .link-dropdown--active__title {
+    .link-dropdown__title {
       color: var(--clr__action);
     }
 
-    .link-dropdown--active__arrow {
+    .link-dropdown__arrow {
       fill: var(--clr__action);
       transform: rotate(180deg);
     }
 
-    .link-dropdown--active__modal {
+    .link-dropdown__modal {
       display: flex;
     }
   }
 }
 
-@media screen and (min-width: 768px) {
+@include respond-above(tablet) {
   .link-dropdown:hover {
     .link-dropdown__title {
       color: var(--clr__secondary);
