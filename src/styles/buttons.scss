@@ -9,7 +9,7 @@
   border-radius: 0.4rem;
   @include transition(background);
 
-  &_outlined {
+  &--outlined {
     background: var(--clr__main-bg);
     color: var(--clr__action);
     border: 0.1rem solid var(--clr__btn-normal);
