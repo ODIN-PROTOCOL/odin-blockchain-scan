@@ -71,23 +71,28 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Amount</span>
-      <span
-        :class="[
-          transition.amount !== '-'
-            ? 'app-table__cell-tag'
-            : 'app-table__cell-txt',
-        ]"
-      >
+      <span :class="[amountCellClass]">
         {{ transition.amount }}
       </span>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { computed, toRef } from 'vue'
 import { DecodedTxData } from '@/helpers/Types'
 import TitledLink from '@/components/TitledLink.vue'
 
-defineProps<{
+const props = defineProps<{
   transition: DecodedTxData
 }>()
+
+const _transition = toRef(props, 'transition')
+
+const amountCellClass = computed(() => {
+  if (_transition.value.amount !== '-') {
+    return 'app-table__cell-txt'
+  }
+
+  return 'app-table__cell-tag'
+})
 </script>

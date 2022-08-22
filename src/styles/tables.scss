@@ -21,10 +21,10 @@
     color: var(--clr__text-muted);
     font-size: 1.2rem;
     font-weight: 300;
+  }
 
-    & > span {
-      padding: 2.4rem 2rem;
-    }
+  .app-table__head > span {
+    padding: 2.4rem 2rem;
   }
 
   &__row {

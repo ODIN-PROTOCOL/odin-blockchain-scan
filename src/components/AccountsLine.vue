@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import TitledLink from '@/components/TitledLink.vue'
 import { convertLokiToOdin } from '@/helpers/converters'
+import { trimLeadingZeros } from '@/helpers/formatters'
 import { TempBalanceType } from '@/helpers/Types'
 
 const props = defineProps<{
@@ -53,6 +54,8 @@ const odinBalanceTitle = convertLokiToOdin(String(props.account.odin_balance))
 const odinBalanceValue = convertLokiToOdin(String(props.account.odin_balance), {
   withDenom: true,
 })
-const accountOdinPercentage = Number(props.account.odin_percent).toFixed(8)
+const accountOdinPercentage = trimLeadingZeros(
+  Number(props.account.odin_percent),
+)
 </script>
 <style scoped lang="scss"></style>
