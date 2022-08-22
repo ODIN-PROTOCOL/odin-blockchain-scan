@@ -27,15 +27,15 @@
     padding: 2.4rem 2rem;
   }
 
-  &__row {
+  .app-table__row {
     align-items: flex-start;
     padding: 1.4rem 0;
     border-top: 0.1rem solid var(--clr__light-gray);
     font-size: 1.4rem;
+  }
 
-    &:first-child {
-      border-top: none;
-    }
+  .app-table__row:first-child {
+    border-top: none;
   }
 
   &__cell {

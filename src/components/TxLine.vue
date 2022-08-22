@@ -78,7 +78,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, toRef } from 'vue'
+import { computed } from 'vue'
 import { DecodedTxData } from '@/helpers/Types'
 import TitledLink from '@/components/TitledLink.vue'
 
@@ -86,10 +86,8 @@ const props = defineProps<{
   transition: DecodedTxData
 }>()
 
-const _transition = toRef(props, 'transition')
-
 const amountCellClass = computed(() => {
-  if (_transition.value.amount !== '-') {
+  if (props.transition.amount === '-') {
     return 'app-table__cell-txt'
   }
 
