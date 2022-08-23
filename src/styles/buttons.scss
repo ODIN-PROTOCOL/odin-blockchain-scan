@@ -1,12 +1,12 @@
 .app-btn {
+  padding: 1.2rem 1.6rem;
   display: inline-block;
   font-size: 2rem;
-  background: var(--clr__action);
+  background: var(--clr__secondary);
+  color: var(--clr__white);
   white-space: nowrap;
-  color: var(--clr__text-on-action);
   border: 0.1rem solid transparent; // to sync position with the 2nd variant
   border-radius: 0.4rem;
-  padding: 1.2rem 1.6rem;
   @include transition(background);
 
   &_outlined {
@@ -27,21 +27,21 @@
     line-height: 2.4rem;
   }
   &:focus {
-    color: var(--clr__text-on-action);
+    color: var(--clr__secondary);
     border: 0.1rem solid var(--clr__btn-normal);
-    background: var(--clr__btn-hover);
+    background: var(--clr__levender-blue);
   }
 
   &:hover {
-    color: var(--clr__text-on-action);
+    color: var(--clr__secondary);
     border: 0.1rem solid transparent;
-    background: var(--clr__btn-hover);
+    background: var(--clr__levender-blue);
   }
 
   &:active {
-    color: var(--clr__text-on-action);
+    color: var(--clr__secondary);
     border: 0.1rem solid transparent;
-    background: var(--clr__btn-pressed);
+    background: var(--clr__levender-blue);
   }
 
   &:disabled {

@@ -221,37 +221,49 @@ router.beforeEach(() => {
 })
 </script>
 <style lang="scss" scoped>
-.search-bar {
-  padding: 1.2rem 0 2.4rem;
+.search-bar__input-wrapper {
+  width: 39.6rem;
+  position: relative;
+  border-radius: none;
+}
 
-  &__input-wrapper {
-    width: 39.6rem;
-    position: relative;
-    border-radius: none;
+.search-bar__dropdown {
+  position: absolute;
+  background: var(--clr__secondary);
+  border: 0.1rem solid var(--clr__light-gray);
+  border-radius: 0 0 0.8rem 0.8rem;
+  width: 100%;
+  z-index: 2;
+
+  @media (max-width: 48rem) {
+    left: 0;
   }
-  &__dropdown {
-    position: absolute;
-    background: white;
-    border: 0.1rem solid var(--clr__input-border);
-    border-radius: 0 0 0.8rem 0.8rem;
-    width: 100%;
-    z-index: 2;
-    @media (max-width: 48rem) {
-      left: 0;
-    }
-  }
-  &__dropdown-empty-msg {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-    color: var(--clr__text-muted);
-  }
-  &__row {
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
+}
+
+.search-bar__dropdown-empty-msg {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--clr__primary);
+  color: var(--clr__white);
+}
+
+.search-bar__row {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.search-bar__input-wrapper > .search-bar__input {
+  background-color: var(--clr__primary);
+  border: none;
+}
+
+.search-bar .app-filter {
+  background-color: var(--clr__primary);
+  border: none;
+  border-right: 0.1rem solid var(--clr__light-gray);
 }
 
 .search-bar__input {
@@ -259,13 +271,15 @@ router.beforeEach(() => {
   padding: 1.2rem 1.5rem;
   width: 100%;
   max-width: 42.6rem;
-  border: 0.1rem solid var(--clr__input-border);
+  color: var(--clr__white);
   border-left: transparent;
   border-right: transparent;
   border-radius: 0;
+
   &::placeholder {
     color: var(--clr__text-muted);
   }
+
   &::-webkit-search-cancel-button {
     display: none;
   }
@@ -282,7 +296,7 @@ router.beforeEach(() => {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  background: var(--clr__action);
+  background: var(--clr__dark);
   border-top-right-radius: 0.4rem;
   border-bottom-right-radius: 0.4rem;
 
@@ -299,6 +313,7 @@ router.beforeEach(() => {
   right: 1rem;
   top: 1.2rem;
 }
+
 @include respond-to(tablet) {
   .search-bar__input {
     &::placeholder {

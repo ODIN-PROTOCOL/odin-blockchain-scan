@@ -1,8 +1,13 @@
 :root {
+  --clr__primary: #{$clr-primary};
+  --clr__secondary: #{$clr-secondary};
+  --clr__white: #{$clr-white};
+  --clr__dark: #{$clr-dark};
+
   --clr__main-bg: #{$clr-main-bg};
   --clr__splash-bg: #{$clr-splash-bg};
   --clr__muted-bg: #{$clr-muted-bg};
-  --clr__text: #{$clr-text};
+  --clr__text: #{$clr-primary};
   --clr__text-muted: #{$clr-text-muted};
   --clr__text-on-action: #{$clr-text-on-action};
   --clr__action: #{$clr-action};
@@ -10,6 +15,11 @@
   --clr__danger: #{$clr-danger};
   --clr__action-extra-muted: #{$clr-action-extra-muted};
   --clr__light-gray: #{$clr-light-gray};
+
+  // Header
+  --clr__bright-gray: #{$clr-bright-gray};
+  --clr__silver-sand: #{$clr-silver-sand};
+  --clr__levender-blue: #{$clr-levender-blue};
 
   // Buttons
   --clr__btn-normal: #{$clr-btn-normal};

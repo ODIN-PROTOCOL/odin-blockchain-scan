@@ -3,38 +3,38 @@
     <div class="app-nav__wrap">
       <div class="app-nav__page">
         <LinksDropdown
+          :is-dropdown-open="isBlockchainDropdownOpen"
+          :list="BlockchainList"
           @click="openDropdownBlockchain"
           @redirect="closeBurger"
-          :list="BlockchainList"
-          :isDropdownOpen="isBlockchainDropdownOpen"
         />
         <LinksDropdown
+          :is-dropdown-open="isResourceDropdownOpen"
+          :list="ResourceList"
           @click="openDropdownResource"
           @redirect="closeBurger"
-          :list="ResourceList"
-          :isDropdownOpen="isResourceDropdownOpen"
         />
         <router-link
-          @click="closeBurger"
           class="app-nav__link"
           data-text="IBCs"
           :to="{ name: $routes.ibc }"
+          @click="closeBurger"
         >
           <span>IBCs</span>
         </router-link>
       </div>
       <div class="app-nav__switch">
         <a
-          :class="{ ['app-nav__switch-item--active']: isMainnet }"
           class="app-nav__switch-item"
+          :class="{ 'app-nav__switch-item--active': isMainnet }"
           :disabled="isMainnet"
           :href="START_VALUE.mainnetScan"
         >
           mainnet
         </a>
         <a
-          :class="{ ['app-nav__switch-item--active']: !isMainnet }"
           class="app-nav__switch-item"
+          :class="{ ['app-nav__switch-item--active']: !isMainnet }"
           :disabled="!isMainnet"
           :href="START_VALUE.testnetScan"
         >
@@ -126,117 +126,123 @@ const isMainnet = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.app-nav__switch {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 11.8rem;
-  height: 3.2rem;
-  background: var(--clr__nav-switch-background);
-  border-radius: 3.2rem;
-  font-size: 1.2rem;
-  line-height: 1.6rem;
-  padding: 0.4rem;
-  margin-right: 3.6rem;
-}
-.app-nav__wrap {
-  display: flex;
-  width: 100%;
-  gap: 2.4rem;
-  flex-direction: row;
-  align-items: center;
-}
-.app-nav__switch-item {
-  padding: 0.4rem 0.8rem;
-  width: 5.8rem;
-  height: 2.4rem;
-  text-decoration: none;
-  color: var(--clr__nav-switch-color);
-  cursor: pointer;
-
-  &--active {
-    pointer-events: none;
-    cursor: default;
-    background: var(--clr__btn-normal);
-    border-radius: 3.2rem;
-    color: var(--clr__main-bg);
-  }
-}
 .app-nav {
-  display: flex;
   width: 100%;
+  display: flex;
   align-items: center;
 }
+
+.app-nav__wrap {
+  width: 100%;
+  display: flex;
+}
+
 .app-nav__page {
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
   align-items: center;
   gap: 2.4rem;
+  color: var(--clr__bright-gray);
 }
+
 .app-nav__link {
   display: grid;
   grid-template-columns: 100%;
+  color: inherit;
   text-decoration: none;
   white-space: nowrap;
-  color: inherit;
+  font-size: 1.6rem;
   font-weight: 400;
   line-height: 2.4rem;
-  font-size: 1.6rem;
   cursor: pointer;
 
   &:hover {
-    color: var(--clr__action);
+    color: var(--clr__secondary);
   }
 
   &::before {
     content: attr(data-text);
-    font-weight: 900;
-    opacity: 0;
     grid-column: 1;
     grid-row: 1;
+    font-weight: 600;
+    opacity: 0;
   }
   > span {
-    text-align: center;
     grid-column: 1;
     grid-row: 1;
+    text-align: center;
     transition: color 0.5s ease, font-weight 0.5s ease;
   }
+
   &.router-link-exact-active > span {
-    font-weight: bold;
-    color: var(--clr__action);
+    color: var(--clr__secondary);
   }
 }
 
+.app-nav__switch {
+  height: 4rem;
+  margin-right: 2.5rem;
+  padding: 0.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--clr__primary);
+  border-radius: 3.2rem;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+}
+
+.app-nav__switch-item {
+  width: 6.8rem;
+  height: 3.2rem;
+  padding: 0.8rem;
+  color: var(--clr__silver-sand);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.app-nav__switch-item--active {
+  pointer-events: none;
+  background: var(--clr__secondary);
+  color: var(--clr__white);
+  border-radius: 3.2rem;
+  cursor: default;
+}
+
 @include respond-to(tablet) {
-  .app-nav__wrap {
-    flex-direction: column-reverse;
-    align-items: flex-start;
-  }
   .app-nav {
     display: none;
-    background: var(--clr__main-bg);
+    background: var(--clr__dark);
     width: 100%;
     z-index: 1;
     height: calc(100vh - 8.4rem);
     padding: 2.4rem 1.6rem;
-    border-top: 0.1rem solid var(--clr__table-border);
+    border-top: 0.1rem solid var(--clr__white);
   }
+
+  .app-nav__wrap {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+
   .app-nav__page {
     flex-direction: column;
     gap: 0;
     margin-bottom: 2.4rem;
   }
+
   .app-nav__link {
     width: 100%;
     padding: 2.4rem 1.2rem;
-    border-bottom: 0.1rem solid var(--clr__input-border);
+    border-bottom: 0.1rem solid var(--clr__white);
     > span {
       text-align: left;
     }
 
     &:hover {
-      background: var(--clr__dropdown-link);
+      background: var(--clr__levender-blue);
     }
 
     &:first-child {
@@ -249,7 +255,7 @@ const isMainnet = computed(() => {
     flex-direction: column;
     justify-content: space-between;
     position: fixed;
-    top: 8.4rem;
+    top: 7.6rem;
     left: 0;
     overflow-y: auto;
     z-index: 10;

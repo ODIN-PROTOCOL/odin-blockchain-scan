@@ -1,22 +1,28 @@
 <template>
   <header class="app-header" :class="{ 'app-header--mobile': isOpen }">
-    <div class="app__container">
-      <div class="app-header__inner">
-        <router-link :to="{ name: $routes.app }" @click="closeBurger">
-          <img
-            class="app-header__logo"
-            src="~@/assets/brand/odin-logo-black.png"
-            alt="Logo"
+    <div class="app-header__container">
+      <div class="app__container">
+        <div class="app-header__inner">
+          <router-link :to="{ name: $routes.app }" @click="closeBurger">
+            <img
+              class="app-header__logo"
+              src="~@/assets/brand/odin-logo-white.png"
+              alt="Logo"
+            />
+          </router-link>
+          <app-nav :is-open="isOpen" @close-burger="closeBurger" />
+          <burger-menu
+            class="app-header__burger-menu"
+            :is-open="isOpen"
+            @click="burgerMenuHandler"
           />
-        </router-link>
-        <app-nav :is-open="isOpen" @close-burger="closeBurger" />
-        <burger-menu
-          class="app-header__burger-menu"
-          :is-open="isOpen"
-          @click="burgerMenuHandler($event)"
-        />
+        </div>
       </div>
-      <search-bar />
+    </div>
+    <div class="app-header__search-bar">
+      <div class="app__container">
+        <search-bar />
+      </div>
     </div>
   </header>
 </template>
@@ -39,26 +45,19 @@ const closeBurger = (): void => {
 </script>
 
 <style scoped lang="scss">
-.app-header {
-  border-bottom: 0.1rem solid var(--clr__btn-disabled);
-  margin-bottom: 3rem;
-
-  &--mobile {
-    @include respond-to(tablet) {
-      position: fixed;
-      width: 100%;
-      z-index: 1;
-      background: var(--clr__main-bg);
-    }
-  }
+.app-header__container {
+  min-height: 7.6rem;
+  display: flex;
+  align-items: center;
+  padding: 1.8rem 0;
+  background-color: var(--clr__dark);
 }
 
 .app-header__inner {
-  padding: 2.8rem 0 1.6rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  position: relative;
+
   @include respond-to(tablet) {
     width: 100%;
     margin: 0;
@@ -74,9 +73,26 @@ const closeBurger = (): void => {
 
 .app-header__burger-menu {
   display: none;
+
   @include respond-to(tablet) {
     display: flex;
     flex-shrink: 0;
   }
+}
+
+.app-header--mobile {
+  @include respond-to(tablet) {
+    width: 100%;
+    position: fixed;
+    background-color: var(--clr__white);
+    z-index: 1;
+  }
+}
+
+.app-header__search-bar {
+  height: 8.4rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--clr__secondary);
 }
 </style>
