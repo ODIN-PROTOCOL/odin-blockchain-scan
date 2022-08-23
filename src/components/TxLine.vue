@@ -30,7 +30,12 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Date and time</span>
-      <span> {{ $fDate(transition.time, 'HH:mm dd.MM.yy') }} </span>
+      <span class="app-table__cell-date">
+        {{ $fDate(transition.time, 'dd/MM/yy') }}
+      </span>
+      <span class="app-table__cell-time">
+        {{ $fDate(transition.time, 'HH:mm') }}
+      </span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Sender</span>
@@ -59,22 +64,33 @@
       <span class="app-table__cell-txt" v-else> - </span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__title">Amount</span>
-      <span class="app-table__cell-txt">{{ transition.amount }}</span>
-    </div>
-    <div class="app-table__cell">
       <span class="app-table__title">Transaction Fee</span>
       <span class="app-table__cell-txt">
         {{ transition.fee }}
       </span>
     </div>
+    <div class="app-table__cell">
+      <span class="app-table__title">Amount</span>
+      <span :class="[amountCellClass]">
+        {{ transition.amount }}
+      </span>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
+import { computed } from 'vue'
 import { DecodedTxData } from '@/helpers/Types'
 import TitledLink from '@/components/TitledLink.vue'
 
-defineProps<{
+const props = defineProps<{
   transition: DecodedTxData
 }>()
+
+const amountCellClass = computed(() => {
+  if (props.transition.amount === '-') {
+    return 'app-table__cell-txt'
+  }
+
+  return 'app-table__cell-tag'
+})
 </script>

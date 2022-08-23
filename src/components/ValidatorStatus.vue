@@ -6,12 +6,6 @@
       :key="component"
       :is="component"
     />
-    <span
-      class="validator-status__text"
-      :class="`validator-status__text--${status}`"
-    >
-      {{ validatorStatusText }}</span
-    >
   </div>
 </template>
 
@@ -41,39 +35,12 @@ const component = computed(() => {
       : ErrorIcon
   }
 })
-
-const validatorStatusText = computed(() =>
-  props.status === VALIDATOR_STATUS_TYPE.inactive ? 'Inactive' : 'Oracle',
-)
 </script>
+
 <style lang="scss" scoped>
 .validator-status {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--clr__modal-field-bg);
-  border-radius: 3.2rem;
-  width: 7.8rem;
-  height: 2.8rem;
-  padding: 0.4rem 1.2rem 0.4rem 0.8rem;
-  gap: 0.4rem;
-  &--inactive {
-    gap: 0.5rem;
-    width: 8.7rem;
-  }
-}
-.validator-status__text {
-  font-weight: 400;
-  font-size: 1.4rem;
-  line-height: 2rem;
-  &--success {
-    color: var(--clr__oracle-status-success);
-  }
-  &--error {
-    color: var(--clr__oracle-status-error);
-  }
-  &--inactive {
-    color: var(--clr__text-muted);
-  }
 }
 </style>

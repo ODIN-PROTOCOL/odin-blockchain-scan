@@ -3,21 +3,24 @@
     class="app__main-view validators-view load-fog"
     :class="{ 'load-fog_show': isLoading && validators?.length }"
   >
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">All Validators</h2>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Va</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Validators</h3>
+        <skeleton-loader
+          v-if="isLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ validatorsCount.toLocaleString() }} validators found
+        </span>
+      </div>
     </div>
-
-    <div class="validators-view__count-info">
-      <skeleton-loader
-        v-if="isLoading || isValidatorsResponseLoading"
-        pill
-        shimmer
-        :height="24"
-        width="100"
-      />
-      <p v-else>{{ validatorsCount }} validators found</p>
-    </div>
-
     <div class="validators-view__filter">
       <AppTabs @changeTab="tabHandler($event)">
         <AppTab :title="activeValidatorsTitle" />
@@ -62,16 +65,12 @@
         <span class="validators-view__table-head-item">Validator</span>
         <span class="validators-view__table-head-item">Delegator Share</span>
         <span class="validators-view__table-head-item">Commission</span>
+        <span class="validators-view__table-head-item">Oracle Status</span>
         <span
           v-if="tabStatus !== inactiveValidatorsTitle"
           class="validators-view__table-head-item"
         >
           Uptime
-        </span>
-        <span
-          class="validators-view__table-head-item validators-view__table-head-item--center"
-        >
-          Status
         </span>
       </div>
       <div>
@@ -148,7 +147,7 @@ const filteredValidators = ref()
 const validators = ref()
 const activeValidators = ref<ValidatorsInfo[]>([])
 const inactiveValidators = ref<ValidatorsInfo[]>([])
-const inputPlaceholder = ref('Search validators')
+const inputPlaceholder = ref('Search')
 const activeValidatorsTitle = computed(() =>
   activeValidators.value?.length
     ? `Active (${activeValidators.value?.length})`
@@ -321,9 +320,11 @@ onUnmounted(async () => {
 .validators-view__filter-search {
   display: flex;
   align-items: center;
-  border-bottom: 0.1rem solid var(--clr__input-border);
-  transition: all 0.5s ease;
+  background-color: var(--clr__light-gray-1);
+  border-radius: 0.8rem;
   color: var(--clr__input-border);
+  transition: all 0.5s ease;
+
   svg {
     transition: all 0.5s ease;
     fill: var(--clr__text-muted);
@@ -354,8 +355,11 @@ onUnmounted(async () => {
   z-index: 0;
 }
 .validators-view__filter-search-input {
-  border: none;
+  width: 35rem;
   padding-right: 2rem;
+  background-color: inherit;
+  border: none;
+
   &:focus::-webkit-input-placeholder {
     color: transparent;
   }

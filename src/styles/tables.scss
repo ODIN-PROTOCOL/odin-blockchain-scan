@@ -1,5 +1,8 @@
 .app-table {
   display: block;
+  background-color: var(--clr__white);
+  border: 0.1rem solid var(--clr__light-gray);
+  border-radius: 1.6rem;
 
   &__title {
     display: none;
@@ -14,19 +17,45 @@
   }
 
   &__head {
-    font-size: 1.4rem;
+    border-bottom: 0.1rem solid var(--clr__light-gray);
+    color: var(--clr__text-muted);
+    font-size: 1.2rem;
     font-weight: 300;
   }
 
-  &__row {
+  .app-table__head > span {
+    padding: 2.4rem 2rem;
+  }
+
+  .app-table__row {
     align-items: flex-start;
-    padding: 3.2rem 0 2rem;
-    border-bottom: 0.1rem solid var(--clr__table-border);
+    padding: 1.4rem 0;
+    border-top: 0.1rem solid var(--clr__light-gray);
+    font-size: 1.4rem;
+  }
+
+  .app-table__row:first-child {
+    border-top: none;
   }
 
   &__cell {
     display: flex;
     min-width: 0;
+    padding: 0 2rem;
+
+    &-date {
+      padding-right: 0.8rem;
+    }
+
+    &-time {
+      color: var(--clr__text-muted);
+    }
+
+    &-tag {
+      padding: 0.4rem 1rem;
+      background-color: var(--clr__azureish-white);
+      border-radius: 0.4rem;
+    }
 
     &-txt {
       @include ellipsis(inline-block);
@@ -52,9 +81,9 @@
 .blocks-list__table-row {
   grid:
     auto /
-    minmax(3rem, 0.5fr)
-    minmax(10rem, 0.5fr)
-    minmax(8rem, 0.5fr)
+    minmax(3rem, 1fr)
+    minmax(14rem, 1fr)
+    minmax(6rem, 1fr)
     minmax(8rem, 2fr);
 }
 .top-accounts__table-head,
@@ -77,8 +106,8 @@
     minmax(5rem, 1.25fr)
     minmax(6rem, 1fr)
     minmax(8rem, 1fr)
-    minmax(7rem, 1fr)
-    minmax(6rem, 1fr);
+    minmax(6rem, 1fr)
+    minmax(8rem, 1.25fr);
 }
 .validators-view__table--inactive {
   .validators-view__table-head,
