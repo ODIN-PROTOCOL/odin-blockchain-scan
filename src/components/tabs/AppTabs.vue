@@ -59,7 +59,7 @@ export default defineComponent({
   overflow: auto;
 }
 .app-tabs__header-item {
-  padding: 1.2rem;
+  padding: 1.2rem 2.7rem;
   font-size: 1.6rem;
   white-space: nowrap;
   border-bottom: 0.2rem solid var(--clr__table-head);
@@ -67,6 +67,7 @@ export default defineComponent({
 
   &.selected {
     font-weight: 600;
+    background-color: var(--clr__dark);
     border-bottom: 0.2rem solid var(--clr__action);
   }
 }

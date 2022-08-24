@@ -1,6 +1,5 @@
 .app-table {
   display: block;
-  background-color: var(--clr__white);
   border: 0.1rem solid var(--clr__light-gray);
   border-radius: 1.6rem;
 
@@ -54,6 +53,7 @@
     &-tag {
       padding: 0.4rem 1rem;
       background-color: var(--clr__azureish-white);
+      color: var(--clr__text);
       border-radius: 0.4rem;
     }
 
