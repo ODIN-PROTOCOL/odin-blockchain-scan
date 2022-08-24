@@ -40,6 +40,17 @@
       </span>
       <span v-else>0%</span>
     </div>
+    <div class="app-table__cell">
+      <span class="app-table__title">Status</span>
+      <ValidatorStatus
+        :width="24"
+        :height="24"
+        :status="
+          getValidatorStatus(validator.statuses[0].status, validator.isActive)
+        "
+        class="validators-item__validator-status"
+      />
+    </div>
     <div v-if="tabStatus !== inactiveValidatorsTitle" class="app-table__cell">
       <span class="app-table__title">Uptime</span>
       <ProgressbarTool
@@ -47,17 +58,6 @@
         :max="100"
         :current="$trimZeros(validator?.uptime, 2) || 0"
         is-for-validators
-      />
-    </div>
-    <div class="app-table__cell validators-view-table-row__cell--center">
-      <span class="app-table__title">Status</span>
-      <ValidatorStatus
-        :width="14"
-        :height="14"
-        :status="
-          getValidatorStatus(validator.statuses[0].status, validator.isActive)
-        "
-        class="validators-item__validator-status"
       />
     </div>
   </div>
@@ -81,7 +81,6 @@ defineProps<{
 
 <style lang="scss" scoped>
 .validators-view-table-row {
-  padding: 3.2rem 0 2rem;
   align-items: center;
 }
 .validators-view-table-row__cell--center {

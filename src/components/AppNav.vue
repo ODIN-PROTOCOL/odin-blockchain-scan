@@ -34,7 +34,7 @@
         </a>
         <a
           class="app-nav__switch-item"
-          :class="{ ['app-nav__switch-item--active']: !isMainnet }"
+          :class="{ 'app-nav__switch-item--active': !isMainnet }"
           :disabled="!isMainnet"
           :href="START_VALUE.testnetScan"
         >
@@ -58,6 +58,7 @@ import { ROUTE_NAMES } from '@/enums'
 enum EVENTS {
   closeBurger = 'close-burger',
 }
+
 withDefaults(
   defineProps<{
     isOpen?: boolean
@@ -88,9 +89,11 @@ const BlockchainList: LinkList = {
     },
   ],
 }
+
 const emit = defineEmits<{
   (e: EVENTS.closeBurger): void
 }>()
+
 const ResourceList: LinkList = {
   name: 'Resources',
   links: [
@@ -100,6 +103,7 @@ const ResourceList: LinkList = {
     },
   ],
 }
+
 const isBlockchainDropdownOpen = ref(false)
 const isResourceDropdownOpen = ref(false)
 
@@ -113,6 +117,7 @@ const openDropdownResource = () => {
     isBlockchainDropdownOpen.value = false
   }
 }
+
 const openDropdownBlockchain = () => {
   if (isMobile()) {
     isBlockchainDropdownOpen.value = !isBlockchainDropdownOpen.value

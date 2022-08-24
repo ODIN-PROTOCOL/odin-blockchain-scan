@@ -45,7 +45,7 @@ withDefaults(
   {
     isOpen: false,
     className: '',
-    fill: '#fff',
+    fill: '#ffffff',
     width: 24,
     height: 24,
   },

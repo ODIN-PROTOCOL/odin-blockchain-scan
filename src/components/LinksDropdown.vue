@@ -1,8 +1,8 @@
 <template>
   <div
     class="link-dropdown"
-    @click="dropdownOpen"
     :class="{ ['link-dropdown--active']: isDropdownOpen }"
+    @click="dropdownOpen"
   >
     <span class="link-dropdown__title-wrapper">
       <span class="link-dropdown__title">{{ list.name }}</span>
@@ -13,9 +13,9 @@
         <template v-for="link in list.links" :key="link.name">
           <router-link
             class="link-dropdown__modal-link"
-            @click="isRedirect()"
             :data-text="link.text"
             :to="{ name: link.name }"
+            @click="isRedirect()"
           >
             <span>{{ link.text }}</span>
           </router-link>
