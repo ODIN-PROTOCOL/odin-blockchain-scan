@@ -56,10 +56,5 @@ onMounted(() => {
   width: 100%;
   @include flex-container;
   justify-content: space-between;
-
-  .app__main-section {
-    flex: 1;
-    background-color: var(--clr__app-main-bg);
-  }
 }
 </style>

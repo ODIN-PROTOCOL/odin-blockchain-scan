@@ -89,45 +89,48 @@ function goToSelectedPage(event: { target: { value: string } }): void {
 </script>
 
 <style scoped lang="scss">
-.app-pagination__wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--clr-text);
-  max-height: 3.8rem;
-}
 .app-pagination {
-  display: flex;
-  flex-flow: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  list-style-type: none;
-  justify-content: center;
-  color: var(--clr-text);
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-text);
+  list-style-type: none;
 }
+
+.app-pagination__wrapper {
+  max-height: 3.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--clr__azureish-white);
+}
+
 .app-pagination__control {
+  width: 3.6rem;
+  height: 3.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3.6rem;
-  height: 3.6rem;
-  border: 0.1rem solid var(--clr__input-border);
-  fill: var(--clr__input-border);
+  fill: var(--clr__white);
+
   &--active {
+    fill: var(--clr__azureish-white);
     cursor: pointer;
-    border: 0.1rem solid var(--clr__action);
-    fill: var(--clr__action);
+
     svg {
-      fill: var(--clr__action);
+      fill: var(--clr__white);
       transition: all 0.5s ease;
     }
+
     &:hover {
+      background-color: var(--clr__azureish-white);
+
       svg {
-        fill: var(--clr__btn-hover);
+        fill: var(--clr__secondary);
       }
-      border-color: var(--clr__btn-hover);
     }
   }
 }
@@ -138,7 +141,7 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   width: 1rem;
   height: 1.2rem;
   margin: 0 0.2rem;
-  fill: var(--clr__input-border);
+  fill: var(--clr__white);
 }
 
 .app-pagination__total-page {
@@ -150,16 +153,23 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   margin: 0 0.8rem;
 }
 
+.app-pagination__border {
+  min-width: 2.6rem;
+  height: 3.6rem;
+  margin: 0 0.2rem;
+  background: var(--clr__secondary);
+  border-radius: 0.4rem;
+}
+
 .app-pagination__input {
-  border: 0.1rem solid var(--clr__input-border);
   width: 6rem;
   height: 3.6rem;
   margin: 0 0.2rem;
+  border: none;
   border-radius: 0.4rem;
+  background-color: var(--clr__azureish-white);
+  color: var(--clr__primary);
   text-align: center;
-  &:hover {
-    border: 0.1rem solid var(--clr__action);
-  }
 }
 
 .rotate-right {
@@ -168,13 +178,5 @@ function goToSelectedPage(event: { target: { value: string } }): void {
 
 .rotate-left {
   transform: translateX(-0.3rem) rotate(0deg);
-}
-
-.app-pagination__border {
-  background: var(--clr__main-bg);
-  border-radius: 0.4rem;
-  margin: 0 0.2rem;
-  min-width: 2.6rem;
-  height: 3.6rem;
 }
 </style>

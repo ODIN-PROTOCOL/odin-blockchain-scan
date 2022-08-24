@@ -3,6 +3,7 @@
   --clr__secondary: #{$clr-secondary};
   --clr__white: #{$clr-white};
   --clr__dark: #{$clr-dark};
+  --clr__azureish-white: #{$clr-azureish-white};
 
   --clr__main-bg: #{$clr-main-bg};
   --clr__splash-bg: #{$clr-splash-bg};
@@ -10,7 +11,7 @@
   --clr__text: #{$clr-primary};
   --clr__text-muted: #{$clr-text-muted};
   --clr__text-on-action: #{$clr-text-on-action};
-  --clr__action: #{$clr-action};
+  --clr__action: #{$clr-secondary};
   --clr__action-disabled: #{$clr-action-disabled};
   --clr__danger: #{$clr-danger};
   --clr__action-extra-muted: #{$clr-action-extra-muted};
@@ -59,7 +60,7 @@
 
   // Progressbar
   --clr__progressbar-track: #{$clr-progressbar-track};
-  --clr__progressbar-positive: #{$clr-progressbar-positive};
+  --clr__progressbar-positive: #{$clr-secondary};
   --clr__progressbar-negative: #{$clr-progressbar-negative};
 
   // Status

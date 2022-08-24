@@ -5,7 +5,7 @@
   >
     <div class="app__main-view-table-header">
       <div class="app__main-view-table-header-prefix">
-        <span>Va</span>
+        <span>Vd</span>
       </div>
       <div class="app__main-view-table-header-info">
         <h3 class="app__main-view-table-header-info-title">Validators</h3>
@@ -320,34 +320,38 @@ onUnmounted(async () => {
 .validators-view__filter-search {
   display: flex;
   align-items: center;
-  background-color: var(--clr__light-gray-1);
+  background-color: var(--clr__dark);
   border-radius: 0.8rem;
-  color: var(--clr__input-border);
   transition: all 0.5s ease;
 
   svg {
     transition: all 0.5s ease;
-    fill: var(--clr__text-muted);
+    fill: var(--clr__white);
   }
+
   &:hover,
   &:active,
   &:focus,
   &:focus-within {
-    color: var(--clr__text);
-    border-color: var(--clr__text);
+    color: var(--clr__white);
+    border-color: var(--clr__white);
+
     svg {
       fill: var(--clr__text);
     }
   }
+
   &:disabled {
     border-color: var(--clr__input-border);
     color: var(--clr__input-border);
+
     svg {
       fill: var(--clr__input-border);
     }
   }
+
   svg.validators__filter-search-clear-btn-icon {
-    fill: var(--clr__text-muted);
+    fill: var(--clr__white);
   }
 }
 .validators-view__filter-search-input-wrapper {
