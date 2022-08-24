@@ -1,15 +1,15 @@
 .app-btn {
   display: inline-block;
+  padding: 1.2rem 1.6rem;
+  background: var(--clr__secondary);
+  color: var(--clr__white);
   font-size: 2rem;
-  background: var(--clr__action);
   white-space: nowrap;
-  color: var(--clr__text-on-action);
   border: 0.1rem solid transparent; // to sync position with the 2nd variant
   border-radius: 0.4rem;
-  padding: 1.2rem 1.6rem;
   @include transition(background);
 
-  &_outlined {
+  &--outlined {
     background: var(--clr__main-bg);
     color: var(--clr__action);
     border: 0.1rem solid var(--clr__btn-normal);
@@ -19,6 +19,7 @@
     font-size: 1.6rem;
     padding: 0.5rem 2.3rem;
   }
+
   &--medium {
     padding: 0.8rem;
     width: 18.4rem;
@@ -26,6 +27,7 @@
     font-size: 1.6rem;
     line-height: 2.4rem;
   }
+
   &:focus {
     color: var(--clr__text-on-action);
     border: 0.1rem solid var(--clr__btn-normal);

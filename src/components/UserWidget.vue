@@ -8,7 +8,7 @@
 import { START_VALUE } from '@/api/api-config'
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .user-widget {
   width: 12.7rem;
   display: flex;
@@ -18,6 +18,7 @@ import { START_VALUE } from '@/api/api-config'
   line-height: 2.4rem;
   text-decoration: none;
 }
+
 @include respond-to(tablet) {
   .user-widget {
     width: 100%;

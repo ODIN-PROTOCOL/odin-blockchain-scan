@@ -23,8 +23,8 @@ withDefaults(
   }>(),
   {
     className: '',
-    width: 24,
-    height: 24,
+    width: 36,
+    height: 36,
   },
 )
 </script>
