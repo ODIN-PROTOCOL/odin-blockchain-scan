@@ -31,10 +31,10 @@
     padding: 1.4rem 0;
     border-top: 0.1rem solid var(--clr__light-gray);
     font-size: 1.4rem;
-  }
 
-  .app-table__row:first-child {
-    border-top: none;
+    &:first-child {
+      border: none;
+    }
   }
 
   &__cell {
@@ -94,7 +94,7 @@
     minmax(8rem, 5fr)
     minmax(8rem, 2fr)
     minmax(8rem, 2fr)
-    minmax(8rem, 1.5fr);
+    minmax(8rem, 2fr);
 }
 
 .validators-view__table-head,

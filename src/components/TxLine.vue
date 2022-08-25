@@ -65,13 +65,13 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Transaction Fee</span>
-      <span class="app-table__cell-txt">
+      <span class="app-table__cell-txt" :title="transition.fee">
         {{ transition.fee }}
       </span>
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Amount</span>
-      <span :class="[amountCellClass]">
+      <span :class="[amountCellClass]" :title="transition.amount">
         {{ transition.amount }}
       </span>
     </div>

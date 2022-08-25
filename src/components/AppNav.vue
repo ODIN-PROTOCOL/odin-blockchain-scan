@@ -222,7 +222,7 @@ const isMainnet = computed(() => {
     background: var(--clr__dark);
     width: 100%;
     z-index: 1;
-    height: calc(100vh - 8.4rem);
+    height: calc(100vh - 7.6rem);
     padding: 2.4rem 1.6rem;
     border-top: 0.1rem solid var(--clr__white);
   }
