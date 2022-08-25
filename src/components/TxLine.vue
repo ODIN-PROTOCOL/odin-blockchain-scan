@@ -1,7 +1,7 @@
 <template>
   <div class="app-table__row">
     <div class="app-table__cell">
-      <span class="app-table__title">Transaction hash</span>
+      <span class="app-table__title">Transaction Hash</span>
       <TitledLink
         :name="{
           name: $routes.transactionDetails,
@@ -29,7 +29,7 @@
       />
     </div>
     <div class="app-table__cell">
-      <span class="app-table__title">Date and time</span>
+      <span class="app-table__title">Date</span>
       <span class="app-table__cell-date">
         {{ $fDate(transition.time, 'dd/MM/yy') }}
       </span>
@@ -94,3 +94,19 @@ const amountCellClass = computed(() => {
   return 'app-table__cell-tag'
 })
 </script>
+
+<style lang="scss" scoped>
+@include respond-to(medium) {
+  .app-table__title {
+    display: inline-block;
+    min-width: 15rem;
+    margin-right: 2.4rem;
+    font-weight: 300;
+  }
+
+  .app-table__row {
+    grid: none;
+    padding: 3.4rem 0 1.6rem;
+  }
+}
+</style>

@@ -101,7 +101,6 @@ const isRedirect = () => {
   .link-dropdown {
     width: 100%;
     padding: 0.8rem 0;
-    border-bottom: 0.1rem solid var(--clr__white);
   }
 
   .link-dropdown__title-wrapper {

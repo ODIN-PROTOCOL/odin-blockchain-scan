@@ -108,3 +108,11 @@ onMounted(async () => {
   await getTransactions()
 })
 </script>
+
+<style lang="scss" scoped>
+@include respond-to(medium) {
+  .app-table__head {
+    display: none;
+  }
+}
+</style>

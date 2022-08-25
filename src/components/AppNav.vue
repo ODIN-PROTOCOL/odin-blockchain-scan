@@ -241,7 +241,6 @@ const isMainnet = computed(() => {
   .app-nav__link {
     width: 100%;
     padding: 2.4rem 1.2rem;
-    border-bottom: 0.1rem solid var(--clr__white);
     > span {
       text-align: left;
     }

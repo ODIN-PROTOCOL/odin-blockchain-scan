@@ -43,7 +43,7 @@
               />
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Date and time</span>
+              <span class="app-table__title">Date</span>
               <span class="app-table__cell-date">
                 {{ $fDate(item.header.time, 'dd/MM/yy') }}
               </span>
