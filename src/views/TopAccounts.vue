@@ -26,25 +26,27 @@
         <span>ODIN token percentage</span>
         <span>Transaction count</span>
       </div>
-      <template v-if="accounts?.length">
-        <AccountsLine
-          v-for="(item, index) in filteredAccounts"
-          :key="index"
-          :account="item"
-          :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
-        />
-      </template>
-      <template v-else>
-        <SkeletonTable
-          v-if="isLoading"
-          :header-titles="headerTitles"
-          table-size="10"
-          class-string="accounts-line"
-        />
-        <div v-else class="app-table__empty-stub">
-          <p class="empty mg-t32">No items yet</p>
-        </div>
-      </template>
+      <div>
+        <template v-if="accounts?.length">
+          <AccountsLine
+            v-for="(item, index) in filteredAccounts"
+            :key="index"
+            :account="item"
+            :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
+          />
+        </template>
+        <template v-else>
+          <SkeletonTable
+            v-if="isLoading"
+            :header-titles="headerTitles"
+            table-size="10"
+            class-string="accounts-line"
+          />
+          <div v-else class="app-table__empty-stub">
+            <p class="empty mg-t32">No items yet</p>
+          </div>
+        </template>
+      </div>
     </div>
     <AppPagination
       v-if="accounts.length > ITEMS_PER_PAGE"
@@ -120,15 +122,6 @@ onMounted(async (): Promise<void> => {
 .top-accounts__sort-field {
   display: flex;
   align-items: center;
-}
-.top-accounts__table-head {
-  grid:
-    auto /
-    minmax(2rem, 0.5fr)
-    minmax(8rem, 5fr)
-    minmax(8rem, 2fr)
-    minmax(8rem, 2fr)
-    minmax(8rem, 1.5fr);
 }
 @include respond-to(tablet) {
   .top-accounts__table-head {

@@ -1,12 +1,4 @@
 .app {
-  &__main-section {
-    padding-top: 3rem;
-    padding-bottom: 6.4rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
   &__container {
     width: 100%;
     max-width: 140rem;
@@ -58,6 +50,13 @@
       align-items: flex-start;
     }
   }
+}
+
+.app__main-section {
+  padding-top: 3rem;
+  padding-bottom: 6.4rem;
+  background-color: var(--clr__primary);
+  @include flex-container;  
 }
 
 .app__main-view-table-header {

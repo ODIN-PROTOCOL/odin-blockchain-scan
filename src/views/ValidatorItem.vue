@@ -191,6 +191,7 @@ onMounted(async () => {
   @include ellipsis();
   line-height: 4.6rem;
 }
+
 @include respond-to(tablet) {
   .validators-item__title-wrapper {
     align-items: flex-start;

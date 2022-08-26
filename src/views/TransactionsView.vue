@@ -24,24 +24,26 @@
           {{ item.title }}
         </span>
       </div>
-      <template v-if="transactions?.length">
-        <TxLine
-          v-for="(item, index) in transactions"
-          :key="index"
-          :transition="item"
-        />
-      </template>
-      <template v-else>
-        <SkeletonTable
-          v-if="isLoading"
-          :header-titles="headerTitles"
-          table-size="10"
-          class-string="data-sources__table-row"
-        />
-        <div v-else class="app-table__empty-stub">
-          <p class="empty mg-t32">No items yet</p>
-        </div>
-      </template>
+      <div>
+        <template v-if="transactions?.length">
+          <TxLine
+            v-for="(item, index) in transactions"
+            :key="index"
+            :transition="item"
+          />
+        </template>
+        <template v-else>
+          <SkeletonTable
+            v-if="isLoading"
+            :header-titles="headerTitles"
+            table-size="10"
+            class-string="data-sources__table-row"
+          />
+          <div v-else class="app-table__empty-stub">
+            <p class="empty mg-t32">No items yet</p>
+          </div>
+        </template>
+      </div>
     </div>
 
     <AppPagination
@@ -106,3 +108,11 @@ onMounted(async () => {
   await getTransactions()
 })
 </script>
+
+<style lang="scss" scoped>
+@include respond-to(medium) {
+  .app-table__head {
+    display: none;
+  }
+}
+</style>
