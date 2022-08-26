@@ -63,7 +63,7 @@ const isRedirect = () => {
 }
 
 .link-dropdown__arrow {
-  fill: var(--clr__header-text);
+  fill: var(--clr__bright-gray);
 }
 
 .link-dropdown__modal {
@@ -73,14 +73,14 @@ const isRedirect = () => {
   position: absolute;
   top: 100%;
   left: 0;
-  background: var(--clr__main-bg);
+  background: var(--clr__primary);
   border-radius: 0 0 0.8rem 0.8rem;
   box-shadow: 0 0.4rem 2.4rem rgba(8, 87, 172, 0.12);
   z-index: 99;
 
   .link-dropdown__modal-link {
     padding: 0.8rem 1.2rem;
-    color: var(--clr__nested-nav-text);
+    color: var(--clr__white);
     text-decoration: none;
 
     &:last-child {
@@ -90,8 +90,8 @@ const isRedirect = () => {
 
     &.router-link-exact-active,
     &:hover {
-      background: rgba($clr-secondary, 0.4);
-      color: var(--clr__nav-active-text);
+      background: var(--clr__levender-blue);
+      color: var(--clr__secondary);
       font-weight: bold;
     }
   }
@@ -101,7 +101,6 @@ const isRedirect = () => {
   .link-dropdown {
     width: 100%;
     padding: 0.8rem 0;
-    border-bottom: 0.1rem solid var(--clr__input-border);
   }
 
   .link-dropdown__title-wrapper {

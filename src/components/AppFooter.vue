@@ -117,10 +117,6 @@ import { START_VALUE } from '@/api/api-config'
     align-items: flex-start;
     padding: 1.2rem 0;
     margin-right: 0;
-    border-top: 0.1rem solid var(--clr__footer-border);
-    &:last-child {
-      border-bottom: 0.1rem solid var(--clr__footer-border);
-    }
   }
   .app-footer__nav-img-item {
     margin-right: 3.2rem;

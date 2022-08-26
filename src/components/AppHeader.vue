@@ -50,7 +50,7 @@ const closeBurger = (): void => {
   display: flex;
   align-items: center;
   padding: 1.8rem 0;
-  background-color: var(--clr__header_bg);
+  background-color: var(--clr__dark);
 }
 
 .app-header__inner {
@@ -84,7 +84,7 @@ const closeBurger = (): void => {
   @include respond-to(tablet) {
     width: 100%;
     position: fixed;
-    background-color: var(--clr__main-bg);
+    background-color: var(--clr__white);
     z-index: 1;
   }
 }
@@ -93,6 +93,6 @@ const closeBurger = (): void => {
   height: 8.4rem;
   display: flex;
   align-items: center;
-  background-color: var(--clr-white);
+  background-color: var(--clr__secondary);
 }
 </style>

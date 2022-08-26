@@ -148,7 +148,7 @@ const isMainnet = computed(() => {
   flex-wrap: wrap;
   align-items: center;
   gap: 2.4rem;
-  color: var(--clr__header-text);
+  color: var(--clr__bright-gray);
 }
 
 .app-nav__link {
@@ -163,7 +163,7 @@ const isMainnet = computed(() => {
   cursor: pointer;
 
   &:hover {
-    color: var(--clr__nav-active-text);
+    color: var(--clr__secondary);
   }
 
   &::before {
@@ -181,7 +181,7 @@ const isMainnet = computed(() => {
   }
 
   &.router-link-exact-active > span {
-    color: var(--clr__nav-active-text);
+    color: var(--clr__secondary);
   }
 }
 
@@ -192,17 +192,17 @@ const isMainnet = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--clr__switch-bg);
+  background-color: var(--clr__primary);
   border-radius: 3.2rem;
   font-size: 1.2rem;
   line-height: 1.6rem;
 }
 
 .app-nav__switch-item {
-  width: 8rem;
+  width: 6.8rem;
   height: 3.2rem;
   padding: 0.8rem;
-  color: var(--clr__switch-text);
+  color: var(--clr__silver-sand);
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -210,8 +210,8 @@ const isMainnet = computed(() => {
 
 .app-nav__switch-item--active {
   pointer-events: none;
-  background: var(--clr__switch-active-bg);
-  color: var(--clr__switch-active-text);
+  background: var(--clr__secondary);
+  color: var(--clr__white);
   border-radius: 3.2rem;
   cursor: default;
 }
@@ -219,12 +219,12 @@ const isMainnet = computed(() => {
 @include respond-to(tablet) {
   .app-nav {
     display: none;
-    background: var(--clr__main-bg);
+    background: var(--clr__dark);
     width: 100%;
     z-index: 1;
-    height: calc(100vh - 8.4rem);
+    height: calc(100vh - 7.6rem);
     padding: 2.4rem 1.6rem;
-    border-top: 0.1rem solid var(--clr__table-border);
+    border-top: 0.1rem solid var(--clr__white);
   }
 
   .app-nav__wrap {
@@ -241,13 +241,12 @@ const isMainnet = computed(() => {
   .app-nav__link {
     width: 100%;
     padding: 2.4rem 1.2rem;
-    border-bottom: 0.1rem solid var(--clr__input-border);
     > span {
       text-align: left;
     }
 
     &:hover {
-      background: var(--clr__dropdown-link);
+      background: var(--clr__levender-blue);
     }
 
     &:first-child {
@@ -260,7 +259,7 @@ const isMainnet = computed(() => {
     flex-direction: column;
     justify-content: space-between;
     position: fixed;
-    top: 8.4rem;
+    top: 7.6rem;
     left: 0;
     overflow-y: auto;
     z-index: 10;
