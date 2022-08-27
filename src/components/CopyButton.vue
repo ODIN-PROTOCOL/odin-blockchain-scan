@@ -35,7 +35,7 @@ const copy = () => {
   height: 2.2rem;
   border-radius: 50%;
   &:hover {
-    background: var(--clr__action-disabled);
+    background: var(--clr__azureish-white);
   }
 }
 .copy-button__wrapper {
@@ -50,9 +50,9 @@ const copy = () => {
   left: 50%;
   transform: translateX(-50%);
   padding: 1.2rem 2.4rem;
-  background: var(--clr__tooltip-bg);
+  background: var(--clr__secondary);
   border-radius: 0.8rem;
-  color: var(--clr__tooltip-text);
+  color: var(--clr__white);
   font-size: 1.6rem;
 
   &:before {
@@ -64,7 +64,7 @@ const copy = () => {
     bottom: -0.3rem;
     left: 50%;
     transform: translateX(-50%) rotate(45deg);
-    background: var(--clr__tooltip-bg);
+    background: var(--clr__secondary);
   }
 }
 

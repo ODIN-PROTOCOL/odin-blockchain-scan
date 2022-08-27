@@ -98,4 +98,10 @@
   
   // Vue Skeleton Loader
   --clr__vue-skeleton-loader-bg: #{$clr-vue-skeleton-loader-bg};
+
+  // Tags
+  --clr__tag-success-bg: #{$clr-chinese-white};
+  --clr__tag-success-text: #{$clr-wageningen-green};
+  --clr__tag-error-bg: #{$clr-soft-magic-potion};
+  --clr__tag-error-text: #{$clr-magic-potion};
 }

@@ -37,29 +37,36 @@
     }
   }
 
-  &__cell {
+  .app-table__cell {
     display: flex;
     min-width: 0;
     padding: 0 2rem;
+  }
 
-    &-date {
-      padding-right: 0.8rem;
-    }
+  .app-table__cell-date {
+    padding-right: 0.8rem;
+  }
 
-    &-time {
-      color: var(--clr__text-muted);
-    }
+  .app-table__cell-time {
+    color: var(--clr__text-muted);
+  }
 
-    &-tag {
-      padding: 0.4rem 1rem;
-      background-color: var(--clr__azureish-white);
-      color: var(--clr__text);
-      border-radius: 0.4rem;
-    }
+  .app-table__cell-tag {
+    padding: 0.4rem 1rem;
+    background-color: var(--clr__azureish-white);
+    color: var(--clr__text);
+    border-radius: 0.4rem;
+  }
 
-    &-txt {
-      @include ellipsis(inline-block);
-    }
+  .app-table__cell-txt {
+    @include ellipsis(inline-block);
+  }
+
+  .app-table__cell-label {
+    display: flex;
+    align-items: center;
+    color: var(--clr__text-muted);
+    font-size: 1.2rem;
   }
 
   &__link {
