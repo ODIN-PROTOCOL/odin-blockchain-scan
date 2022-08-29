@@ -84,6 +84,11 @@
     text-align: center;
   }
 }
+
+.app-table__link {
+  @include ellipsis;
+}
+
 .blocks-list__table-head,
 .blocks-list__table-row {
   grid:

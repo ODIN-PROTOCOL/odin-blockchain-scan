@@ -23,7 +23,7 @@
       <template v-else>
         <template v-if="tx">
           <div class="app-table">
-            <div class="app-table__row tx-item__line">
+            <div class="app-table__row transactions-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="TOOLTIP_INFO.time" />
                 <span>Time</span>
@@ -37,25 +37,25 @@
                 </span>
               </div>
             </div>
-            <div class="app-table__row tx-item__line">
+            <div class="app-table__row transactions-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="TOOLTIP_INFO.status" />
                 <span>Status</span>
               </div>
               <div class="app-table__cell">
                 <span
-                  class="tx-item__status"
+                  class="transactions-item__status"
                   :class="
                     tx.status === TX_STATUSES.SUCCESS
-                      ? 'tx-item__status--success'
-                      : 'tx-item__status--failed'
+                      ? 'transactions-item__status--success'
+                      : 'transactions-item__status--failed'
                   "
                 >
                   {{ tx.status }}
                 </span>
               </div>
             </div>
-            <div class="app-table__row tx-item__line">
+            <div class="app-table__row transactions-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="TOOLTIP_INFO.block" />
                 <span>Block</span>
@@ -73,7 +73,7 @@
                 <span v-else>-</span>
               </div>
             </div>
-            <div class="app-table__row tx-item__line">
+            <div class="app-table__row transactions-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="TOOLTIP_INFO.gas" />
                 <span>Gas (used/wanted)</span>
@@ -82,21 +82,21 @@
                 <span>{{ tx.gasUsed }} / {{ tx.gasWanted }}</span>
               </div>
             </div>
-            <div class="app-table__row tx-item__line">
+            <div class="app-table__row transactions-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="TOOLTIP_INFO.fee" />
                 <span>Fee</span>
               </div>
               <div class="app-table__cell">{{ tx.fee }}</div>
             </div>
-            <div class="app-table__row tx-item__line">
+            <div class="app-table__row transactions-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="TOOLTIP_INFO.memo" />
                 <span>Memo</span>
               </div>
               <div class="app-table__cell">{{ tx.memo }}</div>
             </div>
-            <div class="app-table__row tx-item__line">
+            <div class="app-table__row transactions-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="TOOLTIP_INFO.total" />
                 <span>Total</span>
@@ -164,11 +164,11 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.tx-item__line {
+.transactions-item__line {
   grid: auto/minmax(3rem, 1fr) minmax(9rem, 3fr);
 }
 
-.tx-item__status {
+.transactions-item__status {
   padding: 0.1rem 1.1rem;
   display: flex;
   flex-direction: row;
@@ -179,12 +179,12 @@ onMounted(async () => {
   line-height: 2rem;
 }
 
-.tx-item__status--success {
+.transactions-item__status--success {
   color: var(--clr__tag-success-text);
   background-color: var(--clr__tag-success-bg);
 }
 
-.tx-item__status--failed {
+.transactions-item__status--failed {
   color: var(--clr__tag-error-text);
   background-color: var(--clr__tag-error-bg);
 }

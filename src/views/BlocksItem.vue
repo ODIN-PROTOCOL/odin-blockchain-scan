@@ -23,7 +23,7 @@
       <template v-else>
         <template v-if="blockInfo">
           <div class="app-table">
-            <div class="app-table__row block-item__line">
+            <div class="app-table__row blocks-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockHeight" />
                 <span>Block Height</span>
@@ -33,7 +33,7 @@
                 <CopyButton class="mg-l8" :text="String(blockHeight)" />
               </div>
             </div>
-            <div class="app-table__row block-item__line">
+            <div class="app-table__row blocks-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockHash" />
                 <span>Block Hash</span>
@@ -43,7 +43,7 @@
                 <CopyButton class="mg-l8" :text="String(blockHash)" />
               </div>
             </div>
-            <div class="app-table__row block-item__line">
+            <div class="app-table__row blocks-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockParentHash" />
                 <span>Block Parent Hash</span>
@@ -53,7 +53,7 @@
                 <CopyButton class="mg-l8" :text="String(blockParentHash)" />
               </div>
             </div>
-            <div class="app-table__row block-item__line">
+            <div class="app-table__row blocks-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.timestamp" />
                 <span>Timestamp</span>
@@ -67,7 +67,7 @@
                 </span>
               </div>
             </div>
-            <div class="app-table__row block-item__line">
+            <div class="app-table__row blocks-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blocksTransactions" />
                 <span>Block's Transactions</span>
@@ -90,7 +90,7 @@
                 </template>
               </div>
             </div>
-            <div class="app-table__row block-item__line">
+            <div class="app-table__row blocks-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockCreator" />
                 <span>Block Creator</span>
@@ -107,7 +107,7 @@
                 <CopyButton class="mg-l8" :text="String(blockCreator)" />
               </div>
             </div>
-            <div class="app-table__row block-item__line">
+            <div class="app-table__row blocks-item__line">
               <div class="app-table__cell app-table__cell-label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockSize" />
                 <span>Block Size</span>
@@ -195,7 +195,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.block-item__line {
+.blocks-item__line {
   grid: auto/minmax(3rem, 1fr) minmax(9rem, 3fr);
 }
 

@@ -1,7 +1,7 @@
 <template>
-  <div class="info-tooltip">
-    <img class="info-tooltip__img" src="~@/assets/icons/info.svg" alt="info" />
-    <span class="info-tooltip__message">
+  <div class="info-icon">
+    <img class="info-icon__img" src="~@/assets/icons/info.svg" alt="info" />
+    <span class="info-icon__message">
       {{ message }}
     </span>
   </div>
@@ -14,7 +14,7 @@ defineProps<{
 </script>
 
 <style lang="scss" scoped>
-.info-tooltip {
+.info-icon {
   height: 2.3rem;
   margin-right: 0.9rem;
   display: flex;
@@ -23,18 +23,18 @@ defineProps<{
   cursor: pointer;
 
   &:hover {
-    .info-tooltip__message {
+    .info-icon__message {
       display: block;
     }
   }
 }
 
-.info-tooltip__img {
+.info-icon__img {
   max-width: unset;
   width: 1.5rem;
 }
 
-.info-tooltip__message {
+.info-icon__message {
   min-width: 30rem;
   padding: 1.2rem 2.4rem;
   display: none;
