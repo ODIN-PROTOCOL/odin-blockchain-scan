@@ -1,6 +1,6 @@
 .app-table {
   display: block;
-  border: 0.1rem solid var(--clr__light-gray);
+  border: 0.1rem solid var(--clr__table-border);
   border-radius: 1.6rem;
 
   &__title {
@@ -16,7 +16,7 @@
   }
 
   &__head {
-    border-bottom: 0.1rem solid var(--clr__light-gray);
+    border-bottom: 0.1rem solid var(--clr__table-border);
     color: var(--clr__text-muted);
     font-size: 1.2rem;
     font-weight: 300;
@@ -29,7 +29,7 @@
   .app-table__row {
     align-items: flex-start;
     padding: 1.4rem 0;
-    border-top: 0.1rem solid var(--clr__light-gray);
+    border-top: 0.1rem solid var(--clr__table-border);
     font-size: 1.4rem;
 
     &:first-child {
