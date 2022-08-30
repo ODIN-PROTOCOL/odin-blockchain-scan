@@ -4,7 +4,13 @@
       <h2 class="app__main-view-title">Top accounts</h2>
     </div>
     <div class="top-accounts__sort-wrapper">
-      <skeleton-loader v-if="isLoading" pill shimmer :height="24" width="100" />
+      <skeleton-loader
+        v-if="isLoading || isSupplyLoading"
+        pill
+        shimmer
+        :height="24"
+        width="100"
+      />
       <p v-else class="top-accounts__sort-info">
         {{ accounts.length }} accounts found
       </p>
@@ -22,12 +28,13 @@
           v-for="(item, index) in filteredAccounts"
           :key="index"
           :account="item"
+          :odin-supply="odinSupply"
           :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
         />
       </template>
       <template v-else>
         <SkeletonTable
-          v-if="isLoading"
+          v-if="isLoading || isSupplyLoading"
           :header-titles="headerTitles"
           table-size="10"
           class-string="accounts-line"
@@ -50,19 +57,25 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { callers } from '@/api/callers'
-import { TempBalanceType } from '@/helpers/Types'
+import { TempBalanceType, Coin } from '@/helpers/Types'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import { handleNotificationInfo, TYPE_NOTIFICATION } from '@/helpers/errors'
+import { useQuery } from '@vue/apollo-composable'
+import { SupplyQuery } from '@/graphql/queries'
+import { SupplyResponse } from '@/graphql/types'
 import AccountsLine from '@/components/AccountsLine.vue'
 import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 const ITEMS_PER_PAGE = 20
-const accounts = ref<Array<TempBalanceType>>([])
-const filteredAccounts = ref<Array<TempBalanceType>>([])
-const currentPage = ref<number>(1)
-const totalPages = ref<number>(0)
+const accounts = ref<TempBalanceType[]>([])
+const filteredAccounts = ref<TempBalanceType[]>([])
+const totalSupply = ref<Coin[]>([])
+const odinSupply = ref<Coin>({ denom: 'loki', amount: '0' })
+
+const currentPage = ref(1)
+const totalPages = ref(0)
 const headerTitles = [
   { title: 'Rank' },
   { title: 'Address' },
@@ -70,11 +83,17 @@ const headerTitles = [
   { title: 'ODIN token percentage' },
   { title: 'Transaction count' },
 ]
+const {
+  result,
+  loading: isSupplyLoading,
+  onResult,
+  refetch,
+} = useQuery<SupplyResponse>(SupplyQuery)
 
 const getAccounts = async (): Promise<void> => {
   lockLoading()
   try {
-    accounts.value = await callers.getTopAccounts().then(resp => resp.json())
+    accounts.value = await callers.getTopAccounts(100, 0).then(res => res.data)
     totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
     await filterAccounts(currentPage.value)
   } catch (error) {
@@ -83,8 +102,14 @@ const getAccounts = async (): Promise<void> => {
   releaseLoading()
 }
 
-const filterAccounts = async (newPage: number): Promise<void> => {
-  let tempArr = accounts.value
+const getAccountOdinPercentage = () => {
+  odinSupply.value = totalSupply.value.find(
+    (item: Coin) => item.denom === 'loki',
+  ) || { denom: 'loki', amount: '0' }
+}
+
+const filterAccounts = (newPage: number): void => {
+  const tempArr = accounts.value
   if (newPage === 1) {
     filteredAccounts.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
   } else {
@@ -96,8 +121,16 @@ const filterAccounts = async (newPage: number): Promise<void> => {
   currentPage.value = newPage
 }
 
-onMounted(async (): Promise<void> => {
+onResult(async (): Promise<void> => {
+  if (result.value?.supply.length) {
+    totalSupply.value = result.value?.supply[0].coins
+    getAccountOdinPercentage()
+  }
   await getAccounts()
+})
+
+onMounted(async (): Promise<void> => {
+  await refetch()
 })
 </script>
 
