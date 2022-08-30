@@ -22,10 +22,22 @@
   --clr__silver-sand: #{$clr-silver-sand};
   --clr__levender-blue: #{$clr-levender-blue};
 
+  --clr__search-bar-bg: #{$clr-white};
+  --clr__search-field-bg: #{$clr-bright-gray};
+  --clr__search-icon: #{$clr-primary};
+  --clr__search-icon-bg: #{$clr-secondary};
+
+  --clr__theme-switch: #{$clr-text-muted};
+  --clr__theme-switch-bg: #{$clr-bright-gray};
+  --clr__theme-switch-active: #{$clr-white};
+  --clr__theme-switch-active-bg: #{$clr-secondary};
+
   // Buttons
   --clr__btn-normal: #{$clr-btn-normal};
   --clr__btn-hover: #{$clr-btn-hover};
   --clr__btn-pressed: #{$clr-btn-pressed};
+  --clr__btn-focused: #{$clr-btn-focused};
+  --clr__btn-focused-border: #{$clr-btn-focused-border};
   --clr__btn-disabled: #{$clr-btn-disabled};
 
   // Inputs
@@ -39,6 +51,10 @@
   --clr__table-head: #{$clr-table-head};
 
   // Dropdown
+  --clr__dropdown: #{$clr-text};
+  --clr__dropdown-bg: #{$clr-white};
+  --clr__dropdown-active: #{$clr-secondary};
+  --clr__dropdown-active-bg: #{$clr-levender-blue};
 
   // Shadows
   --clr__dropdown-shadow: #{$clr-dropdown-shadow};
@@ -104,4 +120,21 @@
   --clr__tag-success-text: #{$clr-wageningen-green};
   --clr__tag-error-bg: #{$clr-soft-magic-potion};
   --clr__tag-error-text: #{$clr-magic-potion};
+}
+
+:root.dark-theme {
+  // Header
+  --clr__search-bar-bg: #{$clr-secondary};
+  --clr__search-icon: #{$clr-white};
+  --clr__search-field-bg: #{$clr-primary};
+  --clr__search-icon-bg: #{$clr-dark};
+
+  --clr__theme-switch: #{$clr-silver-sand};
+  --clr__theme-switch-bg: #{$clr-primary};
+  --clr__theme-switch-active: #{$clr-white};
+  --clr__theme-switch-active-bg: #{$clr-secondary};
+
+  // Dropdown
+  --clr__dropdown: #{$clr-white};
+  --clr__dropdown-bg: #{$clr-primary};
 }

@@ -22,6 +22,7 @@
     <div class="app-header__search-bar">
       <div class="app__container">
         <search-bar />
+        <theme-switch />
       </div>
     </div>
   </header>
@@ -32,6 +33,7 @@ import { ref } from 'vue'
 import AppNav from '@/components/AppNav.vue'
 import BurgerMenu from '@/components/BurgerMenu.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
+import ThemeSwitch from '@/components/ThemeSwitch.vue'
 
 const isOpen = ref<boolean>(false)
 const burgerMenuHandler = (event: Event | MouseEvent) => {
@@ -80,6 +82,19 @@ const closeBurger = (): void => {
   }
 }
 
+.app-header__search-bar {
+  height: 8.4rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--clr__search-bar-bg);
+
+  .app__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 .app-header--mobile {
   @include respond-to(tablet) {
     width: 100%;
@@ -87,12 +102,5 @@ const closeBurger = (): void => {
     background-color: var(--clr__white);
     z-index: 1;
   }
-}
-
-.app-header__search-bar {
-  height: 8.4rem;
-  display: flex;
-  align-items: center;
-  background-color: var(--clr__secondary);
 }
 </style>

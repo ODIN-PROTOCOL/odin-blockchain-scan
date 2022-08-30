@@ -2,7 +2,7 @@
   padding: 1.2rem 1.6rem;
   display: inline-block;
   padding: 1.2rem 1.6rem;
-  background: var(--clr__secondary);
+  background: var(--clr__btn-normal);
   color: var(--clr__white);
   font-size: 2rem;
   white-space: nowrap;
@@ -30,25 +30,21 @@
   }
 
   &:focus {
-    color: var(--clr__secondary);
-    border: 0.1rem solid var(--clr__btn-normal);
-    background: var(--clr__levender-blue);
+    border: 0.1rem solid var(--clr__btn-focused-border);
+    background: var(--clr__btn-focused);
   }
 
   &:hover {
-    color: var(--clr__secondary);
     border: 0.1rem solid transparent;
-    background: var(--clr__levender-blue);
+    background: var(--clr__btn-hover);
   }
 
   &:active {
-    color: var(--clr__secondary);
     border: 0.1rem solid transparent;
-    background: var(--clr__levender-blue);
+    background: var(--clr__btn-pressed);
   }
 
   &:disabled {
-    color: var(--clr__text-on-action);
     border: 0.1rem solid transparent;
     background: var(--clr__btn-disabled);
   }

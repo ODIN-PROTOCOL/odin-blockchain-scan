@@ -229,9 +229,8 @@ router.beforeEach(() => {
 
 .search-bar__dropdown {
   position: absolute;
-  background: var(--clr__secondary);
+  background-color: var(--clr__dropdown-bg);
   border: 0.1rem solid var(--clr__light-gray);
-  border-radius: 0 0 0.8rem 0.8rem;
   width: 100%;
   z-index: 2;
 
@@ -244,8 +243,8 @@ router.beforeEach(() => {
   display: flex;
   justify-content: center;
   padding: 1rem;
-  background-color: var(--clr__primary);
-  color: var(--clr__white);
+  background-color: var(--clr__dropdown-bg);
+  color: var(--clr__dropdown);
 }
 
 .search-bar__row {
@@ -256,12 +255,12 @@ router.beforeEach(() => {
 }
 
 .search-bar__input-wrapper > .search-bar__input {
-  background-color: var(--clr__primary);
+  background-color: var(--clr__search-field-bg);
   border: none;
 }
 
 .search-bar .app-filter {
-  background-color: var(--clr__primary);
+  background-color: var(--clr__search-field-bg);
   border: none;
   border-right: 0.1rem solid var(--clr__light-gray);
 }
@@ -271,7 +270,7 @@ router.beforeEach(() => {
   padding: 1.2rem 1.5rem;
   width: 100%;
   max-width: 42.6rem;
-  color: var(--clr__white);
+  color: var(--clr__search-icon);
   border-left: transparent;
   border-right: transparent;
   border-radius: 0;
@@ -296,7 +295,7 @@ router.beforeEach(() => {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  background: var(--clr__dark);
+  background-color: var(--clr__search-icon-bg);
   border-top-right-radius: 0.4rem;
   border-bottom-right-radius: 0.4rem;
 

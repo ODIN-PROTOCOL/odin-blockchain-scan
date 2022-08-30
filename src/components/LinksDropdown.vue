@@ -73,14 +73,14 @@ const isRedirect = () => {
   position: absolute;
   top: 100%;
   left: 0;
-  background: var(--clr__primary);
+  background: var(--clr__dropdown-bg);
   border-radius: 0 0 0.8rem 0.8rem;
   box-shadow: 0 0.4rem 2.4rem rgba(8, 87, 172, 0.12);
   z-index: 99;
 
   .link-dropdown__modal-link {
     padding: 0.8rem 1.2rem;
-    color: var(--clr__white);
+    color: var(--clr__dropdown);
     text-decoration: none;
 
     &:last-child {
@@ -90,8 +90,8 @@ const isRedirect = () => {
 
     &.router-link-exact-active,
     &:hover {
-      background: var(--clr__levender-blue);
-      color: var(--clr__secondary);
+      background: var(--clr__dropdown-active-bg);
+      color: var(--clr__dropdown-active);
       font-weight: bold;
     }
   }
