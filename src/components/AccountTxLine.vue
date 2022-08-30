@@ -36,7 +36,7 @@
       <span class="app-table__title">Sender</span>
       <TitledLink
         v-if="tx.sender"
-        :to="generateAddrLink(tx.sender)"
+        :to="tx.sender"
         class="app-table__cell-txt app-table__link"
         :text="tx.sender"
       />
@@ -46,7 +46,7 @@
       <span class="app-table__title">Receiver</span>
       <TitledLink
         v-if="tx.receiver"
-        :to="generateAddrLink(tx.receiver)"
+        :to="tx.receiver"
         class="app-table__cell-txt app-table__link"
         :text="tx.receiver"
       />
@@ -88,12 +88,4 @@ const odinFee = convertLokiToOdin(
 )
 const type = humanizeMessageType('/' + props.tx.type)
 const getRequestItemTxHash = props.tx?.tx_hash.split('0x')[1]
-const validatorPrefix = 'odinvaloper'
-const generateAddrLink = (addr: string) => {
-  if (addr.includes(validatorPrefix)) {
-    return `validators/${addr}`
-  } else {
-    return `account/${addr}`
-  }
-}
 </script>
