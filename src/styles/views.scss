@@ -93,3 +93,33 @@
   color: var(--clr__text-muted);
   font-size: 1.6rem;
 }
+
+.app__main-view-detail-container {
+  display: flex;
+  margin-bottom: 4rem;
+}
+
+.app__main-view-detail-back-icon {
+  margin-top: 1rem;
+  margin-right: 2rem;
+}
+
+.app__main-view-detail-title-container {
+  max-width: 90%;
+}
+
+.app__main-view-detail-title {
+  font-size: 2.4rem;
+  font-weight: 400;
+}
+
+.app__main-view-detail-subtitle-container {
+  display: flex;
+}
+
+.app__main-view-detail-subtitle {
+  color: var(--clr__text-muted);
+  font-size: 1.6rem;
+  font-weight: 400;
+  @include ellipsis();
+}
