@@ -70,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
           import(/* webpackChunkName: "accounts" */ '../views/TopAccounts.vue'),
       },
       {
-        path: '/account/:hash',
+        path: '/accounts/:hash',
         name: ROUTE_NAMES.accountDetails,
         component: () =>
           import(

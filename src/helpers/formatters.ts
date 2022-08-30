@@ -31,7 +31,7 @@ export function cropText(value?: string): string {
   return value
 }
 
-export function getDay(time: string): Date {
+export function getDay(time: string | number): Date {
   return new Date(time)
 }
 

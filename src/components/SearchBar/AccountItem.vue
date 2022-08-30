@@ -11,12 +11,12 @@
         <div class="search__dropdown--item-label">A</div>
         <div class="search__dropdown--item-height">
           <TitledLink
-            class="app-table__cell-txt address-link"
+            class="app-table__cell-txt app-table__link address-link"
             :name="{
               name: $routes.accountDetails,
               params: { hash: result.address },
             }"
-            :text="`0x${result.address}`"
+            :text="result.address"
           />
         </div>
         <div class="search__dropdown--item-time"></div>

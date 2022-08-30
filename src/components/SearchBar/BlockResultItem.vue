@@ -11,7 +11,7 @@
         <div class="search__dropdown--item-label">Bk</div>
         <div class="search__dropdown--item-height">
           <TitledLink
-            class="app-table__cell-txt"
+            class="app-table__cell-txt app-table__link"
             :text="result?.header?.height"
             :name="{
               name: $routes.blockDetails,
@@ -32,7 +32,7 @@
               name: $routes.validatorDetails,
               params: { address: result.validator },
             }"
-            class="app-table__cell-txt"
+            class="app-table__cell-txt app-table__link"
             :text="cropText(result.validator)"
           />
         </div>

@@ -16,12 +16,12 @@
               params: { hash: result.hash },
             }"
             :text="result.hash ? cropText(`0x${result.hash}`) : 'No info'"
-            class="app-table__cell-txt"
+            class="app-table__cell-txt app-table__link"
           />
         </div>
 
         <div class="search__dropdown--item-time">
-          {{ result?.time }}
+          {{ diffDays(today, getDay(timestamp)) }}
         </div>
       </div>
       <div class="search__dropdown--item-right">
@@ -29,7 +29,7 @@
           From:
           <TitledLink
             v-if="result.sender"
-            class="app-table__cell-txt"
+            class="app-table__cell-txt app-table__link"
             :name="{
               name: $routes.accountDetails,
               params: { hash: result.sender },
@@ -42,7 +42,7 @@
           <span> To: </span>
           <TitledLink
             v-if="result.receiver"
-            class="app-table__cell-txt"
+            class="app-table__cell-txt app-table__link"
             :name="{
               name: $routes.accountDetails,
               params: { hash: result.receiver },
@@ -57,13 +57,17 @@
 </template>
 
 <script setup lang="ts">
-import { cropText } from '@/helpers/formatters'
+import { computed } from 'vue'
+import { diffDays, cropText, getDay } from '@/helpers/formatters'
 import { DecodedTxData } from '@/helpers/Types'
 import TitledLink from '@/components/TitledLink.vue'
 
-defineProps<{
+const props = defineProps<{
   result: DecodedTxData
 }>()
+
+const today = new Date()
+const timestamp = computed(() => Date.parse(String(props.result.time)))
 </script>
 
 <style lang="scss" scoped>

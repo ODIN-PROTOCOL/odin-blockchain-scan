@@ -5,7 +5,8 @@ export const API_CONFIG = {
   exBridge: process.env.VUE_APP_EX_BRIDGE_URL as string,
   exBridgeFee: process.env.VUE_APP_EX_BRIDGE_FEE as string,
   telemetryUrl: process.env.VUE_APP_TELEMETRY_URL?.slice(0, -1) as string,
-  graphqlUrl: process.env.VUE_APP_NEXT_PUBLIC_GRAPHQL_URL,
+  graphqlUrl: process.env.VUE_APP_NEXT_PUBLIC_GRAPHQL_URL as string,
+  graphqlActions: process.env.VUE_APP_GRAPHQL_ACTIONS_URL as string,
 }
 
 export enum COINS_LIST {
