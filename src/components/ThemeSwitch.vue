@@ -1,19 +1,15 @@
 <template>
   <div class="theme-switch">
     <button
-      :class="[
-        'theme-switch__btn',
-        currentTheme === ThemeMode.Dark ? 'theme-switch__btn--active' : '',
-      ]"
+      class="theme-switch__btn"
+      :class="{ 'theme-switch__btn--active': !isLight }"
       @click="toggleTheme(ThemeMode.Dark)"
     >
       <theme-dark />
     </button>
     <button
-      :class="[
-        'theme-switch__btn',
-        currentTheme === ThemeMode.Light ? 'theme-switch__btn--active' : '',
-      ]"
+      class="theme-switch__btn"
+      :class="{ 'theme-switch__btn--active': isLight }"
       @click="toggleTheme(ThemeMode.Light)"
     >
       <theme-light />
@@ -22,11 +18,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { ThemeDark, ThemeLight } from '@/components/icons'
 import { Theme, ThemeMode } from '@/helpers/theme'
 
-const currentTheme = ref<string>(Theme.getTheme())
+const currentTheme = ref(Theme.getTheme())
+
+const isLight = computed(() => {
+  return currentTheme.value === ThemeMode.Light
+})
 
 const toggleTheme = (theme: ThemeMode): void => {
   Theme.setTheme(theme)

@@ -3,19 +3,19 @@
   border: 0.1rem solid var(--clr__table-border);
   border-radius: 1.6rem;
 
-  &__title {
+  .app-table__title {
     display: none;
     font-size: 1.4rem;
   }
 
-  &__head,
-  &__row {
+  .app-table__head,
+  .app-table__row {
     display: grid;
     grid: auto / auto-flow minmax(0, 1fr);
     gap: 2.4rem;
   }
 
-  &__head {
+  .app-table__head {
     border-bottom: 0.1rem solid var(--clr__table-border);
     color: var(--clr__text-muted);
     font-size: 1.2rem;
@@ -69,17 +69,17 @@
     font-size: 1.2rem;
   }
 
-  &__link {
+  .app-table__link {
     text-decoration: none;
     color: var(--clr__action);
   }
 
-  &__time {
+  .app-table__time {
     display: flex;
     flex-direction: column;
   }
 
-  &__empty-stub {
+  .app-table__empty-stub {
     margin: 10rem 0;
     text-align: center;
   }

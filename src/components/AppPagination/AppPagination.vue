@@ -161,7 +161,7 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   width: 6rem;
   height: 3.6rem;
   margin: 0 0.2rem;
-  border: 1px solid var(--clr__input-border);
+  border: 0.1rem solid var(--clr__input-border);
   border-radius: 0.4rem;
   background-color: var(--clr__input-bg);
   text-align: center;
