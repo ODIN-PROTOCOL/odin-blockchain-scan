@@ -121,10 +121,10 @@
   --clr__vue-skeleton-loader-bg: #{$clr-vue-skeleton-loader-bg};
 
   // Tags
+  --clr__tag-success: #{$clr-wageningen-green};
   --clr__tag-success-bg: #{$clr-chinese-white};
-  --clr__tag-success-text: #{$clr-wageningen-green};
-  --clr__tag-error-bg: #{$clr-soft-magic-potion};
-  --clr__tag-error-text: #{$clr-magic-potion};
+  --clr__tag-failed: #{$clr-magic-potion};
+  --clr__tag-failed-bg: #{$clr-soft-magic-potion};
 }
 
 :root.dark-theme {
@@ -157,4 +157,10 @@
 
   // Nav
   --clr__nav-back: #{$clr-white};
+
+  // Tags
+  --clr__tag-success: #{$clr-dark};
+  --clr__tag-success-bg: #{$clr-green};
+  --clr__tag-failed: #{$clr-dark};
+  --clr__tag-failed-bg: #{$clr-red};
 }
