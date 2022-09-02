@@ -17,8 +17,26 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">ODIN balance</span>
-      <span :title="odinBalanceTitle" class="app-table__cell-txt">
-        {{ odinBalanceValue }}
+      <span
+        :title="getAmountForTitle(account.loki_balance)"
+        class="app-table__cell-txt"
+      >
+        {{ getAmountForValue(account.loki_balance) }}
+      </span>
+    </div>
+    <div class="app-table__cell">
+      <span class="app-table__title">Delegated Amount</span>
+      <span
+        :title="getAmountForTitle(account.delegated_amount)"
+        class="app-table__cell-txt"
+      >
+        {{ getAmountForValue(account.delegated_amount) }}
+      </span>
+    </div>
+    <div class="app-table__cell">
+      <span class="app-table__title">Total Amount</span>
+      <span :title="getAmountForTitle(totalAmount)" class="app-table__cell-txt">
+        {{ getAmountForValue(totalAmount) }}
       </span>
     </div>
     <div class="app-table__cell">
@@ -52,13 +70,18 @@ const props = defineProps<{
   rank: number
 }>()
 
-const odinBalanceTitle = computed(() =>
-  convertLokiToOdin(String(props.account.loki_balance)),
-)
-const odinBalanceValue = computed(() =>
-  convertLokiToOdin(String(props.account.loki_balance), {
+const getAmountForTitle = (value: number | string) => {
+  return convertLokiToOdin(String(value))
+}
+
+const getAmountForValue = (value: number | string) => {
+  return convertLokiToOdin(String(value), {
     withDenom: true,
-  }),
+  })
+}
+
+const totalAmount = computed(
+  () => props.account.delegated_amount + props.account.loki_balance,
 )
 
 const accountOdinPercentage = computed(() => {
