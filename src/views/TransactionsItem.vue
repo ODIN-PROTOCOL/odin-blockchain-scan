@@ -43,16 +43,7 @@
                 <span>Status</span>
               </div>
               <div class="app-table__cell">
-                <span
-                  class="transactions-item__status"
-                  :class="
-                    tx.status === TX_STATUSES.SUCCESS
-                      ? 'transactions-item__status--success'
-                      : 'transactions-item__status--failed'
-                  "
-                >
-                  {{ tx.status }}
-                </span>
+                <tag :type="tx.status" />
               </div>
             </div>
             <div class="app-table__row transactions-item__line">
@@ -131,8 +122,9 @@ import { prepareTransaction } from '@/helpers/helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
+import Tag from '@/components/Tag.vue'
 import InfoIcon from '@/components/icons/InfoIcon.vue'
-import { TOOLTIP_INFO, TX_STATUSES } from '@/const'
+import { TOOLTIP_INFO } from '@/const'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import {
   UiLoadingErrorMessage,
@@ -166,26 +158,5 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .transactions-item__line {
   grid: auto/minmax(3rem, 1fr) minmax(9rem, 3fr);
-}
-
-.transactions-item__status {
-  padding: 0.1rem 1.1rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.4rem;
-  font-size: 1rem;
-  line-height: 2rem;
-}
-
-.transactions-item__status--success {
-  color: var(--clr__tag-success-text);
-  background-color: var(--clr__tag-success-bg);
-}
-
-.transactions-item__status--failed {
-  color: var(--clr__tag-error-text);
-  background-color: var(--clr__tag-error-bg);
 }
 </style>

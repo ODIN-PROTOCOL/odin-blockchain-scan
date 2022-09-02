@@ -89,7 +89,7 @@ import { START_VALUE } from '@/api/api-config'
   }
 }
 .app-footer__nav-text-item {
-  color: var(--clr__text-on-action);
+  color: var(--clr__white);
   text-decoration: none;
   margin-right: 4.8rem;
   &:last-child {

@@ -2,7 +2,7 @@
   <div class="app-pagination__wrapper">
     <div class="app-pagination">
       <button
-        class="app-pagination__control app-pagination__border"
+        class="app-btn app-btn--medium app-pagination__control app-pagination__border"
         :class="{ 'app-pagination__control--active': isPrevControlsActive }"
         @click="goToPreviousPage"
       >
@@ -28,7 +28,7 @@
         <span>of {{ pages }}</span>
       </div>
       <button
-        class="app-pagination__control app-pagination__border"
+        class="app-btn app-btn--medium app-pagination__control app-pagination__border"
         :class="{ 'app-pagination__control--active': isNextControlsActive }"
         @click="goToNextPage"
       >
@@ -105,7 +105,6 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--clr__azureish-white);
 }
 
 .app-pagination__control {
@@ -126,10 +125,8 @@ function goToSelectedPage(event: { target: { value: string } }): void {
     }
 
     &:hover {
-      background-color: var(--clr__azureish-white);
-
       svg {
-        fill: var(--clr__secondary);
+        fill: var(--clr__white);
       }
     }
   }
@@ -157,7 +154,6 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   min-width: 2.6rem;
   height: 3.6rem;
   margin: 0 0.2rem;
-  background: var(--clr__secondary);
   border-radius: 0.4rem;
 }
 
@@ -165,10 +161,9 @@ function goToSelectedPage(event: { target: { value: string } }): void {
   width: 6rem;
   height: 3.6rem;
   margin: 0 0.2rem;
-  border: none;
+  border: 0.1rem solid var(--clr__input-border);
   border-radius: 0.4rem;
-  background-color: var(--clr__azureish-white);
-  color: var(--clr__primary);
+  background-color: var(--clr__input-bg);
   text-align: center;
 }
 

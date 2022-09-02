@@ -320,7 +320,7 @@ onUnmounted(async () => {
 .validators-view__filter-search {
   display: flex;
   align-items: center;
-  background-color: var(--clr__dark);
+  background-color: var(--clr__table-border);
   border-radius: 0.8rem;
   transition: all 0.5s ease;
 
@@ -361,6 +361,7 @@ onUnmounted(async () => {
 .validators-view__filter-search-input {
   width: 35rem;
   padding-right: 2rem;
+  color: var(--clr__main-text);
   background-color: inherit;
   border: none;
 
@@ -392,6 +393,10 @@ onUnmounted(async () => {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+
+  &::v-deep path {
+    fill: var(--clr__main-text);
+  }
 }
 .validators-view__filter {
   display: flex;
