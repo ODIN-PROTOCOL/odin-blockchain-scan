@@ -35,8 +35,11 @@
     </div>
     <div class="app-table__cell">
       <span class="app-table__title">Total Amount</span>
-      <span :title="getAmountForTitle(totalAmount)" class="app-table__cell-txt">
-        {{ getAmountForValue(totalAmount) }}
+      <span
+        :title="getAmountForTitle(account.total_amount)"
+        class="app-table__cell-txt"
+      >
+        {{ getAmountForValue(account.total_amount) }}
       </span>
     </div>
     <div class="app-table__cell">
@@ -79,10 +82,6 @@ const getAmountForValue = (value: number | string) => {
     withDenom: true,
   })
 }
-
-const totalAmount = computed(
-  () => props.account.delegated_amount + props.account.loki_balance,
-)
 
 const accountOdinPercentage = computed(() => {
   const accountOdinValue =
