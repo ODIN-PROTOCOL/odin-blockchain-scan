@@ -12,7 +12,7 @@
         width="100"
       />
       <p v-else class="top-accounts__sort-info">
-        {{ accounts.length }} accounts found
+        {{ totalAccounts }} accounts found
       </p>
     </div>
     <div class="app-table top-accounts__table">
@@ -20,12 +20,14 @@
         <span>Rank</span>
         <span>Address</span>
         <span>ODIN balance</span>
+        <span>Delegated Amount</span>
+        <span>Total Amount</span>
         <span>ODIN token percentage</span>
         <span>Transaction count</span>
       </div>
       <template v-if="accounts?.length">
         <AccountsLine
-          v-for="(item, index) in filteredAccounts"
+          v-for="(item, index) in accounts"
           :key="index"
           :account="item"
           :odin-supply="odinSupply"
@@ -45,11 +47,11 @@
       </template>
     </div>
     <AppPagination
-      v-if="accounts.length > ITEMS_PER_PAGE"
+      v-if="totalAccounts > ITEMS_PER_PAGE"
       class="mg-t32"
       v-model="currentPage"
       :pages="totalPages"
-      @update:modelValue="filterAccounts"
+      @update:modelValue="updateHandler"
     />
   </div>
 </template>
@@ -68,18 +70,20 @@ import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
-const ITEMS_PER_PAGE = 20
+const ITEMS_PER_PAGE = 50
 const accounts = ref<TempBalanceType[]>([])
-const filteredAccounts = ref<TempBalanceType[]>([])
 const totalSupply = ref<Coin[]>([])
 const odinSupply = ref<Coin>({ denom: 'loki', amount: '0' })
-
+const totalPages = ref(1)
+const totalAccounts = ref(0)
 const currentPage = ref(1)
-const totalPages = ref(0)
+
 const headerTitles = [
   { title: 'Rank' },
   { title: 'Address' },
   { title: 'ODIN balance' },
+  { title: 'Delegated Amount' },
+  { title: 'Total Amount' },
   { title: 'ODIN token percentage' },
   { title: 'Transaction count' },
 ]
@@ -93,9 +97,12 @@ const {
 const getAccounts = async (): Promise<void> => {
   lockLoading()
   try {
-    accounts.value = await callers.getTopAccounts(100, 0).then(res => res.data)
-    totalPages.value = Math.ceil(accounts.value.length / ITEMS_PER_PAGE)
-    await filterAccounts(currentPage.value)
+    const data = await callers
+      .getTopAccounts(ITEMS_PER_PAGE, (currentPage.value - 1) * ITEMS_PER_PAGE)
+      .then(res => res.data)
+    accounts.value = data.accounts
+    totalAccounts.value = data.total_count
+    totalPages.value = Math.ceil(totalAccounts.value / ITEMS_PER_PAGE)
   } catch (error) {
     handleNotificationInfo(error as Error, TYPE_NOTIFICATION.failed)
   }
@@ -108,17 +115,9 @@ const getAccountOdinPercentage = () => {
   ) || { denom: 'loki', amount: '0' }
 }
 
-const filterAccounts = (newPage: number): void => {
-  const tempArr = accounts.value
-  if (newPage === 1) {
-    filteredAccounts.value = tempArr?.slice(0, newPage * ITEMS_PER_PAGE)
-  } else {
-    filteredAccounts.value = tempArr?.slice(
-      (newPage - 1) * ITEMS_PER_PAGE,
-      (newPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
-    )
-  }
-  currentPage.value = newPage
+const updateHandler = async () => {
+  accounts.value = []
+  await refetch()
 }
 
 onResult(async (): Promise<void> => {
@@ -145,15 +144,7 @@ onMounted(async (): Promise<void> => {
   display: flex;
   align-items: center;
 }
-.top-accounts__table-head {
-  grid:
-    auto /
-    minmax(2rem, 0.5fr)
-    minmax(8rem, 5fr)
-    minmax(8rem, 2fr)
-    minmax(8rem, 2fr)
-    minmax(8rem, 1.5fr);
-}
+
 @include respond-to(tablet) {
   .top-accounts__table-head {
     grid: none;

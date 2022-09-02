@@ -73,6 +73,7 @@ export type TempBalanceType = {
   address: string
   mgeo_balance: number
   loki_balance: number
+  delegated_amount: number
   tx_number: number
 }
 
