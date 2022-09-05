@@ -106,6 +106,7 @@
 
   // Vue Picker 
   --clr__vue-picker-current-option: #{$clr-vue-picker-current-option};
+  --clr__vue-picker-bg: #{$clr-white};
 
   // Vue Notifications
   --clr__vue-notifications-box-shadow: #{$clr-vue-notifications-box-shadow};
@@ -125,6 +126,7 @@
   // Card
   --clr__card-bg: #{$clr-azureish-white};
   --clr__card-border: #{$clr-secondary};
+  --clr__card-separator: #{$clr-black};
 }
 
 :root.dark-theme {
@@ -158,6 +160,9 @@
   // Nav
   --clr__nav-back: #{$clr-white};
 
+  // Vue Picker 
+  --clr__vue-picker-bg: #{$clr-dark-1};
+
   // Tags
   --clr__tag-success: #{$clr-dark};
   --clr__tag-success-bg: #{$clr-green};
@@ -166,4 +171,5 @@
 
   // Card
   --clr__card-bg: #{$clr-dark-blue};
+  --clr__card-separator: #{$clr-white};
 }

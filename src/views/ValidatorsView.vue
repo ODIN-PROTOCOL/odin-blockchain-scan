@@ -405,6 +405,10 @@ onUnmounted(async () => {
   align-items: center;
 }
 @include respond-to(tablet) {
+  .app-table__head {
+    display: none;
+  }
+
   .validators-view__count-info {
     margin-bottom: 0;
   }

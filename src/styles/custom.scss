@@ -153,6 +153,7 @@ body {
 
   .vue-picker__opener,
   .vue-picker__opener:focus {
+    background-color: var(--clr__vue-picker-bg);
     border: none;
     box-shadow: inset 0 0 0 0.1rem transparent;
   }
@@ -214,6 +215,15 @@ body {
     }
   }
 }
+
+// Specific for search-bar
+.search-bar {
+  .vue-picker__opener,
+  .vue-picker__opener:focus {
+    background-color: var(--clr__search-field-bg);
+  }
+}
+
 .card-frame {
   padding: 3.2rem;
   background-color: var(--clr__card-bg);

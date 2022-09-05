@@ -146,7 +146,7 @@ const stakedPercentage: ComputedRef<string> = computed(() => {
   padding: 1.6rem;
   min-width: 10rem;
   &:not(:last-child) {
-    border-right: 0.1rem solid var(--clr__input-border);
+    border-right: 0.1rem solid var(--clr__card-separator);
     margin-right: 2rem;
   }
 }
@@ -162,7 +162,6 @@ const stakedPercentage: ComputedRef<string> = computed(() => {
 .account-info__card-balance-row-value {
   width: 100%;
   font-weight: 600;
-  color: var(--clr__text);
 }
 @include respond-to(tablet) {
   .account-info {

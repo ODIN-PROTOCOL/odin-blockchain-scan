@@ -175,6 +175,12 @@ onMounted(async (): Promise<void> => {
 </script>
 
 <style scoped lang="scss">
+.top-accounts {
+  .app__main-view-table-header {
+    margin-bottom: 0rem;
+  }
+}
+
 .top-accounts__sort-wrapper {
   display: flex;
   justify-content: space-between;
@@ -186,7 +192,10 @@ onMounted(async (): Promise<void> => {
   align-items: center;
 }
 .top-accounts__vue-picker {
-  width: 15rem;
+  width: 20rem;
+  margin-left: 1rem;
+  background: #ffffff;
+  box-shadow: 0px 4px 24px rgba(8, 87, 172, 0.12);
 }
 .top-accounts__selection {
   margin-bottom: 4rem;
@@ -238,6 +247,12 @@ onMounted(async (): Promise<void> => {
     flex-direction: column;
     align-items: flex-start;
     margin: 0;
+  }
+}
+
+@include respond-to(medium) {
+  .app-table__head {
+    display: none;
   }
 }
 </style>

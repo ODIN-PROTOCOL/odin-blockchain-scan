@@ -89,3 +89,23 @@ const accountOdinPercentage = computed(() => {
   return accountOdinValue.toFixed(2)
 })
 </script>
+
+<style lang="scss" scoped>
+@include respond-to(medium) {
+  .app-table__row {
+    grid: none;
+    padding: 3.4rem 0 1.6rem;
+  }
+
+  .app-table__head {
+    display: none;
+  }
+
+  .app-table__title {
+    display: inline-block;
+    min-width: 15rem;
+    margin-right: 2.4rem;
+    font-weight: 300;
+  }
+}
+</style>

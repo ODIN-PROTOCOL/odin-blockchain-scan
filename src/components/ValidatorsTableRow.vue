@@ -93,5 +93,17 @@ defineProps<{
   .validators-view-table-row__cell--center {
     justify-content: flex-start;
   }
+
+  .app-table__row {
+    grid: none;
+    padding: 3.4rem 0 1.6rem;
+  }
+
+  .app-table__title {
+    display: inline-block;
+    min-width: 15rem;
+    margin-right: 2.4rem;
+    font-weight: 300;
+  }
 }
 </style>
