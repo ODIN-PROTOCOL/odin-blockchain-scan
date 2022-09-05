@@ -74,6 +74,7 @@ export type TempBalanceType = {
   mgeo_balance: number
   loki_balance: number
   delegated_amount: number
+  total_amount: number
   tx_number: number
 }
 
