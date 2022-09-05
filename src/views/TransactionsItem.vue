@@ -43,7 +43,7 @@
                 <span>Status</span>
               </div>
               <div class="app-table__cell">
-                <tag :type="tx.status" />
+                <tag :type="tx.status" :text="tx.status" />
               </div>
             </div>
             <div class="app-table__row transactions-item__line">

@@ -318,6 +318,7 @@ onUnmounted(async () => {
 }
 
 .validators-view__filter-search {
+  margin-bottom: 4rem;
   display: flex;
   align-items: center;
   background-color: var(--clr__table-border);
@@ -401,7 +402,6 @@ onUnmounted(async () => {
 .validators-view__filter {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 2.4rem;
   align-items: center;
 }
 @include respond-to(tablet) {

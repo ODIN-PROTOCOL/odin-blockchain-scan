@@ -1,21 +1,15 @@
 <template>
   <div class="tag" :class="{ [tagClass]: true }">
-    <span class="tag__text">{{ props.type }}</span>
+    <span class="tag__text">{{ props.text }}</span>
   </div>
 </template>
-
-<script lang="ts">
-export enum TagType {
-  Success = 'Success',
-  Failed = 'Failed',
-}
-</script>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
 
-const props = withDefaults(defineProps<{ type: TagType }>(), {
-  type: TagType.Success,
+const props = withDefaults(defineProps<{ type: string; text: string }>(), {
+  type: 'success',
+  text: 'Success',
 })
 
 const tagClass = computed(() => {
@@ -40,7 +34,8 @@ const tagClass = computed(() => {
   background-color: var(--clr__tag-success-bg);
 }
 
-.tag--failed {
+.tag--failed,
+.tag--error {
   color: var(--clr__tag-failed);
   background-color: var(--clr__tag-failed-bg);
 }
