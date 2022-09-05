@@ -63,7 +63,7 @@
     </div>
     <div class="app-table">
       <div class="app-table__row validator-info__line">
-        <div class="app-table__cell app-table__cell-label">
+        <div class="app-table__cell app-table__cell--label">
           <span>Delegator Shares</span>
         </div>
         <div class="app-table__cell">
@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="app-table__row validator-info__line">
-        <div class="app-table__cell app-table__cell-label">
+        <div class="app-table__cell app-table__cell--label">
           <span>
             {{ isMobile() ? 'Proposed blocks' : 'Amount of proposed blocks' }}
           </span>
@@ -90,7 +90,7 @@
         </div>
       </div>
       <div class="app-table__row validator-info__line">
-        <div class="app-table__cell app-table__cell-label">
+        <div class="app-table__cell app-table__cell--label">
           <span>Max rate</span>
         </div>
         <div class="app-table__cell">
@@ -100,7 +100,7 @@
         </div>
       </div>
       <div class="app-table__row validator-info__line">
-        <div class="app-table__cell app-table__cell-label">
+        <div class="app-table__cell app-table__cell--label">
           <span>Max change rate</span>
         </div>
         <div class="app-table__cell">

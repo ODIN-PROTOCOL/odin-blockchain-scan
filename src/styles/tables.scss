@@ -62,7 +62,7 @@
     @include ellipsis(inline-block);
   }
 
-  .app-table__cell-label {
+  .app-table__cell--label {
     display: flex;
     align-items: center;
     color: var(--clr__text-muted);

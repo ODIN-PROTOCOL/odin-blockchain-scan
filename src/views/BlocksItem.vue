@@ -24,7 +24,7 @@
         <template v-if="blockInfo">
           <div class="app-table">
             <div class="app-table__row blocks-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockHeight" />
                 <span>Block Height</span>
               </div>
@@ -34,7 +34,7 @@
               </div>
             </div>
             <div class="app-table__row blocks-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockHash" />
                 <span>Block Hash</span>
               </div>
@@ -44,7 +44,7 @@
               </div>
             </div>
             <div class="app-table__row blocks-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockParentHash" />
                 <span>Block Parent Hash</span>
               </div>
@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="app-table__row blocks-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.timestamp" />
                 <span>Timestamp</span>
               </div>
@@ -68,7 +68,7 @@
               </div>
             </div>
             <div class="app-table__row blocks-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blocksTransactions" />
                 <span>Block's Transactions</span>
               </div>
@@ -91,7 +91,7 @@
               </div>
             </div>
             <div class="app-table__row blocks-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockCreator" />
                 <span>Block Creator</span>
               </div>
@@ -108,7 +108,7 @@
               </div>
             </div>
             <div class="app-table__row blocks-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="BLOCK_TOOLTIP_INFO.blockSize" />
                 <span>Block Size</span>
               </div>

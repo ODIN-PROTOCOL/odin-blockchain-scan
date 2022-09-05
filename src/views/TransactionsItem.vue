@@ -24,7 +24,7 @@
         <template v-if="tx">
           <div class="app-table">
             <div class="app-table__row transactions-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="TOOLTIP_INFO.time" />
                 <span>Time</span>
               </div>
@@ -38,7 +38,7 @@
               </div>
             </div>
             <div class="app-table__row transactions-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="TOOLTIP_INFO.status" />
                 <span>Status</span>
               </div>
@@ -47,7 +47,7 @@
               </div>
             </div>
             <div class="app-table__row transactions-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="TOOLTIP_INFO.block" />
                 <span>Block</span>
               </div>
@@ -65,7 +65,7 @@
               </div>
             </div>
             <div class="app-table__row transactions-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="TOOLTIP_INFO.gas" />
                 <span>Gas (used/wanted)</span>
               </div>
@@ -74,21 +74,21 @@
               </div>
             </div>
             <div class="app-table__row transactions-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="TOOLTIP_INFO.fee" />
                 <span>Fee</span>
               </div>
               <div class="app-table__cell">{{ tx.fee }}</div>
             </div>
             <div class="app-table__row transactions-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="TOOLTIP_INFO.memo" />
                 <span>Memo</span>
               </div>
               <div class="app-table__cell">{{ tx.memo }}</div>
             </div>
             <div class="app-table__row transactions-item__line">
-              <div class="app-table__cell app-table__cell-label">
+              <div class="app-table__cell app-table__cell--label">
                 <InfoIcon :message="TOOLTIP_INFO.total" />
                 <span>Total</span>
               </div>

@@ -7,10 +7,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 
-const props = withDefaults(defineProps<{ type: string; text: string }>(), {
-  type: 'success',
-  text: 'Success',
-})
+const props = defineProps<{ type: string; text: string }>()
 
 const tagClass = computed(() => {
   return `tag--${props.type.toLowerCase()}`
