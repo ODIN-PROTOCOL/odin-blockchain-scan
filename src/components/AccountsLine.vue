@@ -85,7 +85,7 @@ const getAmountForValue = (value: number | string) => {
 
 const accountOdinPercentage = computed(() => {
   const accountOdinValue =
-    (props.account.loki_balance / Number(props.odinSupply.amount)) * 100
+    (props.account.total_amount / Number(props.odinSupply.amount)) * 100
   return accountOdinValue.toFixed(2)
 })
 </script>
