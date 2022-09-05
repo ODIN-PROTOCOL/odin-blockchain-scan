@@ -112,10 +112,6 @@
   --clr__vue-notifications-failed-border: #{$clr-vue-notifications-failed-border};
   --clr__vue-notifications-success-border: #{$clr-vue-notifications-success-border};
   --clr__vue-notifications-info-border: #{$clr-vue-notifications-info-border};
-
-  // Frame
-  --clr__frame-border: #{$clr-frame-border};
-  --clr__frame-box-shadow: #{$clr-frame-box-shadow};
   
   // Vue Skeleton Loader
   --clr__vue-skeleton-loader-bg: #{$clr-vue-skeleton-loader-bg};
@@ -125,6 +121,10 @@
   --clr__tag-success-bg: #{$clr-chinese-white};
   --clr__tag-failed: #{$clr-magic-potion};
   --clr__tag-failed-bg: #{$clr-soft-magic-potion};
+
+  // Card
+  --clr__card-bg: #{$clr-azureish-white};
+  --clr__card-border: #{$clr-secondary};
 }
 
 :root.dark-theme {
@@ -163,4 +163,7 @@
   --clr__tag-success-bg: #{$clr-green};
   --clr__tag-failed: #{$clr-dark};
   --clr__tag-failed-bg: #{$clr-red};
+
+  // Card
+  --clr__card-bg: #{$clr-dark-blue};
 }

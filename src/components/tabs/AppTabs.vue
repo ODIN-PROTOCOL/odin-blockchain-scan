@@ -54,7 +54,7 @@ export default defineComponent({
   display: flex;
   padding: 0;
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 4rem;
   list-style: none;
   overflow: auto;
 }

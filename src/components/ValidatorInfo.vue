@@ -61,14 +61,13 @@
         </div>
       </div>
     </div>
-    <div class="validator-info__table">
-      <div class="validator-info__description card-frame">
-        <div class="validator-info__description-title">Information</div>
-        <div class="validator-info__description-item">
-          <span class="validator-info__description-item-title"
-            >Delegator shares</span
-          >
-          <span class="validator-info__description-item-value">
+    <div class="app-table">
+      <div class="app-table__row validator-info__line">
+        <div class="app-table__cell app-table__cell--label">
+          <span>Delegator Shares</span>
+        </div>
+        <div class="app-table__cell">
+          <span>
             {{
               getDelegationsShares(
                 validator.info.delegatedAmount,
@@ -77,28 +76,35 @@
             }}
           </span>
         </div>
-        <div class="validator-info__description-item">
-          <span class="validator-info__description-item-title">
+      </div>
+      <div class="app-table__row validator-info__line">
+        <div class="app-table__cell app-table__cell--label">
+          <span>
             {{ isMobile() ? 'Proposed blocks' : 'Amount of proposed blocks' }}
           </span>
-          <span
-            :title="validator.blocksAggregate.aggregate.count"
-            class="validator-info__description-item-value"
-          >
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__text">
             {{ validator.blocksAggregate.aggregate.count }}
           </span>
         </div>
-        <div class="validator-info__description-item">
-          <span class="validator-info__description-item-title">Max rate</span>
-          <span class="validator-info__description-item-value">
+      </div>
+      <div class="app-table__row validator-info__line">
+        <div class="app-table__cell app-table__cell--label">
+          <span>Max rate</span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__text">
             {{ $trimZeros(validator.info.maxRate * 100, 2) }}%
           </span>
         </div>
-        <div class="validator-info__description-item">
-          <span class="validator-info__description-item-title"
-            >Max change rate</span
-          >
-          <span class="validator-info__description-item-value">
+      </div>
+      <div class="app-table__row validator-info__line">
+        <div class="app-table__cell app-table__cell--label">
+          <span>Max change rate</span>
+        </div>
+        <div class="app-table__cell">
+          <span class="app-table__text">
             {{ $trimZeros(validator.info.maxChangeRate * 100, 2) }}%
           </span>
         </div>
@@ -125,6 +131,11 @@ defineProps<{
   margin-bottom: 4rem;
   gap: 4rem;
 }
+
+.validator-info__line {
+  grid: auto/minmax(6rem, 2fr) minmax(9rem, 3fr);
+}
+
 .validator-info__table {
   display: flex;
   gap: 2rem;
