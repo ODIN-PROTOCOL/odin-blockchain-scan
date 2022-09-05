@@ -103,8 +103,14 @@ const makeCallers = () => {
         `${API_CONFIG.telemetryUrl}/account_txs/${owner}?page[number]=${page_number}&page[limit]=${page_limit}&page[order]=${page_order}&type=${tx_type}`,
       )
     },
-    getTopAccounts: () => {
-      return sendGet(`${API_CONFIG.telemetryUrl}/accounts?sort=odin_balance`)
+    getTopAccounts: (limit: number, offset: number, sortingBy: string) => {
+      return axios.post(`${API_CONFIG.graphqlActions}/top_accounts`, {
+        input: {
+          limit: limit,
+          offset: offset,
+          sorting_by: sortingBy,
+        },
+      })
     },
     getOracleReports: (id: string, page_number: number, page_limit: number) => {
       return axios.get(

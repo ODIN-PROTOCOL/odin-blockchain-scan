@@ -1,5 +1,4 @@
 import { BlockResponse } from '@cosmjs/tendermint-rpc/build/tendermint34/responses'
-import { Coin } from '@provider/codec/cosmos/base/v1beta1/coin'
 import { BlockMeta } from '@cosmjs/tendermint-rpc'
 import { Chart, ChartType, TooltipModel } from 'chart.js'
 import { BigNumber } from 'bignumber.js'
@@ -11,6 +10,12 @@ export type Link = {
   title?: string
   url?: string
 }
+
+export interface Coin {
+  denom: string
+  amount: string
+}
+
 export type LinkList = {
   name: string
   links: Array<Link>
@@ -66,11 +71,11 @@ export type CoinBlocksDataType = {
 
 export type TempBalanceType = {
   address: string
-  geo_balance: number
-  geo_percent: string
-  odin_balance: number
-  odin_percent: string
-  tx_count: number
+  mgeo_balance: number
+  loki_balance: number
+  delegated_amount: number
+  total_amount: number
+  tx_number: number
 }
 
 export type DecodedTxData = {

@@ -1,12 +1,19 @@
+import { Coin } from '@/helpers/Types'
+
+export interface SupplyResponse {
+  supply: [{ coins: Coin[] }]
+}
+
 export interface AccountStakingInfoResponse {
   delegationBalance: {
-    coins: { denom: string; amount: number }[]
+    coins: Coin[]
   }
   stakingPool: {
     bonded: number
     unbonded: number
   }
 }
+
 export interface ValidatorsResponse {
   slashingParams: [
     {
@@ -26,6 +33,7 @@ export interface ValidatorsResponse {
   ]
   validator: [ValidatorsInfo]
 }
+
 export interface ValidatorsInfo {
   statuses: [
     {
