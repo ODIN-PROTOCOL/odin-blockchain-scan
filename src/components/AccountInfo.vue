@@ -162,6 +162,7 @@ const stakedPercentage: ComputedRef<string> = computed(() => {
 .account-info__card-balance-row-value {
   width: 100%;
   font-weight: 600;
+  @include ellipsis();
 }
 @include respond-to(tablet) {
   .account-info {
