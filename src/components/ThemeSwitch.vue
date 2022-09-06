@@ -18,20 +18,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { ThemeDarkIcon, ThemeLightIcon } from '@/components/icons'
-import { Theme, ThemeMode } from '@/helpers/theme'
+import { ThemeMode } from '@/helpers/theme'
 
-const currentTheme = ref(Theme.getTheme())
+const props = defineProps<{ theme: string; toggleTheme }>()
 
 const isLight = computed(() => {
-  return currentTheme.value === ThemeMode.Light
+  return props.theme === ThemeMode.Light
 })
-
-const toggleTheme = (theme: ThemeMode): void => {
-  Theme.setTheme(theme)
-  currentTheme.value = theme
-}
 </script>
 
 <style lang="scss" scoped>

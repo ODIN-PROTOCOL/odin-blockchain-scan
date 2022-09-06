@@ -32,7 +32,9 @@
             class="app-table__row blocks-list__table-row"
           >
             <div class="app-table__cell">
-              <span class="app-table__title">Block</span>
+              <span class="app-table__title blocks-list__table-title">
+                Block
+              </span>
               <TitledLink
                 :name="{
                   name: $routes.blockDetails,
@@ -43,7 +45,9 @@
               />
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Date</span>
+              <span class="app-table__title blocks-list__table-title">
+                Date
+              </span>
               <span class="app-table__cell-date">
                 {{ $fDate(item.header.time, 'dd/MM/yy') }}
               </span>
@@ -52,13 +56,17 @@
               </span>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Transactions</span>
+              <span class="app-table__title blocks-list__table-title">
+                Transactions
+              </span>
               <span class="app-table__cell-txt">
                 {{ item.txs.toLocaleString() }}
               </span>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Validator</span>
+              <span class="app-table__title blocks-list__table-title">
+                Validator
+              </span>
               <TitledLink
                 :name="{
                   name: $routes.validatorDetails,
@@ -177,16 +185,16 @@ onMounted(async (): Promise<void> => {
 
 <style lang="scss" scoped>
 @include respond-to(tablet) {
-  .app-table__row {
+  .blocks-list__table-row {
     grid: none;
     padding: 3.4rem 0 1.6rem;
   }
 
-  .app-table__head {
+  .blocks-list__table-head {
     display: none;
   }
 
-  .app-table__title {
+  .blocks-list__table-title {
     display: inline-block;
     min-width: 15rem;
     margin-right: 2.4rem;

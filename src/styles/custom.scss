@@ -208,12 +208,6 @@ body {
       background: var(--clr__levender-blue);
     }
   }
-
-  @include respond-to(tablet) {
-    .vue-picker__opener {
-      padding-left: 0;
-    }
-  }
 }
 
 // Specific for search-bar

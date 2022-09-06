@@ -14,7 +14,7 @@
           shimmer
         />
         <span v-else class="app__main-view-table-header-info-count">
-          {{ accounts.length.toLocaleString() }} accounts found
+          {{ totalAccounts.toLocaleString() }} accounts found
         </span>
       </div>
     </div>
@@ -64,7 +64,7 @@
         </template>
         <template v-else>
           <SkeletonTable
-            v-if="isLoading"
+            v-if="isLoading || isSupplyLoading"
             :header-titles="headerTitles"
             table-size="10"
             class-string="accounts-line"
@@ -236,9 +236,11 @@ onMounted(async (): Promise<void> => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin: 1.6rem 0;
   }
   .top-accounts__vue-picker {
     width: 100%;
+    margin-left: 0;
   }
   .top-accounts__selection-item-title {
     margin: 0;
@@ -251,7 +253,7 @@ onMounted(async (): Promise<void> => {
 }
 
 @include respond-to(medium) {
-  .app-table__head {
+  .top-accounts__table-head {
     display: none;
   }
 }

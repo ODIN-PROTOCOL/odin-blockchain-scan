@@ -123,9 +123,6 @@ import { START_VALUE } from '@/api/api-config'
   }
 }
 @include respond-to(small) {
-  .app-footer {
-    margin-top: 4rem;
-  }
   .app-footer__inner {
     padding: 2.4rem 0;
   }

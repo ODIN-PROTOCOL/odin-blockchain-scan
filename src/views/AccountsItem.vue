@@ -60,7 +60,7 @@
       </div>
 
       <div v-if="transactions" class="app-table">
-        <div class="app-table__head">
+        <div class="app-table__head accounts-item__head">
           <span> Transaction hash </span>
           <span> Type </span>
           <span> Block </span>
@@ -262,6 +262,7 @@ watch([sortingValue], async () => {
     width: 100%;
     flex-direction: column;
     margin-bottom: 0rem;
+    margin: 1.6rem 0;
   }
   .accounts-item__subtitle-line {
     flex-direction: column;
@@ -279,7 +280,7 @@ watch([sortingValue], async () => {
 }
 
 @include respond-to(medium) {
-  .app-table__head {
+  .accounts-item__head {
     display: none;
   }
 }

@@ -11,18 +11,25 @@
             />
           </router-link>
           <app-nav :is-open="isOpen" @close-burger="closeBurger" />
-          <burger-menu
-            class="app-header__burger-menu"
-            :is-open="isOpen"
-            @click="burgerMenuHandler"
-          />
+          <div class="app-header__mobile-nav">
+            <theme-switch
+              class="theme-switch"
+              :theme="currentTheme"
+              :toggle-theme="toggleTheme"
+            />
+            <burger-menu :is-open="isOpen" @click="burgerMenuHandler" />
+          </div>
         </div>
       </div>
     </div>
     <div class="app-header__search-bar">
       <div class="app__container">
         <search-bar />
-        <theme-switch />
+        <theme-switch
+          class="theme-switch"
+          :theme="currentTheme"
+          :toggle-theme="toggleTheme"
+        />
       </div>
     </div>
   </header>
@@ -34,8 +41,16 @@ import AppNav from '@/components/AppNav.vue'
 import BurgerMenu from '@/components/BurgerMenu.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
+import { Theme, ThemeMode } from '@/helpers/theme'
 
 const isOpen = ref<boolean>(false)
+const currentTheme = ref(Theme.getTheme())
+
+const toggleTheme = (theme: ThemeMode): void => {
+  Theme.setTheme(theme)
+  currentTheme.value = theme
+}
+
 const burgerMenuHandler = (event: Event | MouseEvent) => {
   event.preventDefault()
   isOpen.value = !isOpen.value
@@ -67,17 +82,27 @@ const closeBurger = (): void => {
   }
 }
 
+.app-header__search-bar {
+  @include respond-to(tablet) {
+    .theme-switch {
+      display: none;
+    }
+  }
+}
+
 .app-header__logo {
   width: 9rem;
   height: 3.4rem;
   margin-right: 5.4rem;
 }
 
-.app-header__burger-menu {
+.app-header__mobile-nav {
   display: none;
 
   @include respond-to(tablet) {
     display: flex;
+    align-items: center;
+    gap: 2rem;
     flex-shrink: 0;
   }
 }
