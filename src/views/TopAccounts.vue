@@ -177,7 +177,7 @@ onMounted(async (): Promise<void> => {
 <style scoped lang="scss">
 .top-accounts {
   .app__main-view-table-header {
-    margin-bottom: 0rem;
+    margin-bottom: 0;
   }
 }
 
@@ -224,7 +224,7 @@ onMounted(async (): Promise<void> => {
   .top-accounts__selection {
     width: 100%;
     flex-direction: column;
-    margin-bottom: 0rem;
+    margin-bottom: 0;
   }
   .top-accounts__subtitle-line {
     flex-direction: column;

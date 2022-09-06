@@ -3,6 +3,7 @@
     <button
       class="theme-switch__btn"
       :class="{ 'theme-switch__btn--active': !isLight }"
+      :disabled="!isLight"
       @click="toggleTheme(ThemeMode.Dark)"
     >
       <theme-dark-icon />
@@ -10,6 +11,7 @@
     <button
       class="theme-switch__btn"
       :class="{ 'theme-switch__btn--active': isLight }"
+      :disabled="isLight"
       @click="toggleTheme(ThemeMode.Light)"
     >
       <theme-light-icon />

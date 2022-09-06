@@ -244,7 +244,7 @@ watch([sortingValue], async () => {
   display: flex;
   align-items: center;
   font-size: 1.6rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 @include respond-to(tablet) {
@@ -262,7 +262,6 @@ watch([sortingValue], async () => {
   .accounts-item__selection {
     width: 100%;
     flex-direction: column;
-    margin-bottom: 0rem;
     margin: 1.6rem 0;
   }
   .accounts-item__subtitle-line {
