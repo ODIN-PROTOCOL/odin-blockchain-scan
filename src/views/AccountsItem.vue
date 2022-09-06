@@ -1,16 +1,20 @@
 <template>
   <div class="app__main-view accounts-item">
-    <div class="app__main-view-title-wrapper">
-      <BackButton text="Top accounts" />
-      <h1 class="app__main-view-title accounts-item__title">Account</h1>
-      <div
-        v-if="!isLoadingError"
-        class="app__main-view-subtitle-wrapper accounts-item__subtitle-wrapper"
-      >
-        <p class="app__main-view-subtitle fs-cut">
-          {{ route.params.hash }}
-        </p>
-        <CopyButton class="mg-l8" :text="String(route.params.hash)" />
+    <div class="app__main-view-detail-container">
+      <div class="app__main-view-detail-back-icon">
+        <BackButton />
+      </div>
+      <div class="app__main-view-detail-title-container">
+        <h2 class="app__main-view-detail-title">Account</h2>
+        <div
+          v-if="!isLoadingError"
+          class="app__main-view-detail-subtitle-container"
+        >
+          <span class="app__main-view-detail-subtitle">
+            {{ route.params.hash }}
+          </span>
+          <CopyButton class="mg-l8" :text="String(route.params.hash)" />
+        </div>
       </div>
     </div>
 
@@ -27,17 +31,11 @@
       />
       <div class="accounts-item__subtitle-line">
         <div class="accounts-item__subtitle app__main-view-subtitle mg-b32">
-          <div class="accounts-item__tx-info">
-            <img src="~@/assets/icons/info.svg" alt="info" />
-            <span class="accounts-item__tooltip">
-              Based on last transactions in system
-            </span>
-          </div>
-          <span class="view-main__subtitle-item">Transaction list</span>
+          <InfoIcon message="Based on last transactions in system" />
+          <span class="accounts-item__subtitle-text">Transactions</span>
         </div>
         <div class="accounts-item__selection">
           <div class="accounts-item__selection-item">
-            <span class="accounts-item__selection-item-title">Filter</span>
             <VuePicker
               class="accounts-item__vue-picker _vue-picker"
               name="filter"
@@ -62,7 +60,7 @@
       </div>
 
       <div v-if="transactions" class="app-table">
-        <div class="app-table__head">
+        <div class="app-table__head accounts-item__head">
           <span> Transaction hash </span>
           <span> Type </span>
           <span> Block </span>
@@ -85,6 +83,7 @@
               v-if="isLoading"
               :header-titles="headerTitles"
               table-size="10"
+              class-string="accounts-item__table-row"
             />
             <div v-else class="app-table__empty-stub">
               <ui-no-data-message />
@@ -118,6 +117,7 @@ import AppPagination from '@/components/AppPagination/AppPagination.vue'
 import AccountTxLine from '@/components/AccountTxLine.vue'
 import AccountInfo from '@/components/AccountInfo.vue'
 import SkeletonTable from '@/components/SkeletonTable.vue'
+import InfoIcon from '@/components/icons/InfoIcon.vue'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 const isLoadingError = ref(false)
@@ -240,53 +240,13 @@ watch([sortingValue], async () => {
   justify-content: center;
   align-items: center;
 }
-.accounts-item__selection-item-title {
-  font-size: 1.4rem;
-  font-weight: 300;
-  margin-right: 0.4rem;
-}
 .accounts-item__subtitle {
   display: flex;
   align-items: center;
-}
-.accounts-item__tx-info {
-  display: flex;
-  align-items: center;
-  height: 2.3rem;
-  position: relative;
-  cursor: pointer;
-  margin-right: 0.9rem;
-  &:hover {
-    .accounts-item__tooltip {
-      display: block;
-    }
-  }
-}
-.accounts-item__tooltip {
-  display: none;
-  position: absolute;
-  bottom: 130%;
-  left: -0.7rem;
-  width: 20rem;
-  padding: 1.2rem 2.4rem;
-  background: var(--clr__tooltip-bg);
-  border-radius: 0.8rem;
   font-size: 1.6rem;
-  font-weight: 400;
-  line-height: 1.6rem;
-  color: var(--clr__tooltip-text);
-  &:before {
-    content: '';
-    display: block;
-    width: 0.6rem;
-    height: 0.6rem;
-    position: absolute;
-    bottom: -0.3rem;
-    left: 8%;
-    transform: translateX(-50%) rotate(45deg);
-    background: var(--clr__tooltip-bg);
-  }
+  font-weight: 600;
 }
+
 @include respond-to(tablet) {
   .accounts-item__title {
     margin: 0.8rem 0 0.4rem 0;
@@ -302,7 +262,7 @@ watch([sortingValue], async () => {
   .accounts-item__selection {
     width: 100%;
     flex-direction: column;
-    margin-bottom: 0rem;
+    margin: 1.6rem 0;
   }
   .accounts-item__subtitle-line {
     flex-direction: column;
@@ -317,8 +277,11 @@ watch([sortingValue], async () => {
   .accounts-item__vue-picker {
     width: 100%;
   }
-  .accounts-item__selection-item-title {
-    margin: 0 0 0.4rem;
+}
+
+@include respond-to(medium) {
+  .accounts-item__head {
+    display: none;
   }
 }
 </style>

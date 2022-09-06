@@ -32,7 +32,9 @@
             class="app-table__row blocks-list__table-row"
           >
             <div class="app-table__cell">
-              <span class="app-table__title">Block</span>
+              <span class="app-table__title blocks-list__table-title">
+                Block
+              </span>
               <TitledLink
                 :name="{
                   name: $routes.blockDetails,
@@ -43,7 +45,9 @@
               />
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Date</span>
+              <span class="app-table__title blocks-list__table-title">
+                Date
+              </span>
               <span class="app-table__cell-date">
                 {{ $fDate(item.header.time, 'dd/MM/yy') }}
               </span>
@@ -52,13 +56,17 @@
               </span>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Transactions</span>
+              <span class="app-table__title blocks-list__table-title">
+                Transactions
+              </span>
               <span class="app-table__cell-txt">
                 {{ item.txs.toLocaleString() }}
               </span>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Validator</span>
+              <span class="app-table__title blocks-list__table-title">
+                Validator
+              </span>
               <TitledLink
                 :name="{
                   name: $routes.validatorDetails,
@@ -174,4 +182,23 @@ onMounted(async (): Promise<void> => {
   await initBlocks()
 })
 </script>
-<style lang="scss" scoped></style>
+
+<style lang="scss" scoped>
+@include respond-to(tablet) {
+  .blocks-list__table-row {
+    grid: none;
+    padding: 3.4rem 0 1.6rem;
+  }
+
+  .blocks-list__table-head {
+    display: none;
+  }
+
+  .blocks-list__table-title {
+    display: inline-block;
+    min-width: 15rem;
+    margin-right: 2.4rem;
+    font-weight: 300;
+  }
+}
+</style>

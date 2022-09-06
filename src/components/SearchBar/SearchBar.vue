@@ -221,6 +221,10 @@ router.beforeEach(() => {
 })
 </script>
 <style lang="scss" scoped>
+.search-bar {
+  width: 100%;
+}
+
 .search-bar__input-wrapper {
   width: 39.6rem;
   position: relative;

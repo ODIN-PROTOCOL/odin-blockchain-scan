@@ -14,7 +14,7 @@
           shimmer
         />
         <span v-else class="app__main-view-table-header-info-count">
-          {{ accounts.length.toLocaleString() }} accounts found
+          {{ totalAccounts.toLocaleString() }} accounts found
         </span>
       </div>
     </div>
@@ -64,7 +64,7 @@
         </template>
         <template v-else>
           <SkeletonTable
-            v-if="isLoading"
+            v-if="isLoading || isSupplyLoading"
             :header-titles="headerTitles"
             table-size="10"
             class-string="accounts-line"
@@ -175,6 +175,12 @@ onMounted(async (): Promise<void> => {
 </script>
 
 <style scoped lang="scss">
+.top-accounts {
+  .app__main-view-table-header {
+    margin-bottom: 0;
+  }
+}
+
 .top-accounts__sort-wrapper {
   display: flex;
   justify-content: space-between;
@@ -186,7 +192,9 @@ onMounted(async (): Promise<void> => {
   align-items: center;
 }
 .top-accounts__vue-picker {
-  width: 15rem;
+  width: 20rem;
+  margin-left: 1rem;
+  background: var(--clr__white);
 }
 .top-accounts__selection {
   margin-bottom: 4rem;
@@ -216,7 +224,7 @@ onMounted(async (): Promise<void> => {
   .top-accounts__selection {
     width: 100%;
     flex-direction: column;
-    margin-bottom: 0rem;
+    margin-bottom: 0;
   }
   .top-accounts__subtitle-line {
     flex-direction: column;
@@ -227,17 +235,25 @@ onMounted(async (): Promise<void> => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin: 1.6rem 0;
   }
   .top-accounts__vue-picker {
     width: 100%;
+    margin-left: 0;
   }
   .top-accounts__selection-item-title {
-    margin: 0;
+    margin-bottom: 1rem;
   }
   .top-accounts__sort-wrapper {
     flex-direction: column;
     align-items: flex-start;
     margin: 0;
+  }
+}
+
+@include respond-to(medium) {
+  .top-accounts__table-head {
+    display: none;
   }
 }
 </style>
