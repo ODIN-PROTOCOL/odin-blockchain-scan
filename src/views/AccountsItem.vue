@@ -83,6 +83,7 @@
               v-if="isLoading"
               :header-titles="headerTitles"
               table-size="10"
+              class-string="accounts-item__table-row"
             />
             <div v-else class="app-table__empty-stub">
               <ui-no-data-message />

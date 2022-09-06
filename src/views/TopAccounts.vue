@@ -194,8 +194,7 @@ onMounted(async (): Promise<void> => {
 .top-accounts__vue-picker {
   width: 20rem;
   margin-left: 1rem;
-  background: #ffffff;
-  box-shadow: 0px 4px 24px rgba(8, 87, 172, 0.12);
+  background: var(--clr__white);
 }
 .top-accounts__selection {
   margin-bottom: 4rem;
@@ -243,7 +242,7 @@ onMounted(async (): Promise<void> => {
     margin-left: 0;
   }
   .top-accounts__selection-item-title {
-    margin: 0;
+    margin-bottom: 1rem;
   }
   .top-accounts__sort-wrapper {
     flex-direction: column;

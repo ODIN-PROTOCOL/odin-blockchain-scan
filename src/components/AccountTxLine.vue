@@ -1,7 +1,9 @@
 <template>
   <div class="app-table__row account-tx-line__row">
     <div class="app-table__cell">
-      <span class="app-table__title account-tx-line__title">Transaction hash</span>
+      <span class="app-table__title account-tx-line__title">
+        Transaction hash
+      </span>
       <TitledLink
         :name="{
           name: $routes.transactionDetails,
