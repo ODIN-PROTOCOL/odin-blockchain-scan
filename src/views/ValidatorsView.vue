@@ -10,7 +10,7 @@
       <div class="app__main-view-table-header-info">
         <h3 class="app__main-view-table-header-info-title">Validators</h3>
         <skeleton-loader
-          v-if="isLoading"
+          v-if="isLoading || isValidatorsResponseLoading"
           width="100"
           height="24"
           pill

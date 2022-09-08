@@ -166,6 +166,7 @@ onResult(async (): Promise<void> => {
 
 watch([sortingValue], async () => {
   currentPage.value = 1
+  totalAccounts.value = 0
   await updateHandler()
 })
 

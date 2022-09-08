@@ -147,5 +147,8 @@ const getOrder = (item: number) => {
   .channel-detail__cell {
     flex-direction: row;
   }
+  .channel-detail__cell-txt-row {
+    max-width: 10rem;
+  }
 }
 </style>

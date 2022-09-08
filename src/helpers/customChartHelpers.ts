@@ -248,7 +248,7 @@ export const formatDataForCharts = (
         values.push(amount)
       }
     } else {
-      values.push(Object.values(rest)[0])
+      values.push(Number(Object.values(rest)[0]))
     }
   })
 

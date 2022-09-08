@@ -182,19 +182,6 @@ export const addedRankBy = <T extends ChartLabelsType>(
 }
 
 // TODO: Come back to this later
-export const withoutDuplicates = <T>(arr: Array<T>): Array<T> => {
-  arr = arr.filter(el => el[Object.keys(el)[0]].length !== 0)
-  arr = arr.filter(
-    (el, index, self) =>
-      index ===
-      self.findIndex(t => {
-        return JSON.stringify(t) === JSON.stringify(el)
-      }),
-  )
-  return arr
-}
-
-// TODO: Come back to this later
 export const requestByDays = async <T extends AnyFn>(
   {
     startDate,

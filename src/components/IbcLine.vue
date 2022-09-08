@@ -77,12 +77,7 @@ const isShowChannelDetail = ref(false)
 .ibc-line__cell {
   flex-direction: column;
 }
-.ibc-line__title {
-  display: block;
-  margin-bottom: 0.8rem;
-  font-weight: 300;
-  min-width: 13rem;
-}
+
 .ibc-line {
   display: grid;
   align-items: center;
@@ -134,7 +129,13 @@ const isShowChannelDetail = ref(false)
   .ibc-line__cell {
     flex-direction: row;
   }
-  .ibc-line__row {
+  .app-table__title.ibc-line__title {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: 300;
+    max-width: 10rem;
+  }
+  .app-table__row.ibc-line__row {
     grid: none;
   }
 }
