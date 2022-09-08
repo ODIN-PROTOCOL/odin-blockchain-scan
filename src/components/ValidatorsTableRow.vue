@@ -1,15 +1,11 @@
 <template>
   <div class="app-table__row validators-view-table-row">
     <div class="app-table__cell">
-      <span class="app-table__title validators-view-table-row__title">
-        Rank
-      </span>
+      <span class="app-table__title">Rank</span>
       <span>{{ validator.rank }}</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__title validators-view-table-row__title">
-        Validator
-      </span>
+      <span class="app-table__title">Validator</span>
       <TitledLink
         v-if="validator.descriptions.length"
         class="app-table__cell-txt app-table__link"
@@ -22,9 +18,7 @@
       <p v-else class="app-table__cell-txt">-</p>
     </div>
     <div class="app-table__cell app-table__cell-txt">
-      <span class="app-table__title validators-view-table-row__title">
-        Delegated
-      </span>
+      <span class="app-table__title">Delegated</span>
       <span
         :title="
           $convertLokiToOdin($trimZeros(validator.info.delegatedAmount), {
@@ -40,18 +34,14 @@
       </span>
     </div>
     <div class="app-table__cell validators-view-table-row__cell--margin-left">
-      <span class="app-table__title validators-view-table-row__title">
-        Commission
-      </span>
+      <span class="app-table__title">Commission</span>
       <span v-if="validator.commissions.length">
         {{ $trimZeros(validator?.commissions[0]?.commission * 100, 2) }}%
       </span>
       <span v-else>0%</span>
     </div>
     <div class="app-table__cell">
-      <span class="app-table__title validators-view-table-row__title">
-        Status
-      </span>
+      <span class="app-table__title">Status</span>
       <ValidatorStatus
         :width="24"
         :height="24"
@@ -62,9 +52,7 @@
       />
     </div>
     <div v-if="tabStatus !== inactiveValidatorsTitle" class="app-table__cell">
-      <span class="app-table__title validators-view-table-row__title">
-        Uptime
-      </span>
+      <span class="app-table__title">Uptime</span>
       <ProgressbarTool
         :min="0"
         :max="100"
@@ -109,13 +97,6 @@ defineProps<{
   .validators-view-table-row {
     grid: none;
     padding: 3.4rem 0 1.6rem;
-  }
-
-  .validators-view-table-row__title {
-    display: inline-block;
-    min-width: 15rem;
-    margin-right: 2.4rem;
-    font-weight: 300;
   }
 }
 </style>

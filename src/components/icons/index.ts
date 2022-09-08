@@ -1,6 +1,7 @@
 export { default as ArrowIcon } from './ArrowIcon.vue'
 export { default as BackIcon } from './BackIcon.vue'
 export { default as CancelIcon } from './CancelIcon.vue'
+export { default as CloseIcon } from './CloseIcon.vue'
 export { default as ErrorIcon } from './ErrorIcon.vue'
 export { default as FailedNotificationIcon } from './FailedNotificationIcon.vue'
 export { default as FileIcon } from './FileIcon.vue'

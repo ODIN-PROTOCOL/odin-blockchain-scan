@@ -55,6 +55,7 @@ onMounted(() => {
 @import '~@/styles/fonts.scss';
 @import '~@/styles/custom.scss';
 @import '~@/styles/vue-skeletor.scss';
+@import '~@/styles/dropdowns.scss';
 
 #app {
   width: 100%;
