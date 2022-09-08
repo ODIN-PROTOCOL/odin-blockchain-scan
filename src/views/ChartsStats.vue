@@ -110,10 +110,11 @@ import { blockchainData } from '@/const'
   flex-grow: 1;
   padding: 3.3rem;
   cursor: pointer;
-  color: var(--clr__text);
+  color: var(--clr__main-text);
   text-decoration: none;
   &:hover {
-    background-color: var(--clr__table-row-hover);
+    color: var(--clr__secondary);
+    background: var(--clr__azureish-white);
   }
 }
 

@@ -31,7 +31,7 @@
         />
         <template v-if="searchedText">
           <button @click="clearText" class="search-bar__clear-btn">
-            <img src="~@/assets/icons/close.svg" alt="reset" />
+            <CloseIcon />
           </button>
         </template>
         <template v-if="searchResult">
@@ -95,6 +95,7 @@ import { prepareBlocks } from '@/helpers/blocksHelper'
 import BlockResultItem from '@/components/SearchBar/BlockResultItem.vue'
 import TransactionItem from '@/components/SearchBar/TransactionItem.vue'
 import AccountItem from '@/components/SearchBar/AccountItem.vue'
+import { CloseIcon } from '@/components/icons'
 
 const filters = ref<Array<string>>([
   'All Filters',

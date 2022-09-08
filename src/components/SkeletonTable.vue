@@ -63,14 +63,14 @@ const skeletonLoaderArray = computed(() =>
 }
 
 @include respond-to(tablet) {
-  .skeleton-table__title :not(.validators-view-table-row) {
+  .skeleton-table__title {
     display: inline-block;
     min-width: 15rem;
     margin-right: 2.4rem;
     font-weight: 300;
   }
 
-  .skeleton-table__row:not(.validators-view-table-row) {
+  .skeleton-table__row {
     grid: none;
     padding: 3.4rem 0 1.6rem;
   }

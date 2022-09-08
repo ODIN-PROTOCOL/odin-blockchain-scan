@@ -86,7 +86,14 @@
 }
 
 .app-table__link {
+  text-decoration: none;
+  color: var(--clr__action);
   @include ellipsis;
+}
+
+.app-table__empty-stub {
+  margin: 10rem 0;
+  text-align: center;
 }
 
 .blocks-list__table-head,

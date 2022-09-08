@@ -102,7 +102,7 @@ const getOrder = (item: number) => {
 }
 .channel-detail {
   border-top: 0.1rem solid var(--clr__table-border);
-  padding-top: 2.3rem;
+  padding: 2.3rem 0;
   margin-top: 2.3rem;
 }
 .channel-detail__cell {
@@ -122,7 +122,6 @@ const getOrder = (item: number) => {
     minmax(2rem, 0.75fr);
   border: none;
   padding: 0;
-  margin-bottom: 1rem;
 }
 .channel-detail__empty {
   text-align: center;
@@ -136,9 +135,6 @@ const getOrder = (item: number) => {
 }
 @include respond-to(tablet) {
   .channel-detail {
-    border-top: none;
-    padding-top: 0;
-    margin-top: 0;
     & > *:not(:last-child) {
       padding-bottom: 1.5rem;
       border-bottom: 0.1rem solid var(--clr__table-border);
@@ -147,9 +143,6 @@ const getOrder = (item: number) => {
   .channel-detail__row {
     display: block;
     padding-top: 2.5rem;
-  }
-  .channel-detail__empty {
-    margin-top: 2.4rem;
   }
   .channel-detail__cell {
     flex-direction: row;

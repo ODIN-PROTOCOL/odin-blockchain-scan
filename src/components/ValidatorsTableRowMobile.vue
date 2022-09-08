@@ -34,7 +34,9 @@
       </div>
     </div>
     <div class="app-table__cell app-table__cell-txt">
-      <span class="app-table__title">Delegated</span>
+      <span class="app-table__title validators-table-row-mobile__title">
+        Delegated
+      </span>
       <span
         :title="
           $convertLokiToOdin($trimZeros(validator.info.delegatedAmount), {
@@ -51,14 +53,18 @@
     </div>
     <template v-if="isShowValidatorDetails">
       <div class="app-table__cell">
-        <span class="app-table__title">Commission</span>
+        <span class="app-table__title validators-table-row-mobile__title">
+          Commission
+        </span>
         <span v-if="validator.commissions.length">
           {{ $trimZeros(validator?.commissions[0]?.commission * 100, 2) }}%
         </span>
         <span v-else>0%</span>
       </div>
       <div v-if="tabStatus !== inactiveValidatorsTitle" class="app-table__cell">
-        <span class="app-table__title">Uptime</span>
+        <span class="app-table__title validators-table-row-mobile__title">
+          Uptime
+        </span>
         <ProgressbarTool
           :min="0"
           :max="100"
@@ -67,7 +73,9 @@
         />
       </div>
       <div class="app-table__cell">
-        <span class="app-table__title">Status</span>
+        <span class="app-table__title validators-table-row-mobile__title">
+          Status
+        </span>
         <ValidatorStatus
           :width="14"
           :height="14"
@@ -158,5 +166,14 @@ const isShowValidatorDetails = ref(false)
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+@include respond-to(tablet) {
+  .validators-table-row-mobile__title {
+    display: inline-block;
+    min-width: 15rem;
+    margin-right: 2.4rem;
+    font-weight: 300;
+  }
 }
 </style>
