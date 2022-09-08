@@ -4,16 +4,17 @@
     :width="width"
     :height="height"
     :viewBox="`0 0 ${width} ${height}`"
-    fill="currentColor"
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
+      d="M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z"
+      fill="none"
     />
   </svg>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 withDefaults(
   defineProps<{
     className?: string
@@ -21,15 +22,15 @@ withDefaults(
     height?: number | string
   }>(),
   {
-    className: '',
-    width: 14,
-    height: 14,
+    className: 'back-icon',
+    width: 16,
+    height: 16,
   },
 )
 </script>
 
 <style lang="scss" scoped>
 svg > path {
-  fill: var(--clr__search-icon);
+  fill: var(--clr__nav-back);
 }
 </style>

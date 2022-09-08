@@ -1,18 +1,28 @@
 <template>
   <div class="app__container">
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">Blocks</h2>
-    </div>
-    <div class="mg-b16 mg-t16">
-      <skeleton-loader v-if="isLoading" pill shimmer :height="24" width="100" />
-      <p v-else>{{ blocksCount }} blocks found</p>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Bk</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Blocks</h3>
+        <skeleton-loader
+          v-if="isLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ blocksCount.toLocaleString() }} blocks found
+        </span>
+      </div>
     </div>
     <div class="app-table blocks-list__table">
       <div class="app-table__head blocks-list__table-head">
-        <span>Block</span>
-        <span>Date and time</span>
-        <span>Transactions</span>
-        <span>Validator</span>
+        <span v-for="(item, index) in headerTitles" :key="index">
+          {{ item.title }}
+        </span>
       </div>
       <div class="app-table__body">
         <template v-if="blocks?.length">
@@ -22,7 +32,9 @@
             class="app-table__row blocks-list__table-row"
           >
             <div class="app-table__cell">
-              <span class="app-table__title">Block</span>
+              <span class="app-table__title blocks-list__table-title">
+                Block
+              </span>
               <TitledLink
                 :name="{
                   name: $routes.blockDetails,
@@ -33,15 +45,28 @@
               />
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Date and time</span>
-              <span>{{ $fDate(item.header.time, 'HH:mm dd.MM.yy') }}</span>
+              <span class="app-table__title blocks-list__table-title">
+                Date
+              </span>
+              <span class="app-table__cell-date">
+                {{ $fDate(item.header.time, 'dd/MM/yy') }}
+              </span>
+              <span class="app-table__cell-time">
+                {{ $fDate(item.header.time, 'HH:mm') }}
+              </span>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Transactions</span>
-              <span class="app-table__cell-txt">{{ item.txs }}</span>
+              <span class="app-table__title blocks-list__table-title">
+                Transactions
+              </span>
+              <span class="app-table__cell-txt">
+                {{ item.txs.toLocaleString() }}
+              </span>
             </div>
             <div class="app-table__cell">
-              <span class="app-table__title">Validator</span>
+              <span class="app-table__title blocks-list__table-title">
+                Validator
+              </span>
               <TitledLink
                 :name="{
                   name: $routes.validatorDetails,
@@ -65,14 +90,14 @@
           </div>
         </template>
       </div>
-      <AppPagination
-        v-if="blocksCount > ITEMS_PER_PAGE"
-        class="mg-t32"
-        v-model="currentPage"
-        :pages="totalPages"
-        @update:modelValue="updateHandler"
-      />
     </div>
+    <AppPagination
+      v-if="blocksCount > ITEMS_PER_PAGE"
+      class="mg-t32"
+      v-model="currentPage"
+      :pages="totalPages"
+      @update:modelValue="updateHandler"
+    />
   </div>
 </template>
 
@@ -104,7 +129,7 @@ const blocksCount = computed(() =>
 
 const headerTitles = [
   { title: 'Block' },
-  { title: 'Date and time' },
+  { title: 'Date' },
   { title: 'Transactions' },
   { title: 'Validator' },
 ]
@@ -157,4 +182,23 @@ onMounted(async (): Promise<void> => {
   await initBlocks()
 })
 </script>
-<style lang="scss" scoped></style>
+
+<style lang="scss" scoped>
+@include respond-to(tablet) {
+  .blocks-list__table-row {
+    grid: none;
+    padding: 3.4rem 0 1.6rem;
+  }
+
+  .blocks-list__table-head {
+    display: none;
+  }
+
+  .blocks-list__table-title {
+    display: inline-block;
+    min-width: 15rem;
+    margin-right: 2.4rem;
+    font-weight: 300;
+  }
+}
+</style>

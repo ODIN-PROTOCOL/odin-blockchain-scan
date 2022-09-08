@@ -53,13 +53,14 @@ export default defineComponent({
 .app-tabs__header {
   display: flex;
   padding: 0;
-  margin: 0 0 2.4rem 0;
+  margin: 0;
+  margin-bottom: 4rem;
   list-style: none;
   overflow: auto;
 }
 .app-tabs__header-item {
-  padding: 1.2rem;
-  font-size: 2rem;
+  padding: 1.2rem 2.7rem;
+  font-size: 1.6rem;
   white-space: nowrap;
   border-bottom: 0.2rem solid var(--clr__table-head);
   cursor: pointer;

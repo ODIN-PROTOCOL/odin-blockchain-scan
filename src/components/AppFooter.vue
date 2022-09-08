@@ -56,8 +56,7 @@ import { START_VALUE } from '@/api/api-config'
 
 <style scoped lang="scss">
 .app-footer {
-  background: var(--clr__tooltip-bg);
-  margin-top: 6.4rem;
+  background: var(--clr__secondary);
 }
 .app-footer__inner {
   display: flex;
@@ -90,7 +89,7 @@ import { START_VALUE } from '@/api/api-config'
   }
 }
 .app-footer__nav-text-item {
-  color: var(--clr__text-on-action);
+  color: var(--clr__white);
   text-decoration: none;
   margin-right: 4.8rem;
   &:last-child {
@@ -118,19 +117,12 @@ import { START_VALUE } from '@/api/api-config'
     align-items: flex-start;
     padding: 1.2rem 0;
     margin-right: 0;
-    border-top: 0.1rem solid var(--clr__footer-border);
-    &:last-child {
-      border-bottom: 0.1rem solid var(--clr__footer-border);
-    }
   }
   .app-footer__nav-img-item {
     margin-right: 3.2rem;
   }
 }
 @include respond-to(small) {
-  .app-footer {
-    margin-top: 4rem;
-  }
   .app-footer__inner {
     padding: 2.4rem 0;
   }

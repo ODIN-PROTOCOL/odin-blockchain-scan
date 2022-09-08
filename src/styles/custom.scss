@@ -9,9 +9,9 @@ body {
   position: absolute;
   padding: 1.2rem 1.6rem;
   pointer-events: none;
-  background-color: var(--clr__btn-pressed);
+  background-color: var(--clr__secondary);
   border-radius: 0.8rem;
-  color: var(--clr__text-on-action);
+  color: var(--clr__white);
   max-width: 18.5rem;
 
   &.chartjs-tooltip_bottom {
@@ -20,7 +20,7 @@ body {
       width: 1.4rem;
       height: 1.4rem;
       position: absolute;
-      background-color: var(--clr__btn-pressed);
+      background-color: var(--clr__secondary);
       transform: translateX(-0.7rem) rotate(45deg);
       bottom: -0.5rem;
       pointer-events: none;
@@ -83,7 +83,7 @@ body {
   text-transform: uppercase;
   font-size: 3.2rem;
   font-weight: 600;
-  color: var(--clr__input-border);
+  color: var(--clr__text-muted);
 }
 .sort {
   &-select {
@@ -150,60 +150,77 @@ body {
 ._vue-picker {
   width: 13rem;
   font-weight: 400;
+
   .vue-picker__opener,
   .vue-picker__opener:focus {
+    background-color: var(--clr__vue-picker-bg);
     border: none;
     box-shadow: inset 0 0 0 0.1rem transparent;
   }
+
   .vue-picker__dropdown {
-    box-shadow: 0 0.4rem 2.4rem var(--clr__dropdown-shadow);
-    border-radius: 0.4rem;
-    border: none;
     padding: 0;
+    background-color: var(--clr__dropdown-bg);
+    border: none;
+    border-radius: 0.4rem;
+    box-shadow: 0 0.4rem 2.4rem var(--clr__dropdown-shadow);
   }
+
   .vue-picker__opener-txt,
   .vue-picker-option {
+    color: var(--clr__dropdown);
     white-space: nowrap;
     transition: all 0.5s ease;
   }
+
   .vue-picker__opener-ico {
     height: 100%;
     display: flex;
     align-items: center;
+
     &:after {
+      border: solid var(--clr__dropdown);
+      border-width: 0 0.2rem 0.2rem 0;
       transition: all 0.5s ease;
     }
   }
+
   &.vue-picker_open {
     .vue-picker__opener-ico {
       &:after {
-        border: solid var(--clr__action);
+        border: solid var(--clr__secondary);
         border-width: 0 0.2rem 0.2rem 0;
         transform: rotate(225deg);
       }
     }
+
     .vue-picker__opener-txt {
-      color: var(--clr__action);
+      color: var(--clr__secondary);
       font-weight: bold;
     }
   }
+
   &__dropdown-custom {
     .vue-picker-option:hover:not(:disabled),
     .vue-picker-option_cur {
       font-weight: 600;
-      color: var(--clr__action);
-      background: var(--clr__vue-picker-current-option);
-    }
-  }
-  @include respond-to(tablet) {
-    .vue-picker__opener {
-      padding-left: 0;
+      color: var(--clr__secondary);
+      background: var(--clr__levender-blue);
     }
   }
 }
+
+// Specific for search-bar
+.search-bar {
+  .vue-picker__opener,
+  .vue-picker__opener:focus {
+    background-color: var(--clr__search-field-bg);
+  }
+}
+
 .card-frame {
   padding: 3.2rem;
-  border: 0.1rem solid var(--clr__frame-border);
-  box-shadow: 0 0.4rem 0.8rem var(--clr__frame-box-shadow);
+  background-color: var(--clr__card-bg);
+  border: 0.1rem solid var(--clr__card-border);
   border-radius: 0.8rem;
 }

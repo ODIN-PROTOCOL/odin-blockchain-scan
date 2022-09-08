@@ -1,43 +1,45 @@
 <template>
   <div class="app__main-view top-accounts">
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">Top accounts</h2>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Ta</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Top accounts</h3>
+        <skeleton-loader
+          v-if="isLoading || isSupplyLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ totalAccounts.toLocaleString() }} accounts found
+        </span>
+      </div>
     </div>
-    <div class="top-accounts__sort-wrapper">
-      <skeleton-loader
-        v-if="isLoading || isSupplyLoading"
-        pill
-        shimmer
-        :height="24"
-        width="100"
-        class="top-accounts__sort-info"
-      />
-      <span v-else class="top-accounts__sort-info">
-        {{ totalAccounts }} accounts found
-      </span>
-      <div class="top-accounts__selection">
-        <div class="top-accounts__selection-item">
-          <span class="top-accounts__selection-item-title">Sorting by:</span>
-          <VuePicker
-            class="top-accounts__vue-picker _vue-picker"
-            name="sorting"
-            v-model="sortingValue"
-            :is-disabled="isLoading || isSupplyLoading"
-          >
-            <template #dropdownInner>
-              <div class="_vue-picker__dropdown-custom">
-                <VuePickerOption
-                  v-for="{ text, value } in sortingTypeAccounts"
-                  :key="text"
-                  :value="value"
-                  :text="text"
-                >
-                  {{ text }}
-                </VuePickerOption>
-              </div>
-            </template>
-          </VuePicker>
-        </div>
+    <div class="top-accounts__selection">
+      <div class="top-accounts__selection-item">
+        <span class="top-accounts__selection-item-title">Sorting by:</span>
+        <VuePicker
+          class="top-accounts__vue-picker _vue-picker"
+          name="sorting"
+          v-model="sortingValue"
+          :is-disabled="isLoading || isSupplyLoading"
+        >
+          <template #dropdownInner>
+            <div class="_vue-picker__dropdown-custom">
+              <VuePickerOption
+                v-for="{ text, value } in sortingTypeAccounts"
+                :key="text"
+                :value="value"
+                :text="text"
+              >
+                {{ text }}
+              </VuePickerOption>
+            </div>
+          </template>
+        </VuePicker>
       </div>
     </div>
     <div class="app-table top-accounts__table">
@@ -50,26 +52,28 @@
         <span>ODIN token percentage</span>
         <span>Transaction count</span>
       </div>
-      <template v-if="accounts?.length">
-        <AccountsLine
-          v-for="(item, index) in accounts"
-          :key="index"
-          :account="item"
-          :odin-supply="odinSupply"
-          :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
-        />
-      </template>
-      <template v-else>
-        <SkeletonTable
-          v-if="isLoading || isSupplyLoading"
-          :header-titles="headerTitles"
-          table-size="10"
-          class-string="accounts-line"
-        />
-        <div v-else class="app-table__empty-stub">
-          <p class="empty mg-t32">No items yet</p>
-        </div>
-      </template>
+      <div>
+        <template v-if="accounts?.length">
+          <AccountsLine
+            v-for="(item, index) in accounts"
+            :key="index"
+            :account="item"
+            :odin-supply="odinSupply"
+            :rank="(+currentPage - 1) * +ITEMS_PER_PAGE + (index + 1)"
+          />
+        </template>
+        <template v-else>
+          <SkeletonTable
+            v-if="isLoading || isSupplyLoading"
+            :header-titles="headerTitles"
+            table-size="10"
+            class-string="accounts-line"
+          />
+          <div v-else class="app-table__empty-stub">
+            <p class="empty mg-t32">No items yet</p>
+          </div>
+        </template>
+      </div>
     </div>
     <AppPagination
       v-if="totalAccounts > ITEMS_PER_PAGE"
@@ -162,6 +166,7 @@ onResult(async (): Promise<void> => {
 
 watch([sortingValue], async () => {
   currentPage.value = 1
+  totalAccounts.value = 0
   await updateHandler()
 })
 
@@ -171,6 +176,12 @@ onMounted(async (): Promise<void> => {
 </script>
 
 <style scoped lang="scss">
+.top-accounts {
+  .app__main-view-table-header {
+    margin-bottom: 0;
+  }
+}
+
 .top-accounts__sort-wrapper {
   display: flex;
   justify-content: space-between;
@@ -182,10 +193,14 @@ onMounted(async (): Promise<void> => {
   align-items: center;
 }
 .top-accounts__vue-picker {
-  width: 15rem;
+  width: 20rem;
+  margin-left: 1rem;
+  background: var(--clr__white);
 }
 .top-accounts__selection {
+  margin-bottom: 4rem;
   display: flex;
+  justify-content: flex-end;
 }
 .top-accounts__selection-item {
   display: flex;
@@ -210,7 +225,7 @@ onMounted(async (): Promise<void> => {
   .top-accounts__selection {
     width: 100%;
     flex-direction: column;
-    margin-bottom: 0rem;
+    margin-bottom: 0;
   }
   .top-accounts__subtitle-line {
     flex-direction: column;
@@ -221,17 +236,25 @@ onMounted(async (): Promise<void> => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin: 1.6rem 0;
   }
   .top-accounts__vue-picker {
     width: 100%;
+    margin-left: 0;
   }
   .top-accounts__selection-item-title {
-    margin: 0;
+    margin-bottom: 1rem;
   }
   .top-accounts__sort-wrapper {
     flex-direction: column;
     align-items: flex-start;
     margin: 0;
+  }
+}
+
+@include respond-to(medium) {
+  .top-accounts__table-head {
+    display: none;
   }
 }
 </style>

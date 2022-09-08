@@ -1,27 +1,31 @@
 <template>
   <div class="app__main-view validator-item">
-    <div class="app__main-view-title-wrapper validators-item__title-wrapper">
-      <BackButton class="validators-item__back-btn" text="Oracle validators" />
-      <h2 class="app__main-view-title validators-item__title">Validator</h2>
-      <template v-if="validator">
-        <div class="validators-item__validator-address">
-          <p
-            :title="operatorAddress"
-            class="view-main__subtitle validators-item__subtitle"
-          >
+    <div class="app__main-view-detail-container">
+      <div class="app__main-view-detail-back-icon">
+        <BackButton />
+      </div>
+      <div class="app__main-view-detail-title-container">
+        <h2 class="app__main-view-detail-title">Validator</h2>
+        <div
+          v-if="operatorAddress"
+          class="app__main-view-detail-subtitle-container"
+        >
+          <span class="app__main-view-detail-subtitle">
             {{ operatorAddress }}
-          </p>
-          <CopyButton :text="String(operatorAddress)" class="mg-l8" />
+          </span>
+          <CopyButton class="mg-l8" :text="operatorAddress" />
+          <Tag
+            class="validator-item__status"
+            text="Oracle"
+            :type="
+              getValidatorStatus(
+                validator.statuses[0].status,
+                validator.isActive,
+              )
+            "
+          />
         </div>
-        <ValidatorStatus
-          :width="14"
-          :height="14"
-          :status="
-            getValidatorStatus(validator.statuses[0].status, validator.isActive)
-          "
-          class="validators-item__validator-status"
-        />
-      </template>
+      </div>
     </div>
     <template v-if="isFinishLoading">
       <template v-if="isLoadingError || !isValidatorResponseLoadingError">
@@ -86,11 +90,11 @@ import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import AppTabs from '@/components/tabs/AppTabs.vue'
 import AppTab from '@/components/tabs/AppTab.vue'
+import Tag from '@/components/Tag.vue'
 import ValidatorInfo from '@/components/ValidatorInfo.vue'
 import OracleReportsTable from '@/components/tables/OracleReportsTable.vue'
 import DelegatorsTable from '@/components/tables/DelegatorsTable.vue'
 import ProposedBlocksTable from '@/components/tables/ProposedBlocksTable.vue'
-import ValidatorStatus from '@/components/ValidatorStatus.vue'
 
 const [isLoading, lockLoading, releaseLoading] = useBooleanSemaphore()
 const isLoadingError = ref(false)
@@ -166,76 +170,11 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.validators-item__title-wrapper {
-  display: flex;
+.app__main-view-detail-subtitle-container {
   align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  margin-right: 2rem;
-  font-size: 2.4rem;
-}
-.validators-item__title {
-  margin: 0 1.6rem 0 2rem;
-}
-.validators-item__validator-address {
-  display: flex;
-  min-width: 10%;
-  margin-right: 1rem;
-}
-.validators-item__back-btn {
-  height: 4.6rem;
-  font-size: 1.6rem;
-  line-height: 2.4rem;
-}
-.validators-item__subtitle {
-  @include ellipsis();
-  line-height: 4.6rem;
-}
-@include respond-to(tablet) {
-  .validators-item__title-wrapper {
-    align-items: flex-start;
-  }
-  .validators-item {
-    padding-bottom: 10rem;
-  }
-  .validators-item__title {
-    margin: 0.8rem 0 0.4rem 0;
-  }
-
-  .validators-item__subtitle {
-    line-height: 3rem;
-  }
-
-  .validators-item__back-btn {
-    height: 2.4rem;
-  }
-
-  .validators-item__validator-address {
-    width: 100%;
-    margin: 0;
-  }
-  .validators-item__activities--top {
-    display: none;
-  }
-
-  .validators-item--large-padding {
-    padding-bottom: 17rem;
-  }
-  .validators-item__title-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-right: 0;
-    margin-bottom: 3.2rem;
-  }
-  .validators-item__validator-status {
-    margin-top: 1.2rem;
-  }
 }
 
-@include respond-to(small) {
-  .validators-item__activities-btn {
-    font-size: 1.6rem;
-  }
+.validator-item__status {
+  margin-left: 1rem;
 }
 </style>

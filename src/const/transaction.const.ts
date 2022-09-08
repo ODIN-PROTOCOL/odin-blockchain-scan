@@ -9,8 +9,3 @@ export const TOOLTIP_INFO = {
   memo: 'Amount paid to the validator for validation of the transaction.',
   total: 'The amount being transacted in ODIN and fiat value.',
 }
-
-export const TX_STATUSES = {
-  SUCCESS: 'Success',
-  FAILED: 'Failed',
-}

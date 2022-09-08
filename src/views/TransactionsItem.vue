@@ -1,13 +1,17 @@
 <template>
-  <div class="app__main-view transactions-item">
-    <div class="app__main-view-title-wrapper">
-      <BackButton text="Transactions" />
-      <h2 class="app__main-view-title transactions-item__title">Transaction</h2>
-      <div class="transactions-item__subtitle-wrapper" v-if="tx">
-        <span class="app__main-view-subtitle transactions-item__subtitle">
-          {{ tx.hash }}
-        </span>
-        <CopyButton class="mg-l8" :text="tx.hash" />
+  <div class="app__main-view">
+    <div class="app__main-view-detail-container">
+      <div class="app__main-view-detail-back-icon">
+        <BackButton text="Transactions" />
+      </div>
+      <div class="app__main-view-detail-title-container">
+        <h2 class="app__main-view-detail-title">Transaction Detail</h2>
+        <div v-if="tx" class="app__main-view-detail-subtitle-container">
+          <span class="app__main-view-detail-subtitle">
+            {{ tx.hash }}
+          </span>
+          <CopyButton class="mg-l8" :text="tx.hash" />
+        </div>
       </div>
     </div>
     <template v-if="!isLoading">
@@ -18,144 +22,77 @@
       </template>
       <template v-else>
         <template v-if="tx">
-          <span class="app__main-view-subtitle">Transaction details</span>
-          <div class="transactions-item__table mg-b32">
-            <div class="transactions-item__table-row">
-              <div class="transactions-item__table-row-info">
-                <img src="~@/assets/icons/info.svg" alt="info" />
-                <span class="transactions-item__table-row-tooltip">
-                  {{ TOOLTIP_INFO.time }}
-                </span>
+          <div class="app-table">
+            <div class="app-table__row transactions-item__line">
+              <div class="app-table__cell app-table__cell--label">
+                <InfoIcon :message="TOOLTIP_INFO.time" />
+                <span>Time</span>
               </div>
-              <span class="transactions-item__table-row-title">Time</span>
-              <span class="transactions-item__table-row-value">
-                {{ $fDate(tx.time, 'HH:mm dd.MM.yy') }}
-              </span>
-            </div>
-            <div class="transactions-item__table-row">
-              <div class="transactions-item__table-row-info">
-                <img src="~@/assets/icons/info.svg" alt="info" />
-                <span class="transactions-item__table-row-tooltip">
-                  {{ TOOLTIP_INFO.status }}
+              <div class="app-table__cell">
+                <span class="app-table__cell-date">
+                  {{ $fDate(tx.time, 'dd/MM/yy') }}
                 </span>
-              </div>
-              <span class="transactions-item__table-row-title">Status</span>
-              <div class="transactions-item__table-row-value">
-                <span
-                  class="transactions-item__table-row-status"
-                  :class="
-                    tx.status === TX_STATUSES.SUCCESS
-                      ? 'transactions-item__table-row-status--success'
-                      : 'transactions-item__table-row-status--failed'
-                  "
-                >
-                  {{ tx.status }}
+                <span class="app-table__cell-time">
+                  {{ $fDate(tx.time, 'HH:mm') }}
                 </span>
               </div>
             </div>
-            <div class="transactions-item__table-row">
-              <div class="transactions-item__table-row-info">
-                <img src="~@/assets/icons/info.svg" alt="info" />
-                <span class="transactions-item__table-row-tooltip">
-                  {{ TOOLTIP_INFO.block }}
-                </span>
+            <div class="app-table__row transactions-item__line">
+              <div class="app-table__cell app-table__cell--label">
+                <InfoIcon :message="TOOLTIP_INFO.status" />
+                <span>Status</span>
               </div>
-              <span class="transactions-item__table-row-title">Block</span>
-              <TitledLink
-                v-if="tx?.block"
-                :name="{
-                  name: $routes.blockDetails,
-                  params: { id: tx.block },
-                }"
-                class="transactions-item__table-row-value transactions-item__table-row-link"
-                :text="tx?.block"
-              />
-              <span v-else class="transactions-item__table-row-value">-</span>
-            </div>
-            <div class="transactions-item__table-row">
-              <div class="transactions-item__table-row-info">
-                <img src="~@/assets/icons/info.svg" alt="info" />
-                <span class="transactions-item__table-row-tooltip">
-                  {{ TOOLTIP_INFO.gas }}
-                </span>
+              <div class="app-table__cell">
+                <tag :type="tx.status" :text="tx.status" />
               </div>
-              <span class="transactions-item__table-row-title">
-                Gas (used/wanted)
-              </span>
-              <span class="transactions-item__table-row-value">
-                {{ tx.gasUsed }} / {{ tx.gasWanted }}
-              </span>
             </div>
-            <div class="transactions-item__table-row">
-              <div class="transactions-item__table-row-info">
-                <img src="~@/assets/icons/info.svg" alt="info" />
-                <span class="transactions-item__table-row-tooltip">
-                  {{ TOOLTIP_INFO.fee }}
-                </span>
+            <div class="app-table__row transactions-item__line">
+              <div class="app-table__cell app-table__cell--label">
+                <InfoIcon :message="TOOLTIP_INFO.block" />
+                <span>Block</span>
               </div>
-              <span class="transactions-item__table-row-title">Fee</span>
-              <span class="transactions-item__table-row-value">{{
-                tx.fee
-              }}</span>
-            </div>
-            <div class="transactions-item__table-row">
-              <div class="transactions-item__table-row-info">
-                <img src="~@/assets/icons/info.svg" alt="info" />
-                <span class="transactions-item__table-row-tooltip">
-                  {{ TOOLTIP_INFO.memo }}
-                </span>
+              <div class="app-table__cell">
+                <TitledLink
+                  v-if="tx?.block"
+                  class="app-table__link"
+                  :name="{
+                    name: $routes.blockDetails,
+                    params: { id: tx.block },
+                  }"
+                  :text="tx?.block"
+                />
+                <span v-else>-</span>
               </div>
-              <span class="transactions-item__table-row-title">Memo</span>
-              <span class="transactions-item__table-row-value">{{
-                tx.memo
-              }}</span>
             </div>
-            <div class="transactions-item__table-row">
-              <div class="transactions-item__table-row-info">
-                <img src="~@/assets/icons/info.svg" alt="info" />
-                <span class="transactions-item__table-row-tooltip">
-                  {{ TOOLTIP_INFO.total }}
-                </span>
+            <div class="app-table__row transactions-item__line">
+              <div class="app-table__cell app-table__cell--label">
+                <InfoIcon :message="TOOLTIP_INFO.gas" />
+                <span>Gas (used/wanted)</span>
               </div>
-              <span class="transactions-item__table-row-title">Total</span>
-              <span class="transactions-item__table-row-value">{{
-                tx.amount
-              }}</span>
+              <div class="app-table__cell">
+                <span>{{ tx.gasUsed }} / {{ tx.gasWanted }}</span>
+              </div>
             </div>
-          </div>
-
-          <p class="app__main-view-subtitle mg-b24">Messages</p>
-          <div class="transactions-item__message" v-if="tx">
-            <span class="transactions-item__message-title">{{ tx.type }}</span>
-            <div class="transactions-item__message-row" v-if="tx.sender">
-              <span class="transactions-item__message-row-title">From</span>
-              <TitledLink
-                :name="{
-                  name: $routes.accountDetails,
-                  params: { hash: tx.sender },
-                }"
-                :text="tx.sender"
-                class="transactions-item__message-row-value transactions-item__message-row-link"
-              />
-              <CopyButton class="mg-l8" :text="tx.sender" />
+            <div class="app-table__row transactions-item__line">
+              <div class="app-table__cell app-table__cell--label">
+                <InfoIcon :message="TOOLTIP_INFO.fee" />
+                <span>Fee</span>
+              </div>
+              <div class="app-table__cell">{{ tx.fee }}</div>
             </div>
-            <div class="transactions-item__message-row" v-if="tx.receiver">
-              <span class="transactions-item__message-row-title">To</span>
-              <TitledLink
-                :name="{
-                  name: $routes.accountDetails,
-                  params: { hash: tx.receiver },
-                }"
-                :text="tx.receiver"
-                class="transactions-item__message-row-value transactions-item__message-row-link"
-              />
-              <CopyButton class="mg-l8" :text="tx.receiver" />
+            <div class="app-table__row transactions-item__line">
+              <div class="app-table__cell app-table__cell--label">
+                <InfoIcon :message="TOOLTIP_INFO.memo" />
+                <span>Memo</span>
+              </div>
+              <div class="app-table__cell">{{ tx.memo }}</div>
             </div>
-            <div class="transactions-item__message-row">
-              <span class="transactions-item__message-row-title">Amount</span>
-              <span class="transactions-item__message-row-value">
-                {{ tx.amount }}
-              </span>
+            <div class="app-table__row transactions-item__line">
+              <div class="app-table__cell app-table__cell--label">
+                <InfoIcon :message="TOOLTIP_INFO.total" />
+                <span>Total</span>
+              </div>
+              <div class="app-table__cell">{{ tx.amount }}</div>
             </div>
           </div>
         </template>
@@ -185,7 +122,9 @@ import { prepareTransaction } from '@/helpers/helpers'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
 import TitledLink from '@/components/TitledLink.vue'
-import { TOOLTIP_INFO, TX_STATUSES } from '@/const'
+import Tag from '@/components/Tag.vue'
+import InfoIcon from '@/components/icons/InfoIcon.vue'
+import { TOOLTIP_INFO } from '@/const'
 import { useBooleanSemaphore } from '@/composables/useBooleanSemaphore'
 import {
   UiLoadingErrorMessage,
@@ -217,146 +156,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.transactions-item__title {
-  margin: 0 1.6rem 0 2rem;
-}
-
-.transactions-item__subtitle-wrapper {
-  display: flex;
-  max-width: 80%;
-}
-
-.transactions-item__subtitle {
-  @include ellipsis();
-}
-
-.transactions-item__table-row {
-  display: flex;
-  padding: 1.6rem 0;
-  border-bottom: 0.1rem solid var(--clr__input-border);
-  align-items: center;
-}
-
-.transactions-item__table-row-info {
-  position: relative;
-  cursor: pointer;
-  margin-right: 0.9rem;
-
-  &:hover {
-    .transactions-item__table-row-tooltip {
-      display: block;
-    }
-  }
-}
-
-.transactions-item__table-row-tooltip {
-  display: none;
-  position: absolute;
-  bottom: 130%;
-  left: -50%;
-  min-width: 30rem;
-  padding: 1.2rem 2.4rem;
-  background: var(--clr__tooltip-bg);
-  border-radius: 0.8rem;
-  font-size: 1.6rem;
-  font-weight: 400;
-  line-height: 1.6rem;
-  color: var(--clr__tooltip-text);
-
-  &:before {
-    content: '';
-    display: block;
-    width: 0.6rem;
-    height: 0.6rem;
-    position: absolute;
-    bottom: -0.3rem;
-    left: 1.6rem;
-    transform: translateX(-50%) rotate(45deg);
-    background: var(--clr__tooltip-bg);
-  }
-}
-
-.transactions-item__table-row-title {
-  min-width: 14.5rem;
-  margin-right: 2.4rem;
-}
-
-.transactions-item__table-row-value {
-  font-size: 1.4rem;
-  @include ellipsis();
-}
-
-.transactions-item__table-row-link,
-.transactions-item__message-row-link {
-  text-decoration: none;
-  color: var(--clr__action);
-}
-
-.transactions-item__table-row-status {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 10rem;
-  height: 2.4rem;
-  background: var(--clr__muted-bg);
-  color: var(--clr__text-on-action);
-  border-radius: 3.2rem;
-  padding: 0.4rem 2.4rem;
-  font-weight: 600;
-  font-size: 1.2rem;
-  line-height: 1.6rem;
-}
-.transactions-item__table-row-status--success {
-  background: var(--clr__status-success);
-}
-
-.transactions-item__table-row-status--failed {
-  background: var(--clr__status-error);
-}
-
-.transactions-item__message {
-  border: 0.1rem solid var(--clr__action);
-  border-radius: 0.8rem;
-  padding: 3.2rem 2.4rem;
-}
-
-.transactions-item__message-title {
-  display: inline-block;
-  font-size: 2rem;
-  margin-bottom: 4rem;
-}
-
-.transactions-item__message-row {
-  @extend .transactions-item__table-row;
-  border: none;
-}
-
-.transactions-item__message-row-title {
-  @extend .transactions-item__table-row-title;
-}
-
-.transactions-item__message-row-value {
-  @extend .transactions-item__table-row-value;
-}
-
-@include respond-to(medium) {
-  .transactions-item__subtitle-wrapper {
-    max-width: 75%;
-  }
-}
-
-@include respond-to(tablet) {
-  .transactions-item__title {
-    margin: 0.8rem 0 0.4rem 0;
-  }
-
-  .transactions-item__subtitle-wrapper {
-    max-width: 100%;
-  }
-
-  .transactions-item__table-row-info {
-    display: none;
-  }
+.transactions-item__line {
+  grid: auto/minmax(3rem, 1fr) minmax(9rem, 3fr);
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <template v-if="isAppReady">
+    <app-header />
     <section class="app__main-section">
-      <app-header />
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :key="Component" :is="Component" />
@@ -18,6 +18,7 @@
 import '@invisiburu/vue-picker/dist/vue-picker.min.css'
 import { computed, onMounted, ref } from 'vue'
 import { dialogs } from '@/helpers/dialogs'
+import { Theme } from '@/helpers/theme'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import NotificationsGroup from '@/components/NotificationsGroup.vue'
@@ -32,6 +33,9 @@ const isAppReady = computed(() => {
 // Dialogs
 const dialogsContainerRef = ref<HTMLElement>()
 onMounted(() => {
+  const userTheme = Theme.getTheme() || Theme.getMediaPreference()
+  Theme.setTheme(userTheme)
+
   if (dialogsContainerRef.value instanceof HTMLElement) {
     dialogs.init(dialogsContainerRef.value)
     _readyStates.value.dialogs = true
@@ -51,6 +55,7 @@ onMounted(() => {
 @import '~@/styles/fonts.scss';
 @import '~@/styles/custom.scss';
 @import '~@/styles/vue-skeletor.scss';
+@import '~@/styles/dropdowns.scss';
 
 #app {
   width: 100%;

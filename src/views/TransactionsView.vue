@@ -1,41 +1,49 @@
 <template>
   <div class="app__main-view">
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">Transactions</h2>
-    </div>
-    <div class="mg-b16 mg-t16">
-      <skeleton-loader v-if="isLoading" pill shimmer :height="24" width="100" />
-      <p v-else>{{ totalTransactions }} Transactions found</p>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Tx</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Transactions</h3>
+        <skeleton-loader
+          v-if="isLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ totalTransactions.toLocaleString() }} transactions found
+        </span>
+      </div>
     </div>
     <div class="app-table">
       <div class="app-table__head">
-        <span>Transaction hash</span>
-        <span>Type</span>
-        <span>Block</span>
-        <span>Date and time</span>
-        <span>Sender</span>
-        <span>Receiver</span>
-        <span>Amount</span>
-        <span>Transaction Fee</span>
+        <span v-for="(item, index) in headerTitles" :key="index">
+          {{ item.title }}
+        </span>
       </div>
-      <template v-if="transactions?.length">
-        <TxLine
-          v-for="(item, index) in transactions"
-          :key="index"
-          :transition="item"
-        />
-      </template>
-      <template v-else>
-        <SkeletonTable
-          v-if="isLoading"
-          :header-titles="headerTitles"
-          table-size="10"
-          class-string="data-sources__table-row"
-        />
-        <div v-else class="app-table__empty-stub">
-          <p class="empty mg-t32">No items yet</p>
-        </div>
-      </template>
+      <div>
+        <template v-if="transactions?.length">
+          <TxLine
+            v-for="(item, index) in transactions"
+            :key="index"
+            :transition="item"
+          />
+        </template>
+        <template v-else>
+          <SkeletonTable
+            v-if="isLoading"
+            :header-titles="headerTitles"
+            table-size="10"
+            class-string="data-sources__table-row"
+          />
+          <div v-else class="app-table__empty-stub">
+            <p class="empty mg-t32">No items yet</p>
+          </div>
+        </template>
+      </div>
     </div>
 
     <AppPagination
@@ -66,14 +74,14 @@ const page = ref<number>(1)
 const totalPages = ref<number>(0)
 const totalTransactions = ref<number>(0)
 const headerTitles = [
-  { title: 'Transaction hash' },
+  { title: 'Transaction Hash' },
   { title: 'Type' },
   { title: 'Block' },
-  { title: 'Date and time' },
+  { title: 'Date' },
   { title: 'Sender' },
   { title: 'Receiver' },
-  { title: 'Amount' },
   { title: 'Transaction Fee' },
+  { title: 'Amount' },
 ]
 const getTransactions = async () => {
   lockLoading()
@@ -100,3 +108,11 @@ onMounted(async () => {
   await getTransactions()
 })
 </script>
+
+<style lang="scss" scoped>
+@include respond-to(medium) {
+  .app-table__head {
+    display: none;
+  }
+}
+</style>

@@ -3,21 +3,24 @@
     class="app__main-view validators-view load-fog"
     :class="{ 'load-fog_show': isLoading && validators?.length }"
   >
-    <div class="app__main-view-title-wrapper">
-      <h2 class="app__main-view-title">All Validators</h2>
+    <div class="app__main-view-table-header">
+      <div class="app__main-view-table-header-prefix">
+        <span>Vd</span>
+      </div>
+      <div class="app__main-view-table-header-info">
+        <h3 class="app__main-view-table-header-info-title">Validators</h3>
+        <skeleton-loader
+          v-if="isLoading || isValidatorsResponseLoading"
+          width="100"
+          height="24"
+          pill
+          shimmer
+        />
+        <span v-else class="app__main-view-table-header-info-count">
+          {{ validatorsCount.toLocaleString() }} validators found
+        </span>
+      </div>
     </div>
-
-    <div class="validators-view__count-info">
-      <skeleton-loader
-        v-if="isLoading || isValidatorsResponseLoading"
-        pill
-        shimmer
-        :height="24"
-        width="100"
-      />
-      <p v-else>{{ validatorsCount }} validators found</p>
-    </div>
-
     <div class="validators-view__filter">
       <AppTabs @changeTab="tabHandler($event)">
         <AppTab :title="activeValidatorsTitle" />
@@ -62,16 +65,12 @@
         <span class="validators-view__table-head-item">Validator</span>
         <span class="validators-view__table-head-item">Delegator Share</span>
         <span class="validators-view__table-head-item">Commission</span>
+        <span class="validators-view__table-head-item">Oracle Status</span>
         <span
           v-if="tabStatus !== inactiveValidatorsTitle"
           class="validators-view__table-head-item"
         >
           Uptime
-        </span>
-        <span
-          class="validators-view__table-head-item validators-view__table-head-item--center"
-        >
-          Status
         </span>
       </div>
       <div>
@@ -148,7 +147,7 @@ const filteredValidators = ref()
 const validators = ref()
 const activeValidators = ref<ValidatorsInfo[]>([])
 const inactiveValidators = ref<ValidatorsInfo[]>([])
-const inputPlaceholder = ref('Search validators')
+const inputPlaceholder = ref('Search')
 const activeValidatorsTitle = computed(() =>
   activeValidators.value?.length
     ? `Active (${activeValidators.value?.length})`
@@ -319,34 +318,41 @@ onUnmounted(async () => {
 }
 
 .validators-view__filter-search {
+  margin-bottom: 4rem;
   display: flex;
   align-items: center;
-  border-bottom: 0.1rem solid var(--clr__input-border);
+  background-color: var(--clr__table-border);
+  border-radius: 0.8rem;
   transition: all 0.5s ease;
-  color: var(--clr__input-border);
+
   svg {
     transition: all 0.5s ease;
-    fill: var(--clr__text-muted);
+    fill: var(--clr__white);
   }
+
   &:hover,
   &:active,
   &:focus,
   &:focus-within {
-    color: var(--clr__text);
-    border-color: var(--clr__text);
+    color: var(--clr__white);
+    border-color: var(--clr__white);
+
     svg {
       fill: var(--clr__text);
     }
   }
+
   &:disabled {
     border-color: var(--clr__input-border);
     color: var(--clr__input-border);
+
     svg {
       fill: var(--clr__input-border);
     }
   }
+
   svg.validators__filter-search-clear-btn-icon {
-    fill: var(--clr__text-muted);
+    fill: var(--clr__white);
   }
 }
 .validators-view__filter-search-input-wrapper {
@@ -354,8 +360,12 @@ onUnmounted(async () => {
   z-index: 0;
 }
 .validators-view__filter-search-input {
-  border: none;
+  width: 35rem;
   padding-right: 2rem;
+  color: var(--clr__main-text);
+  background-color: inherit;
+  border: none;
+
   &:focus::-webkit-input-placeholder {
     color: transparent;
   }
@@ -384,14 +394,21 @@ onUnmounted(async () => {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+
+  &::v-deep path {
+    fill: var(--clr__main-text);
+  }
 }
 .validators-view__filter {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 2.4rem;
   align-items: center;
 }
 @include respond-to(tablet) {
+  .validators-view__table-head {
+    display: none;
+  }
+
   .validators-view__count-info {
     margin-bottom: 0;
   }
