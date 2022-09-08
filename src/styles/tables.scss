@@ -91,6 +91,11 @@
   @include ellipsis;
 }
 
+.app-table__empty-stub {
+  margin: 10rem 0;
+  text-align: center;
+}
+
 .blocks-list__table-head,
 .blocks-list__table-row {
   grid:
