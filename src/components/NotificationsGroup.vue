@@ -104,7 +104,7 @@ const component = computed(() => {
     font-weight: 400;
     font-size: 2.4rem;
     line-height: 3.2rem;
-    color: var(--clr__text);
+    color: var(--clr__main-text);
   }
   .notifications-group__inner-content-wrapper {
     width: 100%;
