@@ -29,6 +29,7 @@
   --clr__search-field-bg: #{$clr-bright-gray};
   --clr__search-icon: #{$clr-primary};
   --clr__search-icon-bg: #{$clr-secondary};
+  --clr__search-bar-dropdown-bg: #{$clr-azureish-white};
 
   --clr__theme-switch: #{$clr-text-muted};
   --clr__theme-switch-bg: #{$clr-bright-gray};
@@ -156,6 +157,7 @@
   // Dropdown
   --clr__dropdown: #{$clr-white};
   --clr__dropdown-bg: #{$clr-primary};
+  --clr__search-bar-dropdown-bg: #{$clr-dark-blue};
 
   // Nav
   --clr__nav-back: #{$clr-white};
