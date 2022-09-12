@@ -15,6 +15,8 @@ const ODIN_MULTIPLIER = 0.000001
 const ODIN_DENOM = 'ODIN'
 const LOKI_DENOM = 'LOKI'
 const GEO_DENOM = 'GEO'
+const MO9W_DENOM = 'MO9W'
+const O9W_DENOM = 'O9W'
 const LOKI_MULTIPLIER = 1000000
 
 export function convertLokiToOdin(
@@ -26,6 +28,8 @@ export function convertLokiToOdin(
   if (Number.isNaN(Number(amount))) return '0'
   if (denom.toUpperCase() === LOKI_DENOM || denom === ODIN_DENOM) {
     denom = ODIN_DENOM
+  } else if (denom.toUpperCase() === MO9W_DENOM) {
+    denom = O9W_DENOM
   } else {
     denom = GEO_DENOM
   }
