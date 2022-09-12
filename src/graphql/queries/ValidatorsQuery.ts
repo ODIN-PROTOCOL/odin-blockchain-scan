@@ -17,21 +17,9 @@ export const ValidatorsQuery = gql`
         maxChangeRate: max_change_rate
         validatorAddress: consensus_address
       }
-      blocksAggregate: blocks_aggregate {
-        aggregate {
-          count
-        }
-      }
       statuses: validator_statuses(order_by: { height: desc }, limit: 1) {
         status
         jailed
-        tombstoned
-      }
-      signingInfos: validator_signing_infos(
-        order_by: { height: desc }
-        limit: 1
-      ) {
-        missedBlocksCounter: missed_blocks_counter
         tombstoned
       }
       votingPowers: validator_voting_powers(
@@ -44,6 +32,13 @@ export const ValidatorsQuery = gql`
       commissions: validator_commissions(order_by: { height: desc }, limit: 1) {
         commission
         minSelfDelegation: min_self_delegation
+      }
+      signingInfos: validator_signing_infos(
+        order_by: { height: desc }
+        limit: 1
+      ) {
+        missedBlocksCounter: missed_blocks_counter
+        tombstoned
       }
       descriptions: validator_descriptions {
         moniker

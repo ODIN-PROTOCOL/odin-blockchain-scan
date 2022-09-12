@@ -1,7 +1,7 @@
 <template>
   <div class="progressbar-tool">
     <div class="progressbar-tool__info" v-if="isForValidators">
-      <span class="progressbar-tool__info-item">{{ progress }} %</span>
+      <span class="progressbar-tool__info-item">{{ current }} %</span>
     </div>
     <div class="progressbar-tool__info" v-else>
       <span class="progressbar-tool__info-item">Min {{ min }}</span>
@@ -13,7 +13,7 @@
       <div
         class="progressbar-tool__thumb"
         :class="
-          progress > 60
+          progress >= 60
             ? 'progressbar-tool__thumb--positive'
             : 'progressbar-tool__thumb--negative'
         "
