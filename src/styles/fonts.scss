@@ -1,4 +1,7 @@
-@import url('//db.onlinewebfonts.com/c/0a5fbb91dc4a457f5945dca11d44517d?family=Atlas+Grotesk+Web+Regular');
+@font-face {
+  font-family: 'Atlas Grotesk Web Regular';
+  src: url('@/assets/fonts/AtlasGrotesk-Regular.otf') format('opentype');
+}
 
 body,
 html {
